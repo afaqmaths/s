@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة لغز شبكة الأعداد الزوجية والفردية</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #0f172a;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        /* الحاوية الرئيسية للتقسيم الجانبي */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            align-items: flex-start;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        /* مربع الشروط الجانبي المستقل */
+        .sidebar {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 20px;
+            padding: 20px;
+            width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: right;
+        }
+
+        .sidebar h2 {
+            color: #2563eb;
+            font-size: 1.25rem;
+            margin-top: 0;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        .sidebar ul {
+            padding-right: 20px;
+            margin: 0;
+            color: #334155;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .sidebar li {
+            margin-bottom: 8px;
+        }
+
+        /* منطقة اللعبة الرئيسية */
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            min-width: 320px;
+        }
+
+        /* بنك الأرقام */
+        .numbers-bank {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+            background: #ffffff;
+            padding: 12px 25px;
+            border-radius: 16px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        .num-card {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .num-card:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .num-card.selected {
+            border: 3px solid #f59e0b;
+            transform: scale(1.1);
+        }
+
+        .num-card.used {
+            opacity: 0.25;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* شبكة اللعبة: 4 أعمدة (يمين، 2 أرقام، يسار) و3 صفوف */
+        .game-layout {
+            display: grid;
+            grid-template-columns: 85px 85px 85px 85px;
+            grid-template-rows: 85px 85px 65px;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .grid-cell {
+            width: 85px;
+            height: 85px;
+            background: #ffffff;
+            border: 2px dashed #94a3b8;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .grid-cell:hover {
+            border-color: #2563eb;
+            background: #f0f9ff;
+        }
+
+        .grid-cell.filled {
+            border-style: solid;
+            border-color: #2563eb;
+            color: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+        }
+
+        /* تصميم المربعات الصغيرة المساعدة للنتائج والمجاميع */
+        .indicator {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 4px;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 65px;
+            transition: all 0.3s ease;
+        }
+
+        .indicator .sum {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .indicator .type {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .indicator.valid {
+            background: #f0fdf4;
+            border-color: #22c55e;
+        }
+
+        .indicator.valid .type {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .indicator.invalid {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .indicator.invalid .type {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        /* الأزرار */
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            font-size: 1rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .btn-check {
+            background: #22c55e;
+            color: white;
+            box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2);
+        }
+
+        .btn-check:hover {
+            background: #16a34a;
+        }
+
+        .btn-reset {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-reset:hover {
+            background: #dc2626;
+        }
+
+        .message-modal {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .success { color: #15803d; }
+        .error { color: #b91c1c; }
+        .warning { color: #d97706; }
+    </style>
+</head>
+<body>
+
+    <h1>لغز شبكة الأعداد ٢ × ٢ 🧩</h1>
+
+    <div class="container">
+        <!-- المربع الجانبي المستقل للشروط -->
+        <div class="sidebar">
+            <h2>📜 شروط اللغز</h2>
+            <ul>
+                <li>ضع الأرقام <b>(١، ٢، ٣، ٤)</b> في المربعات بدون تكرار.</li>
+                <li>مجموع الأرقام <b>أفقياً</b> يجب أن يكون <b>فردياً</b>.</li>
+                <li>مجموع الأرقام <b>عمودياً</b> يجب أن يكون <b>فردياً</b>.</li>
+                <li>مجموع الأرقام <b>قطرياً</b> يجب أن يكون <b>زوجياً</b>.</li>
+            </ul>
+        </div>
+
+        <!-- منطقة اللعبة -->
+        <div class="game-area">
+            <div class="numbers-bank">
+                <div class="num-card" id="num-1" onclick="selectNumber(1)">١</div>
+                <div class="num-card" id="num-2" onclick="selectNumber(2)">٢</div>
+                <div class="num-card" id="num-3" onclick="selectNumber(3)">٣</div>
+                <div class="num-card" id="num-4" onclick="selectNumber(4)">٤</div>
+            </div>
+
+            <div class="game-layout">
+                <!-- الصف الأول: فارغ على اليمين + مربعين أرقام + المجموع الأفقي 1 على اليسار -->
+                <div></div>
+                <div class="grid-cell" id="cell-0" onclick="placeNumber(0)"></div>
+                <div class="grid-cell" id="cell-1" onclick="placeNumber(1)"></div>
+                <div class="indicator" id="ind-row-0">
+                    <span class="sum" id="sum-row-0">؟</span>
+                    <span class="type">أفقي: فردي</span>
+                </div>
+
+                <!-- الصف الثاني: فارغ على اليمين + مربعين أرقام + المجموع الأفقي 2 على اليسار -->
+                <div></div>
+                <div class="grid-cell" id="cell-2" onclick="placeNumber(2)"></div>
+                <div class="grid-cell" id="cell-3" onclick="placeNumber(3)"></div>
+                <div class="indicator" id="ind-row-1">
+                    <span class="sum" id="sum-row-1">؟</span>
+                    <span class="type">أفقي: فردي</span>
+                </div>
+
+                <!-- الصف الثالث (الأسفل): قطر يمين + عمودي 1 + عمودي 2 + قطر يسار -->
+                <div class="indicator" id="ind-diag-2">
+                    <span class="sum" id="sum-diag-2">؟</span>
+                    <span class="type">قطري ↙: زوجي</span>
+                </div>
+                <div class="indicator" id="ind-col-0">
+                    <span class="sum" id="sum-col-0">؟</span>
+                    <span class="type">عمودي: فردي</span>
+                </div>
+                <div class="indicator" id="ind-col-1">
+                    <span class="sum" id="sum-col-1">؟</span>
+                    <span class="type">عمودي: فردي</span>
+                </div>
+                <div class="indicator" id="ind-diag-1">
+                    <span class="sum" id="sum-diag-1">؟</span>
+                    <span class="type">قطري ↘: زوجي</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-check" onclick="checkSolution()">✓ تحقق من الحل</button>
+                <button class="btn-reset" onclick="resetGrid()">🔄 إعادة المحاولة</button>
+            </div>
+
+            <div class="message-modal" id="message"></div>
+        </div>
+    </div>
+
+    <script>
+        let gridState = [null, null, null, null];
+        let selectedNum = null;
+
+        const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+
+        function toArabicNumber(num) {
+            if (num === null || num === undefined) return '؟';
+            return num.toString().split('').map(digit => arabicNumbers[parseInt(digit)] || digit).join('');
+        }
+
+        function selectNumber(num) {
+            if (gridState.includes(num)) return;
+            selectedNum = num;
+            document.querySelectorAll('.num-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById(`num-${num}`).classList.add('selected');
+        }
+
+        function placeNumber(cellIndex) {
+            if (gridState[cellIndex] !== null && selectedNum === null) {
+                gridState[cellIndex] = null;
+                updateUI();
+                return;
+            }
+
+            if (selectedNum !== null) {
+                const prevIndex = gridState.indexOf(selectedNum);
+                if (prevIndex !== -1) {
+                    gridState[prevIndex] = null;
+                }
+
+                gridState[cellIndex] = selectedNum;
+                selectedNum = null;
+                document.querySelectorAll('.num-card').forEach(card => card.classList.remove('selected'));
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            for (let i = 0; i < 4; i++) {
+                const cell = document.getElementById(`cell-${i}`);
+                if (gridState[i] !== null) {
+                    cell.innerText = toArabicNumber(gridState[i]);
+                    cell.classList.add('filled');
+                } else {
+                    cell.innerText = '';
+                    cell.classList.remove('filled');
+                }
+            }
+
+            for (let num = 1; num <= 4; num++) {
+                const card = document.getElementById(`num-${num}`);
+                if (gridState.includes(num)) {
+                    card.classList.add('used');
+                } else {
+                    card.classList.remove('used');
+                }
+            }
+
+            document.getElementById('message').innerText = '';
+            document.getElementById('message').className = 'message-modal';
+
+            calculateSums();
+        }
+
+        function calculateSums() {
+            const [c0, c1, c2, c3] = gridState;
+
+            const row0 = (c0 !== null && c1 !== null) ? c0 + c1 : null;
+            const row1 = (c2 !== null && c3 !== null) ? c2 + c3 : null;
+            const col0 = (c0 !== null && c2 !== null) ? c0 + c2 : null;
+            const col1 = (c1 !== null && c3 !== null) ? c1 + c3 : null;
+            const diag1 = (c0 !== null && c3 !== null) ? c0 + c3 : null;
+            const diag2 = (c1 !== null && c2 !== null) ? c1 + c2 : null;
+
+            const isAllFilled = !gridState.includes(null);
+
+            updateIndicator('ind-row-0', 'sum-row-0', row0, 'odd', isAllFilled);
+            updateIndicator('ind-row-1', 'sum-row-1', row1, 'odd', isAllFilled);
+            updateIndicator('ind-col-0', 'sum-col-0', col0, 'odd', isAllFilled);
+            updateIndicator('ind-col-1', 'sum-col-1', col1, 'odd', isAllFilled);
+            updateIndicator('ind-diag-1', 'sum-diag-1', diag1, 'even', isAllFilled);
+            updateIndicator('ind-diag-2', 'sum-diag-2', diag2, 'even', isAllFilled);
+        }
+
+        function updateIndicator(indId, sumId, sumValue, requiredType, showValidation) {
+            const ind = document.getElementById(indId);
+            const sumSpan = document.getElementById(sumId);
+
+            if (!showValidation || sumValue === null) {
+                sumSpan.innerText = '؟';
+                ind.className = 'indicator';
+                return;
+            }
+
+            sumSpan.innerText = `المجموع: ${toArabicNumber(sumValue)}`;
+            
+            const isEven = sumValue % 2 === 0;
+            const isValid = (requiredType === 'even' && isEven) || (requiredType === 'odd' && !isEven);
+
+            ind.className = isValid ? 'indicator valid' : 'indicator invalid';
+        }
+
+        function checkSolution() {
+            const msg = document.getElementById('message');
+            
+            if (gridState.includes(null)) {
+                msg.innerText = '⚠️ يرجى إضافة جميع الأرقام أولاً لتأكيد الحل!';
+                msg.className = 'message-modal warning';
+                return;
+            }
+
+            const [c0, c1, c2, c3] = gridState;
+            const isRow0Odd = (c0 + c1) % 2 !== 0;
+            const isRow1Odd = (c2 + c3) % 2 !== 0;
+            const isCol0Odd = (c0 + c2) % 2 !== 0;
+            const isCol1Odd = (c1 + c3) % 2 !== 0;
+            const isDiag1Even = (c0 + c3) % 2 === 0;
+            const isDiag2Even = (c1 + c2) % 2 === 0;
+
+            calculateSums();
+
+            if (isRow0Odd && isRow1Odd && isCol0Odd && isCol1Odd && isDiag1Even && isDiag2Even) {
+                msg.innerText = '🎉 إجابة صحيحة ورائعة! أحسنت صنعاً!';
+                msg.className = 'message-modal success';
+            } else {
+                msg.innerText = '❌ الحل غير صحيح، راجع الشروط والمجاميع الظاهرة ثم حاول مجدداً.';
+                msg.className = 'message-modal error';
+            }
+        }
+
+        function resetGrid() {
+            gridState = [null, null, null, null];
+            selectedNum = null;
+            document.querySelectorAll('.num-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById('message').innerText = '';
+            updateUI();
+        }
+    </script>
+</body>
+</html>
