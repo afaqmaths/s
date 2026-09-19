@@ -1,19 +1,740 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مغامرة جنى في عالم الأعداد</title><style>
-:root{--p:#ff79b7;--v:#735bd8;--b:#52a7ff;--g:#55c98b;--y:#ffd35a;--ink:#26364c}*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,#fff8df,#eef9ff,#fff0f7);min-height:100vh}.app{max-width:1000px;margin:auto;padding:16px}.hero,.game,.info{background:#fffc;border-radius:26px;padding:18px;box-shadow:0 14px 34px #53618420;margin-bottom:14px}.hero{text-align:center}.hero h1{margin:0;color:var(--v);font-size:clamp(28px,5vw,46px)}.gift{margin:10px auto;max-width:790px;background:#fff2f8;border:2px solid #ffd2e5;border-radius:16px;padding:10px;font-weight:700;line-height:1.8}.friends{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.friend{background:white;padding:8px 12px;border-radius:18px;box-shadow:0 5px 12px #0001;font-weight:700}.avatar{font-size:34px}.stats,.tabs,.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}.pill,.tab,.btn{border:0;border-radius:14px;padding:10px 13px;font-weight:800;font-size:15px}.pill{background:white;border:2px solid #e4e8ff}.tab{background:#edf3ff;color:#38506e;cursor:pointer;box-shadow:0 5px 0 #d6e0f0}.tab.active{background:var(--v);color:white}.tab.level.active{background:var(--p)}.progress{height:14px;background:#e7edf8;border-radius:99px;overflow:hidden;margin-top:12px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--b),var(--v),var(--p));transition:.3s}.question{margin-top:15px;min-height:190px;background:linear-gradient(145deg,#fffdf5,#f4fbff);border:3px dashed #b9dcff;border-radius:22px;padding:18px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}.qt{font-size:21px;font-weight:900}.qb{font-size:clamp(34px,7vw,62px);font-weight:900;color:var(--v);margin-top:10px}.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:650px;margin:15px auto}.ans{border:3px solid #dbe9f7;border-radius:18px;background:#f9fcff;padding:14px;font-size:27px;font-weight:900;cursor:pointer;box-shadow:0 7px 0 #d9e7f4}.ans.good{background:#dcf8e6;border-color:#78d99e}.ans.bad{background:#ffe0e0;border-color:#ff9a9a}.feedback{text-align:center;min-height:48px;font-size:20px;font-weight:900;padding-top:8px}.success{display:none;text-align:center;background:#fff5c8;border:3px solid #ffd15a;border-radius:18px;padding:12px;max-width:600px;margin:10px auto;font-size:20px;font-weight:900}.numberline{display:flex;direction:ltr;gap:5px;overflow:auto;max-width:850px;width:100%;padding:9px;margin-top:12px;background:#f7f9ff;border-radius:15px}.n{min-width:40px;height:40px;border-radius:10px;background:#fff;border:2px solid #e1e9f4;display:grid;place-items:center;font-weight:800}.n.focus{background:#fff1a8;border-color:#e8b600;transform:scale(1.15)}.dict,.drag{display:none;margin-top:12px}.dict input{width:180px;text-align:center;font-size:30px;padding:8px;border-radius:12px;border:3px solid #cfe2ff}.dragitems{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.dragnum{padding:10px 16px;background:#fff2bf;border:3px solid #ffd158;border-radius:14px;font-size:25px;font-weight:900;cursor:grab}.slot{display:inline-grid;place-items:center;min-width:80px;height:55px;margin:10px;border:3px dashed var(--p);border-radius:14px;background:#fff8fc}.btn{color:#fff;cursor:pointer;box-shadow:0 6px 0 #0002}.blue{background:var(--b)}.green{background:var(--g)}.gold{background:#e7a800}.pink{background:var(--p)}.purple{background:var(--v)}.info h3{margin:0 0 8px;color:var(--v)}.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}.skills div{background:#f7f8ff;border-radius:13px;padding:10px;text-align:center;font-weight:700}.certwrap{display:none;position:fixed;inset:0;background:#20243bbd;z-index:99;padding:18px;overflow:auto}.cert{max-width:800px;margin:30px auto;background:#fffdf3;border:10px double #dfb03c;border-radius:20px;padding:28px;text-align:center}.cert h2{font-size:38px;color:var(--v)}.cert .name{font-size:32px;font-weight:900;color:#df4e94}.conf{position:fixed;top:-30px;font-size:24px;z-index:120;animation:fall 2s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(550deg);opacity:.3}}@media print{body *{visibility:hidden}.certwrap,.certwrap *{visibility:visible}.certwrap{position:absolute;background:#fff}.cert{margin:0;box-shadow:none}.cert .actions{display:none}}@media(max-width:600px){.ans{font-size:23px;padding:12px}}
-</style></head><body><div class="app">
-<section class="hero"><h1>🌈 مغامرة جنى في عالم الأعداد 🔢</h1><div>رياضيات الصف الثاني الأساسي — من ٠ إلى ١٠٠</div><div class="gift">💝 هذه اللعبة إهداء إلى <b>جنى</b> من والدكِ ومعلمكِ <b>الأستاذ سعيد البريكي</b>، الذي يأمل لكِ التوفيق والتفوق والتميز دائمًا 🌷</div><div class="friends"><div class="friend"><span class="avatar">🐰🎀</span> ميلودي 🎀: أحسنتِ يا جنى!</div><div class="friend"><span class="avatar">😈💜</span> كرومي 💜: هيا يا بطلة!</div><div class="friend"><span class="avatar">⭐</span> نجمة التفوق</div></div><div class="stats"><span class="pill">⭐ النقاط: <b id="score">٠</b></span><span class="pill">🔥 المتتالية: <b id="streak">٠</b></span><span class="pill">🎯 السؤال: <b id="qnum">١</b>/١٢</span><span class="pill">🏆 المرحلة: <b id="lname">الأولى</b></span></div><div class="progress"><i id="bar"></i></div></section>
-<section class="game"><div class="tabs"><button class="tab level active" data-level="1">🌱 سهلة</button><button class="tab level" data-level="2">🚀 متوسطة</button><button class="tab level" data-level="3">🏆 بطلة الأعداد</button></div><div class="tabs"><button class="tab mode active" data-mode="mix">🎲 متنوع</button><button class="tab mode" data-mode="nextprev">↔️ السابق والتالي</button><button class="tab mode" data-mode="sequence">🧩 أكمل العد</button><button class="tab mode" data-mode="dictation">🔊 اسمعي واكتبي</button><button class="tab mode" data-mode="drag">🖐️ اسحبي العدد</button><button class="tab mode" data-mode="digitnumber">🔟 الرقم والعدد</button><button class="tab mode" data-mode="compare">⚖️ المقارنة</button></div>
-<div class="question"><div class="qt" id="qt"></div><div class="qb" id="qb"></div><div class="numberline" id="line"></div><div class="dict" id="dict"><button class="btn purple" id="speakNum">🔊 استمعي للعدد</button><div><input id="dictInput" inputmode="numeric" placeholder="اكتبي العدد"></div><button class="btn green" id="checkDict">✅ تحقق</button></div><div class="drag" id="drag"><div class="dragitems" id="dragitems"></div><div>ضعي العدد هنا: <span class="slot" id="slot">⬇️</span></div></div></div>
-<div class="answers" id="answers"></div><div class="feedback" id="feedback">اختاري الإجابة الصحيحة يا جنى 🌟</div><div class="success" id="success"></div><div class="actions"><button class="btn blue" id="newq">🔄 سؤال جديد</button><button class="btn green" id="hint">💡 مساعدة</button><button class="btn gold" id="readq">🔊 اقرأ السؤال</button><button class="btn pink" id="restart">✨ ابدئي من جديد</button></div></section>
-<section class="info"><h3>🎓 مهارات اللعبة</h3><div class="skills"><div>🔢 العد ٠–١٠٠</div><div>⬅️ السابق</div><div>➡️ التالي</div><div>🧩 العد بالقفز</div><div>🔊 الإملاء العددي</div><div>🖐️ السحب والإفلات</div><div>🔟 الرقم والعدد</div><div>⚖️ الأكبر والأصغر</div></div><p><b>معلومة:</b> الرقم هو رمز من ٠ إلى ٩ نستخدمه لكتابة الأعداد، أما العدد فهو قيمة يمكن أن تُكتب برقم واحد أو بعدة أرقام.</p></section></div>
-<div class="certwrap" id="cert"><div class="cert"><div style="font-size:58px">🏆🌟🎓</div><h2>شهادة بطلة الأعداد</h2><div>تُمنح بكل فخر إلى</div><div class="name">جنى سعيد البريكي</div><p style="font-size:20px;line-height:1.9">لإكمالها مغامرة الأعداد من ٠ إلى ١٠٠ وتميزها في معرفة السابق والتالي، والعد بالقفز، ومقارنة الأعداد، والإملاء العددي، والتمييز بين الرقم والعدد.<br><br><b>أحسنتِ يا جنى، بارك الله فيكِ، واصلي طريق التفوق والتميز 🌷</b><br><br>إهداء من والدكِ ومعلمكِ<br><b>الأستاذ سعيد البريكي</b></p><div class="actions"><button class="btn purple" onclick="print()">🖨️ طباعة الشهادة</button><button class="btn green" onclick="closeCert()">🎮 متابعة اللعب</button></div></div></div>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مغامرة جنى الكبرى في عالم الأعداد</title>
+<style>
+:root{
+  --pink:#ff71ad;--pink2:#ffe2ef;--purple:#7059d9;--purple2:#eeeaff;
+  --blue:#4aa8ff;--sky:#e9f7ff;--green:#46c98a;--gold:#ffca45;
+  --red:#ff6666;--ink:#26364d;--paper:#fffefa;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Tahoma,Arial,sans-serif;color:var(--ink);min-height:100vh;
+  background:
+    radial-gradient(circle at 7% 7%,#fff0a4 0 5%,transparent 5.5%),
+    radial-gradient(circle at 92% 9%,#ffd8e8 0 7%,transparent 7.5%),
+    linear-gradient(145deg,#fff9e7,#eef9ff 52%,#fff0f7);
+}
+button,input{font-family:inherit}
+.app{max-width:1080px;margin:auto;padding:16px}
+.card{
+  background:rgba(255,255,255,.96);border:3px solid #fff;border-radius:28px;
+  box-shadow:0 15px 38px rgba(55,72,115,.15);margin-bottom:15px
+}
+.hero{padding:18px;text-align:center;overflow:hidden;position:relative}
+.hero h1{margin:0;color:var(--purple);font-size:clamp(28px,5vw,48px)}
+.hero .sub{font-size:17px;margin-top:6px}
+.gift{
+  margin:12px auto 0;max-width:820px;background:linear-gradient(90deg,#fff2f8,#f3efff);
+  border:2px solid #f1cfe0;border-radius:18px;padding:10px 15px;line-height:1.8;font-weight:800
+}
+.stagePath{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}
+.stageChip{
+  border-radius:18px;padding:11px 8px;background:#f4f6fb;border:2px solid #e3e7f3;
+  font-weight:900;opacity:.62;transition:.25s
+}
+.stageChip.active{opacity:1;transform:translateY(-2px);background:#fff0f7;border-color:#ffacd0;box-shadow:0 6px 16px #e169a326}
+.stageChip.done{opacity:1;background:#e9fff2;border-color:#92ddb2}
+.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:13px}
+.pill{background:#fff;border:2px solid #e6e8f8;border-radius:999px;padding:8px 13px;font-weight:900}
+.overall{height:15px;background:#e8edf7;border-radius:99px;overflow:hidden;margin-top:12px}
+.overall i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));transition:.3s}
+.game{padding:20px}
+.toprow{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.character{
+  display:flex;align-items:center;gap:9px;background:#f9f7ff;border:2px solid #e7e1ff;
+  border-radius:18px;padding:8px 12px;font-weight:900
+}
+.charface{font-size:38px}
+.timerBox{display:flex;align-items:center;gap:10px}
+.timerCircle{
+  width:76px;height:76px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--green) 360deg,#edf0f5 0deg);position:relative;transition:.2s
+}
+.timerCircle:after{content:"";position:absolute;inset:7px;background:#fff;border-radius:50%}
+.timerText{position:relative;z-index:2;font-size:24px;font-weight:900}
+.timerLabel{font-weight:900}
+.question{
+  margin-top:13px;min-height:210px;border-radius:24px;padding:20px;text-align:center;
+  background:linear-gradient(145deg,#fffdf6,#f4fbff);border:3px dashed #b9ddff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center
+}
+.qtype{font-size:14px;background:#edf4ff;border-radius:999px;padding:5px 10px;font-weight:900;color:#48627f}
+.qtitle{font-size:22px;font-weight:900;margin-top:9px}
+.qbody{font-size:clamp(34px,7vw,64px);font-weight:900;color:var(--purple);margin-top:10px}
+.numberline{display:flex;direction:ltr;gap:5px;overflow:auto;width:100%;max-width:850px;padding:10px;margin-top:12px;background:#f7f9ff;border-radius:16px}
+.ncell{min-width:42px;height:42px;border:2px solid #e1e9f4;background:#fff;border-radius:11px;display:grid;place-items:center;font-weight:900}
+.ncell.focus{background:#fff0a6;border-color:#e7b700;transform:scale(1.15);box-shadow:0 0 0 4px #ffda5530}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:11px;max-width:690px;margin:16px auto 0}
+.answer{
+  border:3px solid #dceaf7;background:#f9fcff;border-radius:19px;padding:15px;font-size:28px;font-weight:900;
+  color:#304e6b;cursor:pointer;box-shadow:0 7px 0 #d8e6f2;transition:.15s
+}
+.answer:hover{transform:translateY(-2px)}
+.answer.good{background:#ddf8e7;border-color:#75d89d;color:#166d3c}
+.answer.bad{background:#ffe1e1;border-color:#ff9595;color:#9c2929}
+.dictation,.dragzone,.placeValue{display:none;margin-top:14px;text-align:center}
+.dictation input{
+  width:190px;text-align:center;font-size:31px;font-weight:900;padding:9px;border-radius:14px;border:3px solid #cfe2ff;margin:8px
+}
+.dragitems{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:9px}
+.dragnum{
+  padding:10px 17px;border-radius:15px;background:#fff2c3;border:3px solid #ffd052;font-size:27px;font-weight:900;cursor:grab
+}
+.dropSlot{display:inline-grid;place-items:center;min-width:86px;height:58px;border:3px dashed var(--pink);border-radius:15px;background:#fff8fc;margin:7px;font-size:27px}
+.pvgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:440px;margin:10px auto}
+.pvbox{background:#f7f5ff;border:2px solid #dfd8ff;border-radius:16px;padding:12px;font-weight:900}
+.feedback{min-height:54px;text-align:center;padding-top:11px;font-size:21px;font-weight:900}
+.success{
+  display:none;max-width:650px;margin:10px auto 0;text-align:center;background:linear-gradient(135deg,#fff4bd,#eafff2);
+  border:3px solid #ffd45a;border-radius:20px;padding:13px;font-size:20px;font-weight:900
+}
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:13px}
+.btn{border:0;border-radius:15px;padding:11px 15px;color:#fff;font-size:15px;font-weight:900;cursor:pointer;box-shadow:0 6px 0 #0002}
+.btn.blue{background:var(--blue)}.btn.green{background:var(--green)}.btn.gold{background:#e5a600}.btn.purple{background:var(--purple)}.btn.pink{background:var(--pink)}
+.voiceState{text-align:center;margin-top:9px;font-size:13px;font-weight:800;color:#66758a}
+.info{padding:16px}
+.info h3{margin:0 0 9px;color:var(--purple)}
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.skill{background:#f8f9ff;border-radius:15px;padding:10px;text-align:center;font-weight:800}
+.overlay{
+  display:none;position:fixed;inset:0;background:rgba(30,35,60,.72);z-index:200;padding:18px;overflow:auto
+}
+.modal{
+  max-width:760px;margin:40px auto;background:#fffdf7;border-radius:26px;padding:26px;text-align:center;
+  border:6px solid #fff;box-shadow:0 22px 70px #1117
+}
+.modalIcon{font-size:68px}.modal h2{font-size:34px;color:var(--purple);margin:8px 0}.modal p{font-size:19px;line-height:1.8}
+.resultScore{font-size:30px;font-weight:900;color:#db4f91;margin:8px}
+.startOverlay{display:block;background:linear-gradient(135deg,#5b4fc9e8,#d85c9ee8)}
+.startModal{max-width:720px;margin:7vh auto;background:white;border-radius:30px;padding:30px;text-align:center;box-shadow:0 25px 80px #1118}
+.startModal h2{font-size:36px;color:var(--purple);margin:6px}.startModal p{font-size:18px;line-height:1.8}
+.voiceBadge{display:inline-block;background:#eef9ff;border:2px solid #bfe4ff;border-radius:999px;padding:8px 13px;font-weight:900;margin:8px}
+.cert{
+  max-width:850px;margin:30px auto;background:#fffdf3;border:11px double #e1b23e;border-radius:22px;padding:29px;text-align:center
+}
+.cert h2{font-size:40px;color:var(--purple);margin:7px}.certName{font-size:33px;color:#d94e91;font-weight:900;margin:10px}
+.confetti{position:fixed;top:-35px;font-size:25px;z-index:500;pointer-events:none;animation:fall 2s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(600deg);opacity:.3}}
+.pulse{animation:pulse .7s ease infinite alternate}@keyframes pulse{to{transform:scale(1.06)}}
+@media(max-width:650px){
+  .stagePath{grid-template-columns:1fr}.answers{grid-template-columns:1fr 1fr}.answer{font-size:23px;padding:12px}
+  .timerCircle{width:66px;height:66px}.qtitle{font-size:19px}.game{padding:14px}
+}
+@media print{
+  body *{visibility:hidden}.overlay.certOverlay,.overlay.certOverlay *{visibility:visible}
+  .overlay.certOverlay{position:absolute;display:block;background:#fff;inset:0}.cert{margin:0}.cert .actions{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="card hero">
+    <h1>🌈 مغامرة جنى الكبرى في عالم الأعداد 🔢</h1>
+    <div class="sub">رياضيات الصف الثاني الأساسي — ٣ مراحل، ٣٠ تحديًا، من ٠ إلى ١٠٠</div>
+    <div class="gift">💝 إهداء إلى <b>جنى</b> من والدكِ ومعلمكِ <b>الأستاذ سعيد البريكي</b>، الذي يأمل لكِ دائمًا التوفيق والتفوق والتميز.</div>
+
+    <div class="stagePath">
+      <div class="stageChip active" id="stageChip1">🌱 المرحلة الأولى<br><small>٠–٣٠ • ٢٠ ثانية</small></div>
+      <div class="stageChip" id="stageChip2">🚀 المرحلة الثانية<br><small>٠–٦٠ • ١٥ ثانية</small></div>
+      <div class="stageChip" id="stageChip3">🏆 المرحلة الثالثة<br><small>٠–١٠٠ • ١٠ ثوانٍ</small></div>
+    </div>
+
+    <div class="stats">
+      <span class="pill">✅ الصحيحة: <b id="correctTotal">٠</b>/٣٠</span>
+      <span class="pill">🎯 السؤال: <b id="globalQ">١</b>/٣٠</span>
+      <span class="pill">📚 داخل المرحلة: <b id="stageQ">١</b>/١٠</span>
+      <span class="pill">🔥 متتالية: <b id="streak">٠</b></span>
+    </div>
+    <div class="overall"><i id="overallBar"></i></div>
+  </section>
+
+  <section class="card game">
+    <div class="toprow">
+      <div class="character" id="characterBox"><span class="charface" id="charFace">🐰🎀</span><span id="charText">ميلودي تشجعكِ في البداية يا جنى!</span></div>
+      <div class="timerBox">
+        <div>
+          <div class="timerLabel">⏱️ وقت الإجابة</div>
+          <div style="font-size:13px;text-align:center" id="timerCaption">٢٠ ثانية</div>
+        </div>
+        <div class="timerCircle" id="timerCircle"><span class="timerText" id="timerText">٢٠</span></div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="qtype" id="qtype">السابق والتالي</div>
+      <div class="qtitle" id="qtitle"></div>
+      <div class="qbody" id="qbody"></div>
+      <div class="numberline" id="numberLine"></div>
+
+      <div class="dictation" id="dictation">
+        <button class="btn purple" id="hearNumber">🔊 استمعي للعدد</button>
+        <div><input id="dictInput" inputmode="numeric" autocomplete="off" placeholder="اكتبي العدد"></div>
+        <button class="btn green" id="checkDict">✅ تحقق</button>
+      </div>
+
+      <div class="dragzone" id="dragzone">
+        <div class="dragitems" id="dragitems"></div>
+        <div>اسحبي الإجابة إلى هنا: <span class="dropSlot" id="dropSlot">⬇️</span></div>
+      </div>
+
+      <div class="placeValue" id="placeValue">
+        <div class="pvgrid">
+          <div class="pvbox">العشرات: <span id="tensBox">؟</span></div>
+          <div class="pvbox">الآحاد: <span id="onesBox">؟</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback">هيا يا جنى 🌟</div>
+    <div class="success" id="success"></div>
+
+    <div class="actions">
+      <button class="btn green" id="hintBtn">💡 مساعدة</button>
+      <button class="btn gold" id="readBtn">🔊 اقرأ السؤال</button>
+      <button class="btn purple" id="voiceTestBtn">🎙️ اختبار الصوت العربي</button>
+      <button class="btn pink" id="restartBtn">↻ إعادة اللعبة</button>
+    </div>
+    <div class="voiceState" id="voiceState">جاري تهيئة الصوت العربي…</div>
+  </section>
+
+  <section class="card info">
+    <h3>🎓 تدرّج المهارات</h3>
+    <div class="skills">
+      <div class="skill">🌱 المرحلة ١: السابق والتالي، العد بواحد، المقارنة</div>
+      <div class="skill">🚀 المرحلة ٢: العد بـ٢ و٥، الإملاء العددي، السحب، العشرات والآحاد</div>
+      <div class="skill">🏆 المرحلة ٣: حتى ١٠٠، العد بـ٥ و١٠، مسائل مركبة، سرعة ودقة</div>
+      <div class="skill">🔟 الرقم: رمز من ٠ إلى ٩ — العدد: قيمة تكتب برقم واحد أو أكثر</div>
+    </div>
+  </section>
+</div>
+
+<div class="overlay startOverlay" id="startOverlay">
+  <div class="startModal">
+    <div style="font-size:72px">🐰🎀 💜 ⭐</div>
+    <h2>أهلًا يا جنى!</h2>
+    <p>أمامكِ <b>٣٠ سؤالًا</b> في ثلاث مراحل. كل مرحلة فيها <b>١٠ أسئلة</b>، ويقل وقت الإجابة كلما تقدمتِ. سنهيئ أولًا <b>الصوت العربي</b> حتى تسمعي الأعداد وعبارات التشجيع بوضوح.</p>
+    <div class="voiceBadge" id="startVoiceState">🔊 جاري البحث عن صوت عربي…</div><br>
+    <button class="btn purple pulse" id="startBtn" style="font-size:20px;padding:14px 25px">▶ ابدئي المغامرة يا جنى</button>
+  </div>
+</div>
+
+<div class="overlay" id="stageOverlay">
+  <div class="modal">
+    <div class="modalIcon" id="stageIcon">🎉</div>
+    <h2 id="stageTitle">أحسنتِ!</h2>
+    <div class="resultScore" id="stageScore"></div>
+    <p id="stageMessage"></p>
+    <button class="btn purple" id="nextStageBtn">🚀 إلى المرحلة التالية</button>
+  </div>
+</div>
+
+<div class="overlay certOverlay" id="finalOverlay">
+  <div class="cert">
+    <div style="font-size:66px" id="finalIcon">🏆🌟🎓</div>
+    <h2 id="finalTitle">شهادة بطلة الأعداد</h2>
+    <div>تُمنح بكل فخر إلى</div>
+    <div class="certName">جنى سعيد البريكي</div>
+    <div class="resultScore" id="finalScore"></div>
+    <p id="finalMessage" style="font-size:20px;line-height:1.9"></p>
+    <div class="actions">
+      <button class="btn purple" onclick="window.print()">🖨️ طباعة الشهادة</button>
+      <button class="btn green" id="playAgainBtn">🎮 جولة جديدة</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]),norm=s=>String(s).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\D/g,''),R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,sh=a=>[...a].sort(()=>Math.random()-.5);let score=0,streak=0,qnum=1,level=1,mode='mix',cur=null,locked=false,spoken='';const names={1:'الأولى',2:'الثانية',3:'الثالثة'},praise=['أحسنتِ يا جنى! بارك الله فيكِ 🌷','ممتاز يا جنى! أنتِ نجمة الرياضيات ⭐','رائعة يا جنى! واصلي التقدم 🏆','أبدعتِ يا جنى! إجابة ذكية جدًا 💖','أحسنتم يا جنى وأصدقاؤها 👏','أنتم أبطال الأعداد 🚀','بارك الله فيكم يا أصدقاء جنى 🌼'];
-function speak(t){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='ar-SA';u.rate=.8;speechSynthesis.speak(u)}function word(n){let a=['صفر','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة','عشرة','أحد عشر','اثنا عشر','ثلاثة عشر','أربعة عشر','خمسة عشر','ستة عشر','سبعة عشر','ثمانية عشر','تسعة عشر'],t=['','','عشرون','ثلاثون','أربعون','خمسون','ستون','سبعون','ثمانون','تسعون'];if(n<20)return a[n];if(n==100)return'مئة';let q=Math.floor(n/10),o=n%10;return o?a[o]+' و '+t[q]:t[q]}function max(){return level==1?30:level==2?60:100}function opts(c,m=4){let s=new Set([c]),off=[-10,-5,-2,-1,1,2,5,10];while(s.size<m){let v=c+off[R(0,off.length-1)];if(v<0||v>max()||s.has(v))v=R(0,max());s.add(v)}return sh([...s])}function pick(){if(mode!='mix')return mode;let p=level==1?['nextprev','sequence','compare','digitnumber']:['nextprev','sequence','compare','dictation','drag','digitnumber'];return p[R(0,p.length-1)]}
-function line(f=null){let b=document.getElementById('line');b.innerHTML='';let st=f===null?0:Math.max(0,f-5),en=f===null?Math.min(max(),20):Math.min(max(),f+5);for(let i=st;i<=en;i++){let d=document.createElement('span');d.className='n'+(i===f?' focus':'');d.textContent=ar(i);b.appendChild(d)}}function clearUI(){locked=false;cur=null;answers.innerHTML='';dict.style.display='none';drag.style.display='none';success.style.display='none';feedback.textContent='اختاري الإجابة الصحيحة يا جنى 🌟'}
-function gen(){clearUI();let m=pick(),M=max(),title='',body='',ans=0,o=[],hint='',focus=null;if(m=='nextprev'){let nx=Math.random()<.5,n=nx?R(0,M-1):R(1,M);ans=nx?n+1:n-1;title=nx?'ما العدد الذي يلي هذا العدد؟':'ما العدد الذي يسبق هذا العدد؟';body=nx?ar(n)+' ← ؟':'؟ ← '+ar(n);o=opts(ans);hint=nx?'عدّي خطوة واحدة إلى الأمام.':'ارجعي خطوة واحدة إلى الخلف.';focus=n;cur={type:'choice',ans,hint,speak:title+' '+word(n)}}else if(m=='sequence'){let ss=level==1?[1,2]:level==2?[1,2,5]:[1,2,5,10],s=ss[R(0,ss.length-1)],st=R(0,Math.max(0,M-3*s));ans=st+2*s;title='أكملي العد بالقفز بمقدار '+ar(s);body=`${ar(st)} ، ${ar(st+s)} ، ؟ ، ${ar(st+3*s)}`;o=opts(ans);hint='أضيفي '+ar(s)+' في كل مرة.';focus=st+s;cur={type:'choice',ans,hint,speak:title}}else if(m=='compare'){let a=R(0,M),b=R(0,M);while(a==b)b=R(0,M);let big=Math.random()<.5;ans=big?Math.max(a,b):Math.min(a,b);title=big?'أي العددين أكبر؟':'أي العددين أصغر؟';body=ar(a)+' ◀▶ '+ar(b);o=sh([a,b,...opts(ans,2).filter(x=>x!=a&&x!=b)]).slice(0,4);hint=big?'الأكبر أبعد عن الصفر.':'الأصغر أقرب إلى الصفر.';cur={type:'choice',ans,hint,speak:title+' '+word(a)+' و '+word(b)}}else if(m=='dictation'){ans=R(0,M);title='استمعي إلى العدد ثم اكتبيه';body='🔊 ✍️';hint='اضغطي زر استمعي للعدد ثم اكتبي ما سمعتِ.';cur={type:'dict',ans,hint,speak:'اكتبي العدد '+word(ans)};dict.style.display='block'}else if(m=='drag'){let n=R(1,M-1),nx=Math.random()<.5;ans=nx?n+1:n-1;title=nx?'اسحبي العدد التالي إلى مكانه':'اسحبي العدد السابق إلى مكانه';body=nx?ar(n)+' ← ⬜':'⬜ ← '+ar(n);hint='اسحبي البطاقة الصحيحة إلى المربع.';focus=n;cur={type:'drag',ans,hint,speak:title+' للعدد '+word(n)};makeDrag(opts(ans))}else{let typ=R(0,2);if(typ==0){let d=R(0,9),n=R(10,M);ans=d;title='أيٌّ مما يلي رقم مفرد؟';body='الرقم رمز واحد من ٠ إلى ٩';o=sh([d,n,R(10,M),R(10,M)]);hint='اختاري رمزًا واحدًا فقط من ٠ إلى ٩.'}else if(typ==1){let n=R(10,M);ans=String(n).length;title='كم رقمًا يتكوّن منه العدد '+ar(n)+'؟';body=ar(n);o=sh([1,2,3,4]);hint='عدّي الرموز التي كُتب بها العدد.'}else{let n=R(10,M),d=R(0,9);ans=n;title='اختاري العدد المكوّن من رقمين';body='🔟';o=sh([d,n,R(0,9),R(10,M)]);hint='العدد ذو الرقمين مثل ٢٤ أو ٥٧.'}cur={type:'choice',ans,hint,speak:title}}qt.textContent=title;qb.innerHTML=body;if(cur.type=='choice')render(o);line(focus);spoken=cur.speak;update()}
-function render(o){answers.innerHTML='';o.forEach(v=>{let b=document.createElement('button');b.className='ans';b.textContent=ar(v);b.onclick=()=>check(v,b);answers.appendChild(b)})}function good(){score+=10+Math.min(streak,5)*2;streak++;let msg=praise[R(0,praise.length-1)];success.textContent='🏆 '+msg;success.style.display='block';feedback.textContent='صحيحة! 👏';speak(msg);confetti()}function bad(){streak=0;feedback.textContent='قريبة يا جنى 🌷 الإجابة الصحيحة هي '+ar(cur.ans)}function done(){update();setTimeout(()=>{qnum++;if(qnum>12){qnum=1;if(level<3){level++;activate(level);speak('رائع يا جنى. انتقلت إلى المرحلة التالية')}else{cert.style.display='block';speak('مبروك يا جنى. أنت بطلة الأعداد')}}gen()},1100)}function check(v,b){if(locked)return;locked=true;if(v==cur.ans){b.classList.add('good');good()}else{b.classList.add('bad');bad();[...document.querySelectorAll('.ans')].forEach(x=>{if(x.textContent==ar(cur.ans))x.classList.add('good')})}done()}
-function makeDrag(o){drag.style.display='block';dragitems.innerHTML='';o.forEach(v=>{let d=document.createElement('div');d.className='dragnum';d.draggable=true;d.textContent=ar(v);d.ondragstart=e=>e.dataTransfer.setData('text',v);d.onclick=()=>drop(v);dragitems.appendChild(d)});slot.textContent='⬇️';slot.ondragover=e=>e.preventDefault();slot.ondrop=e=>{e.preventDefault();drop(+e.dataTransfer.getData('text'))}}function drop(v){if(locked)return;locked=true;slot.textContent=ar(v);v==cur.ans?good():bad();done()}function checkD(){if(locked||cur?.type!='dict')return;let r=norm(dictInput.value);if(r===''){feedback.textContent='اكتبي العدد أولًا يا جنى 🌷';return}locked=true;+r==cur.ans?good():bad();done()}
-function update(){scoreEl.textContent=ar(score);streakEl.textContent=ar(streak);qnumEl.textContent=ar(qnum);lname.textContent=names[level];bar.style.width=((qnum-1)/12*100)+'%'}function activate(n){level=n;document.querySelectorAll('.level').forEach(b=>b.classList.toggle('active',+b.dataset.level==n));update()}function confetti(){let a=['🎉','⭐','🌟','💖','🏆','✨','🌸'];for(let i=0;i<18;i++){let x=document.createElement('div');x.className='conf';x.textContent=a[R(0,a.length-1)];x.style.left=R(2,96)+'vw';x.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(x);setTimeout(()=>x.remove(),2400)}}function closeCert(){cert.style.display='none';score=streak=0;qnum=level=1;activate(1);gen()}
-const scoreEl=document.getElementById('score'),streakEl=document.getElementById('streak'),qnumEl=document.getElementById('qnum'),answers=document.getElementById('answers'),dict=document.getElementById('dict'),drag=document.getElementById('drag'),success=document.getElementById('success'),feedback=document.getElementById('feedback'),qt=document.getElementById('qt'),qb=document.getElementById('qb'),dragitems=document.getElementById('dragitems'),slot=document.getElementById('slot'),dictInput=document.getElementById('dictInput'),cert=document.getElementById('cert'),bar=document.getElementById('bar'),lname=document.getElementById('lname');document.querySelectorAll('.level').forEach(b=>b.onclick=()=>{activate(+b.dataset.level);gen()});document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;gen()});newq.onclick=gen;hint.onclick=()=>{feedback.textContent='💡 '+cur.hint;speak(cur.hint)};readq.onclick=()=>speak(spoken);speakNum.onclick=()=>cur?.type=='dict'&&speak(word(cur.ans));checkDict.onclick=checkD;dictInput.onkeydown=e=>{if(e.key=='Enter')checkD()};restart.onclick=()=>{score=streak=0;qnum=level=1;mode='mix';activate(1);document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('active',x.dataset.mode=='mix'));gen()};gen();setTimeout(()=>speak('أهلًا يا جنى. هيا نبدأ مغامرتنا في عالم الأعداد'),500);
-</script></body></html>
+const ar = function(n){return String(n).replace(/\d/g,function(d){return "٠١٢٣٤٥٦٧٨٩"[d]})};
+const normalizeDigits = function(s){return String(s).replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(/\D/g,"")};
+const rand = function(a,b){return Math.floor(Math.random()*(b-a+1))+a};
+const shuffle = function(a){return a.slice().sort(function(){return Math.random()-.5})};
+
+const STAGES = {
+  1:{max:30,time:20,name:"المرحلة الأولى",character:"🐰🎀",charName:"ميلودي",pool:["nextprev","sequence1","compare","digits"]},
+  2:{max:60,time:15,name:"المرحلة الثانية",character:"💜😈",charName:"كرومي",pool:["nextprev","sequence25","compare","dictation","drag","placevalue"]},
+  3:{max:100,time:10,name:"المرحلة الثالثة",character:"👨‍🏫⭐",charName:"الأستاذ سعيد",pool:["nextprev","sequence510","compare","dictation","drag","placevalue","digitsHard"]}
+};
+
+let stage=1, stageQuestion=1, globalQuestion=1, correctTotal=0, stageCorrect=0, streak=0;
+let current=null, locked=true, timerId=null, timeLeft=20, arabicVoice=null, voicesReady=false, gameStarted=false;
+
+const praise = [
+  "أحسنتِ يا جنى، بارك الله فيكِ.",
+  "ممتاز يا جنى، إجابة صحيحة.",
+  "رائعة يا جنى، أنتِ نجمة الرياضيات.",
+  "أبدعتِ يا جنى، واصلي التفوق.",
+  "ما شاء الله يا جنى، تفكير جميل.",
+  "عمل رائع يا جنى، استمري.",
+  "إجابة موفقة يا بطلة الأعداد."
+];
+
+function numberWord(n){
+  const ones=["صفر","واحد","اثنان","ثلاثة","أربعة","خمسة","ستة","سبعة","ثمانية","تسعة","عشرة","أحد عشر","اثنا عشر","ثلاثة عشر","أربعة عشر","خمسة عشر","ستة عشر","سبعة عشر","ثمانية عشر","تسعة عشر"];
+  const tens=["","","عشرون","ثلاثون","أربعون","خمسون","ستون","سبعون","ثمانون","تسعون"];
+  if(n<20) return ones[n];
+  if(n===100) return "مئة";
+  const t=Math.floor(n/10), o=n%10;
+  return o===0 ? tens[t] : ones[o]+" و "+tens[t];
+}
+
+function loadArabicVoice(){
+  if(!("speechSynthesis" in window)){
+    voicesReady=false; arabicVoice=null; updateVoiceState("❌ هذا المتصفح لا يدعم النطق الصوتي.");
+    return;
+  }
+  const voices=speechSynthesis.getVoices();
+  const arabic=voices.filter(function(v){return (v.lang||"").toLowerCase().startsWith("ar")});
+  const preferred=arabic.find(function(v){return (v.lang||"").toLowerCase()==="ar-sa"}) ||
+                  arabic.find(function(v){return /Hamed|Naayf|Maged|Tarik|Arabic/i.test(v.name)}) ||
+                  arabic[0];
+  arabicVoice=preferred||null;
+  voicesReady=!!arabicVoice;
+  if(arabicVoice){
+    updateVoiceState("✅ الصوت العربي جاهز: "+arabicVoice.name);
+  }else{
+    updateVoiceState("⚠️ لا يوجد صوت عربي مثبت على الجهاز. لن نستخدم صوتًا إنجليزيًا.");
+  }
+}
+function updateVoiceState(t){
+  document.getElementById("voiceState").textContent=t;
+  document.getElementById("startVoiceState").textContent=t;
+}
+if("speechSynthesis" in window){
+  speechSynthesis.onvoiceschanged=loadArabicVoice;
+  loadArabicVoice();
+  setTimeout(loadArabicVoice,300);
+  setTimeout(loadArabicVoice,1000);
+}
+
+function speakArabic(text){
+  if(!("speechSynthesis" in window)) return false;
+  loadArabicVoice();
+  if(!arabicVoice){
+    feedback.textContent="🔇 لا يوجد صوت عربي مثبت. يمكنك متابعة اللعبة بالنص، أو إضافة صوت عربي من إعدادات الجهاز.";
+    return false;
+  }
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.voice=arabicVoice;
+  u.lang=arabicVoice.lang || "ar-SA";
+  u.rate=.82;
+  u.pitch=1.02;
+  u.volume=1;
+  speechSynthesis.speak(u);
+  return true;
+}
+
+function maxN(){return STAGES[stage].max}
+function makeOptions(correct,count){
+  const M=maxN(), set=new Set([correct]), offsets=[-10,-5,-2,-1,1,2,5,10];
+  while(set.size<(count||4)){
+    let v=correct+offsets[rand(0,offsets.length-1)];
+    if(v<0 || v>M || set.has(v)) v=rand(0,M);
+    set.add(v);
+  }
+  return shuffle(Array.from(set));
+}
+function uniqueOptions(arr){
+  const out=[];
+  arr.forEach(function(v){if(!out.includes(v)) out.push(v)});
+  while(out.length<4){
+    const v=rand(0,maxN());
+    if(!out.includes(v)) out.push(v);
+  }
+  return shuffle(out.slice(0,4));
+}
+
+function setStageCharacter(){
+  const s=STAGES[stage];
+  charFace.textContent=s.character;
+  if(stage===1) charText.textContent="ميلودي: ابدئي بهدوء يا جنى، لديكِ ٢٠ ثانية لكل سؤال.";
+  if(stage===2) charText.textContent="كرومي: الآن نرفع التحدي، لديكِ ١٥ ثانية.";
+  if(stage===3) charText.textContent="الأستاذ سعيد: المرحلة الأخيرة يا جنى، لديكِ ١٠ ثوانٍ لكل سؤال.";
+}
+
+function updateHud(){
+  correctTotalEl.textContent=ar(correctTotal);
+  globalQEl.textContent=ar(globalQuestion);
+  stageQEl.textContent=ar(stageQuestion);
+  streakEl.textContent=ar(streak);
+  overallBar.style.width=((globalQuestion-1)/30*100)+"%";
+  for(let i=1;i<=3;i++){
+    const chip=document.getElementById("stageChip"+i);
+    chip.classList.toggle("active",i===stage);
+    chip.classList.toggle("done",i<stage);
+  }
+  setStageCharacter();
+}
+
+function drawLine(focus){
+  numberLine.innerHTML="";
+  const M=maxN();
+  const start=focus==null?0:Math.max(0,focus-5);
+  const end=focus==null?Math.min(M,20):Math.min(M,focus+5);
+  for(let i=start;i<=end;i++){
+    const c=document.createElement("span");
+    c.className="ncell"+(i===focus?" focus":"");
+    c.textContent=ar(i);
+    numberLine.appendChild(c);
+  }
+}
+
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null}}
+function startTimer(){
+  stopTimer();
+  timeLeft=STAGES[stage].time;
+  renderTimer();
+  timerId=setInterval(function(){
+    timeLeft--;
+    renderTimer();
+    if(timeLeft<=0){
+      stopTimer();
+      handleTimeout();
+    }
+  },1000);
+}
+function renderTimer(){
+  timerText.textContent=ar(timeLeft);
+  timerCaption.textContent=ar(STAGES[stage].time)+" ثانية";
+  const total=STAGES[stage].time;
+  const deg=Math.max(0,Math.round((timeLeft/total)*360));
+  let color= timeLeft<=5 ? "var(--red)" : timeLeft<=Math.ceil(total/2) ? "var(--gold)" : "var(--green)";
+  timerCircle.style.background="conic-gradient("+color+" "+deg+"deg,#edf0f5 0deg)";
+}
+
+function resetQuestionUI(){
+  stopTimer(); locked=false; current=null;
+  answers.innerHTML="";
+  dictation.style.display="none";
+  dragzone.style.display="none";
+  placeValue.style.display="none";
+  dictInput.value="";
+  dropSlot.textContent="⬇️";
+  success.style.display="none";
+  feedback.textContent="هيا يا جنى 🌟";
+}
+
+function chooseType(){
+  const pool=STAGES[stage].pool;
+  return pool[(stageQuestion-1)%pool.length];
+}
+
+function generateQuestion(){
+  resetQuestionUI();
+  updateHud();
+  const type=chooseType(), M=maxN();
+  let title="",body="",ans=null,opts=[],hint="",focus=null,label="",speakText="";
+
+  if(type==="nextprev"){
+    const next=Math.random()<.5;
+    const n=next?rand(0,M-1):rand(1,M);
+    ans=next?n+1:n-1;
+    label="السابق والتالي";
+    title=next?"ما العدد الذي يلي هذا العدد؟":"ما العدد الذي يسبق هذا العدد؟";
+    body=next?ar(n)+" ← ؟":"؟ ← "+ar(n);
+    opts=makeOptions(ans,4);
+    hint=next?"عدّي خطوة واحدة إلى الأمام.":"ارجعي خطوة واحدة إلى الخلف.";
+    focus=n; speakText=title+" "+numberWord(n);
+    current={kind:"choice",ans:ans,hint:hint,speak:speakText};
+  }
+  else if(type==="sequence1"){
+    const start=rand(0,M-3); ans=start+2;
+    label="أكمل العد"; title="أكملي العد بواحد"; body=ar(start)+" ، "+ar(start+1)+" ، ؟ ، "+ar(start+3);
+    opts=makeOptions(ans,4); hint="أضيفي واحدًا في كل مرة."; focus=start+1; speakText=title;
+    current={kind:"choice",ans:ans,hint:hint,speak:speakText};
+  }
+  else if(type==="sequence25"){
+    const step=Math.random()<.5?2:5;
+    const start=rand(0,Math.max(0,M-step*3)); ans=start+step*2;
+    label="العد بالقفز"; title="أكملي العد بالقفز بمقدار "+ar(step);
+    body=ar(start)+" ، "+ar(start+step)+" ، ؟ ، "+ar(start+step*3);
+    opts=makeOptions(ans,4); hint="أضيفي "+ar(step)+" في كل مرة."; focus=start+step; speakText=title;
+    current={kind:"choice",ans:ans,hint:hint,speak:speakText};
+  }
+  else if(type==="sequence510"){
+    const step=Math.random()<.5?5:10;
+    const start=rand(0,Math.max(0,M-step*3)); ans=start+step*2;
+    label="تحدي العد بالقفز"; title="أكملي النمط: أضيفي "+ar(step)+" كل مرة";
+    body=ar(start)+" ، "+ar(start+step)+" ، ؟ ، "+ar(start+step*3);
+    opts=makeOptions(ans,4); hint="ركزي على مقدار القفزة بين كل عددين."; focus=start+step; speakText=title;
+    current={kind:"choice",ans:ans,hint:hint,speak:speakText};
+  }
+  else if(type==="compare"){
+    let a=rand(0,M),b=rand(0,M); while(a===b)b=rand(0,M);
+    const wantBig=Math.random()<.5; ans=wantBig?Math.max(a,b):Math.min(a,b);
+    label="مقارنة الأعداد"; title=wantBig?"أي العددين أكبر؟":"أي العددين أصغر؟";
+    body=ar(a)+"  ◀▶  "+ar(b);
+    opts=uniqueOptions([a,b,rand(0,M),rand(0,M)]);
+    hint=wantBig?"الأكبر يقع أبعد عن الصفر على خط الأعداد.":"الأصغر يقع أقرب إلى الصفر.";
+    speakText=title+" "+numberWord(a)+" و "+numberWord(b);
+    current={kind:"choice",ans:ans,hint:hint,speak:speakText};
+  }
+  else if(type==="digits"){
+    const n=rand(10,M), d=rand(0,9); ans=d;
+    label="الرقم والعدد"; title="اختاري رمزًا يتكوّن من رقم واحد فقط";
+    body="الرقم هو أحد الرموز من ٠ إلى ٩";
+    opts=uniqueOptions([d,n,rand(10,M),rand(10,M)]);
+    hint="ابحثي عن رمز واحد فقط من ٠ إلى ٩."; speakText=title;
+    current={kind:"choice",ans:ans,hint:hint,speak:speakText};
+  }
+  else if(type==="digitsHard"){
+    const n=rand(10,99), digits=String(n).length; ans=digits;
+    label="الرقم والعدد"; title="كم رقمًا استُخدم لكتابة العدد "+ar(n)+"؟";
+    body=ar(n); opts=shuffle([1,2,3,4]);
+    hint="عدّي الرموز التي يتكوّن منها العدد."; speakText=title;
+    current={kind:"choice",ans:ans,hint:hint,speak:speakText};
+  }
+  else if(type==="dictation"){
+    ans=rand(stage===2?10:20,M);
+    label="استماع وكتابة"; title="استمعي إلى العدد ثم اكتبيه"; body="🔊 ✍️";
+    hint="اضغطي على «استمعي للعدد»، ثم اكتبي العدد الذي سمعته.";
+    speakText="اكتبي العدد "+numberWord(ans);
+    current={kind:"dictation",ans:ans,hint:hint,speak:speakText};
+    dictation.style.display="block";
+  }
+  else if(type==="drag"){
+    const n=rand(1,M-1), next=Math.random()<.5; ans=next?n+1:n-1;
+    label="سحب وإفلات"; title=next?"اسحبي العدد التالي إلى مكانه":"اسحبي العدد السابق إلى مكانه";
+    body=next?ar(n)+" ← ⬜":"⬜ ← "+ar(n); hint="اسحبي البطاقة الصحيحة إلى المربع.";
+    focus=n; speakText=title+" للعدد "+numberWord(n);
+    current={kind:"drag",ans:ans,hint:hint,speak:speakText};
+    makeDrag(makeOptions(ans,4)); dragzone.style.display="block";
+  }
+  else if(type==="placevalue"){
+    const n=rand(10,M), tens=Math.floor(n/10), ones=n%10;
+    const askTens=Math.random()<.5; ans=askTens?tens:ones;
+    label="القيمة المكانية"; title=askTens?"كم عشرة في العدد "+ar(n)+"؟":"كم آحادًا في العدد "+ar(n)+"؟";
+    body=ar(n); opts=uniqueOptions([ans,Math.max(0,ans-1),ans+1,rand(0,9)]);
+    hint=askTens?"انظري إلى الرقم في منزلة العشرات.":"انظري إلى الرقم في منزلة الآحاد.";
+    tensBox.textContent="؟"; onesBox.textContent="؟"; placeValue.style.display="block";
+    speakText=title; current={kind:"choice",ans:ans,hint:hint,speak:speakText};
+  }
+
+  qtype.textContent=label; qtitle.textContent=title; qbody.innerHTML=body;
+  if(current.kind==="choice") renderAnswers(opts);
+  drawLine(focus);
+  startTimer();
+
+  if(current.kind==="dictation"){
+    setTimeout(function(){ if(!locked) speakArabic(numberWord(current.ans)); },350);
+  }
+}
+
+function renderAnswers(opts){
+  answers.innerHTML="";
+  opts.forEach(function(v){
+    const b=document.createElement("button");
+    b.className="answer"; b.textContent=ar(v);
+    b.onclick=function(){checkChoice(v,b)};
+    answers.appendChild(b);
+  });
+}
+
+function makeDrag(opts){
+  dragitems.innerHTML="";
+  opts.forEach(function(v){
+    const d=document.createElement("div");
+    d.className="dragnum"; d.draggable=true; d.textContent=ar(v);
+    d.ondragstart=function(e){e.dataTransfer.setData("text/plain",String(v))};
+    d.onclick=function(){dropValue(v)};
+    dragitems.appendChild(d);
+  });
+  dropSlot.ondragover=function(e){e.preventDefault()};
+  dropSlot.ondrop=function(e){e.preventDefault();dropValue(Number(e.dataTransfer.getData("text/plain")))};
+}
+
+function praiseCorrect(){
+  correctTotal++; stageCorrect++; streak++;
+  const msg=praise[rand(0,praise.length-1)];
+  success.textContent="🌟 "+msg;
+  success.style.display="block";
+  feedback.textContent="إجابة صحيحة 👏";
+  speakArabic(msg);
+  confetti(12);
+}
+function markWrong(prefix){
+  streak=0;
+  success.style.display="none";
+  feedback.textContent=(prefix||"قريبة يا جنى")+" — الإجابة الصحيحة: "+ar(current.ans);
+}
+function checkChoice(v,btn){
+  if(locked)return; locked=true; stopTimer();
+  if(v===current.ans){btn.classList.add("good");praiseCorrect()}
+  else{
+    btn.classList.add("bad");markWrong();
+    Array.from(document.querySelectorAll(".answer")).forEach(function(x){if(x.textContent===ar(current.ans))x.classList.add("good")});
+  }
+  finishQuestion();
+}
+function checkDictation(){
+  if(locked || !current || current.kind!=="dictation")return;
+  const s=normalizeDigits(dictInput.value);
+  if(s===""){feedback.textContent="اكتبي العدد أولًا يا جنى 🌷";return}
+  locked=true; stopTimer();
+  if(Number(s)===current.ans) praiseCorrect(); else markWrong();
+  finishQuestion();
+}
+function dropValue(v){
+  if(locked)return; locked=true; stopTimer(); dropSlot.textContent=ar(v);
+  if(v===current.ans) praiseCorrect(); else markWrong();
+  finishQuestion();
+}
+function handleTimeout(){
+  if(locked)return; locked=true;
+  markWrong("انتهى الوقت ⏰");
+  speakArabic("انتهى الوقت يا جنى. لا بأس، ننتقل إلى السؤال التالي.");
+  finishQuestion();
+}
+
+function finishQuestion(){
+  updateHud();
+  setTimeout(function(){
+    if(stageQuestion===10){
+      showStageResult();
+    }else{
+      stageQuestion++; globalQuestion++; generateQuestion();
+    }
+  },1250);
+}
+
+function showStageResult(){
+  stopTimer();
+  const score=stageCorrect;
+  stageScore.textContent=ar(score)+" / ١٠";
+  if(stage===1){
+    stageIcon.textContent="🐰🎀🌟";
+    stageTitle.textContent="ميلودي تحتفل بكِ!";
+    stageMessage.textContent=score===10?
+      "رائعة يا جنى! حصلتِ على الدرجة الكاملة في المرحلة الأولى. الآن ستصبح الأسئلة أسرع وأكثر تنوعًا.":
+      "أحسنتِ يا جنى! أنهيتِ المرحلة الأولى. الآن ننتقل إلى تحديات جديدة مع وقت أقل.";
+    speakArabic(score===10?"ممتاز يا جنى. حصلت على عشرة من عشرة في المرحلة الأولى.":"أحسنت يا جنى. أنهيت المرحلة الأولى.");
+  }else if(stage===2){
+    stageIcon.textContent="💜😈🚀";
+    stageTitle.textContent="كرومي تقول: التحدي يزداد!";
+    stageMessage.textContent=score===10?
+      "مذهل يا جنى! ١٠ من ١٠ في المرحلة الثانية. بقيت المرحلة الأخيرة: حتى ١٠٠ وفي ١٠ ثوانٍ فقط لكل سؤال.":
+      "عمل جميل يا جنى! وصلتِ إلى المرحلة الثالثة. الآن سنعمل حتى ١٠٠، والوقت ١٠ ثوانٍ لكل سؤال.";
+    speakArabic(score===10?"مذهل يا جنى. عشرة من عشرة في المرحلة الثانية.":"عمل جميل يا جنى. استعدي للمرحلة الثالثة.");
+  }else{
+    showFinal();
+    return;
+  }
+  stageOverlay.style.display="block";
+  confetti(28);
+}
+function goNextStage(){
+  stageOverlay.style.display="none";
+  stage++; stageQuestion=1; globalQuestion=(stage-1)*10+1; stageCorrect=0;
+  updateHud(); generateQuestion();
+  speakArabic("بدأت "+STAGES[stage].name+". بالتوفيق يا جنى.");
+}
+
+function showFinal(){
+  stopTimer();
+  const perfect=correctTotal===30;
+  finalOverlay.style.display="block";
+  finalScore.textContent="النتيجة النهائية: "+ar(correctTotal)+" / ٣٠";
+  if(perfect){
+    finalIcon.textContent="👨‍🏫🏆🎁🌟";
+    finalTitle.textContent="بطلة الأعداد الذهبية";
+    finalMessage.innerHTML=
+      "<b>رسالة من والدكِ الأستاذ سعيد البريكي:</b><br>"+
+      "يا جنى، حققتِ الدرجة الكاملة <b>٣٠ من ٣٠</b>، وأنا سعيد جدًا باجتهادكِ وفخور بتفوقكِ. "+
+      "<b>وقد استحققتِ جائزة خاصة مني تقديرًا لهذا الإنجاز.</b><br><br>"+
+      "بارك الله فيكِ، وواصلي التعلم بثقة وتميز.";
+    speakArabic("يا جنى، حققت ثلاثين من ثلاثين. أنا والدك سعيد البريكي، سعيد جدا باجتهادك وفخور بتفوقك. وقد استحققت جائزة خاصة مني تقديرا لهذا الإنجاز. بارك الله فيك.");
+    confetti(55);
+  }else{
+    finalIcon.textContent="👨‍🏫🌷⭐";
+    finalTitle.textContent="أحسنتِ يا جنى";
+    finalMessage.innerHTML=
+      "<b>رسالة من والدكِ الأستاذ سعيد البريكي:</b><br>"+
+      "أكملتِ التحديات الثلاثة، ونتيجتكِ <b>"+ar(correctTotal)+" من ٣٠</b>. أنا سعيد بمحاولتكِ واجتهادكِ. "+
+      "أعيدي الجولة وحاولي الوصول إلى <b>٣٠ من ٣٠</b> لتحصلي على الجائزة الخاصة. 🌷";
+    speakArabic("أحسنت يا جنى. أكملت المراحل الثلاث. أعيدي الجولة وحاولي الوصول إلى ثلاثين من ثلاثين لتحصلي على الجائزة الخاصة.");
+  }
+}
+
+function restartGame(){
+  stopTimer();
+  if("speechSynthesis" in window) speechSynthesis.cancel();
+  stage=1;stageQuestion=1;globalQuestion=1;correctTotal=0;stageCorrect=0;streak=0;locked=false;
+  stageOverlay.style.display="none";finalOverlay.style.display="none";
+  updateHud();generateQuestion();
+}
+function confetti(count){
+  const arr=["🎉","⭐","🌟","💖","🏆","✨","🌸","🎀"];
+  for(let i=0;i<count;i++){
+    const x=document.createElement("div");
+    x.className="confetti";x.textContent=arr[rand(0,arr.length-1)];
+    x.style.left=rand(2,96)+"vw";x.style.animationDelay=(Math.random()*.45)+"s";
+    document.body.appendChild(x);setTimeout(function(){x.remove()},2500);
+  }
+}
+
+const correctTotalEl=document.getElementById("correctTotal"),
+      globalQEl=document.getElementById("globalQ"),
+      stageQEl=document.getElementById("stageQ"),
+      streakEl=document.getElementById("streak"),
+      overallBar=document.getElementById("overallBar"),
+      charFace=document.getElementById("charFace"),
+      charText=document.getElementById("charText"),
+      timerText=document.getElementById("timerText"),
+      timerCaption=document.getElementById("timerCaption"),
+      timerCircle=document.getElementById("timerCircle"),
+      qtype=document.getElementById("qtype"),
+      qtitle=document.getElementById("qtitle"),
+      qbody=document.getElementById("qbody"),
+      numberLine=document.getElementById("numberLine"),
+      answers=document.getElementById("answers"),
+      feedback=document.getElementById("feedback"),
+      success=document.getElementById("success"),
+      dictation=document.getElementById("dictation"),
+      dictInput=document.getElementById("dictInput"),
+      dragzone=document.getElementById("dragzone"),
+      dragitems=document.getElementById("dragitems"),
+      dropSlot=document.getElementById("dropSlot"),
+      placeValue=document.getElementById("placeValue"),
+      tensBox=document.getElementById("tensBox"),
+      onesBox=document.getElementById("onesBox"),
+      stageOverlay=document.getElementById("stageOverlay"),
+      stageScore=document.getElementById("stageScore"),
+      stageIcon=document.getElementById("stageIcon"),
+      stageTitle=document.getElementById("stageTitle"),
+      stageMessage=document.getElementById("stageMessage"),
+      finalOverlay=document.getElementById("finalOverlay"),
+      finalIcon=document.getElementById("finalIcon"),
+      finalTitle=document.getElementById("finalTitle"),
+      finalScore=document.getElementById("finalScore"),
+      finalMessage=document.getElementById("finalMessage");
+
+document.getElementById("startBtn").onclick=function(){
+  loadArabicVoice();
+  document.getElementById("startOverlay").style.display="none";
+  gameStarted=true;locked=false;restartGame();
+  setTimeout(function(){speakArabic("أهلًا يا جنى. هيا نبدأ المرحلة الأولى. بالتوفيق يا بطلة.");},250);
+};
+document.getElementById("hearNumber").onclick=function(){
+  if(current && current.kind==="dictation") speakArabic(numberWord(current.ans));
+};
+document.getElementById("checkDict").onclick=checkDictation;
+dictInput.onkeydown=function(e){if(e.key==="Enter")checkDictation()};
+document.getElementById("hintBtn").onclick=function(){
+  if(current){feedback.textContent="💡 "+current.hint;speakArabic(current.hint)}
+};
+document.getElementById("readBtn").onclick=function(){if(current)speakArabic(current.speak)};
+document.getElementById("voiceTestBtn").onclick=function(){speakArabic("أهلًا يا جنى. هذا هو الصوت العربي في اللعبة.")};
+document.getElementById("restartBtn").onclick=restartGame;
+document.getElementById("nextStageBtn").onclick=goNextStage;
+document.getElementById("playAgainBtn").onclick=restartGame;
+
+updateHud();
+renderTimer();
+</script>
+</body>
+</html>
