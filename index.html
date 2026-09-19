@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الفرقة الموسيقية الحسابية - السلم الموسيقي</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .beat-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            background: #fff;
+            display: inline-block;
+            padding: 15px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .stage {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            height: 300px;
+            margin-top: 20px;
+            padding-bottom: 20px;
+            border-bottom: 4px solid #34495e;
+        }
+
+        .student-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            width: 110px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .avatar {
+            font-size: 4rem;
+            transition: transform 0.3s ease;
+        }
+
+        .standing {
+            background-color: #2ecc71;
+            color: white;
+            transform: translateY(-40px);
+        }
+
+        .sitting {
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+            transform: translateY(0);
+        }
+
+        .status-tag {
+            margin-top: 8px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .standing .status-tag {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        .sitting .status-tag {
+            background: #bdc3c7;
+            color: #2c3e50;
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            font-size: 1.2rem;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s ease, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-next {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>الفرقة الموسيقية الحسابية 🎵</h1>
+    <p>اضغط على "الضربة التالية" لسمع النغمات (دو - ري - مي - فا - صول) للطلاب الوقوف</p>
+
+    <div class="beat-display">
+        الضربة: <span id="beat-count">0</span>
+    </div>
+
+    <div class="stage">
+        <div class="student-card sitting" id="student-1">
+            <div class="avatar">🧍</div>
+            <strong>طالب 1</strong>
+            <small>نغمة: دو (Do)</small>
+            <div class="status-tag" id="status-1">جالس</div>
+        </div>
+
+        <div class="student-card sitting" id="student-2">
+            <div class="avatar">🧍</div>
+            <strong>طالب 2</strong>
+            <small>نغمة: ري (Re)</small>
+            <div class="status-tag" id="status-2">جالس</div>
+        </div>
+
+        <div class="student-card sitting" id="student-3">
+            <div class="avatar">🧍</div>
+            <strong>طالب 3</strong>
+            <small>نغمة: مي (Mi)</small>
+            <div class="status-tag" id="status-3">جالس</div>
+        </div>
+
+        <div class="student-card sitting" id="student-4">
+            <div class="avatar">🧍</div>
+            <strong>طالب 4</strong>
+            <small>نغمة: فا (Fa)</small>
+            <div class="status-tag" id="status-4">جالس</div>
+        </div>
+
+        <div class="student-card sitting" id="student-5">
+            <div class="avatar">🧍</div>
+            <strong>طالب 5</strong>
+            <small>نغمة: صول (Sol)</small>
+            <div class="status-tag" id="status-5">جالس</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-next" onclick="nextBeat()">🎶 الضربة التالية</button>
+        <button class="btn-reset" onclick="resetGame()">🔄 إعادة النشاط</button>
+    </div>
+
+    <script>
+        let currentBeat = 0;
+        let audioCtx = null;
+
+        const noteFrequencies = {
+            1: 261.63,
+            2: 293.66,
+            3: 329.63,
+            4: 349.23,
+            5: 392.00
+        };
+
+        function playNote(studentId) {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const now = audioCtx.currentTime;
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(noteFrequencies[studentId], now);
+
+            gain.gain.setValueAtTime(0.4, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.6);
+        }
+
+        function nextBeat() {
+            currentBeat++;
+            document.getElementById('beat-count').innerText = currentBeat;
+            updateStudents();
+        }
+
+        function resetGame() {
+            currentBeat = 0;
+            document.getElementById('beat-count').innerText = currentBeat;
+            updateStudents();
+        }
+
+        function updateStudents() {
+            for (let id = 1; id <= 5; id++) {
+                const card = document.getElementById(`student-${id}`);
+                const statusTag = document.getElementById(`status-${id}`);
+                
+                if (currentBeat > 0 && currentBeat % id === 0) {
+                    card.className = "student-card standing";
+                    statusTag.innerText = "واقف 🧍‍♂️";
+                    playNote(id);
+                } else {
+                    card.className = "student-card sitting";
+                    statusTag.innerText = "جالس 🧎‍♂️";
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
