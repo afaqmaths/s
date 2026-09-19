@@ -80,6 +80,19 @@ button,input{font-family:inherit}
 .dictation input{
   width:190px;text-align:center;font-size:31px;font-weight:900;padding:9px;border-radius:14px;border:3px solid #cfe2ff;margin:8px
 }
+.flashHelp{margin-top:9px}
+.flashNumber{
+  display:inline-grid;place-items:center;min-width:120px;min-height:68px;margin-top:10px;padding:8px 20px;
+  border-radius:20px;border:3px solid #ffd15e;background:#fff8cf;color:#6b50d9;
+  font-size:44px;font-weight:900;opacity:0;transform:scale(.72);pointer-events:none
+}
+.flashNumber.show{animation:numberFlash .82s ease}
+@keyframes numberFlash{
+  0%{opacity:0;transform:scale(.65);box-shadow:0 0 0 #ffd54a00}
+  22%{opacity:1;transform:scale(1.18);box-shadow:0 0 26px #ffd54acc}
+  58%{opacity:1;transform:scale(1);box-shadow:0 0 15px #ff82b788}
+  100%{opacity:0;transform:scale(.82);box-shadow:0 0 0 #ffd54a00}
+}
 .dragitems{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:9px}
 .dragnum{
   padding:10px 17px;border-radius:15px;background:#fff2c3;border:3px solid #ffd052;font-size:27px;font-weight:900;cursor:grab
@@ -172,6 +185,8 @@ button,input{font-family:inherit}
 
       <div class="dictation" id="dictation">
         <button class="btn purple" id="hearNumber">🔊 استمعي للعدد</button>
+        <button class="btn gold flashHelp" id="flashNumberBtn">✨ وميض مساعد</button>
+        <div class="flashNumber" id="flashNumber">؟</div>
         <div><input id="dictInput" inputmode="numeric" autocomplete="off" placeholder="اكتبي العدد"></div>
         <button class="btn green" id="checkDict">✅ تحقق</button>
       </div>
@@ -261,7 +276,8 @@ const STAGES = {
 };
 
 let stage=1, stageQuestion=1, globalQuestion=1, correctTotal=0, stageCorrect=0, streak=0;
-let current=null, locked=true, timerId=null, timeLeft=20, arabicVoice=null, voicesReady=false, gameStarted=false;
+let current=null, locked=true, timerId=null, timeLeft=20, arabicVoice=null, englishVoice=null, voicesReady=false, gameStarted=false;
+let audioCtx=null;
 
 const praise = [
   "أحسنتِ يا جنى، بارك الله فيكِ.",
@@ -284,20 +300,27 @@ function numberWord(n){
 
 function loadArabicVoice(){
   if(!("speechSynthesis" in window)){
-    voicesReady=false; arabicVoice=null; updateVoiceState("❌ هذا المتصفح لا يدعم النطق الصوتي.");
+    voicesReady=false; arabicVoice=null; englishVoice=null;
+    updateVoiceState("❌ هذا المتصفح لا يدعم النطق. سيعمل الوميض المساعد بدلًا منه.");
     return;
   }
   const voices=speechSynthesis.getVoices();
   const arabic=voices.filter(function(v){return (v.lang||"").toLowerCase().startsWith("ar")});
-  const preferred=arabic.find(function(v){return (v.lang||"").toLowerCase()==="ar-sa"}) ||
-                  arabic.find(function(v){return /Hamed|Naayf|Maged|Tarik|Arabic/i.test(v.name)}) ||
-                  arabic[0];
-  arabicVoice=preferred||null;
-  voicesReady=!!arabicVoice;
+  const english=voices.filter(function(v){return (v.lang||"").toLowerCase().startsWith("en")});
+  arabicVoice=
+    arabic.find(function(v){return (v.lang||"").toLowerCase()==="ar-sa"}) ||
+    arabic.find(function(v){return /Hamed|Naayf|Maged|Tarik|Arabic/i.test(v.name)}) ||
+    arabic[0] || null;
+  englishVoice=
+    english.find(function(v){return (v.lang||"").toLowerCase()==="en-us"}) ||
+    english[0] || null;
+  voicesReady=!!(arabicVoice||englishVoice);
   if(arabicVoice){
     updateVoiceState("✅ الصوت العربي جاهز: "+arabicVoice.name);
+  }else if(englishVoice){
+    updateVoiceState("🟡 لا يوجد صوت عربي؛ سيُنطق العدد بالإنجليزية عند الحاجة، مع بقاء التعزيز بالعربية.");
   }else{
-    updateVoiceState("⚠️ لا يوجد صوت عربي مثبت على الجهاز. لن نستخدم صوتًا إنجليزيًا.");
+    updateVoiceState("⚠️ لا يوجد صوت نطق مثبت؛ استخدمي «وميض مساعد» لسؤال الاستماع.");
   }
 }
 function updateVoiceState(t){
@@ -314,19 +337,62 @@ if("speechSynthesis" in window){
 function speakArabic(text){
   if(!("speechSynthesis" in window)) return false;
   loadArabicVoice();
-  if(!arabicVoice){
-    feedback.textContent="🔇 لا يوجد صوت عربي مثبت. يمكنك متابعة اللعبة بالنص، أو إضافة صوت عربي من إعدادات الجهاز.";
-    return false;
-  }
+  if(!arabicVoice) return false;
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.voice=arabicVoice;
   u.lang=arabicVoice.lang || "ar-SA";
-  u.rate=.82;
-  u.pitch=1.02;
-  u.volume=1;
+  u.rate=.82; u.pitch=1.02; u.volume=1;
   speechSynthesis.speak(u);
   return true;
+}
+function speakNumberValue(n){
+  if(!("speechSynthesis" in window)){ flashCurrentNumber(); return false; }
+  loadArabicVoice();
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(arabicVoice ? numberWord(n) : String(n));
+  if(arabicVoice){
+    u.voice=arabicVoice; u.lang=arabicVoice.lang || "ar-SA"; u.rate=.78;
+  }else if(englishVoice){
+    u.voice=englishVoice; u.lang=englishVoice.lang || "en-US"; u.rate=.74;
+  }else{
+    flashCurrentNumber(); return false;
+  }
+  u.pitch=1.02; u.volume=1;
+  speechSynthesis.speak(u);
+  return true;
+}
+function ensureAudio(){
+  try{
+    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==="suspended") audioCtx.resume();
+  }catch(e){}
+}
+function playTone(freq,start,duration,type,volume){
+  if(!audioCtx) return;
+  const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+  osc.type=type||"sine"; osc.frequency.value=freq;
+  gain.gain.setValueAtTime(0.0001,audioCtx.currentTime+start);
+  gain.gain.exponentialRampToValueAtTime(volume||0.12,audioCtx.currentTime+start+.025);
+  gain.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+start+duration);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(audioCtx.currentTime+start); osc.stop(audioCtx.currentTime+start+duration+.03);
+}
+function playHappySound(){
+  ensureAudio();
+  [[523.25,0,.18],[659.25,.12,.18],[783.99,.24,.2],[1046.5,.39,.35]].forEach(function(n){playTone(n[0],n[1],n[2],"triangle",.11)});
+}
+function playSadSound(){
+  ensureAudio();
+  [[392,0,.23],[349.23,.18,.25],[293.66,.38,.4]].forEach(function(n){playTone(n[0],n[1],n[2],"sine",.09)});
+}
+function flashCurrentNumber(){
+  if(!current || current.kind!=="dictation") return;
+  const box=document.getElementById("flashNumber");
+  box.textContent=ar(current.ans);
+  box.classList.remove("show");
+  void box.offsetWidth;
+  box.classList.add("show");
 }
 
 function maxN(){return STAGES[stage].max}
@@ -414,6 +480,8 @@ function resetQuestionUI(){
   dragzone.style.display="none";
   placeValue.style.display="none";
   dictInput.value="";
+  const flashBox=document.getElementById("flashNumber");
+  flashBox.textContent="؟"; flashBox.classList.remove("show");
   dropSlot.textContent="⬇️";
   success.style.display="none";
   feedback.textContent="هيا يا جنى 🌟";
@@ -521,7 +589,11 @@ function generateQuestion(){
   startTimer();
 
   if(current.kind==="dictation"){
-    setTimeout(function(){ if(!locked) speakArabic(numberWord(current.ans)); },350);
+    setTimeout(function(){
+      if(locked) return;
+      const heard=speakNumberValue(current.ans);
+      if(!heard) setTimeout(flashCurrentNumber,250);
+    },350);
   }
 }
 
@@ -550,6 +622,7 @@ function makeDrag(opts){
 
 function praiseCorrect(){
   correctTotal++; stageCorrect++; streak++;
+  playHappySound();
   const msg=praise[rand(0,praise.length-1)];
   success.textContent="🌟 "+msg;
   success.style.display="block";
@@ -559,6 +632,7 @@ function praiseCorrect(){
 }
 function markWrong(prefix){
   streak=0;
+  playSadSound();
   success.style.display="none";
   feedback.textContent=(prefix||"قريبة يا جنى")+" — الإجابة الصحيحة: "+ar(current.ans);
 }
@@ -714,13 +788,22 @@ const correctTotalEl=document.getElementById("correctTotal"),
       finalMessage=document.getElementById("finalMessage");
 
 document.getElementById("startBtn").onclick=function(){
+  ensureAudio();
   loadArabicVoice();
   document.getElementById("startOverlay").style.display="none";
   gameStarted=true;locked=false;restartGame();
   setTimeout(function(){speakArabic("أهلًا يا جنى. هيا نبدأ المرحلة الأولى. بالتوفيق يا بطلة.");},250);
 };
 document.getElementById("hearNumber").onclick=function(){
-  if(current && current.kind==="dictation") speakArabic(numberWord(current.ans));
+  ensureAudio();
+  if(current && current.kind==="dictation"){
+    const heard=speakNumberValue(current.ans);
+    if(!heard) flashCurrentNumber();
+  }
+};
+document.getElementById("flashNumberBtn").onclick=function(){
+  ensureAudio();
+  flashCurrentNumber();
 };
 document.getElementById("checkDict").onclick=checkDictation;
 dictInput.onkeydown=function(e){if(e.key==="Enter")checkDictation()};
@@ -728,7 +811,21 @@ document.getElementById("hintBtn").onclick=function(){
   if(current){feedback.textContent="💡 "+current.hint;speakArabic(current.hint)}
 };
 document.getElementById("readBtn").onclick=function(){if(current)speakArabic(current.speak)};
-document.getElementById("voiceTestBtn").onclick=function(){speakArabic("أهلًا يا جنى. هذا هو الصوت العربي في اللعبة.")};
+document.getElementById("voiceTestBtn").onclick=function(){
+  ensureAudio();
+  if(arabicVoice){
+    speakArabic("أهلًا يا جنى. هذا هو الصوت العربي في اللعبة.");
+  }else if(englishVoice){
+    feedback.textContent="🟡 اختبار بديل: سيُنطق العدد ٢٨ بالإنجليزية.";
+    speakNumberValue(28);
+  }else{
+    feedback.textContent="🔇 لا يوجد صوت متاح؛ جرّبي الوميض المساعد.";
+    const old=current;
+    if(!current || current.kind!=="dictation") current={kind:"dictation",ans:28};
+    flashCurrentNumber();
+    current=old;
+  }
+};
 document.getElementById("restartBtn").onclick=restartGame;
 document.getElementById("nextStageBtn").onclick=goNextStage;
 document.getElementById("playAgainBtn").onclick=restartGame;
