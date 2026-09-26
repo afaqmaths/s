@@ -998,3 +998,837 @@
       }
 
       .answer .key {
+        right: 7px;
+        width: 24px;
+        height: 24px;
+      }
+
+      .keyboard-note {
+        display: none;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .difficulty-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .difficulty {
+        min-height: 94px;
+      }
+
+      .hud-label {
+        font-size: 10px;
+      }
+
+      .hud-value,
+      .hearts {
+        font-size: 17px;
+      }
+
+      .question {
+        font-size: clamp(31px, 12vw, 49px);
+      }
+
+      .answer {
+        font-size: clamp(19px, 7vw, 26px);
+      }
+
+      .stats-grid {
+        gap: 6px;
+      }
+
+      .stat strong {
+        font-size: 19px;
+      }
+    }
+
+    @media (max-height: 720px) and (min-width: 681px) {
+      .app {
+        padding-top: 10px;
+      }
+
+      .topbar {
+        margin-bottom: 10px;
+      }
+
+      .flight-area {
+        height: 55px;
+      }
+
+      .question-wrap {
+        padding-top: 15px;
+        padding-bottom: 16px;
+      }
+
+      .question-card {
+        padding-top: 18px;
+        padding-bottom: 18px;
+      }
+
+      .answer {
+        min-height: 65px;
+      }
+
+      .feedback {
+        min-height: 47px;
+        margin-top: 9px;
+        padding: 8px 11px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+  <div class="effects" id="effects" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">🚀</div>
+        <div class="brand-text">
+          <strong>تحدّي قوى العشرة</strong>
+          <small>اضرب واقسم بسرعة ودقّة</small>
+        </div>
+      </div>
+      <button class="icon-btn" id="soundButton" type="button" aria-label="إيقاف الصوت" title="تشغيل أو إيقاف الصوت">🔊</button>
+    </header>
+
+    <main>
+      <section class="screen active" id="startScreen" aria-labelledby="mainTitle">
+        <div class="hero glass">
+          <div class="mission-badge">⚡ مهمة حسابية فضائية</div>
+          <h1 id="mainTitle">أتقن الضرب والقسمة<br>في 10 و100 و1000</h1>
+          <p class="hero-subtitle">
+            أجب عن الأسئلة، ابنِ سلسلة من الإجابات الصحيحة، وساعد الصاروخ على الوصول إلى أبعد كوكب قبل انتهاء الوقت.
+          </p>
+
+          <div class="example" dir="ltr">
+            <b>× 10</b> خطوة واحدة &nbsp; • &nbsp;
+            <b>× 100</b> خطوتان &nbsp; • &nbsp;
+            <b>× 1000</b> ثلاث خطوات
+          </div>
+
+          <div class="section-title">اختر مستوى المهمة:</div>
+          <div class="difficulty-grid" role="group" aria-label="اختيار المستوى">
+            <button class="difficulty selected" type="button" data-level="rookie">
+              <span class="check">✓</span>
+              <strong>🌟 متدرّب</strong>
+              <small>أعداد صحيحة، 75 ثانية، مناسب للتعلّم والتدريب.</small>
+            </button>
+            <button class="difficulty" type="button" data-level="pro">
+              <span class="check">✓</span>
+              <strong>🔥 خبير</strong>
+              <small>أعداد أكبر وكسور عشرية، 60 ثانية، تحدٍّ أسرع.</small>
+            </button>
+          </div>
+
+          <button class="primary-btn" id="startButton" type="button">ابدأ المهمة 🚀</button>
+          <div class="record">أفضل نتيجة: <b id="startBest">0</b></div>
+
+          <div class="tips">
+            <div class="tip"><span>🎯</span> اختر الإجابة الصحيحة من بين أربعة اختيارات.</div>
+            <div class="tip"><span>🔥</span> كل سلسلة صحيحة تزيد نقاطك وتمنحك وقتاً إضافياً.</div>
+            <div class="tip"><span>❤️</span> لديك ثلاث محاولات، ففكّر جيداً قبل الإجابة.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="gameScreen" aria-label="اللعبة">
+        <div class="hud">
+          <div class="hud-card">
+            <span class="hud-label">النقاط</span>
+            <span class="hud-value score-value" id="scoreValue">0</span>
+          </div>
+          <div class="hud-card">
+            <span class="hud-label">السلسلة</span>
+            <span class="hud-value combo-value" id="comboValue">×0</span>
+          </div>
+          <div class="hud-card">
+            <span class="hud-label">المحاولات</span>
+            <div class="hearts" id="hearts" aria-label="ثلاث محاولات">❤️❤️❤️</div>
+          </div>
+          <div class="hud-card timer-card">
+            <div class="timer-orb" id="timerOrb">
+              <span id="timeValue">75</span>
+            </div>
+            <div class="timer-copy">
+              <span class="hud-label">الوقت</span>
+              <strong>ثانية</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-panel glass">
+          <div class="flight-area" aria-hidden="true">
+            <div class="flight-line"></div>
+            <span class="planet one">🌑</span>
+            <span class="planet two">🪐</span>
+            <span class="planet three">🌕</span>
+            <div class="rocket" id="rocket">🚀</div>
+          </div>
+
+          <div class="question-wrap">
+            <div class="question-meta">
+              <span class="operation-badge" id="operationBadge">عملية ضرب</span>
+              <span id="questionNumber">السؤال 1</span>
+            </div>
+
+            <div class="question-card" id="questionCard">
+              <div class="question" id="question" aria-live="polite">4 × 10 = ؟</div>
+            </div>
+
+            <div class="answers" id="answers" aria-label="الإجابات"></div>
+            <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+            <p class="keyboard-note">يمكنك استخدام مفاتيح الأرقام 1، 2، 3، 4 لاختيار الإجابة.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="gameOverScreen" aria-labelledby="resultTitle">
+        <div class="result-card glass">
+          <div class="result-glow"></div>
+          <div class="medal" id="medal">🏆</div>
+          <h2 id="resultTitle">أحسنت!</h2>
+          <p class="result-message" id="resultMessage">أنهيت المهمة الحسابية بنجاح.</p>
+          <div class="final-score"><span id="finalScore">0</span> نقطة</div>
+          <div class="new-record" id="newRecord">🎉 رقم قياسي جديد!</div>
+
+          <div class="stats-grid">
+            <div class="stat">
+              <strong id="correctStat">0</strong>
+              <span>إجابة صحيحة</span>
+            </div>
+            <div class="stat">
+              <strong id="accuracyStat">0%</strong>
+              <span>نسبة الدقّة</span>
+            </div>
+            <div class="stat">
+              <strong id="bestComboStat">0</strong>
+              <span>أفضل سلسلة</span>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <button class="primary-btn" id="replayButton" type="button">العب مرة أخرى 🔄</button>
+            <button class="secondary-btn" id="homeButton" type="button">القائمة الرئيسية</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+
+      const screens = {
+        start: $("startScreen"),
+        game: $("gameScreen"),
+        over: $("gameOverScreen")
+      };
+
+      const configs = {
+        rookie: {
+          name: "متدرّب",
+          time: 75,
+          max: 25,
+          decimalChance: 0
+        },
+        pro: {
+          name: "خبير",
+          time: 60,
+          max: 120,
+          decimalChance: 0.55
+        }
+      };
+
+      let selectedLevel = "rookie";
+      let gameState = "start";
+      let currentQuestion = null;
+      let currentOptions = [];
+      let locked = false;
+      let score = 0;
+      let combo = 0;
+      let bestCombo = 0;
+      let lives = 3;
+      let answered = 0;
+      let correctCount = 0;
+      let questionCount = 0;
+      let initialDuration = 75;
+      let deadline = 0;
+      let questionStartedAt = 0;
+      let timerInterval = null;
+      let nextTimeout = null;
+      let audioEnabled = true;
+      let audioContext = null;
+      let bestScore = loadBest();
+
+      $("startBest").textContent = bestScore;
+
+      function loadBest() {
+        try {
+          return Number(localStorage.getItem("powersOfTenBest") || 0);
+        } catch (error) {
+          return 0;
+        }
+      }
+
+      function saveBest(value) {
+        try {
+          localStorage.setItem("powersOfTenBest", String(value));
+        } catch (error) {}
+      }
+
+      function createStars() {
+        const container = $("stars");
+        const count = Math.min(90, Math.floor(window.innerWidth / 10));
+        for (let i = 0; i < count; i++) {
+          const star = document.createElement("span");
+          star.className = "star";
+          star.style.left = Math.random() * 100 + "%";
+          star.style.top = Math.random() * 100 + "%";
+          star.style.setProperty("--size", (Math.random() * 2.4 + 1) + "px");
+          star.style.setProperty("--opacity", (Math.random() * 0.65 + 0.2).toFixed(2));
+          star.style.setProperty("--speed", (Math.random() * 2.8 + 1.5) + "s");
+          star.style.setProperty("--delay", (-Math.random() * 4) + "s");
+          container.appendChild(star);
+        }
+      }
+
+      function setScreen(name) {
+        Object.entries(screens).forEach(([key, screen]) => {
+          const active = key === name;
+          screen.classList.toggle("active", active);
+          screen.setAttribute("aria-hidden", String(!active));
+        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function initAudio() {
+        if (!audioEnabled) return;
+        if (!audioContext) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) audioContext = new AudioCtx();
+        }
+        if (audioContext && audioContext.state === "suspended") {
+          audioContext.resume();
+        }
+      }
+
+      function tone(frequency, duration, type = "sine", volume = 0.055, delay = 0) {
+        if (!audioEnabled || !audioContext) return;
+        const start = audioContext.currentTime + delay;
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, start);
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(volume, start + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start(start);
+        oscillator.stop(start + duration + 0.04);
+      }
+
+      function playSound(kind) {
+        if (!audioEnabled) return;
+        initAudio();
+
+        if (kind === "correct") {
+          tone(520, 0.13, "sine", 0.06, 0);
+          tone(690, 0.15, "sine", 0.055, 0.09);
+          tone(880, 0.18, "triangle", 0.05, 0.18);
+        } else if (kind === "wrong") {
+          tone(210, 0.16, "sawtooth", 0.045, 0);
+          tone(145, 0.22, "square", 0.025, 0.12);
+        } else if (kind === "bonus") {
+          tone(650, 0.12, "triangle", 0.055, 0);
+          tone(820, 0.12, "triangle", 0.055, 0.08);
+          tone(1040, 0.24, "triangle", 0.05, 0.16);
+        } else if (kind === "gameover") {
+          tone(420, 0.2, "sine", 0.05, 0);
+          tone(350, 0.25, "sine", 0.045, 0.16);
+          tone(260, 0.35, "sine", 0.04, 0.34);
+        } else if (kind === "click") {
+          tone(430, 0.07, "sine", 0.035, 0);
+        }
+      }
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function choice(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      function shuffle(array) {
+        const copy = [...array];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function normalize(value) {
+        return Number(Number(value).toFixed(5));
+      }
+
+      function formatNumber(value) {
+        const normalized = normalize(value);
+        if (Math.abs(normalized) >= 1000000) {
+          return normalized.toLocaleString("en-US", { maximumFractionDigits: 5 });
+        }
+        return String(normalized);
+      }
+
+      function makeBase(config) {
+        if (Math.random() < config.decimalChance) {
+          const denominator = Math.random() < 0.68 ? 10 : 100;
+          const maximum = denominator === 10 ? config.max * 10 : config.max * 100;
+          return normalize(randomInt(1, maximum) / denominator);
+        }
+        return randomInt(1, config.max);
+      }
+
+      function generateQuestion() {
+        const config = configs[selectedLevel];
+        const factor = choice([10, 100, 1000]);
+        const operation = Math.random() < 0.5 ? "multiply" : "divide";
+        const base = makeBase(config);
+
+        let left;
+        let correct;
+
+        if (operation === "multiply") {
+          left = base;
+          correct = normalize(base * factor);
+        } else {
+          left = normalize(base * factor);
+          correct = base;
+        }
+
+        const options = buildOptions(correct, left, base, factor, operation);
+
+        return {
+          base,
+          left,
+          factor,
+          operation,
+          correct,
+          options
+        };
+      }
+
+      function buildOptions(correct, left, base, factor, operation) {
+        const factors = [10, 100, 1000];
+        const candidates = [];
+
+        if (operation === "multiply") {
+          factors.forEach((f) => candidates.push(normalize(base * f)));
+          candidates.push(normalize(correct * 10));
+          candidates.push(normalize(correct / 10));
+          candidates.push(normalize(base + factor));
+          candidates.push(normalize(base * (factor === 10 ? 100 : 10)));
+        } else {
+          factors.forEach((f) => candidates.push(normalize(left / f)));
+          candidates.push(normalize(correct * 10));
+          candidates.push(normalize(correct / 10));
+          candidates.push(normalize(left / (factor === 10 ? 100 : 10)));
+        }
+
+        const unique = [];
+        const correctKey = formatNumber(correct);
+
+        shuffle(candidates).forEach((candidate) => {
+          const key = formatNumber(candidate);
+          if (
+            candidate >= 0 &&
+            Number.isFinite(candidate) &&
+            key !== correctKey &&
+            !unique.some((item) => formatNumber(item) === key)
+          ) {
+            unique.push(candidate);
+          }
+        });
+
+        while (unique.length < 3) {
+          const scale = choice([0.1, 10, 100]);
+          const variation = normalize(correct * scale + randomInt(1, 9));
+          const key = formatNumber(variation);
+          if (
+            variation >= 0 &&
+            key !== correctKey &&
+            !unique.some((item) => formatNumber(item) === key)
+          ) {
+            unique.push(variation);
+          }
+        }
+
+        return shuffle([correct, ...unique.slice(0, 3)]);
+      }
+
+      function renderQuestion() {
+        currentQuestion = generateQuestion();
+        currentOptions = currentQuestion.options;
+        questionCount++;
+        locked = false;
+        questionStartedAt = performance.now();
+
+        const symbol = currentQuestion.operation === "multiply" ? "×" : "÷";
+        const operationText = currentQuestion.operation === "multiply" ? "عملية ضرب" : "عملية قسمة";
+
+        $("operationBadge").textContent = operationText;
+        $("questionNumber").textContent = "السؤال " + questionCount;
+        $("question").innerHTML =
+          `<span>${formatNumber(currentQuestion.left)}</span> ` +
+          `<span class="operator">${symbol}</span> ` +
+          `<span class="factor">${currentQuestion.factor}</span> = ؟`;
+
+        const answersContainer = $("answers");
+        answersContainer.innerHTML = "";
+
+        currentOptions.forEach((value, index) => {
+          const button = document.createElement("button");
+          button.className = "answer";
+          button.type = "button";
+          button.setAttribute("aria-label", `الإجابة ${index + 1}: ${formatNumber(value)}`);
+          button.innerHTML = `<span class="key">${index + 1}</span><span>${formatNumber(value)}</span>`;
+          button.addEventListener("click", () => checkAnswer(index));
+          answersContainer.appendChild(button);
+        });
+
+        const feedback = $("feedback");
+        feedback.className = "feedback";
+        feedback.textContent = "";
+
+        const card = $("questionCard");
+        card.classList.remove("correct-pulse", "wrong-shake");
+
+        updateRocket();
+      }
+
+      function checkAnswer(index) {
+        if (gameState !== "playing" || locked) return;
+
+        locked = true;
+        answered++;
+
+        const buttons = [...$("answers").querySelectorAll(".answer")];
+        const selectedValue = currentOptions[index];
+        const isCorrect = formatNumber(selectedValue) === formatNumber(currentQuestion.correct);
+        const correctIndex = currentOptions.findIndex(
+          (value) => formatNumber(value) === formatNumber(currentQuestion.correct)
+        );
+
+        buttons.forEach((button) => button.disabled = true);
+
+        if (isCorrect) {
+          combo++;
+          bestCombo = Math.max(bestCombo, combo);
+          correctCount++;
+
+          const elapsedSeconds = (performance.now() - questionStartedAt) / 1000;
+          const speedBonus = Math.max(0, Math.round((8 - elapsedSeconds) * 9));
+          const earned = 100 + Math.min(combo, 12) * 15 + speedBonus;
+          score += earned;
+
+          buttons[index].classList.add("correct");
+          animateCard("correct-pulse");
+          playSound("correct");
+          showScoreFloat("+" + earned);
+          createConfetti(combo >= 3 ? 20 : 10);
+
+          let bonusMessage = "";
+          if (combo % 5 === 0) {
+            deadline += 3000;
+            bonusMessage = " وسلسلة رائعة: <b>+3 ثوانٍ!</b>";
+            showToast("🔥 سلسلة " + combo + "! حصلت على 3 ثوانٍ إضافية");
+            playSound("bonus");
+          }
+
+          const places = Math.log10(currentQuestion.factor);
+          const direction = currentQuestion.operation === "multiply" ? "اليمين" : "اليسار";
+          const placeWord = places === 1 ? "منزلة واحدة" : places === 2 ? "منزلتين" : "ثلاث منازل";
+
+          showFeedback(
+            "success",
+            `إجابة صحيحة! نحرك الفاصلة <b>${placeWord}</b> إلى ${direction}.${bonusMessage}`
+          );
+
+          updateHUD();
+          boostRocket();
+
+          nextTimeout = setTimeout(() => {
+            if (gameState === "playing") renderQuestion();
+          }, 820);
+        } else {
+          combo = 0;
+          lives--;
+
+          buttons[index].classList.add("wrong");
+          if (correctIndex >= 0) buttons[correctIndex].classList.add("correct");
+          animateCard("wrong-shake");
+          playSound("wrong");
+
+          const places = Math.log10(currentQuestion.factor);
+          const direction = currentQuestion.operation === "multiply" ? "اليمين" : "اليسار";
+          const placeWord = places === 1 ? "منزلة واحدة" : places === 2 ? "منزلتين" : "ثلاث منازل";
+
+          showFeedback(
+            "error",
+            `الإجابة الصحيحة هي <b dir="ltr">${formatNumber(currentQuestion.correct)}</b>. ` +
+            `حرّك الفاصلة ${placeWord} إلى ${direction}.`
+          );
+
+          updateHUD();
+
+          if (lives <= 0) {
+            gameState = "ending";
+            clearInterval(timerInterval);
+            nextTimeout = setTimeout(() => endGame("lives"), 1150);
+          } else {
+            nextTimeout = setTimeout(() => {
+              if (gameState === "playing") renderQuestion();
+            }, 1200);
+          }
+        }
+      }
+
+      function showFeedback(type, html) {
+        const feedback = $("feedback");
+        feedback.className = "feedback show " + type;
+        feedback.innerHTML = html;
+      }
+
+      function animateCard(className) {
+        const card = $("questionCard");
+        card.classList.remove("correct-pulse", "wrong-shake");
+        void card.offsetWidth;
+        card.classList.add(className);
+      }
+
+      function updateHUD() {
+        $("scoreValue").textContent = score;
+        $("comboValue").textContent = "×" + combo;
+
+        let heartsHTML = "";
+        for (let i = 0; i < 3; i++) {
+          heartsHTML += i < lives ? "❤️" : '<span class="heart-empty">❤️</span>';
+        }
+        $("hearts").innerHTML = heartsHTML;
+        $("hearts").setAttribute("aria-label", lives + " محاولات متبقية");
+      }
+
+      function updateRocket() {
+        const progress = Math.min(correctCount % 10, 9) / 9;
+        const left = 8 + progress * 84;
+        $("rocket").style.left = left + "%";
+      }
+
+      function boostRocket() {
+        const rocket = $("rocket");
+        rocket.classList.remove("boost");
+        void rocket.offsetWidth;
+        rocket.classList.add("boost");
+        updateRocket();
+      }
+
+      function showScoreFloat(text) {
+        const element = document.createElement("div");
+        element.className = "score-float";
+        element.textContent = text;
+        document.body.appendChild(element);
+        setTimeout(() => element.remove(), 950);
+      }
+
+      function showToast(text) {
+        const toast = $("toast");
+        toast.textContent = text;
+        toast.classList.remove("show");
+        void toast.offsetWidth;
+        toast.classList.add("show");
+      }
+
+      function createConfetti(amount = 18) {
+        const colors = ["#36dcff", "#ffe46b", "#42e6a4", "#a56cff", "#ff6178", "#ffffff"];
+        const effects = $("effects");
+
+        for (let i = 0; i < amount; i++) {
+          const piece = document.createElement("span");
+          piece.className = "confetti";
+          piece.style.setProperty("--color", choice(colors));
+          piece.style.setProperty("--x", (Math.random() * 380 - 190) + "px");
+          piece.style.setProperty("--y", (Math.random() * 260 - 170) + "px");
+          piece.style.setProperty("--r", (Math.random() * 900 - 450) + "deg");
+          piece.style.animationDelay = (Math.random() * 0.08) + "s";
+          effects.appendChild(piece);
+          setTimeout(() => piece.remove(), 1100);
+        }
+      }
+
+      function startGame() {
+        initAudio();
+        playSound("click");
+
+        clearInterval(timerInterval);
+        clearTimeout(nextTimeout);
+
+        const config = configs[selectedLevel];
+        gameState = "playing";
+        score = 0;
+        combo = 0;
+        bestCombo = 0;
+        lives = 3;
+        answered = 0;
+        correctCount = 0;
+        questionCount = 0;
+        locked = false;
+        initialDuration = config.time;
+        deadline = performance.now() + initialDuration * 1000;
+
+        $("rocket").style.left = "8%";
+        updateHUD();
+        setScreen("game");
+        renderQuestion();
+        updateTimer();
+
+        timerInterval = setInterval(updateTimer, 100);
+      }
+
+      function updateTimer() {
+        if (gameState !== "playing") return;
+
+        const remaining = Math.max(0, (deadline - performance.now()) / 1000);
+        const display = Math.ceil(remaining);
+        const percentage = Math.min(100, Math.max(0, remaining / initialDuration * 100));
+
+        $("timeValue").textContent = display;
+        $("timerOrb").style.setProperty("--p", percentage + "%");
+        $("timerOrb").classList.toggle("danger", remaining <= 10);
+
+        if (remaining <= 0) {
+          gameState = "ending";
+          clearInterval(timerInterval);
+          endGame("time");
+        }
+      }
+
+      function endGame(reason) {
+        clearInterval(timerInterval);
+        clearTimeout(nextTimeout);
+        gameState = "gameover";
+        playSound("gameover");
+
+        const accuracy = answered ? Math.round(correctCount / answered * 100) : 0;
+        let isNewRecord = false;
+
+        if (score > bestScore) {
+          bestScore = score;
+          saveBest(bestScore);
+          isNewRecord = true;
+        }
+
+        let medal = "🌟";
+        let title = "محاولة جيدة!";
+        let message = reason === "time"
+          ? "انتهى الوقت، لكن كل محاولة تجعلك أسرع."
+          : "نفدت المحاولات، راجع القاعدة وحاول مجدداً.";
+
+        if (correctCount >= 15) {
+          medal = "🏆";
+          title = "بطل قوى العشرة!";
+          message = "أداء مذهل! لقد أتقنت تحريك الفاصلة بسرعة كبيرة.";
+        } else if (correctCount >= 10) {
+          medal = "🥇";
+          title = "عمل رائع جداً!";
+          message = "وصل صاروخك بعيداً، وأصبحت بارعاً في قوى العشرة.";
+        } else if (correctCount >= 6) {
+          medal = "🥈";
+          title = "أحسنت!";
+          message = "نتيجة جميلة، حاول بناء سلسلة أطول في المهمة القادمة.";
+        } else if (correctCount >= 3) {
+          medal = "🥉";
+          title = "بداية موفّقة!";
+        }
+
+        $("medal").textContent = medal;
+        $("resultTitle").textContent = title;
+        $("resultMessage").textContent = message;
+        $("finalScore").textContent = score;
+        $("correctStat").textContent = correctCount;
+        $("accuracyStat").textContent = accuracy + "%";
+        $("bestComboStat").textContent = bestCombo;
+        $("newRecord").classList.toggle("show", isNewRecord);
+        $("startBest").textContent = bestScore;
+
+        setScreen("over");
+
+        if (correctCount >= 6) {
+          setTimeout(() => createConfetti(36), 180);
+        }
+      }
+
+      document.querySelectorAll(".difficulty").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedLevel = button.dataset.level;
+          document.querySelectorAll(".difficulty").forEach((item) => {
+            item.classList.toggle("selected", item === button);
+          });
+          playSound("click");
+        });
+      });
+
+      $("startButton").addEventListener("click", startGame);
+      $("replayButton").addEventListener("click", startGame);
+
+      $("homeButton").addEventListener("click", () => {
+        clearInterval(timerInterval);
+        clearTimeout(nextTimeout);
+        gameState = "start";
+        $("startBest").textContent = bestScore;
+        setScreen("start");
+        playSound("click");
+      });
+
+      $("soundButton").addEventListener("click", () => {
+        audioEnabled = !audioEnabled;
+        $("soundButton").textContent = audioEnabled ? "🔊" : "🔇";
+        $("soundButton").setAttribute("aria-label", audioEnabled ? "إيقاف الصوت" : "تشغيل الصوت");
+        if (audioEnabled) {
+          initAudio();
+          playSound("click");
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (gameState === "playing" && ["1", "2", "3", "4"].includes(event.key)) {
+          checkAnswer(Number(event.key) - 1);
+        } else if (event.key === "Enter" && gameState === "start") {
+          startGame();
+        } else if (event.key === "Enter" && gameState === "gameover") {
+          startGame();
+        }
+      });
+
+      createStars();
+    })();
+  </script>
+</body>
+</html>
