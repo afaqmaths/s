@@ -6,22 +6,22 @@
 <title>مسابقة الرياضيات للصف السادس</title>
 <style>
 :root{--navy:#102b55;--blue:#1d6fdc;--gold:#dca827;--cream:#fff9ec;--green:#178553;--red:#b93636;--muted:#64748b;--line:#d9e2ef}
-*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#edf5ff,#fff 34%,#f7fbff);color:#16243b;font-size:18px}
-.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:18px 0}.entry-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 8px 24px #183b5c10;text-align:center}.entry-card .icon{font-size:38px}.entry-card h3{margin:10px 0 7px;color:var(--navy);font-size:25px}.entry-card p{font-size:17px;line-height:1.9;color:var(--muted);min-height:52px}.entry-card .btn{width:100%}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
-.btn{border:0;border-radius:12px;padding:13px 20px;font-weight:800;cursor:pointer;font-size:18px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#edf5ff,#fff 34%,#f7fbff);color:#16243b;font-size:20px}
+.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin:24px 0}.entry-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px 24px;box-shadow:0 10px 30px #183b5c12;text-align:center}.entry-photo{width:165px;height:165px;object-fit:contain;display:block;margin:0 auto 16px;border-radius:28px}.entry-card .icon{font-size:54px}.entry-card h3{margin:12px 0 10px;color:var(--navy);font-size:31px}.entry-card p{font-size:23px;line-height:2;color:#4e627b;min-height:92px;font-weight:700}.entry-card .btn{width:100%}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
+.btn{border:0;border-radius:13px;padding:15px 22px;font-weight:900;cursor:pointer;font-size:20px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
 .hero{background:linear-gradient(135deg,var(--navy),#174c91);color:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 45px #12345b25;position:relative;overflow:hidden}
 .hero:after{content:"∑  π  6²  ×  ÷  △";position:absolute;left:22px;bottom:10px;font-size:45px;color:#ffffff14;letter-spacing:12px}
-.hero h1{margin:0 0 10px;font-size:clamp(34px,4.8vw,56px)}.hero p{margin:7px 0;line-height:2;font-size:20px}.badge{display:inline-block;background:#ffde76;color:#243450;border-radius:999px;padding:10px 17px;font-weight:900;margin-top:12px;font-size:17px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;margin:20px 0;box-shadow:0 8px 28px #183b5c10}.panel h2{margin-top:0;color:var(--navy);font-size:28px}
-.login-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end}.field label{display:block;font-size:17px;color:#52667e;font-weight:800;margin-bottom:8px}.field select,.field input{width:100%;padding:14px;border:1px solid #bfd0e3;border-radius:11px;font-size:19px;background:#fff}
-.msg{margin-top:12px;border-radius:11px;padding:13px 16px;display:none;font-size:17px;line-height:1.8}.msg.show{display:block}.msg.err{background:#fff0f0;color:#8e2929;border:1px solid #f1bbbb}.msg.ok{background:#effbf4;color:#176942;border:1px solid #bfe4cf}
-.student-head{display:none;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}.student-head.show{display:flex}.student-name{font-size:27px;font-weight:900;color:var(--navy)}.small{font-size:16px;color:var(--muted);line-height:1.8}
+.hero h1{margin:0 0 12px;font-size:clamp(38px,5vw,60px)}.hero p{margin:8px 0;line-height:2;font-size:23px;font-weight:700}.badge{display:inline-block;background:#ffde76;color:#243450;border-radius:999px;padding:11px 18px;font-weight:900;margin-top:14px;font-size:19px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px;margin:22px 0;box-shadow:0 8px 28px #183b5c10}.panel h2{margin-top:0;color:var(--navy);font-size:32px}
+.login-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end}.field label{display:block;font-size:21px;color:#445b76;font-weight:900;margin-bottom:9px}.field select,.field input{width:100%;padding:16px;border:1px solid #bfd0e3;border-radius:12px;font-size:22px;background:#fff;font-weight:700}
+.msg{margin-top:14px;border-radius:12px;padding:15px 18px;display:none;font-size:20px;line-height:1.9;font-weight:700}.msg.show{display:block}.msg.err{background:#fff0f0;color:#8e2929;border:1px solid #f1bbbb}.msg.ok{background:#effbf4;color:#176942;border:1px solid #bfe4cf}
+.student-head{display:none;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}.student-head.show{display:flex}.student-name{font-size:30px;font-weight:900;color:var(--navy)}.small{font-size:20px;color:#536a82;line-height:1.9;font-weight:700}
 .games{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:18px}.game{border:1px solid #d5dfec;border-radius:17px;padding:17px;background:linear-gradient(180deg,#fff,#f7fbff);min-height:235px;display:flex;flex-direction:column}.game h3{margin:7px 0 10px;color:var(--navy);font-size:23px}.game .num{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#e7f0ff;color:var(--blue);font-size:22px;font-weight:900}.state{margin:9px 0;padding:10px 12px;border-radius:9px;font-weight:900;font-size:16px;line-height:1.7}.open{background:#e9f8f0;color:#176b44}.locked{background:#fff3e3;color:#8c5a12}.done{background:#edf2f7;color:#42566d}.failed{background:#fff0f0;color:#9c3333}.stats{font-size:16px;line-height:2;color:#465a70;margin-bottom:12px}.game .actions{margin-top:auto}.game .actions a{display:block;text-align:center;text-decoration:none}
 .teacher-box{display:none}.teacher-box.show{display:block}.teacher-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.summary{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin:12px 0}.summary .s{border:1px solid #d8e2ef;border-radius:13px;padding:13px;background:#f8fbff;text-align:center}.summary b{display:block;font-size:24px;color:var(--blue);margin-top:4px}
 .table-wrap{overflow:auto;border:1px solid #d8e2ef;border-radius:14px}table{border-collapse:collapse;width:100%;min-width:920px;background:#fff}th,td{padding:10px;border-bottom:1px solid #e4ebf3;text-align:center;font-size:13px}th{background:#123f75;color:#fff;position:sticky;top:0}td.name{text-align:right;font-weight:800}.qual{color:#117747;font-weight:900}.notqual{color:#9a3d3d}
-.note{background:#fff9e9;border:1px solid #f0d68a;border-radius:13px;padding:14px 17px;line-height:1.9;color:#6e5311;font-size:17px}.hidden{display:none}
+.note{background:#fff9e9;border:1px solid #f0d68a;border-radius:14px;padding:17px 20px;line-height:2;color:#6e5311;font-size:21px;font-weight:800}.hidden{display:none}
 @media(max-width:950px){.entry-grid{grid-template-columns:1fr}.games{grid-template-columns:1fr 1fr}.login-grid{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}}
+@media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}.entry-photo{width:135px;height:135px}.entry-card h3{font-size:28px}.entry-card p{font-size:21px;min-height:auto}}
 @media print{.no-print{display:none!important}.panel{box-shadow:none}.wrap{width:100%}}
 </style>
 </head>
@@ -38,21 +38,21 @@
 
   <section class="entry-grid no-print" id="entryGrid">
     <div class="entry-card">
-      <div class="icon">🎓</div>
+      <img class="entry-photo" src="assets/student-portal.svg" alt="صورة توضيحية لطالب">
       <h3>دخول الطالب</h3>
-      <p>دخول الطالب برقم الطالب ورمز الدخول الخاص به ومتابعة الوحدات وفق المواعيد المحددة.</p>
+      <p>يدخل الطالب باستخدام رقم الطالب الرسمي ورمز الدخول الخاص به، ثم تظهر له الوحدات الأربع وحالة كل وحدة وفق المواعيد المحددة وشروط التأهل.</p>
       <button class="btn btn-primary" id="studentEntry">دخول الطالب</button>
     </div>
     <div class="entry-card">
-      <div class="icon">🧑‍🏫</div>
+      <img class="entry-photo" src="assets/supervisor-omani.svg" alt="صورة توضيحية لمشرف عُماني بالزي العُماني والمِصر">
       <h3>دخول المشرف</h3>
-      <p>دخول خاص بالمشرف للوصول إلى لوحة المتابعة أو فتح الوحدات في وضع المشرف.</p>
+      <p>دخول خاص بالمشرف يتيح له بعد التحقق اختيار لوحة متابعة النتائج والطباعة، أو الدخول إلى الوحدات الأربع في وضع المشرف دون تسجيل نتائج الطلاب.</p>
       <button class="btn btn-gold" id="supervisorEntry">دخول المشرف</button>
     </div>
   </section>
 
   <section class="panel no-print hidden" id="studentLogin">
-    <h2>🔐 دخول الطالب</h2>
+    <h2>🔐 دخول الطالب</h2><p class="small">اختر الشعبة ورقم الطالب الرسمي، ثم أدخل رمز الدخول الخاص بالطالب للانتقال إلى بوابة الوحدات.</p>
     <div class="login-grid">
       <div class="field"><label>الشعبة</label>
         <select id="studentClass"><option value="">اختر الشعبة</option><option>السادس / ٤</option><option>السادس / ٥</option><option>السادس / ٦</option></select>
@@ -77,9 +77,9 @@
     <h2>🧑‍🏫 دخول المشرف</h2>
 
     <div id="supervisorLoginBox" class="no-print">
-      <p class="small">أدخل الرقم السري للمشرف، ثم اختر بين لوحة المتابعة أو دخول الوحدات.</p>
+      <p class="small">أدخل الرقم السري للمشرف. بعد التحقق ستظهر لك مباشرةً خيارات المشرف: لوحة متابعة النتائج والطباعة، أو الدخول إلى الوحدات الأربع في وضع المشرف.</p>
       <div class="teacher-login">
-        <input id="supervisorPin" type="password" inputmode="numeric" maxlength="8" placeholder="الرقم السري للمشرف" style="padding:14px;border:1px solid #bfd0e3;border-radius:11px;font-size:19px">
+        <input id="supervisorPin" type="password" inputmode="numeric" maxlength="8" placeholder="الرقم السري للمشرف" style="padding:16px;border:1px solid #bfd0e3;border-radius:12px;font-size:22px;font-weight:700">
         <button class="btn btn-gold" id="supervisorLoginBtn">دخول المشرف</button>
       </div>
       <div class="msg" id="supervisorMsg"></div>
