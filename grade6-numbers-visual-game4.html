@@ -253,7 +253,6 @@ document.getElementById("submitComplexBtn").onclick=submitComplex;document.getEl
 (()=>{
 const AFAQ_API_URL="https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/competition-auth";
 const AFAQ_GAME_ID="grade6-numbers-visual-game4";
-const AFAQ_TEACHER_PINS=new Set(["90092222","22229009"]);
 let afaqStudentPin="",afaqCentralAttemptId=null,afaqAttemptsRemaining=3,afaqVerified=false;
 
 const studentInputEl=document.getElementById("studentInput");
@@ -312,6 +311,10 @@ function errText(e){
   if(c==="invalid_credentials") return "رقم الطالب أو رمز الدخول غير صحيح.";
   if(c==="temporarily_locked") return "تم إيقاف محاولات الدخول لهذا الرقم مؤقتًا لمدة ١٠ دقائق بسبب تكرار رمز غير صحيح.";
   if(c==="no_attempts_left") return "لقد استنفدت المحاولات الثلاث المتاحة لهذه اللعبة.";
+  if(c==="previous_incomplete") return "أكمل الوحدة السابقة أولًا قبل الانتقال إلى هذه الوحدة.";
+  if(c==="unit_locked") return "هذه الوحدة لم يحن موعد فتحها بعد. يجب مرور سبعة أيام كاملة من أول دخول للوحدة السابقة.";
+  if(c==="not_qualified") return "الوحدة الرابعة مخصصة للطلاب الذين حققوا أكثر من ٩٠٪ في كل من الوحدات الثلاث الأولى.";
+  if(c==="invalid_teacher_pin") return "الرقم السري للمعلم غير صحيح.";
   if(c==="invalid_class") return "يرجى اختيار الفصل الصحيح.";
   if(c==="AbortError") return "تعذر الاتصال بالخادم. تحقق من الإنترنت ثم أعد المحاولة.";
   return "تعذر إكمال التحقق الآن. حاول مرة أخرى.";
@@ -367,7 +370,7 @@ startBtnEl.onclick=async()=>{
   if(teacher){
     const n=studentInputEl.value.trim(),s=serialInputEl.value.trim(),c=classInputEl.value;
     if(!n||!s||!c){afaqMsg("يرجى إدخال الاسم والرقم واختيار الفصل قبل بدء وضع التدريب.",true);return}
-    if(!AFAQ_TEACHER_PINS.has(teacherPinInputEl.value.trim())){afaqMsg("الرقم السري للمعلم غير صحيح.",true);return}
+    try{await afaqApi({action:"teacher_verify",teacher_pin:teacherPinInputEl.value.trim()});}catch(e){afaqMsg("الرقم السري للمعلم غير صحيح.",true);return}
     studentName=n;studentSerial=s;studentClass=c;isTrainingMode=true;currentAttempt=0;attemptFinalized=false;
     studentNameTop.textContent=studentName;serialTop.textContent=ar(studentSerial);classTop.textContent=studentClass;
     modeBadge.classList.add("show");attemptTop.textContent="تدريب";
@@ -390,7 +393,7 @@ startBtnEl.onclick=async()=>{
     setVerifiedCard(studentName,studentClass,studentSerial,afaqAttemptsRemaining);
     attemptPreviewEl.innerHTML="تم التحقق من الهوية. المتبقي <b>"+afaqAttemptsRemaining+"</b> من ٣ محاولات.";
     studentPinInput.value="";
-    if(!j.can_start){afaqMsg("تم التحقق من بياناتك، لكنك استنفدت المحاولات الثلاث لهذه اللعبة.",true);return}
+    if(!j.can_start){let m="تم التحقق من بياناتك، لكنك استنفدت المحاولات الثلاث لهذه اللعبة.";if(j.lock_reason==="previous_incomplete")m="أكمل الوحدة السابقة أولًا قبل الانتقال إلى هذه الوحدة.";if(j.lock_reason==="unit_locked")m="هذه الوحدة مقفلة حتى "+(j.available_at?new Date(j.available_at).toLocaleString("ar-OM"):"مرور سبعة أيام كاملة")+".";if(j.lock_reason==="not_qualified")m="لم يتحقق شرط التأهل للوحدة الرابعة: يجب أن تكون أفضل نتيجة أعلى من ٩٠٪ في كل من الوحدات الثلاث الأولى.";afaqMsg(m,true);return}
     startOverlayEl.style.display="none";showReadyScreen();
     readyStudentName.textContent=studentName;
     readyMeta.textContent=studentClass+" — رقم الطالب "+studentSerial+" — المتبقي "+afaqAttemptsRemaining+" من ٣ محاولات";
@@ -425,7 +428,24 @@ const restartEl=document.getElementById("restartBtn"),playAgainEl=document.getEl
 if(restartEl)restartEl.onclick=()=>{if(studentSerial)showReadyScreen()};
 if(playAgainEl)playAgainEl.onclick=()=>{if(studentSerial)showReadyScreen()};
 
+async function afaqAutoLoginFromPortal(){
+  try{
+    const raw=sessionStorage.getItem("afaqCompetitionLogin");
+    if(!raw)return;
+    const s=JSON.parse(raw);
+    if(!s||!s.class_name||!s.student_id||!/^\d{4}$/.test(String(s.pin||"")))return;
+    accessModeEl.value="student";
+    classInputEl.value="";
+    setMode();
+    classInputEl.value=s.class_name;
+    await loadIds();
+    officialIdSelect.value=s.student_id;
+    studentPinInput.value=String(s.pin);
+    await startBtnEl.onclick();
+  }catch(_){}
+}
 setMode();
+afaqAutoLoginFromPortal();
 })();
 </script>
 
