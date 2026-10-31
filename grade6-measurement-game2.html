@@ -219,8 +219,116 @@ complexQ("مقارنة تصميمين","لديك تصميمان مستطيلان
 {type:"input",text:"ما الفرق بين مساحتي التصميمين بالمتر المربع؟",answer:8,displayAnswer:"٨ م²"}
 ],"احسب مساحة كل مستطيل. لاحظ أن المحيطين مختلفان قليلًا، فلا تعتمد على الشكل فقط.",equalPerimeterSVG())
 ]}
+
+// ===== ثلاثة نماذج مرتبطة بالمحاولات الرسمية =====
+const AFAQ_ORIGINAL_STAGE_MAKERS=[null,makeStage1,makeStage2,makeStage3,makeStage4,makeStage5];
+const AFAQ_ALT_MODELS={
+2:{
+1:()=>[
+mc("تحويل الطول","٤ أمتار تساوي كم سنتيمترًا؟","٤ م = ؟ سم",[400,40,4000,4],400,"كل متر = ١٠٠ سم.","٤ × ١٠٠ = ٤٠٠ سم."),
+mc("تحويل الطول","حوّل ٣٫٦ كيلومتر إلى أمتار.","٣٫٦ كم = ؟ م",[3600,360,36000,36],3600,"كل ١ كم = ١٠٠٠ م.","٣٫٦ × ١٠٠٠ = ٣٦٠٠ م."),
+mc("تحويل الطول","٨٥ مليمترًا تساوي كم سنتيمترًا؟","٨٥ ملم = ؟ سم",[8.5,85,0.85,850],8.5,"كل ١٠ ملم = ١ سم.","٨٥ ÷ ١٠ = ٨٫٥ سم."),
+mc("اختيار الوحدة","ما الوحدة الأنسب لقياس طول قلم رصاص؟","طول قلم رصاص",["السنتيمتر","الكيلومتر","المتر","المليمتر فقط"],"السنتيمتر","فكر في طول جسم صغير.","السنتيمتر مناسب لطول القلم."),
+mc("تحويل الطول","١٫٧٢ متر تساوي كم سنتيمترًا؟","١٫٧٢ م = ؟ سم",[172,17.2,1720,1.72],172,"اضرب في ١٠٠.","١٫٧٢ × ١٠٠ = ١٧٢ سم."),
+mc("تحويل الطول","٢٫٤ كيلومتر تساوي كم مترًا؟","٢٫٤ كم = ؟ م",[2400,240,24000,24],2400,"اضرب في ١٠٠٠.","٢٫٤ × ١٠٠٠ = ٢٤٠٠ م."),
+mc("الفرق بين طولين","طول شريط ٣ م و٢٠ سم، وآخر ٢٧٥ سم. ما الفرق؟","٣٢٠ سم − ٢٧٥ سم",[45,35,55,65],45,"حوّل للوحدة نفسها.","٣٢٠ − ٢٧٥ = ٤٥ سم."),
+mc("تحويل الطول","٠٫٤٨ متر تساوي كم مليمترًا؟","٠٫٤٨ م = ؟ ملم",[480,48,4800,4.8],480,"كل متر = ١٠٠٠ ملم.","٠٫٤٨ × ١٠٠٠ = ٤٨٠ ملم."),
+mc("تحويل الطول","٥٦٠ سم تساوي كم مترًا؟","٥٦٠ سم = ؟ م",[5.6,56,0.56,5600],5.6,"اقسم على ١٠٠.","٥٦٠ ÷ ١٠٠ = ٥٫٦ م."),
+mc("تحويل الطول","١٢٥٠ ملم تساوي كم مترًا؟","١٢٥٠ ملم = ؟ م",[1.25,12.5,0.125,125],1.25,"اقسم على ١٠٠٠.","١٢٥٠ ÷ ١٠٠٠ = ١٫٢٥ م.")
+],
+2:()=>[
+mc("الفترة الزمنية","من ٩:١٥ إلى ١٠:٠٥، كم دقيقة؟","٩:١٥ ← ١٠:٠٥",[50,40,45,55],50,"إلى ١٠:٠٠ = ٤٥ دقيقة ثم ٥ دقائق.","المجموع ٥٠ دقيقة."),
+mc("إضافة زمن","تبدأ حصة الساعة ١٣:٤٠ وتستمر ٤٥ دقيقة. متى تنتهي؟","١٣:٤٠ + ٤٥ دقيقة",["١٤:٢٥","١٤:١٥","١٣:٨٥","١٤:٣٥"],"١٤:٢٥","أضف ٢٠ دقيقة حتى ١٤:٠٠ ثم ٢٥.","تنتهي ١٤:٢٥."),
+mc("الجداول الزمنية","حافلة تغادر ٦:٥٥ وتصل ٨:٢٠. ما مدة الرحلة؟","٦:٥٥ ← ٨:٢٠",[85,75,95,65],85,"من ٦:٥٥ إلى ٧:٥٥ = ٦٠ دقيقة.","ثم ٢٥ دقيقة، المجموع ٨٥."),
+mc("تحويل الزمن","٣ ساعات و١٠ دقائق تساوي كم دقيقة؟","٣ س و١٠ د",[190,180,210,310],190,"٣ ساعات = ١٨٠ دقيقة.","١٨٠ + ١٠ = ١٩٠."),
+mc("تحويل الزمن","٢١٠ دقائق تساوي؟","٢١٠ دقيقة",["٣ ساعات و٣٠ دقيقة","ساعتين و١٠ دقائق","٣ ساعات و١٠ دقائق","٤ ساعات"],"٣ ساعات و٣٠ دقيقة","١٨٠ دقيقة = ٣ ساعات.","يتبقى ٣٠ دقيقة."),
+mc("نظام ٢٤ ساعة","٧:٤٥ مساءً بنظام ٢٤ ساعة تساوي؟","٧:٤٥ مساءً",["١٩:٤٥","٠٧:٤٥","١٧:٤٥","٢١:٤٥"],"١٩:٤٥","أضف ١٢.","٧ + ١٢ = ١٩."),
+mc("التقويم","كم يومًا في شهر يونيو؟","يونيو",[30,31,29,28],30,"تذكر أشهر الثلاثين يومًا.","يونيو ٣٠ يومًا."),
+mc("التقويم","في سنة غير كبيسة، كم يومًا في فبراير؟","فبراير",[28,29,30,31],28,"السنة غير الكبيسة.","فبراير ٢٨ يومًا."),
+mc("التقويم","إذا كان اليوم الاثنين ١٢ من الشهر، فما تاريخ الاثنين القادم؟","الاثنين ١٢",[19,18,20,21],19,"أضف ٧ أيام.","الاثنين القادم ١٩."),
+mc("المدة الزمنية","بدأ نشاط الساعة ١٠:٣٥ واستمر ساعة و٥٠ دقيقة. متى انتهى؟","١٠:٣٥ + ١س ٥٠د",["١٢:٢٥","١٢:١٥","١١:٢٥","١٣:٢٥"],"١٢:٢٥","أضف ساعة ثم ٥٠ دقيقة.","١١:٣٥ + ٥٠ = ١٢:٢٥.")
+],
+3:()=>[
+mc("مساحة المستطيل","مستطيل طوله ٩ سم وعرضه ٦ سم. المساحة؟","٩ × ٦",[54,30,15,108],54,"المساحة = الطول × العرض.","٩ × ٦ = ٥٤ سم²."),
+mc("محيط المستطيل","مستطيل ٩ سم × ٦ سم. المحيط؟","٩ ، ٦",[30,54,15,18],30,"٢ × (٩ + ٦).","المحيط ٣٠ سم."),
+mc("مساحة المربع","مربع طول ضلعه ٨ م. المساحة؟","٨ م",[64,32,16,48],64,"الضلع × الضلع.","٨ × ٨ = ٦٤ م²."),
+mc("محيط المربع","مربع طول ضلعه ١١ سم. المحيط؟","١١ سم",[44,121,22,33],44,"٤ × الضلع.","٤ × ١١ = ٤٤ سم."),
+mc("ضلع مجهول","محيط مستطيل ٣٤ سم وطوله ١٠ سم. ما عرضه؟","المحيط ٣٤، الطول ١٠",[7,14,17,24],7,"نصف المحيط = ١٧.","١٧ − ١٠ = ٧ سم."),
+mc("مساحة","غرفة ٧ م × ٥ م. ما مساحتها؟","٧ م × ٥ م",[35,24,12,70],35,"اضرب البعدين.","المساحة ٣٥ م²."),
+mc("محيط","حديقة ١٥ م × ٨ م. كم مترًا من السياج يلزم؟","١٥ م × ٨ م",[46,120,23,30],46,"٢ × (١٥ + ٨).","المحيط ٤٦ م."),
+mc("تغير المساحة","مستطيل ٦ × ٣، إذا تضاعف الطول وبقي العرض ٣، فما المساحة الجديدة؟","١٢ × ٣",[36,18,30,42],36,"استخدم الأبعاد الجديدة.","١٢ × ٣ = ٣٦."),
+mc("وحدات المساحة","أي وحدة أنسب لمساحة ملعب المدرسة؟","مساحة ملعب",["م²","سم","كم","ملم"],"م²","المساحة بوحدة مربعة.","المتر المربع مناسب."),
+mc("ضلع مجهول","مساحة مستطيل ٤٨ سم² وعرضه ٦ سم. ما طوله؟","٤٨ ÷ ٦",[8,7,9,6],8,"الطول = المساحة ÷ العرض.","٤٨ ÷ ٦ = ٨ سم.")
+],
+4:()=>[
+complexQ("تحويلات الطول","حوّل ٢٫٧٥ متر ثم قارن.",[{type:"input",text:"كم سنتيمترًا؟",answer:275,displayAnswer:"٢٧٥ سم"},{type:"input",text:"كم مليمترًا؟",answer:2750,displayAnswer:"٢٧٥٠ ملم"},{type:"choice",text:"أيهما أطول: ٢٫٧٥ م أم ٢٨٠ سم؟",choices:["٢٫٧٥ م","٢٨٠ سم"],answer:"٢٨٠ سم"}],"وحّد الوحدات قبل المقارنة."),
+complexQ("الزمن","بدأت رحلة ٨:٢٥ واستمرت ساعة و٣٥ دقيقة.",[{type:"input",text:"كم دقيقة مدة الرحلة؟",answer:95,displayAnswer:"٩٥ دقيقة"},{type:"input",text:"في أي وقت انتهت؟ اكتب 10.00",answer:10,displayAnswer:"١٠:٠٠"}],"ساعة و٣٥ دقيقة = ٩٥ دقيقة."),
+complexQ("التقويم","في شهر يبدأ يومه الأول يوم الجمعة.",[{type:"choice",text:"في أي يوم يقع اليوم ١٥؟",choices:["الجمعة","السبت","الأحد","الخميس"],answer:"الجمعة"},{type:"input",text:"كم يومًا بين اليوم ١٥ واليوم ٢٩؟",answer:14,displayAnswer:"١٤ يومًا"}],"كل ٧ أيام يتكرر اليوم نفسه."),
+complexQ("المساحة والمحيط","مستطيل طوله ١٣ م وعرضه ٨ م.",[{type:"input",text:"ما المساحة؟",answer:104,displayAnswer:"١٠٤ م²"},{type:"input",text:"ما المحيط؟",answer:42,displayAnswer:"٤٢ م"},{type:"input",text:"إذا زاد الطول إلى ١٥ م، فما المساحة الجديدة؟",answer:120,displayAnswer:"١٢٠ م²"}],"استخدم قوانين المستطيل.")
+],
+5:()=>[
+complexQ("مقياس الرسم","مخطط قاعة طوله ٥ سم وعرضه ٤ سم، وكل ١ سم يمثل ٣ م.",[{type:"input",text:"ما الطول الحقيقي؟",answer:15,displayAnswer:"١٥ م"},{type:"input",text:"ما العرض الحقيقي؟",answer:12,displayAnswer:"١٢ م"},{type:"input",text:"ما المحيط الحقيقي؟",answer:54,displayAnswer:"٥٤ م"}],"اضرب أبعاد المخطط في ٣."),
+complexQ("السياج","ساحة مستطيلة ١٨ م × ١١ م وبها بوابة عرضها ٣ م لا تحتاج إلى سياج.",[{type:"input",text:"ما محيط الساحة؟",answer:58,displayAnswer:"٥٨ م"},{type:"input",text:"كم مترًا من السياج يلزم بعد استبعاد البوابة؟",answer:55,displayAnswer:"٥٥ م"}],"اطرح عرض البوابة من المحيط."),
+complexQ("تحدي الزمن","بدأ برنامج الساعة ٩:٢٠: نشاط أول ٥٠ دقيقة، استراحة ١٥ دقيقة، ثم نشاط ثانٍ ٤٠ دقيقة.",[{type:"input",text:"متى ينتهي النشاط الأول؟ اكتب 10.10",answer:10.10,displayAnswer:"١٠:١٠"},{type:"input",text:"كم دقيقة يستغرق البرنامج كاملًا؟",answer:105,displayAnswer:"١٠٥ دقائق"},{type:"input",text:"متى ينتهي البرنامج؟ اكتب 11.05",answer:11.05,displayAnswer:"١١:٠٥"}],"اجمع الأزمنة بالتسلسل."),
+complexQ("مسافة","طريق طوله ٢٫٦ كم، قطع منه طالب ١٧٥٠ م.",[{type:"input",text:"كم طول الطريق بالمتر؟",answer:2600,displayAnswer:"٢٦٠٠ م"},{type:"input",text:"كم مترًا بقي؟",answer:850,displayAnswer:"٨٥٠ م"}],"حوّل الكيلومترات إلى أمتار ثم اطرح.")
+]
+},
+3:{
+1:()=>[
+mc("تحويل الطول","٥ أمتار تساوي كم سنتيمترًا؟","٥ م = ؟ سم",[500,50,5000,5],500,"كل متر = ١٠٠ سم.","٥٠٠ سم."),
+mc("تحويل الطول","حوّل ٢٧٥٠ مترًا إلى كيلومترات.","٢٧٥٠ م = ؟ كم",[2.75,27.5,0.275,275],2.75,"اقسم على ١٠٠٠.","٢٫٧٥ كم."),
+mc("تحويل الطول","٩٦ مليمترًا تساوي كم سنتيمترًا؟","٩٦ ملم = ؟ سم",[9.6,96,0.96,960],9.6,"اقسم على ١٠.","٩٫٦ سم."),
+mc("اختيار الوحدة","ما الوحدة الأنسب لقياس سُمك هاتف محمول؟","سُمك هاتف",["المليمتر","الكيلومتر","المتر","السنتيمتر"],"المليمتر","السُمك صغير جدًا.","المليمتر أنسب."),
+mc("تحويل الطول","٣٫٠٨ متر تساوي كم سنتيمترًا؟","٣٫٠٨ م = ؟ سم",[308,30.8,3080,3.08],308,"اضرب في ١٠٠.","٣٠٨ سم."),
+mc("تحويل الطول","٠٫٩٥ كيلومتر تساوي كم مترًا؟","٠٫٩٥ كم = ؟ م",[950,95,9500,9.5],950,"اضرب في ١٠٠٠.","٩٥٠ م."),
+mc("الفرق بين طولين","طول حبل ١ م و٨٥ سم، وآخر ١٤٢ سم. ما الفرق؟","١٨٥ سم − ١٤٢ سم",[43,33,53,63],43,"وحّد الوحدة.","الفرق ٤٣ سم."),
+mc("تحويل الطول","٠٫٧٣ متر تساوي كم مليمترًا؟","٠٫٧٣ م = ؟ ملم",[730,73,7300,7.3],730,"اضرب في ١٠٠٠.","٧٣٠ ملم."),
+mc("تحويل الطول","٨٢٠ سم تساوي كم مترًا؟","٨٢٠ سم = ؟ م",[8.2,82,0.82,8200],8.2,"اقسم على ١٠٠.","٨٫٢ م."),
+mc("تحويل الطول","٣٤٠٠ ملم تساوي كم مترًا؟","٣٤٠٠ ملم = ؟ م",[3.4,34,0.34,340],3.4,"اقسم على ١٠٠٠.","٣٫٤ م.")
+],
+2:()=>[
+mc("الفترة الزمنية","من ٧:٥٠ إلى ٨:٣٥، كم دقيقة؟","٧:٥٠ ← ٨:٣٥",[45,35,55,40],45,"إلى ٨:٠٠ عشر دقائق ثم ٣٥.","المجموع ٤٥."),
+mc("إضافة زمن","تبدأ حصة الساعة ١٥:٢٥ وتستمر ٥٠ دقيقة. متى تنتهي؟","١٥:٢٥ + ٥٠ دقيقة",["١٦:١٥","١٦:٠٥","١٥:٧٥","١٦:٢٥"],"١٦:١٥","أضف ٣٥ دقيقة حتى ١٦:٠٠ ثم ١٥.","١٦:١٥."),
+mc("الجداول الزمنية","حافلة تغادر ٦:٣٠ وتصل ٧:٥٥. ما مدة الرحلة؟","٦:٣٠ ← ٧:٥٥",[85,75,95,65],85,"ساعة و٢٥ دقيقة.","٨٥ دقيقة."),
+mc("تحويل الزمن","ساعة و٤٥ دقيقة تساوي كم دقيقة؟","١ س و٤٥ د",[105,95,145,60],105,"٦٠ + ٤٥.","١٠٥ دقائق."),
+mc("تحويل الزمن","١٨٥ دقيقة تساوي؟","١٨٥ دقيقة",["٣ ساعات و٥ دقائق","ساعتين و٨٥ دقيقة","٣ ساعات و٢٥ دقيقة","ساعتين و٥ دقائق"],"٣ ساعات و٥ دقائق","١٨٠ دقيقة = ٣ ساعات.","يتبقى ٥ دقائق."),
+mc("نظام ٢٤ ساعة","٨:٢٠ مساءً بنظام ٢٤ ساعة تساوي؟","٨:٢٠ مساءً",["٢٠:٢٠","٠٨:٢٠","١٨:٢٠","٢٢:٢٠"],"٢٠:٢٠","أضف ١٢.","٨ + ١٢ = ٢٠."),
+mc("التقويم","كم يومًا في شهر سبتمبر؟","سبتمبر",[30,31,29,28],30,"سبتمبر من أشهر ٣٠ يومًا.","٣٠ يومًا."),
+mc("التقويم","في السنة الكبيسة، كم يومًا في فبراير؟","فبراير",[29,28,30,31],29,"السنة الكبيسة تضيف يومًا.","٢٩ يومًا."),
+mc("التقويم","إذا كان اليوم الثلاثاء ٩ من الشهر، فما تاريخ الثلاثاء القادم؟","الثلاثاء ٩",[16,15,17,18],16,"أضف ٧.","الثلاثاء القادم ١٦."),
+mc("المدة الزمنية","بدأت رحلة ١١:٤٠ واستمرت ساعتين و١٥ دقيقة. متى انتهت؟","١١:٤٠ + ٢س ١٥د",["١٣:٥٥","١٣:٤٥","١٤:٥٥","١٢:٥٥"],"١٣:٥٥","أضف ساعتين ثم ١٥ دقيقة.","١٣:٥٥.")
+],
+3:()=>[
+mc("مساحة المستطيل","مستطيل طوله ١٢ سم وعرضه ٤ سم. المساحة؟","١٢ × ٤",[48,32,16,96],48,"الطول × العرض.","٤٨ سم²."),
+mc("محيط المستطيل","مستطيل ١٢ سم × ٤ سم. المحيط؟","١٢ ، ٤",[32,48,16,24],32,"٢ × (١٢ + ٤).","٣٢ سم."),
+mc("مساحة المربع","مربع طول ضلعه ٦ م. المساحة؟","٦ م",[36,24,12,18],36,"الضلع × الضلع.","٣٦ م²."),
+mc("محيط المربع","مربع طول ضلعه ١٣ سم. المحيط؟","١٣ سم",[52,169,26,39],52,"٤ × ١٣.","٥٢ سم."),
+mc("ضلع مجهول","محيط مستطيل ٤٤ سم وطوله ١٤ سم. ما عرضه؟","المحيط ٤٤، الطول ١٤",[8,16,22,30],8,"نصف المحيط = ٢٢.","٢٢ − ١٤ = ٨."),
+mc("مساحة","غرفة ٩ م × ٧ م. ما مساحتها؟","٩ × ٧",[63,32,16,126],63,"اضرب البعدين.","٦٣ م²."),
+mc("محيط","حديقة ٢٠ م × ٦ م. كم مترًا من السياج يلزم؟","٢٠ × ٦",[52,120,26,40],52,"٢ × (٢٠ + ٦).","٥٢ م."),
+mc("تغير المساحة","مستطيل ٤ × ٥، إذا أصبح الطول ١٢ وبقي العرض ٥، فما المساحة الجديدة؟","١٢ × ٥",[60,20,45,50],60,"استخدم الأبعاد الجديدة.","٦٠."),
+mc("وحدات المساحة","أي وحدة أنسب لمساحة سطح طاولة؟","مساحة سطح طاولة",["سم²","كم","م","ملم"],"سم²","نحتاج وحدة مربعة مناسبة لجسم صغير.","السنتيمتر المربع مناسب."),
+mc("ضلع مجهول","مساحة مستطيل ٧٢ سم² وطوله ٩ سم. ما عرضه؟","٧٢ ÷ ٩",[8,7,9,6],8,"العرض = المساحة ÷ الطول.","٨ سم.")
+],
+4:()=>[
+complexQ("تحويلات الطول","حوّل ١٫٨٥ متر ثم قارن.",[{type:"input",text:"كم سنتيمترًا؟",answer:185,displayAnswer:"١٨٥ سم"},{type:"input",text:"كم مليمترًا؟",answer:1850,displayAnswer:"١٨٥٠ ملم"},{type:"choice",text:"أيهما أطول: ١٫٨٥ م أم ١٩٠ سم؟",choices:["١٫٨٥ م","١٩٠ سم"],answer:"١٩٠ سم"}],"وحّد الوحدات."),
+complexQ("الزمن","بدأت رحلة ٧:٤٠ واستمرت ساعتين و٢٥ دقيقة.",[{type:"input",text:"كم دقيقة مدة الرحلة؟",answer:145,displayAnswer:"١٤٥ دقيقة"},{type:"input",text:"في أي وقت انتهت؟ اكتب 10.05",answer:10.05,displayAnswer:"١٠:٠٥"}],"ساعتان و٢٥ دقيقة = ١٤٥ دقيقة."),
+complexQ("التقويم","في شهر يبدأ يومه الأول يوم الأحد.",[{type:"choice",text:"في أي يوم يقع اليوم ٢٢؟",choices:["الأحد","الاثنين","الثلاثاء","السبت"],answer:"الأحد"},{type:"input",text:"كم يومًا بين اليوم ٢٢ واليوم ٣١؟",answer:9,displayAnswer:"٩ أيام"}],"٢١ يومًا = ٣ أسابيع."),
+complexQ("المساحة والمحيط","مستطيل طوله ١٤ م وعرضه ٩ م.",[{type:"input",text:"ما المساحة؟",answer:126,displayAnswer:"١٢٦ م²"},{type:"input",text:"ما المحيط؟",answer:46,displayAnswer:"٤٦ م"},{type:"input",text:"إذا زاد العرض إلى ١٠ م، فما المساحة الجديدة؟",answer:140,displayAnswer:"١٤٠ م²"}],"طبق قوانين المستطيل.")
+],
+5:()=>[
+complexQ("مقياس الرسم","مخطط قاعة طوله ٦ سم وعرضه ٣ سم، وكل ١ سم يمثل ٤ م.",[{type:"input",text:"ما الطول الحقيقي؟",answer:24,displayAnswer:"٢٤ م"},{type:"input",text:"ما العرض الحقيقي؟",answer:12,displayAnswer:"١٢ م"},{type:"input",text:"ما المحيط الحقيقي؟",answer:72,displayAnswer:"٧٢ م"}],"اضرب في ٤."),
+complexQ("السياج","ساحة مستطيلة ٢٢ م × ١٤ م وبها بوابة عرضها ٤ م.",[{type:"input",text:"ما محيط الساحة؟",answer:72,displayAnswer:"٧٢ م"},{type:"input",text:"كم سياجًا يلزم بعد استبعاد البوابة؟",answer:68,displayAnswer:"٦٨ م"}],"اطرح ٤ من المحيط."),
+complexQ("تحدي الزمن","بدأ برنامج الساعة ١٠:١٥: نشاط ٤٥ دقيقة، استراحة ٢٠ دقيقة، ثم نشاط ٥٥ دقيقة.",[{type:"input",text:"متى ينتهي النشاط الأول؟ اكتب 11.00",answer:11,displayAnswer:"١١:٠٠"},{type:"input",text:"كم دقيقة يستغرق البرنامج كاملًا؟",answer:120,displayAnswer:"١٢٠ دقيقة"},{type:"input",text:"متى ينتهي البرنامج؟ اكتب 12.15",answer:12.15,displayAnswer:"١٢:١٥"}],"اجمع الأزمنة."),
+complexQ("مسافة","طريق طوله ٣٫٤ كم، قطع منه متسابق ٢٢٥٠ م.",[{type:"input",text:"كم طول الطريق بالمتر؟",answer:3400,displayAnswer:"٣٤٠٠ م"},{type:"input",text:"كم بقي؟",answer:1150,displayAnswer:"١١٥٠ م"}],"حوّل ثم اطرح.")
+]
+}
+};
+function afaqAttemptModel(){return isTrainingMode?1:Math.max(1,Math.min(3,Number(currentAttempt)||1))}
+function afaqStageQuestions(stageNo){const model=afaqAttemptModel();return model===1?AFAQ_ORIGINAL_STAGE_MAKERS[stageNo]():AFAQ_ALT_MODELS[model][stageNo]()}
+
 function stopTimers(){if(perQuestionTimer){clearInterval(perQuestionTimer);perQuestionTimer=null}if(stageTimerInterval){clearInterval(stageTimerInterval);stageTimerInterval=null}}function updateHUD(){scoreTop.textContent=ar(score);totalScoreMini.textContent=ar(score);percentMini.textContent=ar(score*2);progressTop.textContent=ar(progressPoints);mainProgress.style.width=progressPoints/50*100+"%"}
-function setupStage(){stopTimers();locked=false;qIndex=0;complexQuestionIndex=0;stageScore=0;selectedPartAnswers={};stageScoreMini.textContent=ar(0);const i=STAGE_INFO[stage];portrait.className="portrait "+i.className;portraitEmoji.textContent=i.char;portraitTag.textContent=i.tag;portraitImg.style.display=i.img?"block":"none";portraitEmoji.style.display=i.img?"none":"inline";if(i.img){portraitImg.src=i.img;portraitImg.onerror=()=>{portraitImg.style.display="none";portraitEmoji.style.display="inline"}};stageName.textContent=i.name;stageDesc.textContent=i.desc;stageTop.textContent=ar(stage);document.getElementById("soundBtn").textContent=audioOn?(`🔊 نغمة ${i.tag}: تعمل`):"🔇 المؤثرات الصوتية: متوقفة";for(let x=1;x<=5;x++){let n=document.getElementById("road"+x);n.classList.toggle("active",x===stage);n.classList.toggle("done",x<stage)}if(stage<=3){timerCircle.style.display="grid";timerTitle.style.display="block";stageTimer.style.display="none";questions=stage===1?makeStage1():stage===2?makeStage2():makeStage3();showMCQuestion()}else{timerCircle.style.display="none";timerTitle.style.display="none";stageTimer.style.display="block";questions=stage===4?makeStage4():makeStage5();stageTimeLeft=STAGE_INFO[stage].stageSeconds;warned=false;renderStageClock();startStageClock();showComplexQuestion()}updateHUD()}
+function setupStage(){stopTimers();locked=false;qIndex=0;complexQuestionIndex=0;stageScore=0;selectedPartAnswers={};stageScoreMini.textContent=ar(0);const i=STAGE_INFO[stage];portrait.className="portrait "+i.className;portraitEmoji.textContent=i.char;portraitTag.textContent=i.tag;portraitImg.style.display=i.img?"block":"none";portraitEmoji.style.display=i.img?"none":"inline";if(i.img){portraitImg.src=i.img;portraitImg.onerror=()=>{portraitImg.style.display="none";portraitEmoji.style.display="inline"}};stageName.textContent=i.name;stageDesc.textContent=i.desc;stageTop.textContent=ar(stage);document.getElementById("soundBtn").textContent=audioOn?(`🔊 نغمة ${i.tag}: تعمل`):"🔇 المؤثرات الصوتية: متوقفة";for(let x=1;x<=5;x++){let n=document.getElementById("road"+x);n.classList.toggle("active",x===stage);n.classList.toggle("done",x<stage)}if(stage<=3){timerCircle.style.display="grid";timerTitle.style.display="block";stageTimer.style.display="none";questions=afaqStageQuestions(stage);showMCQuestion()}else{timerCircle.style.display="none";timerTitle.style.display="none";stageTimer.style.display="block";questions=afaqStageQuestions(stage);stageTimeLeft=STAGE_INFO[stage].stageSeconds;warned=false;renderStageClock();startStageClock();showComplexQuestion()}updateHUD()}
 function startQuestionClock(){if(perQuestionTimer)clearInterval(perQuestionTimer);timeLeft=STAGE_INFO[stage].time;renderQuestionClock();perQuestionTimer=setInterval(()=>{timeLeft--;renderQuestionClock();if(timeLeft<=0){clearInterval(perQuestionTimer);perQuestionTimer=null;timeoutMC()}},1000)}function renderQuestionClock(){timerText.textContent=ar(timeLeft);const t=STAGE_INFO[stage].time,deg=Math.max(0,Math.round(timeLeft/t*360)),c=timeLeft<=5?"var(--red)":timeLeft<=Math.ceil(t/2)?"var(--gold)":"var(--green)";timerCircle.style.background=`conic-gradient(${c} ${deg}deg,#e7edf4 0deg)`}function startStageClock(){if(stageTimerInterval)clearInterval(stageTimerInterval);stageTimerInterval=setInterval(()=>{stageTimeLeft--;renderStageClock();if(stageTimeLeft<=120&&!warned){warned=true;stageTimer.classList.add("warning");warningBanner.style.display="block";warningSound();setTimeout(()=>warningBanner.style.display="none",5000)}if(stageTimeLeft<=0){clearInterval(stageTimerInterval);stageTimerInterval=null;expireComplexStage()}},1000)}function renderStageClock(){const m=Math.floor(stageTimeLeft/60),s=stageTimeLeft%60;stageClock.textContent=ar(String(m).padStart(2,"0")+":"+String(s).padStart(2,"0"))}
 function showMCQuestion(){locked=false;answers.innerHTML="";complexArea.style.display="none";feedback.innerHTML="ابدأ بثقة…";current=questions[qIndex];qNumberBadge.textContent=`السؤال ${ar(qIndex+1)} من ١٠`;topicBadge.textContent=current.topic;pointsBadge.textContent="درجة واحدة";qTitle.textContent=current.title;qDisplay.textContent=current.display;current.choices.forEach(v=>{const b=document.createElement("button");b.className="answer";b.textContent=typeof v==="number"?fmt(v):ar(v);b.onclick=()=>answerMC(v,b);answers.appendChild(b)});startQuestionClock()}function eq(a,b){return typeof a==="number"&&typeof b==="number"?Math.abs(a-b)<1e-9:String(a)===String(b)}function answerMC(v,b){if(locked)return;locked=true;if(perQuestionTimer){clearInterval(perQuestionTimer);perQuestionTimer=null}document.querySelectorAll(".answer").forEach(x=>x.disabled=true);if(eq(v,current.answer)){score++;stageScore++;progressPoints++;b.classList.add("good");happy();confetti(10);feedback.innerHTML=`✅ <b>${namedPraise()}</b><div class="explain">${current.explain}</div>`}else{b.classList.add("bad");sad();const t=typeof current.answer==="number"?fmt(current.answer):ar(current.answer);document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===t)x.classList.add("good")});feedback.innerHTML=`❌ <b>${namedTryAgain()}</b> الصحيح: <b>${t}</b><div class="explain">${current.explain}</div>`}updateHUD();stageScoreMini.textContent=ar(stageScore);setTimeout(()=>{if(qIndex===9)finishStage();else{qIndex++;showMCQuestion()}},1350)}function timeoutMC(){if(locked)return;locked=true;sad();document.querySelectorAll(".answer").forEach(x=>x.disabled=true);const t=typeof current.answer==="number"?fmt(current.answer):ar(current.answer);document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===t)x.classList.add("good")});feedback.innerHTML=`⏰ <b>انتهى الوقت يا ${studentName}.</b> لا بأس، الصحيح: <b>${t}</b><div class="explain">${current.explain}</div>`;setTimeout(()=>{if(qIndex===9)finishStage();else{qIndex++;showMCQuestion()}},1350)}
 function showComplexQuestion(){locked=false;answers.innerHTML="";complexArea.style.display="block";partsArea.innerHTML="";feedback.innerHTML="اقرأ السؤال كاملًا ثم أجب عن أجزائه.";current=questions[complexQuestionIndex];selectedPartAnswers={};qNumberBadge.textContent=`التحدي ${ar(complexQuestionIndex+1)} من ${ar(questions.length)}`;topicBadge.textContent=current.topic;pointsBadge.textContent=`${ar(current.points)} درجات`;qTitle.textContent=stage===4?"مختبر مستر بين":"تحدّي الأستاذ سعيد";qDisplay.textContent="";visualArea.innerHTML=current.visual||"";visualArea.style.display=current.visual?"block":"none";complexLead.textContent=current.lead;current.parts.forEach((p,i)=>{const box=document.createElement("div");box.className="part";box.id="part-"+i;const t=document.createElement("div");t.className="partTitle";t.textContent=`(${ar(i+1)}) ${p.text}`;box.appendChild(t);if(p.type==="input"){const inp=document.createElement("input");inp.className="partInput";inp.id="input-"+i;inp.inputMode="decimal";inp.placeholder="اكتب الإجابة";box.appendChild(inp)}else{const row=document.createElement("div");row.className="partChoices";p.choices.forEach(ch=>{const b=document.createElement("button");b.className="partChoice";b.textContent=ch;b.onclick=()=>{if(locked)return;selectedPartAnswers[i]=ch;row.querySelectorAll(".partChoice").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")};row.appendChild(b)});box.appendChild(row)}partsArea.appendChild(box)})}
