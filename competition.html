@@ -7,7 +7,7 @@
 <style>
 :root{--navy:#102b55;--blue:#1d6fdc;--gold:#dca827;--cream:#fff9ec;--green:#178553;--red:#b93636;--muted:#64748b;--line:#d9e2ef}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#edf5ff,#fff 34%,#f7fbff);color:#16243b;font-size:20px}
-.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin:24px 0}.entry-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px 24px;box-shadow:0 10px 30px #183b5c12;text-align:center}.entry-photo{width:165px;height:165px;object-fit:contain;display:block;margin:0 auto 16px;border-radius:28px}.entry-card .icon{font-size:54px}.entry-card h3{margin:12px 0 10px;color:var(--navy);font-size:31px}.entry-card p{font-size:23px;line-height:2;color:#4e627b;min-height:92px;font-weight:700}.entry-card .btn{width:100%}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
+.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin:24px 0}.entry-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px 24px;box-shadow:0 10px 30px #183b5c12;text-align:center}.entry-photo{width:195px;height:195px;object-fit:contain;display:block;margin:0 auto 16px;border-radius:28px}.entry-card .icon{font-size:54px}.entry-card h3{margin:12px 0 10px;color:var(--navy);font-size:31px}.entry-card p{font-size:23px;line-height:2;color:#4e627b;min-height:92px;font-weight:700}.entry-card .btn{width:100%}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
 .btn{border:0;border-radius:13px;padding:15px 22px;font-weight:900;cursor:pointer;font-size:20px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
 .hero{background:linear-gradient(135deg,var(--navy),#174c91);color:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 45px #12345b25;position:relative;overflow:hidden}
 .hero:after{content:"∑  π  6²  ×  ÷  △";position:absolute;left:22px;bottom:10px;font-size:45px;color:#ffffff14;letter-spacing:12px}
@@ -21,7 +21,7 @@
 .table-wrap{overflow:auto;border:1px solid #d8e2ef;border-radius:14px}table{border-collapse:collapse;width:100%;min-width:920px;background:#fff}th,td{padding:10px;border-bottom:1px solid #e4ebf3;text-align:center;font-size:13px}th{background:#123f75;color:#fff;position:sticky;top:0}td.name{text-align:right;font-weight:800}.qual{color:#117747;font-weight:900}.notqual{color:#9a3d3d}
 .note{background:#fff9e9;border:1px solid #f0d68a;border-radius:14px;padding:17px 20px;line-height:2;color:#6e5311;font-size:21px;font-weight:800}.hidden{display:none}
 @media(max-width:950px){.entry-grid{grid-template-columns:1fr}.games{grid-template-columns:1fr 1fr}.login-grid{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}.entry-photo{width:135px;height:135px}.entry-card h3{font-size:28px}.entry-card p{font-size:21px;min-height:auto}}
+@media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}.entry-photo{width:160px;height:160px}.entry-card h3{font-size:28px}.entry-card p{font-size:21px;min-height:auto}}
 @media print{.no-print{display:none!important}.panel{box-shadow:none}.wrap{width:100%}}
 </style>
 </head>
@@ -38,13 +38,13 @@
 
   <section class="entry-grid no-print" id="entryGrid">
     <div class="entry-card">
-      <img class="entry-photo" src="assets/student-portal.svg" alt="صورة توضيحية لطالب">
+      <img class="entry-photo" src="assets/student-portal.svg?v=3" alt="صورة توضيحية لطالب">
       <h3>دخول الطالب</h3>
       <p>يدخل الطالب باستخدام رقم الطالب الرسمي ورمز الدخول الخاص به، ثم تظهر له الوحدات الأربع وحالة كل وحدة وفق المواعيد المحددة وشروط التأهل.</p>
       <button class="btn btn-primary" id="studentEntry">دخول الطالب</button>
     </div>
     <div class="entry-card">
-      <img class="entry-photo" src="assets/supervisor-omani.svg" alt="صورة توضيحية لمشرف عُماني بالزي العُماني والمِصر">
+      <img class="entry-photo" src="assets/supervisor-omani.svg?v=3" alt="صورة توضيحية لمشرف عُماني بالزي العُماني والمِصر">
       <h3>دخول المشرف</h3>
       <p>دخول خاص بالمشرف يتيح له بعد التحقق اختيار لوحة متابعة النتائج والطباعة، أو الدخول إلى الوحدات الأربع في وضع المشرف دون تسجيل نتائج الطلاب.</p>
       <button class="btn btn-gold" id="supervisorEntry">دخول المشرف</button>
