@@ -7,7 +7,7 @@
 <style>
 :root{--navy:#102b55;--blue:#1d6fdc;--gold:#dca827;--cream:#fff9ec;--green:#178553;--red:#b93636;--muted:#64748b;--line:#d9e2ef}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#edf5ff,#fff 34%,#f7fbff);color:#16243b}
-.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.entry-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 8px 24px #183b5c10;text-align:center}.entry-card .icon{font-size:38px}.entry-card h3{margin:8px 0 6px;color:var(--navy)}.entry-card p{font-size:13px;line-height:1.7;color:var(--muted);min-height:45px}.entry-card .btn{width:100%}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
+.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:18px 0}.entry-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 8px 24px #183b5c10;text-align:center}.entry-card .icon{font-size:38px}.entry-card h3{margin:8px 0 6px;color:var(--navy)}.entry-card p{font-size:13px;line-height:1.7;color:var(--muted);min-height:45px}.entry-card .btn{width:100%}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
 .btn{border:0;border-radius:12px;padding:11px 18px;font-weight:800;cursor:pointer;font-size:15px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
 .hero{background:linear-gradient(135deg,var(--navy),#174c91);color:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 45px #12345b25;position:relative;overflow:hidden}
 .hero:after{content:"∑  π  6²  ×  ÷  △";position:absolute;left:22px;bottom:10px;font-size:45px;color:#ffffff14;letter-spacing:12px}
@@ -46,14 +46,8 @@
     <div class="entry-card">
       <div class="icon">🧑‍🏫</div>
       <h3>دخول المشرف</h3>
-      <p>الدخول إلى الوحدات الأربع كاملة دون تسجيل الدرجات ضمن نتائج الطلاب أو استهلاك محاولاتهم.</p>
-      <button class="btn btn-green" id="trainingEntry">دخول المشرف</button>
-    </div>
-    <div class="entry-card">
-      <div class="icon">📊</div>
-      <h3>لوحة متابعة المعلم</h3>
-      <p>عرض نتائج الطلاب لكل وحدة، المتأهلين للوحدة الرابعة، والطباعة حسب الشعبة.</p>
-      <button class="btn btn-gold" id="teacherEntry">فتح لوحة المتابعة</button>
+      <p>دخول خاص بالمشرف للوصول إلى لوحة المتابعة أو فتح الوحدات في وضع المشرف.</p>
+      <button class="btn btn-gold" id="supervisorEntry">دخول المشرف</button>
     </div>
   </section>
 
@@ -79,37 +73,46 @@
     <div class="games" id="games"></div>
   </section>
 
-  <section class="panel training-box no-print" id="trainingBox">
-    <div class="training-head">
-      <div>
-        <h2>🧑‍🏫 دخول المشرف</h2>
-        <p class="small">دخول خاص بالمشرف، ولا تُسجَّل من خلاله أي درجة أو محاولة ضمن نتائج الطلاب.</p>
-      </div>
-      <span class="training-badge">وضع المشرف</span>
-    </div>
-    <div id="trainingLoginBox">
-      <div class="training-login">
-        <input id="trainingPin" type="password" inputmode="numeric" maxlength="8" placeholder="الرقم السري للمعلم" style="padding:12px;border:1px solid #bfd0e3;border-radius:11px;font-size:16px">
-        <button class="btn btn-green" id="trainingLoginBtn">دخول المشرف</button>
-      </div>
-      <div class="msg" id="trainingMsg"></div>
-    </div>
-    <div id="trainingArea" class="hidden">
-      <div class="note">✅ تم التحقق من دخول المشرف. جميع الوحدات الأربع متاحة، ولن تُسجَّل أي نتائج ضمن قاعدة بيانات الطلاب.</div>
-      <div class="games" id="trainingGames"></div>
-      <div style="margin-top:14px"><button class="btn btn-red" id="trainingLogout">خروج المشرف</button></div>
-    </div>
-  </section>
+  <section class="panel teacher-box" id="supervisorBox">
+    <h2>🧑‍🏫 دخول المشرف</h2>
 
-  <section class="panel teacher-box" id="teacherBox">
-    <h2>🧑‍🏫 لوحة متابعة المعلم</h2>
-    <div id="teacherLoginBox" class="no-print">
-      <p class="small">أدخل الرقم السري للمعلم لعرض النتائج والطباعة.</p>
+    <div id="supervisorLoginBox" class="no-print">
+      <p class="small">أدخل الرقم السري للمشرف، ثم اختر بين لوحة المتابعة أو دخول الوحدات.</p>
       <div class="teacher-login">
-        <input id="teacherPin" type="password" inputmode="numeric" maxlength="8" placeholder="الرقم السري للمعلم" style="padding:12px;border:1px solid #bfd0e3;border-radius:11px;font-size:16px">
-        <button class="btn btn-gold" id="teacherLoginBtn">فتح اللوحة</button>
+        <input id="supervisorPin" type="password" inputmode="numeric" maxlength="8" placeholder="الرقم السري للمشرف" style="padding:12px;border:1px solid #bfd0e3;border-radius:11px;font-size:16px">
+        <button class="btn btn-gold" id="supervisorLoginBtn">دخول المشرف</button>
       </div>
-      <div class="msg" id="teacherMsg"></div>
+      <div class="msg" id="supervisorMsg"></div>
+    </div>
+
+    <div id="supervisorMenu" class="hidden no-print">
+      <div class="note">✅ تم التحقق من دخول المشرف. اختر ما تريد الدخول إليه:</div>
+      <div class="entry-grid" style="margin-top:16px">
+        <div class="entry-card">
+          <div class="icon">📊</div>
+          <h3>لوحة متابعة المعلم</h3>
+          <p>عرض نتائج الطلاب لكل وحدة، المتأهلين، والطباعة حسب الشعبة.</p>
+          <button class="btn btn-primary" id="openDashboard">فتح لوحة المتابعة</button>
+        </div>
+        <div class="entry-card">
+          <div class="icon">🧮</div>
+          <h3>دخول الوحدات</h3>
+          <p>فتح الوحدات الأربع في وضع المشرف دون تسجيل نتائج ضمن بيانات الطلاب.</p>
+          <button class="btn btn-green" id="openTraining">دخول الوحدات</button>
+        </div>
+      </div>
+      <div style="margin-top:12px"><button class="btn btn-red" id="supervisorLogout">خروج المشرف</button></div>
+    </div>
+
+    <div id="trainingArea" class="hidden no-print">
+      <div class="training-head">
+        <div><h2>🧮 دخول المشرف إلى الوحدات</h2><p class="small">جميع الوحدات الأربع متاحة، ولا تُسجَّل أي نتائج ضمن نتائج الطلاب.</p></div>
+        <span class="training-badge">وضع المشرف</span>
+      </div>
+      <div class="games" id="trainingGames"></div>
+      <div style="margin-top:14px">
+        <button class="btn btn-light" id="backSupervisorMenu1">العودة لخيارات المشرف</button>
+      </div>
     </div>
 
     <div id="teacherDashboard" class="hidden">
@@ -120,7 +123,7 @@
         <button class="btn btn-light" data-print-unit="2">🖨️ نتائج الوحدة ٣</button>
         <button class="btn btn-light" data-print-unit="3">🖨️ نتائج الوحدة ٤</button>
         <button class="btn btn-green" id="printQualified">🖨️ المتأهلون للوحدة الرابعة</button>
-        <button class="btn btn-red" id="teacherLogout">إغلاق اللوحة</button>
+        <button class="btn btn-light" id="backSupervisorMenu2">العودة لخيارات المشرف</button>
       </div>
       <div class="summary" id="summary"></div>
       <div class="table-wrap"><table><thead><tr><th>م</th><th>الطالب</th><th>الشعبة</th><th>الوحدة ١</th><th>الوحدة ٢</th><th>الوحدة ٣</th><th>الوحدة ٤</th><th>الحالة</th></tr></thead><tbody id="teacherRows"></tbody></table></div>
@@ -146,12 +149,10 @@ function msg(el,text,type="err"){el.textContent=text;el.className="msg show "+ty
 function clearMsg(el){el.className="msg";el.textContent=""}
 function hideAllEntrySections(){
   $("studentLogin").classList.add("hidden");
-  $("trainingBox").classList.remove("show");
-  $("teacherBox").classList.remove("show");
+  $("supervisorBox").classList.remove("show");
 }
 $("studentEntry").onclick=()=>{hideAllEntrySections();$("studentLogin").classList.remove("hidden");$("studentLogin").scrollIntoView({behavior:"smooth"})};
-$("trainingEntry").onclick=()=>{hideAllEntrySections();$("trainingBox").classList.add("show");$("trainingBox").scrollIntoView({behavior:"smooth"})};
-$("teacherEntry").onclick=()=>{hideAllEntrySections();$("teacherBox").classList.add("show");$("teacherBox").scrollIntoView({behavior:"smooth"})};
+$("supervisorEntry").onclick=()=>{hideAllEntrySections();$("supervisorBox").classList.add("show");$("supervisorBox").scrollIntoView({behavior:"smooth"})};
 async function api(body){
   const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);
   try{
@@ -218,21 +219,20 @@ async function restoreStudent(){
     const s=JSON.parse(raw);const j=await api({action:"portal_status",class_name:s.class_name,student_id:s.student_id,pin:s.pin});studentSession=s;renderStudent(j);$("studentLogin").classList.add("hidden");$("studentArea").classList.remove("hidden");
   }catch{sessionStorage.removeItem("afaqCompetitionLogin")}
 }
-$("trainingPin").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,8));
-$("trainingLoginBtn").onclick=async()=>{
-  clearMsg($("trainingMsg"));
-  const p=$("trainingPin").value.trim();
-  if(!/^\d{8}$/.test(p)){msg($("trainingMsg"),"أدخل الرقم السري للمعلم المكوّن من ٨ أرقام.");return}
-  $("trainingLoginBtn").disabled=true;
+$("supervisorPin").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,8));
+$("supervisorLoginBtn").onclick=async()=>{
+  clearMsg($("supervisorMsg"));
+  const p=$("supervisorPin").value.trim();
+  if(!/^\d{8}$/.test(p)){msg($("supervisorMsg"),"أدخل الرقم السري للمشرف المكوّن من ٨ أرقام.");return}
+  $("supervisorLoginBtn").disabled=true;
   try{
     await api({action:"teacher_verify",teacher_pin:p});
-    sessionStorage.removeItem("afaqCompetitionLogin");
-    sessionStorage.setItem("afaqTeacherTraining",JSON.stringify({teacher_pin:p,teacher_name:"الأستاذ سعيد بن جمعة بن عبدالله البريكي"}));
-    $("trainingLoginBox").classList.add("hidden");
-    $("trainingArea").classList.remove("hidden");
-    renderTrainingGames();
-  }catch(e){msg($("trainingMsg"),errText(e))}
-  finally{$("trainingLoginBtn").disabled=false}
+    teacherSecret=p;
+    sessionStorage.setItem("afaqSupervisorSession",JSON.stringify({teacher_pin:p}));
+    $("supervisorLoginBox").classList.add("hidden");
+    $("supervisorMenu").classList.remove("hidden");
+  }catch(e){msg($("supervisorMsg"),errText(e))}
+  finally{$("supervisorLoginBtn").disabled=false}
 };
 function renderTrainingGames(){
   const box=$("trainingGames");box.innerHTML="";
@@ -242,22 +242,34 @@ function renderTrainingGames(){
     const a=document.createElement("a");a.className="btn btn-green";a.href=gameLinks[i];a.textContent="دخول الوحدة";d.querySelector(".actions").appendChild(a);box.appendChild(d);
   });
 }
-$("trainingLogout").onclick=()=>{
-  sessionStorage.removeItem("afaqTeacherTraining");
-  $("trainingPin").value="";
-  $("trainingArea").classList.add("hidden");
-  $("trainingLoginBox").classList.remove("hidden");
-  $("trainingBox").classList.remove("show");
-  $("entryGrid").scrollIntoView({behavior:"smooth"});
+$("openTraining").onclick=()=>{
+  sessionStorage.removeItem("afaqCompetitionLogin");
+  sessionStorage.setItem("afaqTeacherTraining",JSON.stringify({teacher_pin:teacherSecret,teacher_name:"الأستاذ سعيد بن جمعة بن عبدالله البريكي"}));
+  $("supervisorMenu").classList.add("hidden");
+  $("teacherDashboard").classList.add("hidden");
+  $("trainingArea").classList.remove("hidden");
+  renderTrainingGames();
 };
-
-$("teacherPin").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,8));
-$("teacherLoginBtn").onclick=async()=>{
-  clearMsg($("teacherMsg"));const p=$("teacherPin").value.trim();if(!/^\d{8}$/.test(p)){msg($("teacherMsg"),"أدخل الرقم السري للمعلم المكوّن من ٨ أرقام.");return}
-  $("teacherLoginBtn").disabled=true;
-  try{teacherData=await api({action:"teacher_report",teacher_pin:p});teacherSecret=p;$("teacherLoginBox").classList.add("hidden");$("teacherDashboard").classList.remove("hidden");renderTeacher()}
-  catch(e){msg($("teacherMsg"),errText(e))}
-  finally{$("teacherLoginBtn").disabled=false}
+$("openDashboard").onclick=async()=>{
+  $("supervisorMenu").classList.add("hidden");
+  $("trainingArea").classList.add("hidden");
+  $("teacherDashboard").classList.remove("hidden");
+  teacherData=await api({action:"teacher_report",teacher_pin:teacherSecret});
+  renderTeacher();
+};
+$("backSupervisorMenu1").onclick=()=>{$("trainingArea").classList.add("hidden");$("supervisorMenu").classList.remove("hidden")};
+$("backSupervisorMenu2").onclick=()=>{$("teacherDashboard").classList.add("hidden");$("supervisorMenu").classList.remove("hidden")};
+$("supervisorLogout").onclick=()=>{
+  teacherSecret="";teacherData=null;
+  sessionStorage.removeItem("afaqSupervisorSession");
+  sessionStorage.removeItem("afaqTeacherTraining");
+  $("supervisorPin").value="";
+  $("supervisorMenu").classList.add("hidden");
+  $("trainingArea").classList.add("hidden");
+  $("teacherDashboard").classList.add("hidden");
+  $("supervisorLoginBox").classList.remove("hidden");
+  $("supervisorBox").classList.remove("show");
+  $("entryGrid").scrollIntoView({behavior:"smooth"});
 };
 function filteredStudents(){const c=$("teacherClassFilter").value;return (teacherData?.students||[]).filter(s=>!c||s.class_name===c)}
 function pct(g){return g?.best_percent==null?"—":arNum(g.best_percent)+"٪"}
@@ -268,7 +280,6 @@ function renderTeacher(){
   $("reportTime").textContent="آخر تحديث: "+fmtDate(teacherData.server_now);
 }
 $("teacherClassFilter").onchange=renderTeacher;
-$("teacherLogout").onclick=()=>{teacherSecret="";teacherData=null;$("teacherPin").value="";$("teacherDashboard").classList.add("hidden");$("teacherLoginBox").classList.remove("hidden")};
 function printDoc(title,headers,rows){
   const w=window.open("","_blank");if(!w)return alert("يرجى السماح بفتح نافذة الطباعة.");
   const date=new Intl.DateTimeFormat("ar-OM",{dateStyle:"full",timeStyle:"short"}).format(new Date());
