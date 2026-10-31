@@ -11,7 +11,7 @@
 .btn{border:0;border-radius:13px;padding:15px 22px;font-weight:900;cursor:pointer;font-size:20px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
 .hero{background:linear-gradient(135deg,var(--navy),#174c91);color:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 45px #12345b25;position:relative;overflow:hidden}
 .hero:after{content:"∑  π  6²  ×  ÷  △";position:absolute;left:22px;bottom:10px;font-size:45px;color:#ffffff14;letter-spacing:12px}
-.hero h1{margin:0 0 12px;font-size:clamp(38px,5vw,60px)}.hero p{margin:8px 0;line-height:2;font-size:23px;font-weight:700}.badge{display:inline-block;background:#ffde76;color:#243450;border-radius:999px;padding:11px 18px;font-weight:900;margin-top:14px;font-size:19px}
+.hero h1{margin:0 0 12px;font-size:clamp(38px,5vw,60px)}.hero p{margin:8px 0;line-height:2;font-size:23px;font-weight:700}.badge{display:inline-block;background:#ffde76;color:#243450;border-radius:999px;padding:11px 18px;font-weight:900;margin-top:14px;font-size:19px}.hero-actions{margin-top:22px;position:relative;z-index:2}.hero-start{min-width:230px;font-size:24px;padding:17px 34px;box-shadow:0 10px 24px #0000002e;border:2px solid #ffe89d}.hero-start:hover{transform:translateY(-2px)}.portal-hint{background:linear-gradient(90deg,#f5fbff,#fff8e8,#f5fbff);border:1px solid #d9e5f2;border-radius:18px;padding:14px 18px;text-align:center;font-weight:900;color:#173b68;margin:16px 0 4px;font-size:20px}
 .panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px;margin:22px 0;box-shadow:0 8px 28px #183b5c10}.panel h2{margin-top:0;color:var(--navy);font-size:32px}
 .login-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end}.field label{display:block;font-size:21px;color:#445b76;font-weight:900;margin-bottom:9px}.field select,.field input{width:100%;padding:16px;border:1px solid #bfd0e3;border-radius:12px;font-size:22px;background:#fff;font-weight:700}
 .msg{margin-top:14px;border-radius:12px;padding:15px 18px;display:none;font-size:20px;line-height:1.9;font-weight:700}.msg.show{display:block}.msg.err{background:#fff0f0;color:#8e2929;border:1px solid #f1bbbb}.msg.ok{background:#effbf4;color:#176942;border:1px solid #bfe4cf}
@@ -32,22 +32,22 @@
     <section class="hero">
       <h1>🏆 مسابقة نجوم آفاق الرياضيات</h1>
       <p>مبادرة تعليمية لطلاب السادس/٤ والسادس/٥ والسادس/٦ — أربع وحدات، ثلاث محاولات لكل وحدة، ومجموع نهائي من ٤٠٠ نقطة.</p>
-      <span class="badge">الإعداد والإشراف: الأستاذ سعيد جمعة عبد الله البريكي</span>
+      <span class="badge">الإعداد والإشراف: الأستاذ سعيد جمعة عبد الله البريكي</span><div class="hero-actions no-print"><button class="btn btn-gold hero-start" id="startNow">ابدأ الآن</button></div>
     </section>
   </div>
 
-  <section class="entry-grid no-print" id="entryGrid">
+  <div class="portal-hint no-print" id="portalHint">اختر طريقة الدخول: حساب الطالب أو حساب المشرف — كلاهما متصل مباشرةً بنظام المسابقة.</div><section class="entry-grid no-print" id="entryGrid">
     <div class="entry-card">
       <img class="entry-photo" src="assets/student-portal.svg?v=4" alt="صورة توضيحية لطالب">
       <h3>دخول الطالب</h3>
       <p>بوابتك إلى تحدّي نجوم آفاق الرياضيات. أدخل رقمك الرسمي ورمزك السري، ثم ابدأ رحلتك في الوحدات الأربع واجمع أكبر عدد من النقاط.</p>
-      <button class="btn btn-primary" id="studentEntry">دخول الطالب</button>
+      <button class="btn btn-primary" id="studentEntry" aria-label="دخول الطالب إلى نظام المسابقة">دخول الطالب</button>
     </div>
     <div class="entry-card">
       <img class="entry-photo" src="assets/supervisor-omani.svg?v=4" alt="صورة توضيحية لمشرف عُماني بالزي العُماني والمِصر">
       <h3>دخول المشرف</h3>
       <p>بوابة خاصة بالمشرف لمتابعة أداء الطلاب والنتائج والترتيب والجوائز، مع إمكانية الدخول إلى الوحدات في وضع المشرف دون احتساب محاولات.</p>
-      <button class="btn btn-gold" id="supervisorEntry">دخول المشرف</button>
+      <button class="btn btn-gold" id="supervisorEntry" aria-label="دخول المشرف إلى نظام المسابقة">دخول المشرف</button>
     </div>
   </section>
 
@@ -151,6 +151,7 @@ function hideAllEntrySections(){
   $("studentLogin").classList.add("hidden");
   $("supervisorBox").classList.remove("show");
 }
+$("startNow").onclick=()=>{$("entryGrid").scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>{$("studentEntry").focus()},500)};
 $("studentEntry").onclick=()=>{hideAllEntrySections();$("studentLogin").classList.remove("hidden");$("studentLogin").scrollIntoView({behavior:"smooth"})};
 $("supervisorEntry").onclick=()=>{hideAllEntrySections();$("supervisorBox").classList.add("show");$("supervisorBox").scrollIntoView({behavior:"smooth"})};
 async function api(body){
