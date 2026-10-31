@@ -94,7 +94,7 @@ const gameLinks=[
   "grade6-geometry-visual-game3.html",
   "grade6-numbers-visual-game4.html"
 ];
-const gameTitles=["الوحدة الأولى: الأعداد","الوحدة الثانية: القياس","الوحدة الثالثة: الهندسة","الوحدة الرابعة: التقييم النهائي"];
+const gameTitles=["الوحدة الأولى: الأعداد","الوحدة الثانية: القياس","الوحدة الثالثة: الهندسة","الوحدة الرابعة: التقييم أمام لجنة التقييم"];
 let studentSession=null,teacherData=null,teacherSecret="";
 const $=id=>document.getElementById(id);
 const arNum=s=>String(s).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
@@ -200,5 +200,6 @@ $("printQualified").onclick=()=>{
   printDoc("قائمة الطلاب المتأهلين للوحدة الرابعة أمام لجنة التقييم",["م","الطالب","رقم الطالب","الشعبة","الوحدة ١","الوحدة ٢","الوحدة ٣","حالة الوحدة الرابعة"],rows)
 };
 restoreStudent();
+window.addEventListener("pageshow",()=>{if(sessionStorage.getItem("afaqCompetitionLogin"))restoreStudent()});
 </script>
 </body></html>
