@@ -45,9 +45,9 @@
     </div>
     <div class="entry-card">
       <div class="icon">🧑‍🏫</div>
-      <h3>دخول المعلم للتدريب</h3>
-      <p>تجربة الوحدات الأربع كاملة في وضع تدريب دون تسجيل درجات أو استهلاك محاولات.</p>
-      <button class="btn btn-green" id="trainingEntry">دخول المعلم للتدريب</button>
+      <h3>دخول المشرف</h3>
+      <p>الدخول إلى الوحدات الأربع كاملة دون تسجيل الدرجات ضمن نتائج الطلاب أو استهلاك محاولاتهم.</p>
+      <button class="btn btn-green" id="trainingEntry">دخول المشرف</button>
     </div>
     <div class="entry-card">
       <div class="icon">📊</div>
@@ -82,22 +82,22 @@
   <section class="panel training-box no-print" id="trainingBox">
     <div class="training-head">
       <div>
-        <h2>🧑‍🏫 دخول المعلم للتدريب</h2>
-        <p class="small">هذا الوضع للتجربة فقط، ولا تُسجَّل فيه أي درجة أو محاولة ضمن نتائج الطلاب.</p>
+        <h2>🧑‍🏫 دخول المشرف</h2>
+        <p class="small">دخول خاص بالمشرف، ولا تُسجَّل من خلاله أي درجة أو محاولة ضمن نتائج الطلاب.</p>
       </div>
-      <span class="training-badge">وضع تدريب آمن</span>
+      <span class="training-badge">وضع المشرف</span>
     </div>
     <div id="trainingLoginBox">
       <div class="training-login">
         <input id="trainingPin" type="password" inputmode="numeric" maxlength="8" placeholder="الرقم السري للمعلم" style="padding:12px;border:1px solid #bfd0e3;border-radius:11px;font-size:16px">
-        <button class="btn btn-green" id="trainingLoginBtn">دخول وضع التدريب</button>
+        <button class="btn btn-green" id="trainingLoginBtn">دخول المشرف</button>
       </div>
       <div class="msg" id="trainingMsg"></div>
     </div>
     <div id="trainingArea" class="hidden">
-      <div class="note">✅ تم التحقق من دخول المعلم. جميع الوحدات الأربع متاحة للتدريب، ولن تُسجَّل نتائج هذا الوضع في قاعدة بيانات الطلاب.</div>
+      <div class="note">✅ تم التحقق من دخول المشرف. جميع الوحدات الأربع متاحة، ولن تُسجَّل أي نتائج ضمن قاعدة بيانات الطلاب.</div>
       <div class="games" id="trainingGames"></div>
-      <div style="margin-top:14px"><button class="btn btn-red" id="trainingLogout">إنهاء وضع التدريب</button></div>
+      <div style="margin-top:14px"><button class="btn btn-red" id="trainingLogout">خروج المشرف</button></div>
     </div>
   </section>
 
@@ -238,8 +238,8 @@ function renderTrainingGames(){
   const box=$("trainingGames");box.innerHTML="";
   gameTitles.forEach((title,i)=>{
     const d=document.createElement("div");d.className="game";
-    d.innerHTML='<div class="num">'+arNum(i+1)+'</div><h3>'+title+'</h3><div class="state open">🧑‍🏫 متاحة للتدريب</div><div class="stats">لا تُسجَّل درجة<br>لا تُستهلك محاولة<br>لا يُطبق القفل الأسبوعي في التدريب</div><div class="actions"></div>';
-    const a=document.createElement("a");a.className="btn btn-green";a.href=gameLinks[i];a.textContent="بدء التدريب";d.querySelector(".actions").appendChild(a);box.appendChild(d);
+    d.innerHTML='<div class="num">'+arNum(i+1)+'</div><h3>'+title+'</h3><div class="state open">🧑‍🏫 متاحة للمشرف</div><div class="stats">لا تُسجَّل درجة<br>لا تُستهلك محاولة<br>لا يُطبق القفل الأسبوعي على دخول المشرف</div><div class="actions"></div>';
+    const a=document.createElement("a");a.className="btn btn-green";a.href=gameLinks[i];a.textContent="دخول الوحدة";d.querySelector(".actions").appendChild(a);box.appendChild(d);
   });
 }
 $("trainingLogout").onclick=()=>{
