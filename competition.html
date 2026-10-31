@@ -7,7 +7,7 @@
 <style>
 :root{--navy:#102b55;--blue:#1d6fdc;--gold:#dca827;--cream:#fff9ec;--green:#178553;--red:#b93636;--muted:#64748b;--line:#d9e2ef}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#edf5ff,#fff 34%,#f7fbff);color:#16243b}
-.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}
+.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.entry-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 8px 24px #183b5c10;text-align:center}.entry-card .icon{font-size:38px}.entry-card h3{margin:8px 0 6px;color:var(--navy)}.entry-card p{font-size:13px;line-height:1.7;color:var(--muted);min-height:45px}.entry-card .btn{width:100%}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
 .btn{border:0;border-radius:12px;padding:11px 18px;font-weight:800;cursor:pointer;font-size:15px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
 .hero{background:linear-gradient(135deg,var(--navy),#174c91);color:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 45px #12345b25;position:relative;overflow:hidden}
 .hero:after{content:"∑  π  6²  ×  ÷  △";position:absolute;left:22px;bottom:10px;font-size:45px;color:#ffffff14;letter-spacing:12px}
@@ -20,7 +20,7 @@
 .teacher-box{display:none}.teacher-box.show{display:block}.teacher-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.summary{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin:12px 0}.summary .s{border:1px solid #d8e2ef;border-radius:13px;padding:13px;background:#f8fbff;text-align:center}.summary b{display:block;font-size:24px;color:var(--blue);margin-top:4px}
 .table-wrap{overflow:auto;border:1px solid #d8e2ef;border-radius:14px}table{border-collapse:collapse;width:100%;min-width:920px;background:#fff}th,td{padding:10px;border-bottom:1px solid #e4ebf3;text-align:center;font-size:13px}th{background:#123f75;color:#fff;position:sticky;top:0}td.name{text-align:right;font-weight:800}.qual{color:#117747;font-weight:900}.notqual{color:#9a3d3d}
 .note{background:#fff9e9;border:1px solid #f0d68a;border-radius:13px;padding:12px 15px;line-height:1.8;color:#6e5311}.hidden{display:none}
-@media(max-width:950px){.games{grid-template-columns:1fr 1fr}.login-grid{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:950px){.entry-grid{grid-template-columns:1fr}.games{grid-template-columns:1fr 1fr}.login-grid{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}}
 @media print{.no-print{display:none!important}.panel{box-shadow:none}.wrap{width:100%}}
 </style>
@@ -28,7 +28,7 @@
 <body>
 <div class="wrap">
   <div class="top">
-    <div class="teacher-entry no-print"><button class="btn btn-gold" id="teacherEntry">🧑‍🏫 لوحة متابعة المعلم</button></div>
+    
     <section class="hero">
       <h1>🏆 مسابقة الرياضيات للصف السادس</h1>
       <p>مبادرة تعليمية لطلاب السادس/٤ والسادس/٥ والسادس/٦ — أربع وحدات، ثلاث محاولات لكل وحدة، ومتابعة مركزية للنتائج.</p>
@@ -36,7 +36,28 @@
     </section>
   </div>
 
-  <section class="panel no-print" id="studentLogin">
+  <section class="entry-grid no-print" id="entryGrid">
+    <div class="entry-card">
+      <div class="icon">🎓</div>
+      <h3>دخول الطالب</h3>
+      <p>دخول الطالب برقم الطالب ورمز الدخول الخاص به ومتابعة الوحدات وفق المواعيد المحددة.</p>
+      <button class="btn btn-primary" id="studentEntry">دخول الطالب</button>
+    </div>
+    <div class="entry-card">
+      <div class="icon">🧑‍🏫</div>
+      <h3>دخول المعلم للتدريب</h3>
+      <p>تجربة الوحدات الأربع كاملة في وضع تدريب دون تسجيل درجات أو استهلاك محاولات.</p>
+      <button class="btn btn-green" id="trainingEntry">دخول المعلم للتدريب</button>
+    </div>
+    <div class="entry-card">
+      <div class="icon">📊</div>
+      <h3>لوحة متابعة المعلم</h3>
+      <p>عرض نتائج الطلاب لكل وحدة، المتأهلين للوحدة الرابعة، والطباعة حسب الشعبة.</p>
+      <button class="btn btn-gold" id="teacherEntry">فتح لوحة المتابعة</button>
+    </div>
+  </section>
+
+  <section class="panel no-print hidden" id="studentLogin">
     <h2>🔐 دخول الطالب</h2>
     <div class="login-grid">
       <div class="field"><label>الشعبة</label>
@@ -49,13 +70,35 @@
     <div class="msg" id="studentMsg"></div>
   </section>
 
-  <section class="panel" id="studentArea">
+  <section class="panel hidden" id="studentArea">
     <div class="student-head" id="studentHead">
       <div><div class="student-name" id="studentName"></div><div class="small" id="studentMeta"></div></div>
       <button class="btn btn-light no-print" id="studentLogout">تسجيل الخروج</button>
     </div>
     <div class="note" id="studentIntro">بعد تسجيل الدخول ستظهر لك الوحدات الأربع وحالة كل وحدة. تفتح الوحدة التالية بعد إكمال السابقة ومرور سبعة أيام كاملة من أول دخول رسمي إليها.</div>
     <div class="games" id="games"></div>
+  </section>
+
+  <section class="panel training-box no-print" id="trainingBox">
+    <div class="training-head">
+      <div>
+        <h2>🧑‍🏫 دخول المعلم للتدريب</h2>
+        <p class="small">هذا الوضع للتجربة فقط، ولا تُسجَّل فيه أي درجة أو محاولة ضمن نتائج الطلاب.</p>
+      </div>
+      <span class="training-badge">وضع تدريب آمن</span>
+    </div>
+    <div id="trainingLoginBox">
+      <div class="training-login">
+        <input id="trainingPin" type="password" inputmode="numeric" maxlength="8" placeholder="الرقم السري للمعلم" style="padding:12px;border:1px solid #bfd0e3;border-radius:11px;font-size:16px">
+        <button class="btn btn-green" id="trainingLoginBtn">دخول وضع التدريب</button>
+      </div>
+      <div class="msg" id="trainingMsg"></div>
+    </div>
+    <div id="trainingArea" class="hidden">
+      <div class="note">✅ تم التحقق من دخول المعلم. جميع الوحدات الأربع متاحة للتدريب، ولن تُسجَّل نتائج هذا الوضع في قاعدة بيانات الطلاب.</div>
+      <div class="games" id="trainingGames"></div>
+      <div style="margin-top:14px"><button class="btn btn-red" id="trainingLogout">إنهاء وضع التدريب</button></div>
+    </div>
   </section>
 
   <section class="panel teacher-box" id="teacherBox">
@@ -101,6 +144,14 @@ const arNum=s=>String(s).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 function fmtDate(v){if(!v)return "—";try{return new Intl.DateTimeFormat("ar-OM",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v))}catch{return v}}
 function msg(el,text,type="err"){el.textContent=text;el.className="msg show "+type}
 function clearMsg(el){el.className="msg";el.textContent=""}
+function hideAllEntrySections(){
+  $("studentLogin").classList.add("hidden");
+  $("trainingBox").classList.remove("show");
+  $("teacherBox").classList.remove("show");
+}
+$("studentEntry").onclick=()=>{hideAllEntrySections();$("studentLogin").classList.remove("hidden");$("studentLogin").scrollIntoView({behavior:"smooth"})};
+$("trainingEntry").onclick=()=>{hideAllEntrySections();$("trainingBox").classList.add("show");$("trainingBox").scrollIntoView({behavior:"smooth"})};
+$("teacherEntry").onclick=()=>{hideAllEntrySections();$("teacherBox").classList.add("show");$("teacherBox").scrollIntoView({behavior:"smooth"})};
 async function api(body){
   const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);
   try{
@@ -133,9 +184,11 @@ $("studentEnter").onclick=async()=>{
   try{
     const j=await api({action:"portal_status",class_name,student_id,pin});
     studentSession={class_name,student_id,pin,display_name:j.student.display_name};
+    sessionStorage.removeItem("afaqTeacherTraining");
     sessionStorage.setItem("afaqCompetitionLogin",JSON.stringify(studentSession));
     renderStudent(j);
-    $("studentLogin").style.display="none";
+    $("studentLogin").classList.add("hidden");
+    $("studentArea").classList.remove("hidden");
   }catch(e){msg($("studentMsg"),errText(e))}
   finally{$("studentEnter").disabled=false}
 };
@@ -158,14 +211,46 @@ function renderStudent(j){
     const a=document.createElement("a");a.className="btn "+(g.can_start?"btn-primary":"btn-light");a.textContent=g.can_start?"دخول الوحدة":"غير متاحة";a.href=g.can_start?gameLinks[i]:"#";if(!g.can_start)a.onclick=e=>e.preventDefault();d.querySelector(".actions").appendChild(a);box.appendChild(d);
   });
 }
-$("studentLogout").onclick=()=>{sessionStorage.removeItem("afaqCompetitionLogin");studentSession=null;location.reload()};
+$("studentLogout").onclick=()=>{sessionStorage.removeItem("afaqCompetitionLogin");studentSession=null;$("studentArea").classList.add("hidden");$("studentHead").classList.remove("show");$("games").innerHTML="";$("studentLogin").classList.remove("hidden");$("studentLogin").scrollIntoView({behavior:"smooth"})};
 async function restoreStudent(){
   const raw=sessionStorage.getItem("afaqCompetitionLogin");if(!raw)return;
   try{
-    const s=JSON.parse(raw);const j=await api({action:"portal_status",class_name:s.class_name,student_id:s.student_id,pin:s.pin});studentSession=s;renderStudent(j);$("studentLogin").style.display="none";
+    const s=JSON.parse(raw);const j=await api({action:"portal_status",class_name:s.class_name,student_id:s.student_id,pin:s.pin});studentSession=s;renderStudent(j);$("studentLogin").classList.add("hidden");$("studentArea").classList.remove("hidden");
   }catch{sessionStorage.removeItem("afaqCompetitionLogin")}
 }
-$("teacherEntry").onclick=()=>{$("teacherBox").classList.add("show");$("teacherBox").scrollIntoView({behavior:"smooth"})};
+$("trainingPin").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,8));
+$("trainingLoginBtn").onclick=async()=>{
+  clearMsg($("trainingMsg"));
+  const p=$("trainingPin").value.trim();
+  if(!/^\d{8}$/.test(p)){msg($("trainingMsg"),"أدخل الرقم السري للمعلم المكوّن من ٨ أرقام.");return}
+  $("trainingLoginBtn").disabled=true;
+  try{
+    await api({action:"teacher_verify",teacher_pin:p});
+    sessionStorage.removeItem("afaqCompetitionLogin");
+    sessionStorage.setItem("afaqTeacherTraining",JSON.stringify({teacher_pin:p,teacher_name:"الأستاذ سعيد بن جمعة بن عبدالله البريكي"}));
+    $("trainingLoginBox").classList.add("hidden");
+    $("trainingArea").classList.remove("hidden");
+    renderTrainingGames();
+  }catch(e){msg($("trainingMsg"),errText(e))}
+  finally{$("trainingLoginBtn").disabled=false}
+};
+function renderTrainingGames(){
+  const box=$("trainingGames");box.innerHTML="";
+  gameTitles.forEach((title,i)=>{
+    const d=document.createElement("div");d.className="game";
+    d.innerHTML='<div class="num">'+arNum(i+1)+'</div><h3>'+title+'</h3><div class="state open">🧑‍🏫 متاحة للتدريب</div><div class="stats">لا تُسجَّل درجة<br>لا تُستهلك محاولة<br>لا يُطبق القفل الأسبوعي في التدريب</div><div class="actions"></div>';
+    const a=document.createElement("a");a.className="btn btn-green";a.href=gameLinks[i];a.textContent="بدء التدريب";d.querySelector(".actions").appendChild(a);box.appendChild(d);
+  });
+}
+$("trainingLogout").onclick=()=>{
+  sessionStorage.removeItem("afaqTeacherTraining");
+  $("trainingPin").value="";
+  $("trainingArea").classList.add("hidden");
+  $("trainingLoginBox").classList.remove("hidden");
+  $("trainingBox").classList.remove("show");
+  $("entryGrid").scrollIntoView({behavior:"smooth"});
+};
+
 $("teacherPin").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,8));
 $("teacherLoginBtn").onclick=async()=>{
   clearMsg($("teacherMsg"));const p=$("teacherPin").value.trim();if(!/^\d{8}$/.test(p)){msg($("teacherMsg"),"أدخل الرقم السري للمعلم المكوّن من ٨ أرقام.");return}
