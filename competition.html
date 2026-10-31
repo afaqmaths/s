@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مسابقة الرياضيات للصف السادس</title>
+<style>
+:root{--navy:#102b55;--blue:#1d6fdc;--gold:#dca827;--cream:#fff9ec;--green:#178553;--red:#b93636;--muted:#64748b;--line:#d9e2ef}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#edf5ff,#fff 34%,#f7fbff);color:#16243b}
+.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}
+.btn{border:0;border-radius:12px;padding:11px 18px;font-weight:800;cursor:pointer;font-size:15px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
+.hero{background:linear-gradient(135deg,var(--navy),#174c91);color:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 45px #12345b25;position:relative;overflow:hidden}
+.hero:after{content:"∑  π  6²  ×  ÷  △";position:absolute;left:22px;bottom:10px;font-size:45px;color:#ffffff14;letter-spacing:12px}
+.hero h1{margin:0 0 8px;font-size:clamp(28px,4vw,48px)}.hero p{margin:5px 0;line-height:1.9}.badge{display:inline-block;background:#ffde76;color:#243450;border-radius:999px;padding:8px 15px;font-weight:900;margin-top:10px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;margin:20px 0;box-shadow:0 8px 28px #183b5c10}.panel h2{margin-top:0;color:var(--navy)}
+.login-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end}.field label{display:block;font-size:13px;color:#52667e;font-weight:800;margin-bottom:6px}.field select,.field input{width:100%;padding:12px;border:1px solid #bfd0e3;border-radius:11px;font-size:16px;background:#fff}
+.msg{margin-top:12px;border-radius:11px;padding:11px 14px;display:none}.msg.show{display:block}.msg.err{background:#fff0f0;color:#8e2929;border:1px solid #f1bbbb}.msg.ok{background:#effbf4;color:#176942;border:1px solid #bfe4cf}
+.student-head{display:none;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}.student-head.show{display:flex}.student-name{font-size:22px;font-weight:900;color:var(--navy)}.small{font-size:13px;color:var(--muted)}
+.games{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:18px}.game{border:1px solid #d5dfec;border-radius:17px;padding:17px;background:linear-gradient(180deg,#fff,#f7fbff);min-height:235px;display:flex;flex-direction:column}.game h3{margin:5px 0 8px;color:var(--navy);font-size:20px}.game .num{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#e7f0ff;color:var(--blue);font-size:22px;font-weight:900}.state{margin:8px 0;padding:8px 10px;border-radius:9px;font-weight:900;font-size:13px}.open{background:#e9f8f0;color:#176b44}.locked{background:#fff3e3;color:#8c5a12}.done{background:#edf2f7;color:#42566d}.failed{background:#fff0f0;color:#9c3333}.stats{font-size:13px;line-height:1.8;color:#465a70;margin-bottom:10px}.game .actions{margin-top:auto}.game .actions a{display:block;text-align:center;text-decoration:none}
+.teacher-box{display:none}.teacher-box.show{display:block}.teacher-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.summary{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin:12px 0}.summary .s{border:1px solid #d8e2ef;border-radius:13px;padding:13px;background:#f8fbff;text-align:center}.summary b{display:block;font-size:24px;color:var(--blue);margin-top:4px}
+.table-wrap{overflow:auto;border:1px solid #d8e2ef;border-radius:14px}table{border-collapse:collapse;width:100%;min-width:920px;background:#fff}th,td{padding:10px;border-bottom:1px solid #e4ebf3;text-align:center;font-size:13px}th{background:#123f75;color:#fff;position:sticky;top:0}td.name{text-align:right;font-weight:800}.qual{color:#117747;font-weight:900}.notqual{color:#9a3d3d}
+.note{background:#fff9e9;border:1px solid #f0d68a;border-radius:13px;padding:12px 15px;line-height:1.8;color:#6e5311}.hidden{display:none}
+@media(max-width:950px){.games{grid-template-columns:1fr 1fr}.login-grid{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}}
+@media print{.no-print{display:none!important}.panel{box-shadow:none}.wrap{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="teacher-entry no-print"><button class="btn btn-gold" id="teacherEntry">🧑‍🏫 لوحة متابعة المعلم</button></div>
+    <section class="hero">
+      <h1>🏆 مسابقة الرياضيات للصف السادس</h1>
+      <p>مبادرة تعليمية لطلاب السادس/٤ والسادس/٥ والسادس/٦ — أربع وحدات، ثلاث محاولات لكل وحدة، ومتابعة مركزية للنتائج.</p>
+      <span class="badge">إعداد وتقديم وإخراج: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>
+    </section>
+  </div>
+
+  <section class="panel no-print" id="studentLogin">
+    <h2>🔐 دخول الطالب</h2>
+    <div class="login-grid">
+      <div class="field"><label>الشعبة</label>
+        <select id="studentClass"><option value="">اختر الشعبة</option><option>السادس / ٤</option><option>السادس / ٥</option><option>السادس / ٦</option></select>
+      </div>
+      <div class="field"><label>رقم الطالب الرسمي</label><select id="studentId" disabled><option value="">اختر الرقم</option></select></div>
+      <div class="field"><label>رمز الدخول الخاص بالطالب</label><input id="studentPin" inputmode="numeric" maxlength="4" placeholder="٤ أرقام"></div>
+      <button class="btn btn-primary" id="studentEnter">دخول المسابقة</button>
+    </div>
+    <div class="msg" id="studentMsg"></div>
+  </section>
+
+  <section class="panel" id="studentArea">
+    <div class="student-head" id="studentHead">
+      <div><div class="student-name" id="studentName"></div><div class="small" id="studentMeta"></div></div>
+      <button class="btn btn-light no-print" id="studentLogout">تسجيل الخروج</button>
+    </div>
+    <div class="note" id="studentIntro">بعد تسجيل الدخول ستظهر لك الوحدات الأربع وحالة كل وحدة. تفتح الوحدة التالية بعد إكمال السابقة ومرور سبعة أيام كاملة من أول دخول رسمي إليها.</div>
+    <div class="games" id="games"></div>
+  </section>
+
+  <section class="panel teacher-box" id="teacherBox">
+    <h2>🧑‍🏫 لوحة متابعة المعلم</h2>
+    <div id="teacherLoginBox" class="no-print">
+      <p class="small">أدخل الرقم السري للمعلم لعرض النتائج والطباعة.</p>
+      <div class="teacher-login">
+        <input id="teacherPin" type="password" inputmode="numeric" maxlength="8" placeholder="الرقم السري للمعلم" style="padding:12px;border:1px solid #bfd0e3;border-radius:11px;font-size:16px">
+        <button class="btn btn-gold" id="teacherLoginBtn">فتح اللوحة</button>
+      </div>
+      <div class="msg" id="teacherMsg"></div>
+    </div>
+
+    <div id="teacherDashboard" class="hidden">
+      <div class="toolbar no-print">
+        <select id="teacherClassFilter" style="padding:10px;border:1px solid #bfd0e3;border-radius:10px"><option value="">جميع الشعب</option><option>السادس / ٤</option><option>السادس / ٥</option><option>السادس / ٦</option></select>
+        <button class="btn btn-light" data-print-unit="0">🖨️ نتائج الوحدة ١</button>
+        <button class="btn btn-light" data-print-unit="1">🖨️ نتائج الوحدة ٢</button>
+        <button class="btn btn-light" data-print-unit="2">🖨️ نتائج الوحدة ٣</button>
+        <button class="btn btn-light" data-print-unit="3">🖨️ نتائج الوحدة ٤</button>
+        <button class="btn btn-green" id="printQualified">🖨️ المتأهلون للوحدة الرابعة</button>
+        <button class="btn btn-red" id="teacherLogout">إغلاق اللوحة</button>
+      </div>
+      <div class="summary" id="summary"></div>
+      <div class="table-wrap"><table><thead><tr><th>م</th><th>الطالب</th><th>الشعبة</th><th>الوحدة ١</th><th>الوحدة ٢</th><th>الوحدة ٣</th><th>الوحدة ٤</th><th>الحالة</th></tr></thead><tbody id="teacherRows"></tbody></table></div>
+      <p class="small" id="reportTime"></p>
+    </div>
+  </section>
+</div>
+
+<script>
+const API="https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/competition-auth";
+const gameLinks=[
+  "grade6-numbers-game1.html",
+  "grade6-measurement-game2.html",
+  "grade6-geometry-visual-game3.html",
+  "grade6-numbers-visual-game4.html"
+];
+const gameTitles=["الوحدة الأولى: الأعداد","الوحدة الثانية: القياس","الوحدة الثالثة: الهندسة","الوحدة الرابعة: التقييم النهائي"];
+let studentSession=null,teacherData=null,teacherSecret="";
+const $=id=>document.getElementById(id);
+const arNum=s=>String(s).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+function fmtDate(v){if(!v)return "—";try{return new Intl.DateTimeFormat("ar-OM",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v))}catch{return v}}
+function msg(el,text,type="err"){el.textContent=text;el.className="msg show "+type}
+function clearMsg(el){el.className="msg";el.textContent=""}
+async function api(body){
+  const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);
+  try{
+    const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:c.signal});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.ok){const e=new Error(j.error||"server_error");e.code=j.error;e.available_at=j.available_at;throw e}
+    return j;
+  }finally{clearTimeout(t)}
+}
+function errText(e){
+  const c=e?.code||e?.message||"";
+  if(c==="invalid_credentials")return "رقم الطالب أو رمز الدخول غير صحيح.";
+  if(c==="temporarily_locked")return "تم إيقاف الدخول مؤقتًا لمدة ١٠ دقائق بسبب تكرار رمز غير صحيح.";
+  if(c==="invalid_teacher_pin")return "الرقم السري للمعلم غير صحيح.";
+  if(c==="AbortError")return "تعذر الاتصال بالخادم. تحقق من الإنترنت ثم حاول مرة أخرى.";
+  return "تعذر إكمال العملية الآن. حاول مرة أخرى.";
+}
+async function loadIds(){
+  const cls=$("studentClass").value,id=$("studentId");id.innerHTML='<option value="">اختر الرقم</option>';id.disabled=true;
+  if(!cls)return;
+  try{const j=await api({action:"list_ids",class_name:cls});(j.student_ids||[]).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;id.appendChild(o)});id.disabled=false}
+  catch(e){msg($("studentMsg"),errText(e))}
+}
+$("studentClass").addEventListener("change",loadIds);
+$("studentPin").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,4));
+$("studentEnter").onclick=async()=>{
+  clearMsg($("studentMsg"));const class_name=$("studentClass").value,student_id=$("studentId").value,pin=$("studentPin").value.trim();
+  if(!class_name||!student_id||!/^\d{4}$/.test(pin)){msg($("studentMsg"),"اختر الشعبة ورقم الطالب وأدخل رمزًا من ٤ أرقام.");return}
+  $("studentEnter").disabled=true;
+  try{
+    const j=await api({action:"portal_status",class_name,student_id,pin});
+    studentSession={class_name,student_id,pin,display_name:j.student.display_name};
+    sessionStorage.setItem("afaqCompetitionLogin",JSON.stringify(studentSession));
+    renderStudent(j);
+    $("studentLogin").style.display="none";
+  }catch(e){msg($("studentMsg"),errText(e))}
+  finally{$("studentEnter").disabled=false}
+};
+function cardState(g,i){
+  if(g.attempts_remaining===0)return {cls:"done",text:"اكتملت المحاولات الثلاث"};
+  if(g.can_start)return {cls:"open",text:"✅ متاحة الآن"};
+  if(g.lock_reason==="previous_incomplete")return {cls:"locked",text:"🔒 أكمل الوحدة السابقة أولًا"};
+  if(g.lock_reason==="unit_locked")return {cls:"locked",text:"⏳ تفتح في "+fmtDate(g.available_at)};
+  if(g.lock_reason==="not_qualified")return {cls:"failed",text:"لم يتحقق شرط أعلى من ٩٠٪ في الوحدات الثلاث الأولى"};
+  return {cls:"locked",text:"🔒 غير متاحة حاليًا"};
+}
+function renderStudent(j){
+  $("studentHead").classList.add("show");$("studentName").textContent="مرحبًا "+j.student.display_name;$("studentMeta").textContent=j.student.class_name+" — رقم الطالب: "+j.student.student_id;
+  $("studentIntro").innerHTML=j.qualifies_for_final?'🌟 <b>أحسنت:</b> حققت شرط أعلى من ٩٠٪ في الوحدات الثلاث الأولى. تظهر لك حالة موعد الوحدة الرابعة أدناه.':'تذكير: أفضل نتيجة في كل وحدة من الوحدات الثلاث الأولى يجب أن تكون <b>أعلى من ٩٠٪</b> للتأهل للوحدة الرابعة.';
+  const box=$("games");box.innerHTML="";
+  j.games.forEach((g,i)=>{
+    const st=cardState(g,i),d=document.createElement("div");d.className="game";
+    const best=g.best_percent==null?"—":arNum(g.best_percent)+"٪";
+    d.innerHTML='<div class="num">'+arNum(i+1)+'</div><h3>'+gameTitles[i]+'</h3><div class="state '+st.cls+'">'+st.text+'</div><div class="stats">أفضل نتيجة: <b>'+best+'</b><br>المحاولات المستخدمة: <b>'+arNum(g.attempts_used)+'/٣</b><br>المتبقي: <b>'+arNum(g.attempts_remaining)+'</b>'+(g.first_started_at?'<br>أول دخول: '+fmtDate(g.first_started_at):'')+'</div><div class="actions"></div>';
+    const a=document.createElement("a");a.className="btn "+(g.can_start?"btn-primary":"btn-light");a.textContent=g.can_start?"دخول الوحدة":"غير متاحة";a.href=g.can_start?gameLinks[i]:"#";if(!g.can_start)a.onclick=e=>e.preventDefault();d.querySelector(".actions").appendChild(a);box.appendChild(d);
+  });
+}
+$("studentLogout").onclick=()=>{sessionStorage.removeItem("afaqCompetitionLogin");studentSession=null;location.reload()};
+async function restoreStudent(){
+  const raw=sessionStorage.getItem("afaqCompetitionLogin");if(!raw)return;
+  try{
+    const s=JSON.parse(raw);const j=await api({action:"portal_status",class_name:s.class_name,student_id:s.student_id,pin:s.pin});studentSession=s;renderStudent(j);$("studentLogin").style.display="none";
+  }catch{sessionStorage.removeItem("afaqCompetitionLogin")}
+}
+$("teacherEntry").onclick=()=>{$("teacherBox").classList.add("show");$("teacherBox").scrollIntoView({behavior:"smooth"})};
+$("teacherPin").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,8));
+$("teacherLoginBtn").onclick=async()=>{
+  clearMsg($("teacherMsg"));const p=$("teacherPin").value.trim();if(!/^\d{8}$/.test(p)){msg($("teacherMsg"),"أدخل الرقم السري للمعلم المكوّن من ٨ أرقام.");return}
+  $("teacherLoginBtn").disabled=true;
+  try{teacherData=await api({action:"teacher_report",teacher_pin:p});teacherSecret=p;$("teacherLoginBox").classList.add("hidden");$("teacherDashboard").classList.remove("hidden");renderTeacher()}
+  catch(e){msg($("teacherMsg"),errText(e))}
+  finally{$("teacherLoginBtn").disabled=false}
+};
+function filteredStudents(){const c=$("teacherClassFilter").value;return (teacherData?.students||[]).filter(s=>!c||s.class_name===c)}
+function pct(g){return g?.best_percent==null?"—":arNum(g.best_percent)+"٪"}
+function renderTeacher(){
+  const all=filteredStudents(),sum=$("summary");const counts=[0,1,2,3].map(i=>all.filter(s=>s.games[i]?.completed_attempts>0).length),q=all.filter(s=>s.qualifies_for_final).length;
+  sum.innerHTML='<div class="s">الطلاب<b>'+arNum(all.length)+'</b></div>'+counts.map((n,i)=>'<div class="s">أكمل الوحدة '+arNum(i+1)+'<b>'+arNum(n)+'</b></div>').join("")+'<div class="s">المتأهلون<b>'+arNum(q)+'</b></div>';
+  const tb=$("teacherRows");tb.innerHTML="";all.forEach((s,idx)=>{const tr=document.createElement("tr");tr.innerHTML='<td>'+arNum(idx+1)+'</td><td class="name">'+(s.full_name||s.display_name)+'</td><td>'+s.class_name+'</td>'+[0,1,2,3].map(i=>'<td>'+pct(s.games[i])+'<br><span class="small">'+arNum(s.games[i].attempts_used)+'/٣ محاولة</span></td>').join("")+'<td class="'+(s.qualifies_for_final?'qual':'notqual')+'">'+(s.qualifies_for_final?'متأهل':'غير متأهل')+'</td>';tb.appendChild(tr)});
+  $("reportTime").textContent="آخر تحديث: "+fmtDate(teacherData.server_now);
+}
+$("teacherClassFilter").onchange=renderTeacher;
+$("teacherLogout").onclick=()=>{teacherSecret="";teacherData=null;$("teacherPin").value="";$("teacherDashboard").classList.add("hidden");$("teacherLoginBox").classList.remove("hidden")};
+function printDoc(title,headers,rows){
+  const w=window.open("","_blank");if(!w)return alert("يرجى السماح بفتح نافذة الطباعة.");
+  const date=new Intl.DateTimeFormat("ar-OM",{dateStyle:"full",timeStyle:"short"}).format(new Date());
+  const style='<style>body{font-family:Tahoma,Arial;direction:rtl;padding:24px;color:#17243a}h1,h2{text-align:center}p{text-align:center}table{width:100%;border-collapse:collapse;margin-top:18px}th,td{border:1px solid #9aaabd;padding:8px;text-align:center;font-size:12px}th{background:#163f73;color:#fff}.foot{margin-top:25px;font-size:12px}@page{size:A4 landscape;margin:10mm}</style>';
+  w.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+title+'</title>'+style+'</head><body><h1>مسابقة الرياضيات للصف السادس</h1><h2>'+title+'</h2><p>مدرسة الحسين بن علي للتعليم الأساسي — إعداد الأستاذ سعيد بن جمعة بن عبدالله البريكي</p><p>'+date+'</p><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join("")+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(v=>'<td>'+v+'</td>').join("")+'</tr>').join("")+'</tbody></table><div class="foot">إشراف مدير المدرسة: الأستاذ عبدالله بن علي العيسائي</div><script>window.onload=()=>window.print()<\/script></body></html>');w.document.close()
+}
+function printUnit(i){
+  const rows=filteredStudents().filter(s=>s.games[i].attempts_used>0).map((s,n)=>{const g=s.games[i];return [arNum(n+1),s.full_name||s.display_name,s.student_id,s.class_name,arNum(g.attempts_used),g.best_score==null?"—":arNum(g.best_score)+"/٥٠",g.best_percent==null?"—":arNum(g.best_percent)+"٪",fmtDate(g.first_started_at),fmtDate(g.last_completed_at)]});
+  printDoc("نتائج "+gameTitles[i],["م","الطالب","رقم الطالب","الشعبة","المحاولات","أفضل درجة","النسبة","أول دخول","آخر إكمال"],rows)
+}
+document.querySelectorAll("[data-print-unit]").forEach(b=>b.onclick=()=>printUnit(Number(b.dataset.printUnit)));
+$("printQualified").onclick=()=>{
+  const qs=filteredStudents().filter(s=>s.qualifies_for_final);const rows=qs.map((s,n)=>[arNum(n+1),s.full_name||s.display_name,s.student_id,s.class_name,pct(s.games[0]),pct(s.games[1]),pct(s.games[2]),s.final_access_ready?"متاحة الآن":(s.final_available_at?"من "+fmtDate(s.final_available_at):"بانتظار إكمال الوحدة الثالثة")]);
+  printDoc("قائمة الطلاب المتأهلين للوحدة الرابعة أمام لجنة التقييم",["م","الطالب","رقم الطالب","الشعبة","الوحدة ١","الوحدة ٢","الوحدة ٣","حالة الوحدة الرابعة"],rows)
+};
+restoreStudent();
+</script>
+</body></html>
