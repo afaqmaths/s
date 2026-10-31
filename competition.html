@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>مسابقة الرياضيات للصف السادس</title>
+<title>مسابقة نجوم آفاق الرياضيات</title>
 <style>
 :root{--navy:#102b55;--blue:#1d6fdc;--gold:#dca827;--cream:#fff9ec;--green:#178553;--red:#b93636;--muted:#64748b;--line:#d9e2ef}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#edf5ff,#fff 34%,#f7fbff);color:#16243b;font-size:20px}
@@ -30,9 +30,9 @@
   <div class="top">
     
     <section class="hero">
-      <h1>🏆 مسابقة الرياضيات للصف السادس</h1>
-      <p>مبادرة تعليمية لطلاب السادس/٤ والسادس/٥ والسادس/٦ — أربع وحدات، ثلاث محاولات لكل وحدة، ومتابعة مركزية للنتائج.</p>
-      <span class="badge">إعداد وتقديم وإخراج: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>
+      <h1>🏆 مسابقة نجوم آفاق الرياضيات</h1>
+      <p>مبادرة تعليمية لطلاب السادس/٤ والسادس/٥ والسادس/٦ — أربع وحدات، ثلاث محاولات لكل وحدة، ومجموع نهائي من ٤٠٠ نقطة.</p>
+      <span class="badge">الإعداد والإشراف: الأستاذ سعيد جمعة عبد الله البريكي</span>
     </section>
   </div>
 
@@ -40,7 +40,7 @@
     <div class="entry-card">
       <img class="entry-photo" src="assets/student-portal.svg?v=3" alt="صورة توضيحية لطالب">
       <h3>دخول الطالب</h3>
-      <p>يدخل الطالب باستخدام رقم الطالب الرسمي ورمز الدخول الخاص به، ثم تظهر له الوحدات الأربع وحالة كل وحدة وفق المواعيد المحددة وشروط التأهل.</p>
+      <p>يدخل الطالب باستخدام رقم الطالب الرسمي ورمز الدخول الخاص به، ثم تظهر له الوحدات الأربع وحالة كل وحدة وفق المواعيد المحددة، ويُحتسب أفضل رصيد له من كل وحدة ضمن المجموع النهائي.</p>
       <button class="btn btn-primary" id="studentEntry">دخول الطالب</button>
     </div>
     <div class="entry-card">
@@ -122,11 +122,11 @@
         <button class="btn btn-light" data-print-unit="1">🖨️ نتائج الوحدة ٢</button>
         <button class="btn btn-light" data-print-unit="2">🖨️ نتائج الوحدة ٣</button>
         <button class="btn btn-light" data-print-unit="3">🖨️ نتائج الوحدة ٤</button>
-        <button class="btn btn-green" id="printQualified">🖨️ المتأهلون للوحدة الرابعة</button>
+        <button class="btn btn-green" id="printQualified">🖨️ المتأهلون للجوائز</button>
         <button class="btn btn-light" id="backSupervisorMenu2">العودة لخيارات المشرف</button>
       </div>
       <div class="summary" id="summary"></div>
-      <div class="table-wrap"><table><thead><tr><th>م</th><th>الطالب</th><th>الشعبة</th><th>الوحدة ١</th><th>الوحدة ٢</th><th>الوحدة ٣</th><th>الوحدة ٤</th><th>الحالة</th></tr></thead><tbody id="teacherRows"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>م</th><th>الطالب</th><th>الشعبة</th><th>الوحدة ١</th><th>الوحدة ٢</th><th>الوحدة ٣</th><th>الوحدة ٤</th><th>المجموع / ٤٠٠</th><th>الحالة</th><th>الجائزة</th></tr></thead><tbody id="teacherRows"></tbody></table></div>
       <p class="small" id="reportTime"></p>
     </div>
   </section>
@@ -140,7 +140,7 @@ const gameLinks=[
   "grade6-geometry-visual-game3.html",
   "grade6-numbers-visual-game4.html"
 ];
-const gameTitles=["الوحدة الأولى: الأعداد","الوحدة الثانية: القياس","الوحدة الثالثة: الهندسة","الوحدة الرابعة: التقييم أمام لجنة التقييم"];
+const gameTitles=["الوحدة الأولى: الأعداد","الوحدة الثانية: القياس","الوحدة الثالثة: الهندسة","الوحدة الرابعة: الأعداد ٢"];
 let studentSession=null,teacherData=null,teacherSecret="";
 const $=id=>document.getElementById(id);
 const arNum=s=>String(s).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
@@ -198,12 +198,12 @@ function cardState(g,i){
   if(g.can_start)return {cls:"open",text:"✅ متاحة الآن"};
   if(g.lock_reason==="previous_incomplete")return {cls:"locked",text:"🔒 أكمل الوحدة السابقة أولًا"};
   if(g.lock_reason==="unit_locked")return {cls:"locked",text:"⏳ تفتح في "+fmtDate(g.available_at)};
-  if(g.lock_reason==="not_qualified")return {cls:"failed",text:"لم يتحقق شرط أعلى من ٩٠٪ في الوحدات الثلاث الأولى"};
   return {cls:"locked",text:"🔒 غير متاحة حاليًا"};
 }
 function renderStudent(j){
   $("studentHead").classList.add("show");$("studentName").textContent="مرحبًا "+j.student.display_name;$("studentMeta").textContent=j.student.class_name+" — رقم الطالب: "+j.student.student_id;
-  $("studentIntro").innerHTML=j.qualifies_for_final?'🌟 <b>أحسنت:</b> حققت شرط أعلى من ٩٠٪ في الوحدات الثلاث الأولى. تظهر لك حالة موعد الوحدة الرابعة أدناه.':'تذكير: أفضل نتيجة في كل وحدة من الوحدات الثلاث الأولى يجب أن تكون <b>أعلى من ٩٠٪</b> للتأهل للوحدة الرابعة.';
+  const total=Number(j.total_points||0);
+  $("studentIntro").innerHTML='⭐ مجموعك الحالي: <b>'+arNum(total)+' / ٤٠٠</b> نقطة. التأهل للجوائز يبدأ من <b>٣٥٠ نقطة فأعلى</b>. تُحتسب أفضل نتيجة في كل وحدة ضمن المجموع النهائي.';
   const box=$("games");box.innerHTML="";
   j.games.forEach((g,i)=>{
     const st=cardState(g,i),d=document.createElement("div");d.className="game";
@@ -272,11 +272,22 @@ $("supervisorLogout").onclick=()=>{
   $("entryGrid").scrollIntoView({behavior:"smooth"});
 };
 function filteredStudents(){const c=$("teacherClassFilter").value;return (teacherData?.students||[]).filter(s=>!c||s.class_name===c)}
-function pct(g){return g?.best_percent==null?"—":arNum(g.best_percent)+"٪"}
+function pct(g){return g?.best_percent==null?"—":arNum(g.best_percent)+" نقطة"}
+function rankedPrizeMap(students){
+  const eligible=students.filter(s=>Number(s.total_points||0)>=350).sort((a,b)=>Number(b.total_points||0)-Number(a.total_points||0));
+  const selected=eligible.slice(0,10);
+  const map=new Map();
+  selected.forEach((s,i)=>{
+    const prize=10-(selected.length-1-i);
+    const tied=selected.some((x,j)=>j!==i&&Number(x.total_points||0)===Number(s.total_points||0));
+    map.set(s.student_id,{prize,tied});
+  });
+  return {eligible,selected,map};
+}
 function renderTeacher(){
-  const all=filteredStudents(),sum=$("summary");const counts=[0,1,2,3].map(i=>all.filter(s=>s.games[i]?.completed_attempts>0).length),q=all.filter(s=>s.qualifies_for_final).length;
-  sum.innerHTML='<div class="s">الطلاب<b>'+arNum(all.length)+'</b></div>'+counts.map((n,i)=>'<div class="s">أكمل الوحدة '+arNum(i+1)+'<b>'+arNum(n)+'</b></div>').join("")+'<div class="s">المتأهلون<b>'+arNum(q)+'</b></div>';
-  const tb=$("teacherRows");tb.innerHTML="";all.forEach((s,idx)=>{const tr=document.createElement("tr");tr.innerHTML='<td>'+arNum(idx+1)+'</td><td class="name">'+(s.full_name||s.display_name)+'</td><td>'+s.class_name+'</td>'+[0,1,2,3].map(i=>'<td>'+pct(s.games[i])+'<br><span class="small">'+arNum(s.games[i].attempts_used)+'/٣ محاولة</span></td>').join("")+'<td class="'+(s.qualifies_for_final?'qual':'notqual')+'">'+(s.qualifies_for_final?'متأهل':'غير متأهل')+'</td>';tb.appendChild(tr)});
+  const all=filteredStudents(),sum=$("summary");const counts=[0,1,2,3].map(i=>all.filter(s=>s.games[i]?.completed_attempts>0).length),ranked=rankedPrizeMap(all),q=ranked.eligible.length;
+  sum.innerHTML='<div class="s">الطلاب<b>'+arNum(all.length)+'</b></div>'+counts.map((n,i)=>'<div class="s">أكمل الوحدة '+arNum(i+1)+'<b>'+arNum(n)+'</b></div>').join("")+'<div class="s">المتأهلون للجوائز<b>'+arNum(q)+'</b></div>';
+  const tb=$("teacherRows");tb.innerHTML="";all.forEach((s,idx)=>{const tr=document.createElement("tr"),total=Number(s.total_points||0),p=ranked.map.get(s.student_id);tr.innerHTML='<td>'+arNum(idx+1)+'</td><td class="name">'+(s.full_name||s.display_name)+'</td><td>'+s.class_name+'</td>'+[0,1,2,3].map(i=>'<td>'+pct(s.games[i])+'<br><span class="small">'+arNum(s.games[i].attempts_used)+'/٣ محاولة</span></td>').join("")+'<td><b>'+arNum(total)+'</b></td><td class="'+(total>=350?'qual':'notqual')+'">'+(total>=350?'متأهل للجوائز':'غير متأهل')+'</td><td>'+(p?(p.tied?'تعادل — أسئلة فاصلة':'الجائزة '+arNum(p.prize)):'—')+'</td>';tb.appendChild(tr)});
   $("reportTime").textContent="آخر تحديث: "+fmtDate(teacherData.server_now);
 }
 $("teacherClassFilter").onchange=renderTeacher;
@@ -287,13 +298,13 @@ function printDoc(title,headers,rows){
   w.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+title+'</title>'+style+'</head><body><h1>مسابقة الرياضيات للصف السادس</h1><h2>'+title+'</h2><p>مدرسة الحسين بن علي للتعليم الأساسي — إعداد الأستاذ سعيد بن جمعة بن عبدالله البريكي</p><p>'+date+'</p><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join("")+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(v=>'<td>'+v+'</td>').join("")+'</tr>').join("")+'</tbody></table><div class="foot">إشراف مدير المدرسة: الأستاذ عبدالله بن علي العيسائي</div><script>window.onload=()=>window.print()<\/script></body></html>');w.document.close()
 }
 function printUnit(i){
-  const rows=filteredStudents().filter(s=>s.games[i].attempts_used>0).map((s,n)=>{const g=s.games[i];return [arNum(n+1),s.full_name||s.display_name,s.student_id,s.class_name,arNum(g.attempts_used),g.best_score==null?"—":arNum(g.best_score)+"/٥٠",g.best_percent==null?"—":arNum(g.best_percent)+"٪",fmtDate(g.first_started_at),fmtDate(g.last_completed_at)]});
-  printDoc("نتائج "+gameTitles[i],["م","الطالب","رقم الطالب","الشعبة","المحاولات","أفضل درجة","النسبة","أول دخول","آخر إكمال"],rows)
+  const rows=filteredStudents().filter(s=>s.games[i].attempts_used>0).map((s,n)=>{const g=s.games[i];return [arNum(n+1),s.full_name||s.display_name,s.student_id,s.class_name,arNum(g.attempts_used),g.best_percent==null?"—":arNum(g.best_percent)+"/١٠٠",fmtDate(g.first_started_at),fmtDate(g.last_completed_at)]});
+  printDoc("نتائج "+gameTitles[i],["م","الطالب","رقم الطالب","الشعبة","المحاولات","نقاط الوحدة","أول دخول","آخر إكمال"],rows)
 }
 document.querySelectorAll("[data-print-unit]").forEach(b=>b.onclick=()=>printUnit(Number(b.dataset.printUnit)));
 $("printQualified").onclick=()=>{
-  const qs=filteredStudents().filter(s=>s.qualifies_for_final);const rows=qs.map((s,n)=>[arNum(n+1),s.full_name||s.display_name,s.student_id,s.class_name,pct(s.games[0]),pct(s.games[1]),pct(s.games[2]),s.final_access_ready?"متاحة الآن":(s.final_available_at?"من "+fmtDate(s.final_available_at):"بانتظار إكمال الوحدة الثالثة")]);
-  printDoc("قائمة الطلاب المتأهلين للوحدة الرابعة أمام لجنة التقييم",["م","الطالب","رقم الطالب","الشعبة","الوحدة ١","الوحدة ٢","الوحدة ٣","حالة الوحدة الرابعة"],rows)
+  const ranked=rankedPrizeMap(filteredStudents()),qs=ranked.selected;const rows=qs.map((s,n)=>{const p=ranked.map.get(s.student_id);return [arNum(n+1),s.full_name||s.display_name,s.student_id,s.class_name,pct(s.games[0]),pct(s.games[1]),pct(s.games[2]),pct(s.games[3]),arNum(Number(s.total_points||0))+"/٤٠٠",p.tied?"تعادل — أسئلة فاصلة":"الجائزة "+arNum(p.prize)]});
+  printDoc("قائمة المتأهلين لجوائز مسابقة نجوم آفاق الرياضيات",["م","الطالب","رقم الطالب","الشعبة","الوحدة ١","الوحدة ٢","الوحدة ٣","الوحدة ٤","المجموع","الجائزة"],rows)
 };
 restoreStudent();
 window.addEventListener("pageshow",()=>{if(sessionStorage.getItem("afaqCompetitionLogin"))restoreStudent()});
