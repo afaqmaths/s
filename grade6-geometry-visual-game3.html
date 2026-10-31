@@ -360,8 +360,8 @@ function setMode(){
   verifiedCard.style.display=teacher?"none":"";
   if(teacher){
     teacherPinBoxEl.classList.add("show");
-    attemptPreviewEl.innerHTML="🧑‍🏫 <b>وضع التدريب:</b> لا تُسجَّل أي محاولة رسمية.";
-    startBtnEl.textContent="🧑‍🏫 متابعة وضع التدريب";
+    attemptPreviewEl.innerHTML="🧑‍🏫 <b>وضع المشرف:</b> لا تُسجَّل أي محاولة رسمية.";
+    startBtnEl.textContent="🧑‍🏫 دخول المشرف";
   }else{
     teacherPinBoxEl.classList.remove("show");
     startBtnEl.textContent="🔐 تحقق من البيانات والمتابعة";
@@ -379,13 +379,13 @@ startBtnEl.onclick=async()=>{
   const teacher=accessModeEl.value==="teacher";
   if(teacher){
     const n=studentInputEl.value.trim(),s=serialInputEl.value.trim(),c=classInputEl.value;
-    if(!n||!s||!c){afaqMsg("يرجى إدخال الاسم والرقم واختيار الفصل قبل بدء وضع التدريب.",true);return}
+    if(!n||!s||!c){afaqMsg("يرجى إدخال البيانات المطلوبة قبل دخول المشرف.",true);return}
     try{await afaqApi({action:"teacher_verify",teacher_pin:teacherPinInputEl.value.trim()});}catch(e){afaqMsg("الرقم السري للمعلم غير صحيح.",true);return}
     studentName=n;studentSerial=s;studentClass=c;isTrainingMode=true;currentAttempt=0;attemptFinalized=false;
     studentNameTop.textContent=studentName;serialTop.textContent=ar(studentSerial);classTop.textContent=studentClass;
     modeBadge.classList.add("show");attemptTop.textContent="تدريب";
     startOverlayEl.style.display="none";showReadyScreen();
-    readyMeta.textContent="🧑‍🏫 وضع تدريب المعلم — لا تُسجّل محاولة رسمية";
+    readyMeta.textContent="🧑‍🏫 وضع المشرف — لا تُسجّل محاولة رسمية";
     return;
   }
   const cls=classInputEl.value,id=officialIdSelect.value,pin=studentPinInput.value.trim();
