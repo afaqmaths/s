@@ -11,7 +11,7 @@
 .btn{border:0;border-radius:13px;padding:15px 22px;font-weight:900;cursor:pointer;font-size:20px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
 .hero{background:linear-gradient(135deg,var(--navy),#174c91);color:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 45px #12345b25;position:relative;overflow:hidden}
 .hero:after{content:"∑  π  6²  ×  ÷  △";position:absolute;left:22px;bottom:10px;font-size:45px;color:#ffffff14;letter-spacing:12px}
-.hero h1{margin:0 0 12px;font-size:clamp(38px,5vw,60px)}.hero p{margin:8px 0;line-height:2;font-size:23px;font-weight:700}.badge{display:inline-block;background:#ffde76;color:#243450;border-radius:999px;padding:11px 18px;font-weight:900;margin-top:14px;font-size:19px}.hero-actions{margin-top:22px;position:relative;z-index:2}.hero-start{min-width:230px;font-size:24px;padding:17px 34px;box-shadow:0 10px 24px #0000002e;border:2px solid #ffe89d}.hero-start:hover{transform:translateY(-2px)}.portal-hint{background:linear-gradient(90deg,#f5fbff,#fff8e8,#f5fbff);border:1px solid #d9e5f2;border-radius:18px;padding:14px 18px;text-align:center;font-weight:900;color:#173b68;margin:16px 0 4px;font-size:20px}
+.hero h1{margin:0 0 12px;font-size:clamp(38px,5vw,60px)}.hero p{margin:8px 0;line-height:2;font-size:23px;font-weight:700}.badge{display:inline-block;background:#ffde76;color:#243450;border-radius:999px;padding:11px 18px;font-weight:900;margin-top:14px;font-size:19px}.hero-actions{margin-top:22px;position:relative;z-index:2}.hero-start{min-width:230px;font-size:24px;padding:17px 34px;box-shadow:0 10px 24px #0000002e;border:2px solid #ffe89d}.hero-start:hover{transform:translateY(-2px)}
 .panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px;margin:22px 0;box-shadow:0 8px 28px #183b5c10}.panel h2{margin-top:0;color:var(--navy);font-size:32px}
 .login-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end}.field label{display:block;font-size:21px;color:#445b76;font-weight:900;margin-bottom:9px}.field select,.field input{width:100%;padding:16px;border:1px solid #bfd0e3;border-radius:12px;font-size:22px;background:#fff;font-weight:700}
 .msg{margin-top:14px;border-radius:12px;padding:15px 18px;display:none;font-size:20px;line-height:1.9;font-weight:700}.msg.show{display:block}.msg.err{background:#fff0f0;color:#8e2929;border:1px solid #f1bbbb}.msg.ok{background:#effbf4;color:#176942;border:1px solid #bfe4cf}
@@ -23,55 +23,89 @@
 @media(max-width:950px){.entry-grid{grid-template-columns:1fr}.games{grid-template-columns:1fr 1fr}.login-grid{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}.entry-visual{width:175px;height:175px}.entry-card h3{font-size:28px}.entry-card p{font-size:21px;min-height:auto}}
 @media print{.no-print{display:none!important}.panel{box-shadow:none}.wrap{width:100%}}
+
+.portal-hero{padding:32px;background:
+ radial-gradient(circle at 12% 18%,#ffffff22 0 8%,transparent 9%),
+ linear-gradient(135deg,#0b3975 0%,#0c5da7 52%,#0a7f87 100%);border:2px solid #d9aa33;box-shadow:0 22px 60px #12345b35;overflow:hidden}
+.portal-hero:before{content:"";position:absolute;inset:auto 0 0 0;height:145px;opacity:.18;background:
+ linear-gradient(150deg,transparent 0 18%,#fff 18% 20%,transparent 20% 34%,#fff 34% 36%,transparent 36% 100%),
+ linear-gradient(30deg,transparent 0 20%,#fff 20% 22%,transparent 22% 42%,#fff 42% 44%,transparent 44% 100%);}
+.portal-hero:after{content:"△  π  ÷  ×  6²  ∑";position:absolute;left:28px;top:72px;font-size:42px;color:#ffffff14;letter-spacing:13px}
+.oman-ribbon{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:10px;background:#ffffff12;border:1px solid #ffffff2e;border-radius:999px;width:max-content;max-width:100%;margin:0 auto 16px;padding:9px 18px;font-size:18px;font-weight:900}
+.oman-flag{font-size:30px}.hero-title-wrap{position:relative;z-index:2;text-align:center}.hero-kicker{color:#ffe28a;font-size:20px;font-weight:900;margin-bottom:4px}
+.portal-hero h1{font-size:clamp(38px,5vw,62px);margin:4px 0 10px;text-shadow:0 4px 18px #001d45}.hero-sub{max-width:900px;margin:0 auto 22px!important;font-size:22px!important;line-height:1.9!important;color:#f7fbff}
+.competition-facts{position:relative;z-index:2;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:22px 0}
+.fact{background:#ffffffee;color:#17345c;border-radius:18px;padding:15px 10px;text-align:center;border:2px solid #f4cf65;box-shadow:0 9px 22px #001f421f}
+.fact-icon{display:block;font-size:30px;margin-bottom:4px}.fact b{display:block;font-size:22px;color:#113c74}.fact small{display:block;font-size:15px;color:#5d6f84;margin-top:5px;font-weight:800;line-height:1.5}
+.prize-rule{position:relative;z-index:2;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,#fffaf0f2,#ffffffed);color:#243d5c;border-radius:18px;padding:14px 18px;border:2px solid #e8c253;font-size:18px;line-height:1.8;font-weight:800}
+.rule-star{font-size:38px}.hero-credit{position:relative;z-index:2;text-align:center;margin-top:16px;color:#ffebaa;font-weight:900;font-size:18px}
+.entry-grid{margin-top:24px}.entry-card{min-height:520px;display:flex;flex-direction:column;align-items:center}
+.entry-visual{position:relative;width:255px;height:255px;display:grid;place-items:center;margin:0 auto 18px;border-radius:50%;border:7px solid #fff;box-shadow:0 14px 34px #0c31552e,0 0 0 4px #d9aa33;overflow:visible}
+.human-avatar{width:100%;height:100%;border-radius:50%;display:block;object-fit:cover;overflow:hidden}
+.oman-headwear{position:absolute;z-index:5;pointer-events:none;filter:drop-shadow(0 4px 3px #0002)}
+.kumma{top:-2px;width:125px;height:47px;border-radius:18px 18px 12px 12px;background:
+ repeating-linear-gradient(45deg,#f8fbff 0 8px,#2d6ea1 8px 11px,#f8fbff 11px 17px),
+ repeating-linear-gradient(-45deg,transparent 0 10px,#2d6ea1 10px 12px,transparent 12px 20px);border:3px solid #315f8c}
+.massar{top:-10px;width:175px;height:60px;border-radius:50% 50% 36% 36%;background:
+ linear-gradient(12deg,#f4ead9 0 18%,#b44732 18% 24%,#f4ead9 24% 42%,#2e698c 42% 48%,#f4ead9 48% 67%,#b44732 67% 73%,#f4ead9 73%);border:3px solid #b68c64;transform:rotate(-3deg)}
+.entry-card p{flex:1}.entry-card .btn{margin-top:auto}
+@media(max-width:950px){.competition-facts{grid-template-columns:repeat(2,1fr)}.fact:last-child{grid-column:1/-1}.entry-card{min-height:auto}}
+@media(max-width:600px){.competition-facts{grid-template-columns:1fr}.fact:last-child{grid-column:auto}.prize-rule{align-items:flex-start}.entry-visual{width:190px;height:190px}.massar{width:138px;height:48px}.kumma{width:100px;height:40px}.portal-hero{padding:24px 16px}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
     
-    <section class="hero">
-      <h1>🏆 مسابقة نجوم آفاق الرياضيات</h1>
-      <p>مبادرة تعليمية لطلاب السادس/٤ والسادس/٥ والسادس/٦ — أربع وحدات، ثلاث محاولات لكل وحدة، ومجموع نهائي من ٤٠٠ نقطة.</p>
-      <span class="badge">الإعداد والإشراف: الأستاذ سعيد جمعة عبد الله البريكي</span><div class="hero-actions no-print"><button class="btn btn-gold hero-start" id="startNow">ابدأ الآن</button></div>
-    </section>
+    
+<section class="hero portal-hero">
+  <div class="oman-ribbon">
+    <span class="oman-flag" aria-hidden="true">🇴🇲</span>
+    <span>سلطنة عُمان • الرياضيات • التميز • الإبداع</span>
+  </div>
+  <div class="hero-title-wrap">
+    <div class="hero-kicker">⭐ بوابة المسابقة الرسمية ⭐</div>
+    <h1>مسابقة نجوم آفاق الرياضيات</h1>
+    <p class="hero-sub">مسابقة تفاعلية لطلاب الصف السادس تجمع بين التحدي والمتعة، وتكافئ الدقة والاستمرار وتحقيق أعلى مجموع من النقاط.</p>
   </div>
 
-  <div class="portal-hint no-print" id="portalHint">اختر طريقة الدخول: حساب الطالب أو حساب المشرف — كلاهما متصل مباشرةً بنظام المسابقة.</div><section class="entry-grid no-print" id="entryGrid">
-    <div class="entry-card">
-      <div class="entry-visual student-visual" aria-hidden="true">
-    <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="sg1" x1="0" x2="1"><stop stop-color="#159caa"/><stop offset="1" stop-color="#0d6fd0"/></linearGradient>
-      </defs>
-      <circle cx="110" cy="110" r="96" fill="#ffffff" opacity=".72"/>
-      <path d="M28 82 110 42l82 40-82 40z" fill="url(#sg1)"/>
-      <path d="M63 99v38c0 14 21 29 47 29s47-15 47-29V99l-47 23z" fill="#163f73"/>
-      <path d="M192 82v49" stroke="#dca827" stroke-width="8" stroke-linecap="round"/>
-      <circle cx="192" cy="139" r="10" fill="#dca827"/>
-      <rect x="49" y="146" width="122" height="42" rx="12" fill="#fff" stroke="#159caa" stroke-width="6"/>
-      <path d="M69 167h82" stroke="#159caa" stroke-width="7" stroke-linecap="round"/>
-    </svg>
+  <div class="competition-facts">
+    <div class="fact"><span class="fact-icon">📚</span><b>٤ وحدات</b><small>١٠٠ نقطة لكل وحدة</small></div>
+    <div class="fact"><span class="fact-icon">🎯</span><b>٣٥٠ نقطة فأعلى</b><small>حد التأهل للجوائز</small></div>
+    <div class="fact"><span class="fact-icon">🎁</span><b>١٠ جوائز</b><small>حسب ترتيب النقاط</small></div>
+    <div class="fact"><span class="fact-icon">👥</span><b>٩٨ طالبًا</b><small>المشاركون في المسابقة</small></div>
+    <div class="fact"><span class="fact-icon">📝</span><b>٣ نماذج</b><small>٣ محاولات لكل وحدة</small></div>
   </div>
-      <h3>دخول الطالب</h3>
+
+  <div class="prize-rule">
+    <span class="rule-star">🏆</span>
+    <div>
+      <b>آلية الفوز:</b>
+      يجمع الطالب نقاط الوحدات الأربع من أصل ٤٠٠ نقطة. كل من يحقق ٣٥٠ نقطة فأعلى يدخل قائمة المتأهلين، وتُرتب الجوائز بحسب أعلى مجموع، وعند التعادل تُستخدم أسئلة فاصلة.
+    </div>
+  </div>
+
+  <div class="hero-credit">الإعداد والإشراف: الأستاذ سعيد جمعة عبد الله البريكي</div>
+</section>
+  </div>
+
+  <section class="entry-grid no-print" id="entryGrid">
+    <div class="entry-card">
+      <div class="entry-visual student-visual">
+     <img class="human-avatar" src="https://api.dicebear.com/10.x/avataaars/svg?seed=AfaqStudent&backgroundColor=dff7fb&radius=50&scale=82" alt="صورة كرتونية لطالب">
+     <span class="oman-headwear kumma" aria-hidden="true"></span>
+   </div>
+   <h3>دخول الطالب</h3>
       <p>بوابتك إلى تحدّي نجوم آفاق الرياضيات. أدخل رقمك الرسمي ورمزك السري، ثم ابدأ رحلتك في الوحدات الأربع واجمع أكبر عدد من النقاط.</p>
       <button class="btn btn-primary" id="studentEntry" aria-label="دخول الطالب إلى نظام المسابقة">دخول الطالب</button>
     </div>
     <div class="entry-card">
-      <div class="entry-visual supervisor-visual" aria-hidden="true">
-    <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="sp1" x1="0" x2="1"><stop stop-color="#dca827"/><stop offset="1" stop-color="#f0c965"/></linearGradient>
-      </defs>
-      <circle cx="110" cy="110" r="96" fill="#ffffff" opacity=".72"/>
-      <path d="M38 58c28-10 52-7 72 8v94c-20-15-44-18-72-8z" fill="#fff" stroke="#1d6fdc" stroke-width="7"/>
-      <path d="M182 58c-28-10-52-7-72 8v94c20-15 44-18 72-8z" fill="#fff" stroke="#1d6fdc" stroke-width="7"/>
-      <path d="M110 66v94" stroke="#dca827" stroke-width="7"/>
-      <circle cx="160" cy="70" r="23" fill="url(#sp1)"/>
-      <path d="M160 57v26M147 70h26" stroke="#173b68" stroke-width="7" stroke-linecap="round"/>
-      <path d="M58 94h30M58 112h30M132 94h30M132 112h30" stroke="#6b829b" stroke-width="6" stroke-linecap="round"/>
-    </svg>
-  </div>
-      <h3>دخول المشرف</h3>
+      <div class="entry-visual supervisor-visual">
+     <img class="human-avatar" src="https://api.dicebear.com/10.x/avataaars/svg?seed=AfaqSupervisor&backgroundColor=fff3d9&radius=50&scale=82" alt="صورة كرتونية للمشرف">
+     <span class="oman-headwear massar" aria-hidden="true"></span>
+   </div>
+   <h3>دخول المشرف</h3>
       <p>بوابة خاصة بالمشرف لمتابعة أداء الطلاب والنتائج والترتيب والجوائز، مع إمكانية الدخول إلى الوحدات في وضع المشرف دون احتساب محاولات.</p>
       <button class="btn btn-gold" id="supervisorEntry" aria-label="دخول المشرف إلى نظام المسابقة">دخول المشرف</button>
     </div>
@@ -177,7 +211,6 @@ function hideAllEntrySections(){
   $("studentLogin").classList.add("hidden");
   $("supervisorBox").classList.remove("show");
 }
-$("startNow").onclick=()=>{$("entryGrid").scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>{$("studentEntry").focus()},500)};
 $("studentEntry").onclick=()=>{hideAllEntrySections();$("studentLogin").classList.remove("hidden");$("studentLogin").scrollIntoView({behavior:"smooth"})};
 $("supervisorEntry").onclick=()=>{hideAllEntrySections();$("supervisorBox").classList.add("show");$("supervisorBox").scrollIntoView({behavior:"smooth"})};
 async function api(body){
