@@ -421,6 +421,20 @@ if(playAgainEl)playAgainEl.onclick=()=>{if(studentSerial)showReadyScreen()};
 
 async function afaqAutoLoginFromPortal(){
   try{
+    const teacherRaw=sessionStorage.getItem("afaqTeacherTraining");
+    if(teacherRaw){
+      const t=JSON.parse(teacherRaw);
+      if(t&&/^\d{8}$/.test(String(t.teacher_pin||""))){
+        accessModeEl.value="teacher";
+        setMode();
+        studentInputEl.value=t.teacher_name||"الأستاذ سعيد بن جمعة بن عبدالله البريكي";
+        serialInputEl.value="0000";
+        classInputEl.value="السادس / ٤";
+        teacherPinInputEl.value=String(t.teacher_pin);
+        await startBtnEl.onclick();
+        return;
+      }
+    }
     const raw=sessionStorage.getItem("afaqCompetitionLogin");
     if(!raw)return;
     const s=JSON.parse(raw);
