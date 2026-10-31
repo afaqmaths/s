@@ -228,8 +228,116 @@ complexQ("تحدّي الأستاذ سعيد","عدد من رقمين: مربع�
 {type:"input",text:"ما الجذر التربيعي للعدد؟",answer:6,displayAnswer:"6"}
 ],"قارن شروط اللغز بالأعداد المربعة من رقمين.",specialClueSVG())
 ]}
+
+// ===== ثلاثة نماذج مرتبطة بالمحاولات الرسمية =====
+const AFAQ_ORIGINAL_STAGE_MAKERS=[null,makeStage1,makeStage2,makeStage3,makeStage4,makeStage5];
+const AFAQ_ALT_MODELS={
+2:{
+1:()=>[
+mc("نظام الأعداد","ما قيمة الرقم 7 في العدد 5.742؟","5.742",[0.7,7,0.07,70],0.7,"الرقم 7 في منزلة الأعشار.","قيمته 0.7."),
+mc("الأعداد العشرية","أي عدد يمثل وحدتين وأربعة أعشار؟","٢ وحدتان و٤ أعشار",[2.4,2.04,0.24,4.2],2.4,"الوحدات أولًا ثم الأعشار.","2 + 0.4 = 2.4."),
+mc("التقريب","قرّب 6.85 إلى أقرب جزء من عشرة.","6.85",[6.9,6.8,6.85,7],6.9,"جزء المائة 5 فنرفع الأعشار.","6.85 ≈ 6.9."),
+mc("ترتيب العشريات","أي عدد هو الأصغر؟","4.27 ، 4.72 ، 4.30 ، 4.19",[4.19,4.27,4.72,4.3],4.19,"قارن الأعشار ثم أجزاء المائة.","4.19 هو الأصغر."),
+mc("الضرب في 100","0.58 × 100 = ؟","0.58 × 100",[58,5.8,0.058,580],58,"انتقل منزلتين.","الناتج 58."),
+mc("القسمة على 100","47 ÷ 100 = ؟","47 ÷ 100",[0.47,4.7,0.047,47],0.47,"القسمة على 100 تصغّر منزلتين.","الناتج 0.47."),
+mc("تاريخ الأعداد","إذا كان ∩ = 10 و | = 1، فما قيمة ٣ رموز ∩ و٤ رموز |؟","٣ عشرات و٤ آحاد",[34,43,304,14],34,"اجمع العشرات والآحاد.","30 + 4 = 34."),
+mc("التطبيقات العشرية","دفتر 1.45 ر.ع وقلم 0.75 ر.ع ومسطرة 1.20 ر.ع. ما المجموع؟","اجمع الأسعار",[3.4,2.4,3.3,4.4],3.4,"اجمع بدقة مع الفواصل.","1.45 + 0.75 + 1.20 = 3.40."),
+mc("التقريب","أي عدد يقرب إلى 5.2 لأقرب جزء من عشرة؟","اختر",[5.16,5.24,5.14,5.26],5.16,"الأعداد من 5.15 حتى أقل من 5.25 تقرب إلى 5.2.","5.16 يقرب إلى 5.2."),
+mc("العمليات العشرية","نصف 8.6 يساوي؟","8.6 ÷ 2",[4.3,4.6,3.8,17.2],4.3,"نصف 86 هو 43.","الناتج 4.3.")
+],
+2:()=>[
+mc("الأعداد السالبة","كم الفرق بين −7 و5؟","−7 إلى 5",[12,2,7,10],12,"من −7 إلى صفر 7، ثم 5.","المجموع 12."),
+mc("الأعداد السالبة","درجة الحرارة −9°س وارتفعت 12 درجة. ما الجديدة؟","−9 + 12",[3,-3,21,-21],3,"تحرك يمينًا 12.","تصبح 3°س."),
+mc("مقارنة السوالب","أي عدد أكبر؟","−2 ، −6 ، −8 ، −11",[-2,-6,-8,-11],-2,"الأقرب للصفر هو الأكبر.","−2 هو الأكبر."),
+mc("المضاعفات المشتركة","ما أصغر مضاعف مشترك لـ 3 و4؟","٣ ، ٤",[12,6,18,24],12,"اكتب المضاعفات.","أول مشترك 12."),
+mc("المضاعفات المشتركة","ما المضاعف المشترك التالي بعد 36 للعددين 3 و4؟","بعد 36",[48,40,42,44],48,"المضاعفات المشتركة مضاعفات 12.","بعد 36 يأتي 48."),
+mc("استراتيجيات الجمع","240 + 60 = ؟","استخدم 24 + 6 = 30",[300,246,306,280],300,"اضرب الحقيقة في 10.","240 + 60 = 300."),
+mc("استراتيجيات الطرح","3.2 − 0.7 = ؟","32 − 7 = 25",[2.5,3.9,2.4,0.25],2.5,"صغّر الحقيقة عشر مرات.","الناتج 2.5."),
+mc("استراتيجيات الضرب","45 × 12 = ؟","45 × (10+2)",[540,450,560,500],540,"450 + 90.","الناتج 540."),
+mc("استراتيجيات الضرب","32 × 49 = ؟","32 × 50 ثم اطرح 32",[1568,1600,1536,1598],1568,"1600 − 32.","الناتج 1568."),
+mc("الأعداد السالبة","أين تقع الأعداد السالبة على خط الأعداد؟","اختر",["يسار الصفر","يمين الصفر","فوق الصفر","عند الصفر"],"يسار الصفر","تذكر اتجاه خط الأعداد.","السوالب يسار الصفر.")
+],
+3:()=>[
+mc("قابلية القسمة","أي عدد يقبل القسمة على 100؟","اختر",[5700,5725,5750,5775],5700,"ينتهي بصفرين.","5700 يقبل القسمة على 100."),
+mc("قابلية القسمة","أي عدد يقبل القسمة على 25 ولا يقبل على 100؟","اختر",[1375,1300,1400,1200],1375,"النهاية 25 أو50 أو75 دون 00.","1375 ينتهي بـ75."),
+mc("قابلية القسمة","هل 428 يقبل القسمة على 4؟","428",["نعم","لا","فقط على 5","فقط على 10"],"نعم","افحص آخر رقمين.","28 يقبل القسمة على 4."),
+mc("الضرب","325 × 18 = ؟","325 × (20−2)",[5850,5750,5950,6500],5850,"6500 − 650.","الناتج 5850."),
+mc("القسمة","4680 ÷ 6 = ؟","4680 ÷ 6",[780,680,880,760],780,"استخدم 468 ÷ 6 = 78.","الناتج 780."),
+mc("تتابع العمليات","24 × 25 ثم ÷ 8. ما العدد في المنتصف؟","24 × 25",[600,75,480,625],600,"احسب الضرب أولًا.","24 × 25 = 600."),
+mc("الأعداد المربعة","ما العدد التالي؟","1 ، 4 ، 9 ، 16 ، 25 ، ؟",[36,30,32,49],36,"هذه مربعات 1 إلى 6.","6² = 36."),
+mc("الأعداد المربعة","أي عدد مربع يقع بين 40 و60؟","اختر",[49,45,55,57],49,"7² = 49.","49 مربع كامل."),
+mc("المتتاليات","ما الحد التالي؟","2 ، 6 ، 12 ، 20 ، 30 ، ؟",[42,40,44,46],42,"الفروق 4،6،8،10 ثم12.","30 + 12 = 42."),
+mc("قابلية القسمة","أي عدد يقبل القسمة على 5 ولا يقبل على 10؟","اختر",[735,740,750,800],735,"ينتهي بـ5 وليس 0.","735.")
+],
+4:()=>[
+complexQ("خط الأعداد","بدأت الحرارة من −4°س، ارتفعت 9 درجات ثم انخفضت 6 درجات.",[{type:"input",text:"بعد الارتفاع، ما الحرارة؟",answer:5,displayAnswer:"5°س"},{type:"input",text:"بعد الانخفاض، ما الحرارة النهائية؟",answer:-1,displayAnswer:"−1°س"},{type:"input",text:"كم مقدار التغير من البداية إلى النهاية؟",answer:3,displayAnswer:"3 درجات"}],"تحرك على خط الأعداد خطوة خطوة."),
+complexQ("العشريات في الحياة","ثمن المتر من شريط 1.50 ر.ع وطوله 3.2 م.",[{type:"input",text:"كم ثمن مترين؟",answer:3,displayAnswer:"3.00 ر.ع"},{type:"input",text:"كم ثمن 1.2 م؟",answer:1.8,displayAnswer:"1.80 ر.ع"},{type:"input",text:"كم الثمن الكلي؟",answer:4.8,displayAnswer:"4.80 ر.ع"}],"جزّئ 3.2 إلى 2 + 1.2."),
+complexQ("قواعد القسمة","اختبر العددين.",[{type:"choice",text:"هل 6400 يقبل القسمة على 100؟",choices:["نعم","لا"],answer:"نعم"},{type:"choice",text:"هل 1475 يقبل القسمة على 25؟",choices:["نعم","لا"],answer:"نعم"}],"انظر إلى النهايات."),
+complexQ("الأعداد المربعة","أكمل نمط المربعات.",[{type:"input",text:"ما قيمة 6²؟",answer:36,displayAnswer:"36"},{type:"input",text:"ما قيمة 7²؟",answer:49,displayAnswer:"49"}],"اضرب العدد في نفسه.")
+],
+5:()=>[
+complexQ("لغز عشري","عدد عشري 4.75.",[{type:"input",text:"قرّبه إلى أقرب جزء من عشرة.",answer:4.8,displayAnswer:"4.8"},{type:"input",text:"اضربه في 100.",answer:475,displayAnswer:"475"},{type:"input",text:"ما رقم أجزاء المائة؟",answer:5,displayAnswer:"5"}],"استخدم القيمة المكانية."),
+complexQ("لغز المضاعفات","ثلاثة روبوتات بخطوات 3 و4 و6.",[{type:"input",text:"ما أصغر مضاعف مشترك؟",answer:12,displayAnswer:"12"},{type:"input",text:"كم خطوة للروبوت ذي الخطوة 3؟",answer:4,displayAnswer:"4"},{type:"input",text:"كم خطوة للروبوت ذي الخطوة 6؟",answer:2,displayAnswer:"2"}],"ابحث عن أول عدد مشترك."),
+complexQ("استراتيجية ذهنية","استخدم 34 × 50 = 1700.",[{type:"input",text:"34 × 49 = ؟",answer:1666,displayAnswer:"1666"},{type:"input",text:"34 × 51 = ؟",answer:1734,displayAnswer:"1734"}],"اطرح أو أضف 34."),
+complexQ("تحدي عدد مربع","عدد من رقمين، مربع، زوجي، وأكبر من 50 وأقل من 70.",[{type:"input",text:"ما العدد؟",answer:64,displayAnswer:"64"},{type:"input",text:"ما جذره الصحيح؟",answer:8,displayAnswer:"8"}],"فكر في المربعات بين 50 و70.")
+]
+},
+3:{
+1:()=>[
+mc("نظام الأعداد","ما قيمة الرقم 8 في العدد 6.083؟","6.083",[0.08,0.8,8,0.008],0.08,"الرقم 8 في أجزاء المائة.","قيمته 0.08."),
+mc("الأعداد العشرية","أي عدد يمثل وحدة واحدة وستة أعشار؟","١ وحدة و٦ أعشار",[1.6,1.06,0.16,6.1],1.6,"الوحدة ثم الأعشار.","1.6."),
+mc("التقريب","قرّب 2.45 إلى أقرب جزء من عشرة.","2.45",[2.5,2.4,2.45,3],2.5,"جزء المائة 5.","نرفع الأعشار."),
+mc("ترتيب العشريات","أي عدد هو الأصغر؟","5.08 ، 5.80 ، 5.18 ، 5.09",[5.08,5.09,5.18,5.8],5.08,"قارن أجزاء المائة.","5.08 الأصغر."),
+mc("الضرب في 1000","0.73 × 1000 = ؟","0.73 × 1000",[730,73,7.3,7300],730,"ثلاث منازل.","الناتج 730."),
+mc("القسمة على 1000","62 ÷ 1000 = ؟","62 ÷ 1000",[0.062,0.62,6.2,0.0062],0.062,"ثلاث منازل.","الناتج 0.062."),
+mc("تاريخ الأعداد","إذا كان ∩ = 10 و | = 1، فما قيمة ٤ عشرات و٢ آحاد؟","٤ عشرات و٢ آحاد",[42,24,402,14],42,"40 + 2.","القيمة 42."),
+mc("التطبيقات العشرية","كتاب 2.15 ر.ع وقلم 0.85 ر.ع وممحاة 0.50 ر.ع. ما المجموع؟","اجمع الأسعار",[3.5,3,4.5,2.5],3.5,"حاذ الفواصل.","2.15 + 0.85 + 0.50 = 3.50."),
+mc("التقريب","أي عدد يقرب إلى 7.4 لأقرب جزء من عشرة؟","اختر",[7.36,7.34,7.45,7.29],7.36,"من 7.35 حتى أقل من 7.45.","7.36 يقرب إلى 7.4."),
+mc("العمليات العشرية","نصف 9.8 يساوي؟","9.8 ÷ 2",[4.9,4.8,5.9,19.6],4.9,"نصف 98 هو 49.","الناتج 4.9.")
+],
+2:()=>[
+mc("الأعداد السالبة","كم الفرق بين −8 و3؟","−8 إلى 3",[11,5,8,13],11,"8 إلى الصفر ثم3.","المجموع 11."),
+mc("الأعداد السالبة","درجة الحرارة −5°س وارتفعت 9 درجات. ما الجديدة؟","−5 + 9",[4,-4,14,-14],4,"تحرك يمينًا.","تصبح 4°س."),
+mc("مقارنة السوالب","أي عدد أكبر؟","−1 ، −4 ، −7 ، −10",[-1,-4,-7,-10],-1,"الأقرب للصفر.","−1 الأكبر."),
+mc("المضاعفات المشتركة","ما أصغر مضاعف مشترك لـ 4 و5؟","٤ ، ٥",[20,10,15,40],20,"اكتب المضاعفات.","20."),
+mc("المضاعفات المشتركة","ما المضاعف المشترك التالي بعد 40 للعددين 4 و5؟","بعد 40",[60,45,50,80],60,"المشتركات مضاعفات 20.","التالي 60."),
+mc("استراتيجيات الجمع","350 + 70 = ؟","35 + 7 = 42",[420,357,430,400],420,"اضرب الحقيقة في10.","420."),
+mc("استراتيجيات الطرح","4.5 − 0.8 = ؟","45 − 8 = 37",[3.7,4.3,3.6,0.37],3.7,"صغّر عشر مرات.","3.7."),
+mc("استراتيجيات الضرب","28 × 25 = ؟","25 = 100 ÷ 4",[700,600,725,750],700,"28÷4×100.","700."),
+mc("استراتيجيات الضرب","41 × 99 = ؟","41 × 100 ثم اطرح 41",[4059,4100,4019,4099],4059,"4100−41.","4059."),
+mc("الأعداد السالبة","أي عدد يقع يسار −2 على خط الأعداد؟","اختر",[-5,0,3,2],-5,"الأصغر يقع أكثر يسارًا.","−5.")
+],
+3:()=>[
+mc("قابلية القسمة","أي عدد يقبل القسمة على 100؟","اختر",[8200,8225,8250,8275],8200,"ينتهي بـ00.","8200."),
+mc("قابلية القسمة","أي عدد يقبل القسمة على 25 ولا يقبل على 100؟","اختر",[1575,1500,1600,1700],1575,"ينتهي بـ75.","1575."),
+mc("قابلية القسمة","هل 516 يقبل القسمة على 4؟","516",["نعم","لا","فقط على 5","فقط على 10"],"نعم","آخر رقمين 16.","16 يقبل على4."),
+mc("الضرب","275 × 24 = ؟","275 × (20+4)",[6600,6500,6700,5500],6600,"5500 + 1100.","6600."),
+mc("القسمة","5460 ÷ 7 = ؟","5460 ÷ 7",[780,680,880,760],780,"7×78=546.","780."),
+mc("تتابع العمليات","36 × 25 ثم ÷ 9. ما العدد في المنتصف؟","36 × 25",[900,100,800,925],900,"36÷4×100.","900."),
+mc("الأعداد المربعة","ما العدد التالي؟","4 ، 9 ، 16 ، 25 ، 36 ، ؟",[49,42,45,64],49,"هذه مربعات 2 إلى7.","7²=49."),
+mc("الأعداد المربعة","أي عدد مربع بين 60 و90؟","اختر",[64,70,75,85],64,"8² = 64.","64."),
+mc("المتتاليات","ما الحد التالي؟","3 ، 8 ، 15 ، 24 ، 35 ، ؟",[48,46,50,45],48,"الفروق 5،7،9،11 ثم13.","48."),
+mc("قابلية القسمة","أي عدد يقبل القسمة على 10 ولا يقبل على 100؟","اختر",[340,300,400,500],340,"ينتهي بصفر واحد لا صفرين.","340.")
+],
+4:()=>[
+complexQ("خط الأعداد","بدأت الحرارة من −6°س، ارتفعت 10 درجات ثم انخفضت 7 درجات.",[{type:"input",text:"بعد الارتفاع، ما الحرارة؟",answer:4,displayAnswer:"4°س"},{type:"input",text:"بعد الانخفاض، ما النهائية؟",answer:-3,displayAnswer:"−3°س"},{type:"input",text:"كم مقدار التغير من البداية للنهاية؟",answer:3,displayAnswer:"3 درجات"}],"تحرك خطوة خطوة."),
+complexQ("العشريات في الحياة","ثمن المتر 1.80 ر.ع وطول الشريط 2.5 م.",[{type:"input",text:"كم ثمن مترين؟",answer:3.6,displayAnswer:"3.60 ر.ع"},{type:"input",text:"كم ثمن 0.5 م؟",answer:0.9,displayAnswer:"0.90 ر.ع"},{type:"input",text:"كم الثمن الكلي؟",answer:4.5,displayAnswer:"4.50 ر.ع"}],"جزّئ 2.5."),
+complexQ("قواعد القسمة","اختبر العددين.",[{type:"choice",text:"هل 9300 يقبل القسمة على 100؟",choices:["نعم","لا"],answer:"نعم"},{type:"choice",text:"هل 1625 يقبل القسمة على 25؟",choices:["نعم","لا"],answer:"نعم"}],"افحص النهايات."),
+complexQ("الأعداد المربعة","أكمل.",[{type:"input",text:"ما قيمة 8²؟",answer:64,displayAnswer:"64"},{type:"input",text:"ما قيمة 9²؟",answer:81,displayAnswer:"81"}],"العدد × نفسه.")
+],
+5:()=>[
+complexQ("لغز عشري","عدد عشري 5.45.",[{type:"input",text:"قرّبه لأقرب جزء من عشرة.",answer:5.5,displayAnswer:"5.5"},{type:"input",text:"اضربه في 100.",answer:545,displayAnswer:"545"},{type:"input",text:"ما رقم الأعشار؟",answer:4,displayAnswer:"4"}],"استخدم القيمة المكانية."),
+complexQ("لغز المضاعفات","روبوتات بخطوات 4 و6 و10.",[{type:"input",text:"ما أصغر مضاعف مشترك؟",answer:60,displayAnswer:"60"},{type:"input",text:"كم خطوة لروبوت الخطوة 4؟",answer:15,displayAnswer:"15"},{type:"input",text:"كم خطوة لروبوت الخطوة 10؟",answer:6,displayAnswer:"6"}],"ابحث عن أول عدد مشترك."),
+complexQ("استراتيجية ذهنية","استخدم 45 × 40 = 1800.",[{type:"input",text:"45 × 39 = ؟",answer:1755,displayAnswer:"1755"},{type:"input",text:"45 × 41 = ؟",answer:1845,displayAnswer:"1845"}],"اطرح أو أضف 45."),
+complexQ("تحدي عدد مربع","عدد من رقمين، مربع، فردي، وأكبر من 70.",[{type:"input",text:"ما أصغر عدد يحقق الشروط؟",answer:81,displayAnswer:"81"},{type:"input",text:"ما جذره الصحيح؟",answer:9,displayAnswer:"9"}],"فكر في المربعات ذات الرقمين.")
+]
+}
+};
+function afaqAttemptModel(){return isTrainingMode?1:Math.max(1,Math.min(3,Number(currentAttempt)||1))}
+function afaqStageQuestions(stageNo){const model=afaqAttemptModel();return model===1?AFAQ_ORIGINAL_STAGE_MAKERS[stageNo]():AFAQ_ALT_MODELS[model][stageNo]()}
+
 function stopTimers(){if(perQuestionTimer){clearInterval(perQuestionTimer);perQuestionTimer=null}if(stageTimerInterval){clearInterval(stageTimerInterval);stageTimerInterval=null}}function updateHUD(){scoreTop.textContent=ar(score);totalScoreMini.textContent=ar(score);percentMini.textContent=ar(score*2);progressTop.textContent=ar(progressPoints);mainProgress.style.width=progressPoints/50*100+"%"}
-function setupStage(){stopTimers();locked=false;qIndex=0;complexQuestionIndex=0;stageScore=0;selectedPartAnswers={};stageScoreMini.textContent=ar(0);const i=STAGE_INFO[stage];portrait.className="portrait "+i.className;portraitEmoji.textContent=i.char;portraitTag.textContent=i.tag;portraitImg.style.display=i.img?"block":"none";portraitEmoji.style.display=i.img?"none":"inline";if(i.img){portraitImg.src=i.img;portraitImg.onerror=()=>{portraitImg.style.display="none";portraitEmoji.style.display="inline"}};stageName.textContent=i.name;stageDesc.textContent=i.desc;stageTop.textContent=ar(stage);document.getElementById("soundBtn").textContent=audioOn?(`🔊 نغمة ${i.tag}: تعمل`):"🔇 المؤثرات الصوتية: متوقفة";for(let x=1;x<=5;x++){let n=document.getElementById("road"+x);n.classList.toggle("active",x===stage);n.classList.toggle("done",x<stage)}if(stage<=3){timerCircle.style.display="grid";timerTitle.style.display="block";stageTimer.style.display="none";questions=stage===1?makeStage1():stage===2?makeStage2():makeStage3();showMCQuestion()}else{timerCircle.style.display="none";timerTitle.style.display="none";stageTimer.style.display="block";questions=stage===4?makeStage4():makeStage5();stageTimeLeft=STAGE_INFO[stage].stageSeconds;warned=false;renderStageClock();startStageClock();showComplexQuestion()}updateHUD()}
+function setupStage(){stopTimers();locked=false;qIndex=0;complexQuestionIndex=0;stageScore=0;selectedPartAnswers={};stageScoreMini.textContent=ar(0);const i=STAGE_INFO[stage];portrait.className="portrait "+i.className;portraitEmoji.textContent=i.char;portraitTag.textContent=i.tag;portraitImg.style.display=i.img?"block":"none";portraitEmoji.style.display=i.img?"none":"inline";if(i.img){portraitImg.src=i.img;portraitImg.onerror=()=>{portraitImg.style.display="none";portraitEmoji.style.display="inline"}};stageName.textContent=i.name;stageDesc.textContent=i.desc;stageTop.textContent=ar(stage);document.getElementById("soundBtn").textContent=audioOn?(`🔊 نغمة ${i.tag}: تعمل`):"🔇 المؤثرات الصوتية: متوقفة";for(let x=1;x<=5;x++){let n=document.getElementById("road"+x);n.classList.toggle("active",x===stage);n.classList.toggle("done",x<stage)}if(stage<=3){timerCircle.style.display="grid";timerTitle.style.display="block";stageTimer.style.display="none";questions=afaqStageQuestions(stage);showMCQuestion()}else{timerCircle.style.display="none";timerTitle.style.display="none";stageTimer.style.display="block";questions=afaqStageQuestions(stage);stageTimeLeft=STAGE_INFO[stage].stageSeconds;warned=false;renderStageClock();startStageClock();showComplexQuestion()}updateHUD()}
 function startQuestionClock(){if(perQuestionTimer)clearInterval(perQuestionTimer);timeLeft=STAGE_INFO[stage].time;renderQuestionClock();perQuestionTimer=setInterval(()=>{timeLeft--;renderQuestionClock();if(timeLeft<=0){clearInterval(perQuestionTimer);perQuestionTimer=null;timeoutMC()}},1000)}function renderQuestionClock(){timerText.textContent=ar(timeLeft);const t=STAGE_INFO[stage].time,deg=Math.max(0,Math.round(timeLeft/t*360)),c=timeLeft<=5?"var(--red)":timeLeft<=Math.ceil(t/2)?"var(--gold)":"var(--green)";timerCircle.style.background=`conic-gradient(${c} ${deg}deg,#e7edf4 0deg)`}function startStageClock(){if(stageTimerInterval)clearInterval(stageTimerInterval);stageTimerInterval=setInterval(()=>{stageTimeLeft--;renderStageClock();if(stageTimeLeft<=120&&!warned){warned=true;stageTimer.classList.add("warning");warningBanner.style.display="block";warningSound();setTimeout(()=>warningBanner.style.display="none",5000)}if(stageTimeLeft<=0){clearInterval(stageTimerInterval);stageTimerInterval=null;expireComplexStage()}},1000)}function renderStageClock(){const m=Math.floor(stageTimeLeft/60),s=stageTimeLeft%60;stageClock.textContent=ar(String(m).padStart(2,"0")+":"+String(s).padStart(2,"0"))}
 function showMCQuestion(){locked=false;answers.innerHTML="";complexArea.style.display="none";feedback.innerHTML="ابدأ بثقة…";current=questions[qIndex];qNumberBadge.textContent=`السؤال ${ar(qIndex+1)} من ١٠`;topicBadge.textContent=current.topic;pointsBadge.textContent="درجة واحدة";qTitle.textContent=current.title;qDisplay.innerHTML=`<div class="mcPromptText">${current.display}</div>${current.visual?`<div class="mcVisual">${current.visual}</div>`:""}`;current.choices.forEach(v=>{const b=document.createElement("button");b.className="answer";b.textContent=typeof v==="number"?fmt(v):ar(v);b.onclick=()=>answerMC(v,b);answers.appendChild(b)});startQuestionClock()}function eq(a,b){return typeof a==="number"&&typeof b==="number"?Math.abs(a-b)<1e-9:String(a)===String(b)}function answerMC(v,b){if(locked)return;locked=true;if(perQuestionTimer){clearInterval(perQuestionTimer);perQuestionTimer=null}document.querySelectorAll(".answer").forEach(x=>x.disabled=true);if(eq(v,current.answer)){score++;stageScore++;progressPoints++;b.classList.add("good");happy();confetti(10);feedback.innerHTML=`✅ <b>${namedPraise()}</b><div class="explain">${current.explain}</div>`}else{b.classList.add("bad");sad();const t=typeof current.answer==="number"?fmt(current.answer):ar(current.answer);document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===t)x.classList.add("good")});feedback.innerHTML=`❌ <b>${namedTryAgain()}</b> الصحيح: <b>${t}</b><div class="explain">${current.explain}</div>`}updateHUD();stageScoreMini.textContent=ar(stageScore);setTimeout(()=>{if(qIndex>=questions.length-1)finishStage();else{qIndex++;showMCQuestion()}},1350)}function timeoutMC(){if(locked)return;locked=true;sad();document.querySelectorAll(".answer").forEach(x=>x.disabled=true);const t=typeof current.answer==="number"?fmt(current.answer):ar(current.answer);document.querySelectorAll(".answer").forEach(x=>{if(x.textContent===t)x.classList.add("good")});feedback.innerHTML=`⏰ <b>انتهى الوقت يا ${studentName}.</b> لا بأس، الصحيح: <b>${t}</b><div class="explain">${current.explain}</div>`;setTimeout(()=>{if(qIndex>=questions.length-1)finishStage();else{qIndex++;showMCQuestion()}},1350)}
 function showComplexQuestion(){locked=false;answers.innerHTML="";complexArea.style.display="block";partsArea.innerHTML="";feedback.innerHTML="اقرأ السؤال كاملًا ثم أجب عن أجزائه.";current=questions[complexQuestionIndex];selectedPartAnswers={};qNumberBadge.textContent=`التحدي ${ar(complexQuestionIndex+1)} من ${ar(questions.length)}`;topicBadge.textContent=current.topic;pointsBadge.textContent=`${ar(current.points)} درجات`;qTitle.textContent=stage===4?"مختبر مستر بين للأعداد":"تحدّي الأستاذ سعيد العددي";qDisplay.textContent="";visualArea.innerHTML=current.visual||"";visualArea.style.display=current.visual?"block":"none";complexLead.textContent=current.lead;current.parts.forEach((p,i)=>{const box=document.createElement("div");box.className="part";box.id="part-"+i;const t=document.createElement("div");t.className="partTitle";t.textContent=`(${ar(i+1)}) ${p.text}`;box.appendChild(t);if(p.type==="input"){const inp=document.createElement("input");inp.className="partInput";inp.id="input-"+i;inp.inputMode="decimal";inp.placeholder="اكتب الإجابة";box.appendChild(inp)}else{const row=document.createElement("div");row.className="partChoices";p.choices.forEach(ch=>{const b=document.createElement("button");b.className="partChoice";b.textContent=ch;b.onclick=()=>{if(locked)return;selectedPartAnswers[i]=ch;row.querySelectorAll(".partChoice").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")};row.appendChild(b)});box.appendChild(row)}partsArea.appendChild(box)})}
