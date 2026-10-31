@@ -7,7 +7,7 @@
 <style>
 :root{--navy:#102b55;--blue:#1d6fdc;--gold:#dca827;--cream:#fff9ec;--green:#178553;--red:#b93636;--muted:#64748b;--line:#d9e2ef}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#edf5ff,#fff 34%,#f7fbff);color:#16243b;font-size:20px}
-.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;margin:30px 0}.entry-card{position:relative;overflow:hidden;background:linear-gradient(145deg,#ffffff 0%,#f7fbff 52%,#eef7ff 100%);border:2px solid #d5e4f5;border-radius:30px;padding:30px 26px 26px;box-shadow:0 18px 45px #0d3a681c;text-align:center;transition:.25s transform,.25s box-shadow}.entry-photo{width:245px;height:245px;object-fit:cover;display:block;margin:0 auto 18px;border-radius:50%;border:7px solid #fff;box-shadow:0 14px 34px #0c31552e,0 0 0 4px #d9aa33;background:#e9f6ff}.entry-card:hover{transform:translateY(-5px);box-shadow:0 24px 55px #0d3a6828}.entry-card .icon{font-size:54px}.entry-card h3{margin:12px 0 10px;color:var(--navy);font-size:34px}.entry-card p{font-size:22px;line-height:1.9;color:#47617b;min-height:88px;font-weight:700;max-width:480px;margin:0 auto 20px}.entry-card .btn{width:100%;font-size:22px;padding:17px 22px}.entry-card:first-child{background:linear-gradient(145deg,#f9feff,#e8fbfb)}.entry-card:first-child:before{content:"✦";position:absolute;top:18px;right:22px;font-size:38px;color:#19a7a533}.entry-card:nth-child(2){background:linear-gradient(145deg,#fffdf8,#fff3d9)}.entry-card:nth-child(2):before{content:"★";position:absolute;top:18px;left:22px;font-size:34px;color:#dca82755}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
+.wrap{width:min(1180px,94%);margin:auto}.top{padding:22px 0 12px}.teacher-entry{display:flex;justify-content:flex-start;margin-bottom:12px}.entry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;margin:30px 0}.entry-card{position:relative;overflow:hidden;background:linear-gradient(145deg,#ffffff 0%,#f7fbff 52%,#eef7ff 100%);border:2px solid #d5e4f5;border-radius:30px;padding:30px 26px 26px;box-shadow:0 18px 45px #0d3a681c;text-align:center;transition:.25s transform,.25s box-shadow}.entry-visual{width:245px;height:245px;display:grid;place-items:center;margin:0 auto 18px;border-radius:50%;border:7px solid #fff;box-shadow:0 14px 34px #0c31552e,0 0 0 4px #d9aa33;background:linear-gradient(145deg,#ffffff,#eaf7ff);overflow:hidden}.entry-visual svg{width:76%;height:76%;display:block}.student-visual{background:linear-gradient(145deg,#e9ffff,#dff7fb)}.supervisor-visual{background:linear-gradient(145deg,#fffaf0,#f5ead1)}.entry-card:hover{transform:translateY(-5px);box-shadow:0 24px 55px #0d3a6828}.entry-card .icon{font-size:54px}.entry-card h3{margin:12px 0 10px;color:var(--navy);font-size:34px}.entry-card p{font-size:22px;line-height:1.9;color:#47617b;min-height:88px;font-weight:700;max-width:480px;margin:0 auto 20px}.entry-card .btn{width:100%;font-size:22px;padding:17px 22px}.entry-card:first-child{background:linear-gradient(145deg,#f9feff,#e8fbfb)}.entry-card:first-child:before{content:"✦";position:absolute;top:18px;right:22px;font-size:38px;color:#19a7a533}.entry-card:nth-child(2){background:linear-gradient(145deg,#fffdf8,#fff3d9)}.entry-card:nth-child(2):before{content:"★";position:absolute;top:18px;left:22px;font-size:34px;color:#dca82755}.training-box{display:none}.training-box.show{display:block}.training-login{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:520px}.training-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.training-badge{display:inline-block;background:#eaf7ef;color:#176942;border:1px solid #bfe4cf;border-radius:999px;padding:7px 12px;font-weight:900}
 .btn{border:0;border-radius:13px;padding:15px 22px;font-weight:900;cursor:pointer;font-size:20px}.btn-primary{background:var(--blue);color:#fff}.btn-gold{background:var(--gold);color:#10233d}.btn-green{background:var(--green);color:#fff}.btn-light{background:#eef4fb;color:#16345f;border:1px solid #c9d8ea}.btn-red{background:var(--red);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
 .hero{background:linear-gradient(135deg,var(--navy),#174c91);color:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 45px #12345b25;position:relative;overflow:hidden}
 .hero:after{content:"∑  π  6²  ×  ÷  △";position:absolute;left:22px;bottom:10px;font-size:45px;color:#ffffff14;letter-spacing:12px}
@@ -21,7 +21,7 @@
 .table-wrap{overflow:auto;border:1px solid #d8e2ef;border-radius:14px}table{border-collapse:collapse;width:100%;min-width:920px;background:#fff}th,td{padding:10px;border-bottom:1px solid #e4ebf3;text-align:center;font-size:13px}th{background:#123f75;color:#fff;position:sticky;top:0}td.name{text-align:right;font-weight:800}.qual{color:#117747;font-weight:900}.notqual{color:#9a3d3d}
 .note{background:#fff9e9;border:1px solid #f0d68a;border-radius:14px;padding:17px 20px;line-height:2;color:#6e5311;font-size:21px;font-weight:800}.hidden{display:none}
 @media(max-width:950px){.entry-grid{grid-template-columns:1fr}.games{grid-template-columns:1fr 1fr}.login-grid{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}.entry-photo{width:160px;height:160px}.entry-card h3{font-size:28px}.entry-card p{font-size:21px;min-height:auto}}
+@media(max-width:600px){.games,.login-grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.hero{padding:22px 18px}.entry-visual{width:175px;height:175px}.entry-card h3{font-size:28px}.entry-card p{font-size:21px;min-height:auto}}
 @media print{.no-print{display:none!important}.panel{box-shadow:none}.wrap{width:100%}}
 </style>
 </head>
@@ -38,13 +38,39 @@
 
   <div class="portal-hint no-print" id="portalHint">اختر طريقة الدخول: حساب الطالب أو حساب المشرف — كلاهما متصل مباشرةً بنظام المسابقة.</div><section class="entry-grid no-print" id="entryGrid">
     <div class="entry-card">
-      <img class="entry-photo" src="assets/student-portal.svg?v=4" alt="صورة توضيحية لطالب">
+      <div class="entry-visual student-visual" aria-hidden="true">
+    <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sg1" x1="0" x2="1"><stop stop-color="#159caa"/><stop offset="1" stop-color="#0d6fd0"/></linearGradient>
+      </defs>
+      <circle cx="110" cy="110" r="96" fill="#ffffff" opacity=".72"/>
+      <path d="M28 82 110 42l82 40-82 40z" fill="url(#sg1)"/>
+      <path d="M63 99v38c0 14 21 29 47 29s47-15 47-29V99l-47 23z" fill="#163f73"/>
+      <path d="M192 82v49" stroke="#dca827" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="192" cy="139" r="10" fill="#dca827"/>
+      <rect x="49" y="146" width="122" height="42" rx="12" fill="#fff" stroke="#159caa" stroke-width="6"/>
+      <path d="M69 167h82" stroke="#159caa" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+  </div>
       <h3>دخول الطالب</h3>
       <p>بوابتك إلى تحدّي نجوم آفاق الرياضيات. أدخل رقمك الرسمي ورمزك السري، ثم ابدأ رحلتك في الوحدات الأربع واجمع أكبر عدد من النقاط.</p>
       <button class="btn btn-primary" id="studentEntry" aria-label="دخول الطالب إلى نظام المسابقة">دخول الطالب</button>
     </div>
     <div class="entry-card">
-      <img class="entry-photo" src="assets/supervisor-omani.svg?v=4" alt="صورة توضيحية لمشرف عُماني بالزي العُماني والمِصر">
+      <div class="entry-visual supervisor-visual" aria-hidden="true">
+    <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sp1" x1="0" x2="1"><stop stop-color="#dca827"/><stop offset="1" stop-color="#f0c965"/></linearGradient>
+      </defs>
+      <circle cx="110" cy="110" r="96" fill="#ffffff" opacity=".72"/>
+      <path d="M38 58c28-10 52-7 72 8v94c-20-15-44-18-72-8z" fill="#fff" stroke="#1d6fdc" stroke-width="7"/>
+      <path d="M182 58c-28-10-52-7-72 8v94c20-15 44-18 72-8z" fill="#fff" stroke="#1d6fdc" stroke-width="7"/>
+      <path d="M110 66v94" stroke="#dca827" stroke-width="7"/>
+      <circle cx="160" cy="70" r="23" fill="url(#sp1)"/>
+      <path d="M160 57v26M147 70h26" stroke="#173b68" stroke-width="7" stroke-linecap="round"/>
+      <path d="M58 94h30M58 112h30M132 94h30M132 112h30" stroke="#6b829b" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+  </div>
       <h3>دخول المشرف</h3>
       <p>بوابة خاصة بالمشرف لمتابعة أداء الطلاب والنتائج والترتيب والجوائز، مع إمكانية الدخول إلى الوحدات في وضع المشرف دون احتساب محاولات.</p>
       <button class="btn btn-gold" id="supervisorEntry" aria-label="دخول المشرف إلى نظام المسابقة">دخول المشرف</button>
