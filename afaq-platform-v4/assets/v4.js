@@ -121,4 +121,4 @@ function v4Navigate(route){state.page=route;render();window.scrollTo({top:0,beha
 // إزالة رابط الانتقال المباشر إلى المسابقة القديمة من قائمة التنقل العامة.
 const mobile=document.getElementById('mobileNav');if(mobile){mobile.innerHTML=[['home','الرئيسية'],['learning','التعلم'],['library','المكتبة'],['exams','الاختبارات'],['games','الألعاب'],['flashes','الفلاشات'],['ai','الذكاء الاصطناعي'],['contact','التواصل']].map(([id,label])=>`<button data-route="${id}">${label}</button>`).join('');mobile.querySelectorAll('[data-route]').forEach(x=>x.addEventListener('click',()=>{mobile.classList.remove('show');v4Navigate(x.dataset.route)}));}
 // معالجة الروابط الداخلية المباشرة للأقسام الجديدة بعد إتمام تحميل جميع الأدوات.
-if(['exams','ai','apps','projects','flashes'].includes(window.AFAQ_REQUESTED_HASH)){state.page=window.AFAQ_REQUESTED_HASH;render();}else render();
+if(['exams','ai','apps','projects','flashes'].includes(window.AFAQ_REQUESTED_HASH)){v4Navigate(window.AFAQ_REQUESTED_HASH);}else render();
