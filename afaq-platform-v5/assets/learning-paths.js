@@ -122,3 +122,6 @@ async function loadDashboardStudy(){
 }
 const studyRenderOriginal=render;
 render=function(){studyRenderOriginal();if(state.page==='stars'||state.page==='support')loadStudyPage(state.page);if(state.page==='dashboard')loadDashboardStudy()};
+if(['stars','support'].includes(window.AFAQ_REQUESTED_HASH)){state.page=window.AFAQ_REQUESTED_HASH;}
+render();
+
