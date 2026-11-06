@@ -1,0 +1,128 @@
+/* دفتر نتائج الصف السادس — منصة آفاق الرياضيات | إصدار الدرجات ٦٠+٤٠ */
+.gb-summary{margin:20px 0!important;border:1px solid #c3d9e8!important;background:linear-gradient(135deg,#f8fcff,#fffcf2)!important}
+.gb-summary h3{color:#184c75}
+.gb-approval{padding:9px 14px;border-radius:12px;font-weight:900;margin:10px 0 15px}
+.gb-approval.gb-approved{color:#126c4a;background:#e4f6ed;border:1px solid #a9d9c2}
+.gb-approval.gb-draft{color:#8d6225;background:#fff6e3;border:1px solid #efdbaf}
+.gb-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin:14px 0}
+.gb-tiles>div{border:1px solid #d1e1ed;border-radius:14px;background:#fff;padding:13px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;box-shadow:0 3px 12px #1b487111}
+.gb-tiles strong{color:#234f78;font-size:clamp(19px,1.65vw,27px);font-weight:950}
+.gb-tiles small{font-size:14px;color:#4c6a82}
+.gb-tiles>.gb-final{background:linear-gradient(120deg,#104d79,#147e80);color:#fff}
+.gb-tiles>.gb-final strong,.gb-tiles>.gb-final small{color:#fff}
+.gb-breakdown summary{cursor:pointer;color:#234d76;font-size:17px;font-weight:850;margin:12px 0}
+.gb-breakdown table{border-collapse:collapse;width:100%;font-size:16px;margin:12px 0}
+.gb-breakdown th,.gb-breakdown td{border:1px solid #d4e0ea;padding:9px;text-align:right}
+.gb-breakdown th{background:#245780;color:white}
+.gb-breakdown tr:nth-child(even){background:#f2f8fe}
+.gb-table-scroll{overflow-x:auto;max-height:420px;overflow-y:auto}
+.gb-input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px;padding:10px 0}
+.gb-editor{margin:16px 0;background:#fff;border:1px solid #d9e5ee;border-radius:17px;padding:18px}
+.gb-editor h3{color:#184e7b}
+.gb-editor p{line-height:1.65}
+.gb-editor label{display:block;font-weight:800;color:#375773;margin-bottom:5px}
+.gb-editor input,.gb-editor select{width:100%;box-sizing:border-box;min-height:44px;padding:9px;border-radius:10px;border:1px solid #abc7dc;background:white;color:#213b52;font-size:17px}
+.gb-editor input:disabled{opacity:.68;background:#f0f4f8}
+.gb-raw-points{margin-top:20px;padding:15px;border:1px solid #e4d4ae;background:#fffaf0;border-radius:15px}
+.gb-raw-points h4{color:#85601b;margin:0}
+.gb-form-buttons{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.gb-print-controls{display:flex;justify-content:center;margin:15px 0 5px}
+.gb-print-controls button{font-size:clamp(18px,1.5vw,23px)!important;padding:14px 20px!important;white-space:normal}
+.gb-print-zone{display:none}
+.gb-certificate{direction:rtl;box-sizing:border-box;text-align:center;width:100%;min-height:187mm;max-width:1200px;position:relative;display:flex;flex-direction:column;gap:5px;overflow:hidden;padding:15px 23px 17px;background:radial-gradient(circle at 50% 5%,#fff9df,#fff 48%,#f6faff 100%);color:#1c416b;border:6px double #c69d4b;border-radius:17px;font-family:Tahoma,Arial,sans-serif}
+.gb-certificate::before{content:"";position:absolute;inset:7px;border:1px solid #ebd9a6;border-radius:10px;pointer-events:none}
+.gb-flag{height:14px;border:1px solid #d6bb81;border-radius:3px;display:flex;flex-direction:column;overflow:hidden;margin:0 0 6px}
+.gb-flag span{flex:1}
+.gb-flag span:nth-child(1){background:#fff}
+.gb-flag span:nth-child(2){background:#dc3540}
+.gb-flag span:nth-child(3){background:#07854f}
+.gb-cert-head{display:grid;grid-template-columns:85px 1fr 85px;align-items:center;gap:8px;padding:1px 0 8px;border-bottom:2px solid #dbbe78}
+.gb-cert-head h2{font-size:31px;line-height:1.25;margin:0!important;color:#1f4d7d;font-weight:950}
+.gb-cert-head h3{font-size:23px;color:#ac7b25;margin:2px 0;font-weight:900}
+.gb-cert-head p{font-size:14px;color:#4c6b81;margin:0}
+.gb-icon{font-size:47px;filter:drop-shadow(0 3px 5px #a0782f30)}
+.gb-cert-name{display:flex;flex-direction:column;gap:1px;align-items:center;margin:5px auto 8px}
+.gb-cert-name span{color:#355574;font-size:17px;font-weight:750}
+.gb-cert-name strong{color:#a77721;font-size:clamp(28px,3vw,42px);font-weight:950;text-shadow:0 1px #fff4ca}
+.gb-cert-name small{font-size:14px;color:#617587;font-weight:700}
+.gb-cert-content{display:grid;grid-template-columns:1.35fr 1fr;align-items:stretch;gap:14px;text-align:center}
+.gb-cert-grades{border:1px solid #cfdfed;background:#fff;border-radius:13px;overflow:hidden}
+.gb-cert-grades table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.23}
+.gb-cert-grades th{background:#1c507c;color:white;padding:8px 10px;font-weight:900}
+.gb-cert-grades td{border:1px solid #d6e2ee;padding:5px 10px;text-align:right}
+.gb-cert-grades td:last-child,.gb-cert-grades th:last-child{text-align:center;font-weight:850;width:34%}
+.gb-cert-grades tbody tr:nth-child(even){background:#f0f7ff}
+.gb-cert-grades .gb-cert-sub{background:#fff2d3!important;color:#76531e;font-weight:950}
+.gb-cert-achievement{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;border-radius:13px;border:1px solid #e6d5a9;background:linear-gradient(155deg,#fff7e2,#fff 55%,#edf7fc);padding:12px}
+.gb-cert-emblem{border:3px solid #d4ab57;color:#a57423;border-radius:50%;width:112px;height:112px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;font-size:21px;font-weight:900;margin-bottom:3px;box-shadow:0 4px 17px #b3914140}
+.gb-cert-emblem span{max-width:85px}
+.gb-cert-achievement p{margin:0;color:#4b5e75;font-weight:750;font-size:15px}
+.gb-cert-achievement>strong{font-size:25px;color:#235779;font-weight:950}
+.gb-cert-total{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:linear-gradient(120deg,#154778,#147d7d);color:white;border-radius:13px;width:100%;padding:9px;box-sizing:border-box}
+.gb-cert-total span{font-size:17px;font-weight:850}
+.gb-cert-total b{font-size:clamp(30px,2.8vw,39px);color:#ffe5a6;font-weight:950}
+.gb-cert-total small{font-size:17px;color:white}
+.gb-cert-achievement .gb-cert-a{font-size:13px;color:#6e5d33}
+.gb-cert-achievement .gb-cert-ok{font-size:13px;color:#16784d;font-weight:900}
+.gb-cert-praise{background:#fff9e9;border:1px solid #e9d2a5;padding:10px 15px;border-radius:12px;color:#2e536d;font-size:17px;font-weight:850;line-height:1.5;margin:8px 0 0}
+.gb-cert-wish{font-size:17px;color:#966e27;font-weight:950;margin:5px auto}
+.gb-cert-legal{font-size:11px;color:#768498;margin:3px 0}
+.gb-cert-signatures{margin-top:auto;border-top:3px double #c8a760;padding-top:13px;display:flex;justify-content:space-between;gap:30px}
+.gb-cert-signatures div{flex:1;display:flex;flex-direction:column;gap:4px;font-size:16px}
+.gb-cert-signatures b{color:#a47524}
+.gb-cert-signatures strong{color:#214d74;font-size:17px}
+@media(max-width:720px){
+ .gb-certificate{padding:12px;border-width:4px}
+ .gb-cert-head{grid-template-columns:50px 1fr 50px}
+ .gb-icon{font-size:28px}
+ .gb-cert-head h2{font-size:21px}
+ .gb-cert-head h3{font-size:16px}
+ .gb-cert-content{grid-template-columns:1fr}
+ .gb-cert-name strong{font-size:27px}
+ .gb-cert-signatures strong{font-size:13px}
+}
+@page{size:A4 landscape;margin:8mm}
+@media print{
+ body.afaq-print-school-grade{margin:0!important;padding:0!important;background:#fff!important}
+ body.afaq-print-school-grade *{visibility:hidden!important}
+ body.afaq-print-school-grade .gb-print-zone{display:block!important;visibility:visible!important;
+  position:absolute!important;top:0!important;left:0!important;right:0!important;width:100%!important;
+  margin:0!important;padding:0!important;box-shadow:none!important}
+ body.afaq-print-school-grade .gb-print-zone *{visibility:visible!important}
+ body.afaq-print-school-grade .gb-certificate{width:100%!important;max-width:none!important;height:189mm!important;
+  min-height:189mm!important;box-sizing:border-box!important;padding:4mm 7mm 5mm!important;gap:1mm!important;
+  border:3px double #b8924c!important;border-radius:2mm!important;box-shadow:none!important;
+  overflow:hidden!important;break-inside:avoid!important;page-break-inside:avoid!important;
+  -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ body.afaq-print-school-grade .gb-flag{height:3mm!important;margin:0 0 1mm!important}
+ body.afaq-print-school-grade .gb-cert-head{grid-template-columns:19mm 1fr 19mm!important;padding:0 0 1mm!important;gap:2mm!important}
+ body.afaq-print-school-grade .gb-icon{font-size:26pt!important;filter:none}
+ body.afaq-print-school-grade .gb-cert-head h2{font-size:21pt!important;line-height:1.1!important}
+ body.afaq-print-school-grade .gb-cert-head h3{font-size:15pt!important;margin:0!important}
+ body.afaq-print-school-grade .gb-cert-head p{font-size:9pt!important}
+ body.afaq-print-school-grade .gb-cert-name{margin:1mm 0!important}
+ body.afaq-print-school-grade .gb-cert-name span{font-size:9pt!important}
+ body.afaq-print-school-grade .gb-cert-name strong{font-size:23pt!important;line-height:1.2!important}
+ body.afaq-print-school-grade .gb-cert-name small{font-size:8pt!important}
+ body.afaq-print-school-grade .gb-cert-content{grid-template-columns:1.4fr 1fr!important;gap:3mm!important}
+ body.afaq-print-school-grade .gb-cert-grades table{font-size:9.5pt!important;line-height:1.11!important}
+ body.afaq-print-school-grade .gb-cert-grades th{padding:1.7mm 2mm!important}
+ body.afaq-print-school-grade .gb-cert-grades td{padding:1.1mm 2mm!important}
+ body.afaq-print-school-grade .gb-cert-achievement{padding:2mm!important;gap:1mm!important}
+ body.afaq-print-school-grade .gb-cert-emblem{width:20mm!important;height:20mm!important;font-size:11pt!important;border-width:2px!important}
+ body.afaq-print-school-grade .gb-cert-achievement p{font-size:9pt!important;margin:0!important}
+ body.afaq-print-school-grade .gb-cert-achievement>strong{font-size:16pt!important}
+ body.afaq-print-school-grade .gb-cert-total{padding:1.4mm!important;gap:.3mm!important}
+ body.afaq-print-school-grade .gb-cert-total span{font-size:10pt!important}
+ body.afaq-print-school-grade .gb-cert-total b{font-size:25pt!important}
+ body.afaq-print-school-grade .gb-cert-total small{font-size:10pt!important}
+ body.afaq-print-school-grade .gb-cert-achievement .gb-cert-a{font-size:8pt!important}
+ body.afaq-print-school-grade .gb-cert-achievement .gb-cert-ok{font-size:8pt!important}
+ body.afaq-print-school-grade .gb-cert-praise{font-size:10pt!important;line-height:1.3!important;
+  padding:2mm 3mm!important;margin:1mm 0 0!important}
+ body.afaq-print-school-grade .gb-cert-wish{font-size:10pt!important;margin:.5mm auto!important}
+ body.afaq-print-school-grade .gb-cert-legal{font-size:7pt!important;margin:.4mm 0!important}
+ body.afaq-print-school-grade .gb-cert-signatures{padding:2mm 4mm 0!important;margin-top:auto!important;gap:6mm!important}
+ body.afaq-print-school-grade .gb-cert-signatures div{font-size:10pt!important;gap:.5mm!important}
+ body.afaq-print-school-grade .gb-cert-signatures strong{font-size:11pt!important}
+}
