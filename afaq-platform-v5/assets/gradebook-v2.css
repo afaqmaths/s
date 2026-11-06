@@ -139,3 +139,56 @@
  body.afaq-print-school-grade #afaqSchoolPrintMount *{visibility:visible!important}
  body.afaq-print-school-grade #afaqSchoolPrintMount .gb-certificate{position:static!important}
 }
+/* AFAQ DUAL TERM RESULT CERTIFICATES V3 */
+.gb-two-certificates{padding:12px 2px;margin:12px 0;border-top:1px solid #d7e3ea}
+.gb-two-certificates h4{margin:22px 0 7px;color:#20537b;font-size:clamp(18px,1.4vw,23px)}
+.gb-two-certificates p{color:#536a7d;margin:6px 0 12px;line-height:1.6}
+.gb-print-controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px}
+.gb-print-controls>button{font-size:16px!important;padding:11px 16px!important}
+.gb-print-controls>button.primary{font-size:19px!important}
+.gb-compare{margin:17px 0;padding:15px 18px;border-radius:16px;border:1px solid #c8d9e7;
+ background:linear-gradient(145deg,#f6fbff,#fffbef);text-align:center}
+.gb-compare h4{font-size:clamp(18px,1.4vw,22px);color:#235480;margin:2px 0 14px}
+.gb-compare-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.gb-compare-grid>div{border:1px solid #d9e4ed;background:#fff;border-radius:13px;padding:13px 5px;
+ display:flex;flex-direction:column;gap:4px}
+.gb-compare-grid small{font-size:15px;color:#56708c}
+.gb-compare-grid strong{font-weight:950;font-size:clamp(21px,1.8vw,29px);color:#1a557a}
+.gb-compare>p{font-weight:850;color:#426480;margin:12px 0 0}
+.gb-final-editor{padding:18px;margin:22px 0 6px;border:2px solid #c7dbdf;border-radius:16px;
+ background:linear-gradient(120deg,#f3fbff,#fffdf4)}
+.gb-final-editor h4{color:#245578;margin:4px 0;font-size:21px}
+.gb-final-editor .gb-compare{font-weight:850;color:#175879}
+.gb-editor button:disabled{opacity:.55;cursor:not-allowed}
+.gb-cert-grades .gb-cert-last{background:#eaf6f1!important;color:#125f43;font-weight:950}
+.gb-cert-grades .gb-cert-last td{border-top:2px solid #9bcfbd}
+.gb-cert-actual{border-color:#b49a55}
+.gb-cert-actual .gb-cert-total{background:linear-gradient(115deg,#0d6359,#145c85)}
+.gb-cert-actual .gb-cert-head h3{color:#0b7557}
+.gb-cert-compare{font-size:15px;font-weight:900;line-height:1.4;color:#1d5e7b;margin:6px 2px 1px!important}
+.gb-cert-prediction .gb-cert-total{background:linear-gradient(120deg,#1b477a,#a8782d)}
+.gb-cert-prediction .gb-cert-head h3{color:#9c6b19}
+.gb-cert-name strong{overflow-wrap:anywhere}
+@media(max-width:670px){
+ .gb-compare-grid{grid-template-columns:1fr}
+ .gb-print-controls{flex-direction:column}
+ .gb-print-controls button{width:100%}
+}
+@media print{
+ body.afaq-print-school-grade .gb-cert-content{gap:2mm!important}
+ body.afaq-print-school-grade .gb-cert-grades table{font-size:8.5pt!important;line-height:1.03!important}
+ body.afaq-print-school-grade .gb-cert-grades th{padding:1.2mm 1.7mm!important}
+ body.afaq-print-school-grade .gb-cert-grades td{padding:.85mm 1.7mm!important}
+ body.afaq-print-school-grade .gb-cert-emblem{width:17mm!important;height:17mm!important;font-size:9pt!important}
+ body.afaq-print-school-grade .gb-cert-achievement{gap:.7mm!important}
+ body.afaq-print-school-grade .gb-cert-achievement>strong{font-size:15pt!important}
+ body.afaq-print-school-grade .gb-cert-achievement p{font-size:8.4pt!important}
+ body.afaq-print-school-grade .gb-cert-total b{font-size:21pt!important}
+ body.afaq-print-school-grade .gb-cert-total span{font-size:8.5pt!important}
+ body.afaq-print-school-grade .gb-cert-compare{font-size:8.5pt!important;line-height:1.2!important;margin:.2mm 0!important}
+ body.afaq-print-school-grade .gb-cert-praise{font-size:9pt!important;line-height:1.26!important;padding:1.3mm 3mm!important;margin:.6mm 0 0!important}
+ body.afaq-print-school-grade .gb-cert-wish{font-size:9pt!important;margin:.3mm 0!important}
+ body.afaq-print-school-grade .gb-cert-legal{font-size:6.5pt!important;line-height:1.18!important}
+ body.afaq-print-school-grade .gb-cert-signatures{padding-top:1.5mm!important}
+ body.afaq-print-school-grade .gb-cert-name strong{font-size:21pt!important}
+}
