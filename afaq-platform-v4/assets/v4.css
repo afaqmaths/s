@@ -47,3 +47,15 @@ footer,footer span,footer strong{font-size:clamp(15px,1.04vw,18px)}
 @media(max-width:1250px){.topbar{gap:9px}.desktopnav button{padding:9px 9px;font-size:15px}.stars-shortcut{font-size:15px;padding:7px 10px}.brand small{font-size:13px}}
 @media(max-width:750px){.topbar{padding-inline:12px;height:auto;min-height:87px;gap:6px}.brand-symbol{width:47px;height:47px;font-size:28px}.brand b{font-size:19px}.brand small{font-size:11px}.header-actions{gap:5px}.header-actions .outline{font-size:14px;padding:9px 8px}.stars-shortcut{font-size:14px;min-height:39px;padding:8px 8px}.v4-hero-copy{padding:40px 24px!important}.v4-hero-buttons{flex-direction:column;align-items:stretch}.v4-stars-btn{width:100%;font-size:18px}.v4-hero p{font-size:18px!important}}
 @media(max-width:410px){.brand small{display:none}.stars-shortcut{font-size:12px;padding:6px}.header-actions .outline{font-size:13px}}
+
+/* تقدم نجوم آفاق داخل لوحة الطالب */
+.afaq-progress-panel{border-color:#c7daf9!important;background:linear-gradient(160deg,#fff,#f0f6ff)!important}
+.afaq-progress-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}
+.afaq-progress-grid>div{padding:18px;background:white;border:1px solid #deebfa;border-radius:17px;display:flex;flex-direction:column;text-align:center;gap:7px}
+.afaq-progress-grid strong{font-size:clamp(22px,2vw,30px);color:#1a53b1}.afaq-progress-grid small{font-size:17px;color:#3f577a}
+.afaq-progress-track{height:14px;border-radius:99px;background:#e0e9fa;overflow:hidden;margin:18px 0}
+.afaq-progress-track span{display:block;height:100%;background:linear-gradient(110deg,#3476df,#20a286);border-radius:99px}
+.afaq-unit-progress{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:22px 0}
+.afaq-unit-progress>div{display:flex;flex-direction:column;gap:6px;background:#f9fbff;padding:16px;border-radius:15px;border:1px solid #dce8f8}
+.afaq-unit-progress b{font-size:19px;color:#234b9b}.afaq-unit-progress span,.afaq-unit-progress small{font-size:16px;color:#47617b}
+@media(max-width:960px){.afaq-progress-grid,.afaq-unit-progress{grid-template-columns:repeat(2,minmax(0,1fr))}}
