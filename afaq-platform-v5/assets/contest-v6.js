@@ -67,7 +67,7 @@ const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',su
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',catalog:[],report:null,summary:null,staffReport:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false};
+ waitingUntil:0,waitingMessage:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const allowedStaff=()=>['supervisor','supervisor_assistant','director','deputy'].includes(STATE.user?.role);
@@ -104,12 +104,20 @@ const back=(action,payload)=>request(GAME,action,payload);
 async function authenticate(){
  if(!STATE.token)return;
  try{let r=await api('me');STATE.user=r.user;STATE.displayName=STATE.user?.role==='demo'?'متسابق الصف '+(gradeNames[Number(r.user.grade)]||''):(STATE.displayName||STATE.user?.username||'المتسابق');STATE.grade=student()||STATE.user.role==='demo'?Number(r.user.grade||6):6;
-  if(student()||STATE.user.role==='demo'){STATE.report=(await back('my_results')).report;if(student()){try{const p=(await api('profile'))?.profile?.student;STATE.displayName=p?.full_name||p?.display_name||STATE.displayName}catch{}}}
+  if(student()||STATE.user.role==='demo'){STATE.report=(await back('my_results')).report;if(student()){try{const p=(await api('profile'))?.profile?.student;STATE.displayName=p?.full_name||p?.display_name||STATE.displayName;STATE.profile=p||null}catch{}}}
   else {const values=await Promise.all([back('staff_summary'),back('staff_results')]);STATE.summary=values[0].stats;STATE.staffReport=values[1].students;}
+  if(student()){try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
  }catch(e){STATE.user=null;STATE.token='';sessionStorage.removeItem(tokenKey);}
 }
 const getCurrent=()=>STATE.mode==='official'?STATE.question:STATE.questions[STATE.index];
 const currentStage=()=>STATE.readyStage||(getCurrent()?.stage||0);
+async function loadCertificates(){
+ if(!student())return;
+ const r=await back('my_certificates');
+ STATE.certificates=Array.isArray(r.certificates)?r.certificates:[];
+ if(r.report)STATE.report=r.report;
+ STATE.certificateError='';
+}
 function unitCards(){let cards=[];for(let s=1;s<=units(STATE.grade);s++){
  const part=STATE.report?.parts?.find(x=>x.section===s);
  cards.push('<button class="contest-unit '+(STATE.section===s?'selected':'')+'" data-unit="'+s+'"><span class="unit-num">'+s+'</span><strong>'+(STATE.grade===6?'الوحدة':'القسم')+' '+s+' — '+unitName(STATE.grade,s)+'</strong><small>'+(STATE.grade===6?'١٠٠':'٢٥')+' نقطة</small>'+(STATE.grade===6?'':'<small>'+friendly(splitSyllabus[STATE.grade]?.[s-1]?.topics||'')+'</small>')+(part?'<small>أفضل نتيجة: '+friendly(part.best??'—')+' / ١٠٠ • المحاولات المتاحة: '+friendly(part.attempts_remaining)+'</small>':'')+'</button>');
@@ -140,7 +148,7 @@ function home(){
  const allowed=STATE.mode!=='official'||approved;
  const avatar=image(entryArt(),student()?'الصورة المعتمدة للطالب':'الصورة المعتمدة للمشرف والإدارة','entry-approved-avatar');
  return '<div class="contest-home"><div class="contest-welcome contest-welcome-image">'+avatar+'<div><span class="contest-label">⭐ مسابقة نجوم آفاق الرياضيات ⭐</span><h2>مرحبًا '+friendly(STATE.displayName||STATE.user?.username||'بك')+'</h2><p>'+introduction+'</p></div><button class="outline" id="logoutContest">خروج</button></div>'+ (allowedStaff()?'<div class="contest-grades">'+[5,6,7,8].map(g=>'<button class="'+(STATE.grade===g?'chosen':'')+'" data-grade="'+g+'">الصف '+gradeNames[g]+'</button>').join('')+'</div>':'')+
- unitCards()+progress()+sampleScorePanel()+
+ unitCards()+progress()+sampleScorePanel()+certificateHistoryPanel()+
  '<h3 class="contest-title">اختر النموذج</h3><div class="contest-modes"><button class="'+(STATE.mode==='training'?'primary':'outline')+'" data-mode="training">🎯 '+trainingTitle()+'</button>'+(official()?'<button class="'+(STATE.mode==='official'?'primary':'outline')+'" data-mode="official">🏆 المحاولات الرسمية</button>':'')+'</div>'+
  '<p class="contest-instructions">المراحل الخمس في التدريب والمحاولات الرسمية متشابهة في العرض والتوقيت والصور. بعد كل إجابة تُعرض الإجابة الصحيحة والتعزيز باسم المتسابق خلال ٥ ثوانٍ ثم تنتقل اللعبة تلقائيًا. وقبل كل مرحلة تظهر شاشة «استعد وابدأ».</p>'+road()+
  '<div class="contest-rules"><b>طريقة احتساب الدرجة:</b> ثلاث مراحل سريعة، ثم مختبر مستر بين، ثم تحدي الأستاذ سعيد. لكل مرحلة ١٠ نقاط، فيكون المجموع ٥٠ ويُضاعف إلى ١٠٠. تُحتسب أفضل نتيجة لكل وحدة.</div>'+
@@ -226,13 +234,141 @@ function transition(){
  metrics+(f?.correct_answer!==undefined?'<p class="contest-correction">✅ الإجابة الصحيحة: '+friendly(Array.isArray(f.correct_answer)?f.correct_answer.join('، '):f.correct_answer)+'</p>':'')+(f?.explanation?'<p class="contest-explanation">💡 '+friendly(f.explanation)+'</p>':'')+
  '<div class="contest-next-box"><span>الانتقال تلقائيًا خلال</span><strong id="nextCountdown">'+stext(sec)+'</strong><span>ثوانٍ</span></div></aside></div></div>';
 }
-function result(){const r=STATE.result||{},score=Number(r.score??r.percent??0),raw=Number(r.raw_score??score/2);
- return '<div class="contest-finish"><div class="contest-giant">🏆🎉⭐</div><h2>'+(r.training?'أكملت '+trainingTitle():'اكتملت المحاولة الرسمية')+'</h2><h3>'+friendly(STATE.displayName||STATE.user?.username||'المتسابق')+'</h3><div class="contest-metrics"><div><strong>'+raw+' / ٥٠</strong><small>الدرجة الأصلية</small></div><div><strong>'+score+' / ١٠٠</strong><small>بعد المضاعفة</small></div>'+(STATE.grade!==6?'<div><strong>'+(raw/2)+' / ٢٥</strong><small>نقاط القسم من أصل ٢٥</small></div>':'')+'</div><p>'+(r.training?'نتيجتك تدريبية لا تستهلك محاولات المنافسة.':'حفظت نتيجتك، وتُحتسب أفضل نتيجة من المحاولتين لهذه الوحدة.')+'</p>'+stageResultsPanel()+(r.training&&r.details?'<details class="contest-review"><summary>مراجعة الأجزاء والإجابات</summary>'+r.details.map((x,i)=>'<p>السؤال '+(i+1)+' : '+x.earned+' / '+x.max+' نقطة — '+friendly(x.explanation||'')+'</p>').join('')+'</details>':'')+'<button class="primary" id="returnHome">العودة إلى الوحدات والنتائج</button></div>';
+
+const certStoreKey=()=> 'afaq_training_certificate_v3_'+String(STATE.user?.username||'guest')+'_'+STATE.grade+'_'+STATE.section;
+function certificateStages(details){
+ if(!Array.isArray(details)||details.length!==38)return [];
+ return [1,2,3,4,5].map(n=>{
+  const group=n<=3?details.slice((n-1)*10,n*10):details.slice(n===4?30:34,n===4?34:38);
+  return {stage:n,earned:group.reduce((s,x)=>s+nscore(x.earned),0),max:10,percent:sper(group.reduce((s,x)=>s+nscore(x.earned),0),10)};
+ });
+}
+function certificateForResult(){
+ const r=STATE.result;if(!r)return null;
+ const base={grade:STATE.grade,section:STATE.section,training:!!r.training,
+  display_name:STATE.displayName||STATE.user?.username||'المتسابق',
+  class_name:STATE.profile?.class_name||STATE.profile?.class||STATE.user?.class_name||'',
+  serial_no:STATE.profile?.serial_no||STATE.profile?.serial_number||STATE.user?.serial_no||'',
+  role:STATE.user?.role||'',ended_at:r.ended_at||new Date().toISOString()};
+ if(r.training)return {...base,model:trainingModel(),raw_score:nscore(r.raw_score),score:nscore(r.score??r.percent),
+  stage_scores:certificateStages(r.details),early_end:!!r.early_end,report:null};
+ const verified=(STATE.certificates||[]).find(x=>x.id===STATE.attemptId);
+ if(verified)return {...verified,...base,training:false,report:STATE.report,verified:true};
+ const fallback=[1,2,3,4,5].map(n=>sttotal(n).answered===stcount(n)?
+  {stage:n,earned:nscore(sttotal(n).earned),max:10,percent:sper(sttotal(n).earned,10)}:null);
+ return {...base,id:STATE.attemptId,attempt_no:STATE.attemptNo,model:STATE.attemptNo===2?'B':'A',
+  raw_score:nscore(r.raw_score??r.score/2),score:nscore(r.score),stage_scores:fallback,
+  report:STATE.report,verified:false};
+}
+function readTrainingCertificate(){
+ try{const c=JSON.parse(sessionStorage.getItem(certStoreKey())||'null');return c?.training&&c.grade===STATE.grade&&c.section===STATE.section?c:null}catch{return null}
+}
+function saveTrainingCertificate(){
+ const cert=certificateForResult();if(!cert?.training)return;
+ try{sessionStorage.setItem(certStoreKey(),JSON.stringify(cert))}catch{}
+}
+function hydrateCertificate(c){
+ if(!c)return null;
+ return {...c,display_name:STATE.displayName||STATE.user?.username||'المتسابق',
+  class_name:STATE.profile?.class_name||STATE.profile?.class||STATE.user?.class_name||'',
+  serial_no:STATE.profile?.serial_no||STATE.profile?.serial_number||STATE.user?.serial_no||'',
+  role:STATE.user?.role||'',training:false,verified:true,report:STATE.report};
+}
+function certificateHistoryPanel(){
+ const training=readTrainingCertificate();
+ const official=student()?STATE.certificates||[]:[];
+ if(!training&&!official.length)return '';
+ return '<section class="contest-cert-history"><h3>📜 شهاداتي ونتائجي السابقة</h3>'+
+ '<p>يمكنك فتح شهادة أي محاولة رسمية مكتملة وإعادة طباعتها. أما التدريب فتُحفظ شهادته في جلسة المتصفح الحالية فقط.</p>'+
+ '<div class="contest-cert-links">'+
+ (training?'<button class="outline" data-open-cert="training">🖨️ شهادة تدريب '+friendly(unitName(training.grade,training.section))+' — '+stext(training.score)+' / ١٠٠</button>':'')+
+ official.map(x=>'<button class="outline" data-open-cert="'+friendly(x.id)+'">📜 الوحدة '+stext(x.section)+' • المحاولة '+stext(x.attempt_no)+' • '+stext(x.score)+' / ١٠٠</button>').join('')+
+ '</div></section>';
+}
+function certificateDate(v){
+ try{return new Intl.DateTimeFormat('ar-OM',{dateStyle:'long',timeZone:'Asia/Muscat'}).format(new Date(v||Date.now()))}catch{return '—'}
+}
+function certMessage(score){
+ if(score>=90)return 'لقد أظهرت تميزًا ملحوظًا في الأداء الرياضي، ودقة في التفكير، ومثابرة تستحق الإشادة.';
+ if(score>=75)return 'نُثمن اجتهادك وحسن أدائك في حل التحديات الرياضية، ونتطلع إلى مزيد من التألق.';
+ return 'نقدر مشاركتك ومثابرتك في خوض التحديات، ونشجعك على مواصلة التدريب والتقدم بخطى ثابتة.';
+}
+function certificateMarkup(cert){
+ if(!cert)return '';
+ const grade=gradeNames[cert.grade]||String(cert.grade);
+ const training=cert.training===true;
+ const report=!training&&cert.grade===6?(cert.report||STATE.report):null;
+ const total=nscore(report?.total),completed=nscore(report?.completed_units),qualified=report?.qualified===true&&completed===4&&total>=350;
+ const afterThreshold=report&&total>=350&&completed<4;
+ const rows=[1,2,3,4,5].map(n=>{
+  const st=(cert.stage_scores||[]).find(x=>x?.stage===n);
+  const earned=st&&Number.isFinite(Number(st.earned))?stext(st.earned):'—';
+  const percent=st&&Number.isFinite(Number(st.earned))?stext(sper(st.earned,10))+'٪':'—';
+  return '<tr><td>'+stext(n)+'</td><td>'+friendly(stage(n).title)+'</td><td>'+earned+' / ١٠</td><td>'+percent+'</td></tr>';
+ }).join('');
+ const status=training?
+   'نتيجة تدريبية غير رسمية؛ لا تُحتسب ضمن ترتيب التأهل أو الجوائز.':
+   (qualified?'متأهل للمفاضلة على الجوائز بعد إتمام الوحدات الأربع وتحقيق ٣٥٠ نقطة فأكثر.':
+   afterThreshold?'المجموع بلغ ٣٥٠ نقطة، لكن التأهل يتطلب إكمال الوحدات الأربع.':
+   completed<4?'لم يكتمل شرط التأهل بعد؛ يلزم إتمام الوحدات الأربع وتحقيق ٣٥٠ نقطة فأكثر.':
+   'أُكملت الوحدات الأربع، ولم يتحقق حد التأهل البالغ ٣٥٠ نقطة.');
+ const unitTable=report?'<section class="afaq-cert-units"><h4>نتائج الوحدات الأربع في المنافسة الرسمية</h4><table><thead><tr><th>الوحدة</th><th>أفضل نتيجة</th><th>حالة الإكمال</th></tr></thead><tbody>'+
+  [1,2,3,4].map(n=>{const x=(report.parts||[]).find(p=>Number(p.section)===n);return '<tr><td>'+stext(n)+' — '+friendly(unitName(6,n))+'</td><td>'+ (x?.best==null?'—':stext(x.best)+' / ١٠٠')+'</td><td>'+(x?.finished?'مكتملة':'غير مكتملة')+'</td></tr>'}).join('')+
+  '</tbody></table><p class="afaq-cert-qualification">المجموع التراكمي: <strong>'+stext(total)+' / ٤٠٠</strong> • الوحدات المكتملة: '+stext(completed)+' / ٤ • <strong>'+friendly(status)+'</strong></p></section>':
+  '<p class="afaq-cert-qualification">'+friendly(status)+'</p>';
+ const isComplete=!cert.early_end&&Array.isArray(cert.stage_scores)&&cert.stage_scores.length===5&&cert.stage_scores.every(x=>x&&Number.isFinite(Number(x.earned)));
+ const title=isComplete?'شهادة إتمام المراحل وبيان النتائج':'بيان نتائج المحاولة';
+ const kind=training?'نسخة تدريبية • لا تُعد شهادة تأهل رسمية':'نتائج المحاولة الرسمية المسجلة في المنصة';
+ const classLine=cert.class_name?'<span><b>الشعبة:</b> '+friendly(cert.class_name)+'</span>':'';
+ const serialLine=cert.serial_no?'<span><b>الرقم التسلسلي:</b> '+friendly(cert.serial_no)+'</span>':'';
+ const identifier=!training&&cert.id?'<p class="afaq-cert-id">معرّف المحاولة في النظام: <b dir="ltr">'+friendly(cert.id)+'</b></p>':'';
+ const ready=Array.isArray(cert.stage_scores)&&cert.stage_scores.length===5&&cert.stage_scores.every(x=>x&&Number.isFinite(Number(x.earned)));
+ return '<section class="afaq-certificate" id="afaqPrintableCertificate" dir="rtl">'+
+  '<div class="afaq-cert-top"><div class="afaq-cert-star">★</div><div><strong>منصة آفاق الرياضيات</strong><span>مسابقة نجوم آفاق الرياضيات</span></div><div class="afaq-cert-seal">🏆<small>إنجاز وتميّز</small></div></div>'+
+  '<div class="afaq-cert-heading"><span>'+friendly(kind)+'</span><h2>'+friendly(title)+'</h2><p>بكل فخر وتقدير، نتقدم بالشكر والثناء للمتسابق</p><h3>'+friendly(cert.display_name||'المتسابق')+'</h3><p>'+friendly(certMessage(nscore(cert.score)))+'</p></div>'+
+  '<div class="afaq-cert-details"><span><b>الصف:</b> '+friendly(grade)+'</span>'+classLine+serialLine+
+  '<span><b>الوحدة / القسم:</b> '+friendly(unitName(cert.grade,cert.section))+'</span>'+
+  '<span><b>النموذج:</b> '+friendly(models[cert.model]||cert.model||'التدريب')+'</span>'+
+  (!training?'<span><b>رقم المحاولة:</b> '+stext(cert.attempt_no||1)+'</span>':'')+
+  '<span><b>التاريخ:</b> '+friendly(certificateDate(cert.ended_at))+'</span></div>'+
+  '<h4 class="afaq-cert-table-title">جدول نتائج المراحل الخمس</h4>'+
+  '<table class="afaq-cert-table"><thead><tr><th>م</th><th>المرحلة</th><th>الدرجة</th><th>النسبة</th></tr></thead><tbody>'+rows+
+  '<tr class="afaq-cert-total"><td colspan="2">مجموع المراحل</td><td>'+stext(cert.raw_score)+' / ٥٠</td><td>'+stext(sper(cert.raw_score,50))+'٪</td></tr></tbody></table>'+
+  '<div class="afaq-cert-score"><span>النتيجة النهائية بعد المضاعفة</span><strong>'+stext(cert.score)+' / ١٠٠</strong><span>'+stext(sper(cert.score,100))+'٪</span></div>'+
+  unitTable+identifier+
+  '<div class="afaq-cert-footer"><div><b>الإعداد والإشراف</b><span>الأستاذ سعيد بن جمعة بن عبدالله البريكي</span></div><div><b>كلمة تقدير</b><span>وفقك الله وسدد خطاك، وإلى مزيد من النجاح والتميز.</span></div></div>'+
+  (!ready?'<p class="afaq-cert-warning">تنبيه: تفاصيل بعض المراحل غير متاحة حاليًا؛ يلزم تحديث سجل المحاولة قبل اعتماد الجدول.</p>':'')+
+  '<p class="afaq-cert-fineprint">هذه وثيقة نتائج صادرة عن واجهة منصة آفاق الرياضيات وفق البيانات المتاحة؛ ولا تمثل إعلانًا نهائيًا للفائزين أو تصديقًا من جهة تعليمية.</p></section>';
+}
+function certificateActions(cert){
+ const ready=Array.isArray(cert?.stage_scores)&&cert.stage_scores.length===5&&cert.stage_scores.every(x=>x&&Number.isFinite(Number(x.earned)));
+ return '<div class="afaq-cert-actions"><button class="primary" id="printCertificate" '+(ready?'':'disabled')+'>🖨️ طباعة شهادة النتائج / حفظ PDF</button>'+
+ (!ready?'<p class="notice">تعذر تحميل تفاصيل المراحل. حدّث سجل النتائج أولًا حتى تظهر شهادة مكتملة.</p>':'')+'</div>';
+}
+function certificatePage(){
+ const c=STATE.certificateView;
+ return '<div class="afaq-cert-view"><h2>📜 شهادة المتسابق ونتائجه</h2><p>يمكنك طباعة الشهادة أو اختيار «حفظ بتنسيق PDF» من نافذة الطباعة.</p>'+
+ certificateMarkup(c)+certificateActions(c)+'<button id="closeCertificate" class="outline">العودة إلى لوحة الوحدات</button></div>';
+}
+
+function result(){
+ const r=STATE.result||{},score=nscore(r.score??r.percent),raw=nscore(r.raw_score??score/2),cert=certificateForResult();
+ return '<div class="contest-finish"><div class="contest-giant">🏆🎉⭐</div>'+
+ '<h2>'+(r.training?'أكملت '+trainingTitle():'اكتملت المحاولة الرسمية')+'</h2>'+
+ '<h3>'+friendly(STATE.displayName||STATE.user?.username||'المتسابق')+'</h3>'+
+ '<div class="contest-metrics"><div><strong>'+stext(raw)+' / ٥٠</strong><small>الدرجة الأصلية</small></div>'+
+ '<div><strong>'+stext(score)+' / ١٠٠</strong><small>بعد المضاعفة</small></div>'+
+ (STATE.grade!==6?'<div><strong>'+stext(raw/2)+' / ٢٥</strong><small>نقاط القسم من أصل ٢٥</small></div>':'')+'</div>'+
+ '<p>'+(r.training?'هذه نتيجة تدريبية ولا تستهلك محاولات المنافسة الرسمية.':'تم حفظ النتيجة الرسمية في نظام المسابقة، وتُحتسب أفضل نتيجة لكل وحدة.')+'</p>'+
+ '<h3 class="afaq-cert-section-title">📜 شهادتك وبيان نتائج المراحل</h3>'+
+ certificateMarkup(cert)+certificateActions(cert)+
+ (r.training&&r.details?'<details class="contest-review"><summary>مراجعة الأسئلة والإجابات</summary>'+r.details.map((x,i)=>'<p>السؤال '+stext(i+1)+' : '+stext(x.earned)+' / '+stext(x.max)+' نقطة — '+friendly(x.explanation||'')+'</p>').join('')+'</details>':'')+
+ '<button class="outline" id="returnHome">العودة إلى الوحدات والنتائج</button></div>';
 }
 function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><a href="index.html#competition" class="primary">دخول منصة آفاق الرياضيات</a></div>'}
-function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false}
+function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
- root.innerHTML=!STATE.user?guest():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();root.insertAdjacentHTML('beforeend',afaqSoundButton());bind();document.getElementById('afaqSoundToggle')?.addEventListener('click',()=>{afaqAudioEnabled=!afaqAudioEnabled;localStorage.setItem('afaq_stars_sound',afaqAudioEnabled?'on':'off');if(afaqAudioEnabled){afaqAudioContextReady();afaqTune(STATE.feedbackStage||1,'start')}render()});
+ root.innerHTML=!STATE.user?guest():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();root.insertAdjacentHTML('beforeend',afaqSoundButton());bind();document.getElementById('afaqSoundToggle')?.addEventListener('click',()=>{afaqAudioEnabled=!afaqAudioEnabled;localStorage.setItem('afaq_stars_sound',afaqAudioEnabled?'on':'off');if(afaqAudioEnabled){afaqAudioContextReady();afaqTune(STATE.feedbackStage||1,'start')}render()});
  if(STATE.waitingUntil>Date.now()){tickTransition();return}
  if(showQ&&!STATE.readyStage&&!STATE.result)tickGame();
 }
@@ -280,6 +416,7 @@ async function submitResponse(answer,expired=false){
    logScore(previousStage,feedback);
    if(STATE.readyStage>previousStage||STATE.result)closeStage(previousStage);
   STATE.waitingMessage='راجع الإجابة الصحيحة يا '+(STATE.displayName||STATE.user?.username||'المتسابق')+' ثم استعد للمرحلة التالية.';
+  if(STATE.result&&!STATE.result.training&&student()){try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
  }catch(err){STATE.error=err.message;STATE.feedback=err.message}
  finally{STATE.busy=false;render();if(STATE.waitingUntil>Date.now())root.scrollIntoView?.({block:'start',behavior:'auto'});if(STATE.result){afaqTune(previousStage,'finish');afaqDecorate('fireworks',45)}else if(STATE.readyStage){afaqTune(previousStage,'finish');afaqDecorate('balloons',23)}else if(STATE.lastFeedback){if(STATE.lastFeedback.correct)afaqCelebrateCorrect(previousStage);else afaqTune(previousStage,'incorrect');}}
 }
@@ -296,10 +433,10 @@ async function expireStage(){if(STATE.busy||STATE.readyStage)return;const skippe
  }
  if(skippedStage&&(STATE.readyStage>skippedStage||STATE.result))closeStage(skippedStage);
 }catch(err){STATE.error=err.message}finally{STATE.busy=false;STATE.waitingUntil=0;render()}}
-async function completeTraining(){const r=await back('check_training',{grade:STATE.grade,section:STATE.section,answers:STATE.answers});STATE.result={...r,training:true};keepSample(r.raw_score);STATE.questions=[];STATE.question=null;STATE.waitingUntil=0;}
+async function completeTraining(){const r=await back('check_training',{grade:STATE.grade,section:STATE.section,answers:STATE.answers});STATE.result={...r,training:true,ended_at:new Date().toISOString()};keepSample(r.raw_score);saveTrainingCertificate();STATE.questions=[];STATE.question=null;STATE.waitingUntil=0;}
 async function finishEarly(){if(STATE.busy)return;if(!window.confirm('هل تريد إنهاء النموذج الآن دون إكمال بقية الأسئلة؟'))return;STATE.busy=true;clearInterval(STATE.timer);try{
- if(STATE.mode==='official'){const r=await back('submit',{attempt_id:STATE.attemptId});STATE.result={...r,training:false};STATE.report=r.report||STATE.report;}
- else await completeTraining();STATE.readyStage=0;STATE.waitingUntil=0;
+ if(STATE.mode==='official'){const r=await back('submit',{attempt_id:STATE.attemptId});STATE.result={...r,training:false,ended_at:new Date().toISOString()};STATE.report=r.report||STATE.report;try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
+ else {await completeTraining();if(STATE.result){STATE.result.early_end=true;saveTrainingCertificate()}}STATE.readyStage=0;STATE.waitingUntil=0;
 }catch(err){STATE.error=err.message}finally{STATE.busy=false;render()}}
 async function reloadReports(){if(student()){STATE.report=(await back('my_results')).report}else if(allowedStaff()){const [a,b]=await Promise.all([back('staff_summary'),back('staff_results')]);STATE.summary=a.stats;STATE.staffReport=b.students}}
 async function fetchBank(){try{const el=document.getElementById('editModel');if(el)STATE.editModel=el.value;STATE.bank=await back('question_list',{grade:STATE.grade,section:STATE.section,model:STATE.editModel});STATE.error='';render()}catch(err){STATE.error=err.message;render()}}
@@ -319,6 +456,13 @@ function bind(){if(!STATE.user)return;
  document.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-choice]').forEach(x=>x.disabled=true);btn.classList.add('selected');submitResponse(Number(btn.dataset.choice))}));
  document.getElementById('sendComplex')?.addEventListener('click',()=>submitResponse(getParts()));
  document.getElementById('finishEarly')?.addEventListener('click',finishEarly);
+ document.getElementById('printCertificate')?.addEventListener('click',()=>window.print());
+ document.getElementById('closeCertificate')?.addEventListener('click',()=>{STATE.certificateView=null;render()});
+ document.querySelectorAll('[data-open-cert]').forEach(btn=>btn.addEventListener('click',()=>{
+  const key=btn.dataset.openCert;
+  const cert=key==='training'?readTrainingCertificate():hydrateCertificate((STATE.certificates||[]).find(x=>x.id===key));
+  if(!cert)return;resetPlay();STATE.certificateView=cert;render();
+ }));
  document.getElementById('returnHome')?.addEventListener('click',async()=>{resetPlay();try{await reloadReports()}catch{}render()});
  document.getElementById('loadBank')?.addEventListener('click',fetchBank);
  document.getElementById('editModel')?.addEventListener('change',ev=>{STATE.editModel=ev.target.value;STATE.bank=null;render()});
