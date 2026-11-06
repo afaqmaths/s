@@ -3,6 +3,57 @@
 const API='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-platform-api';
 const GAME='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-contest-v2';
 const tokenKey='afaq_access_token_v2';
+
+/* Original synthesized motivational cues, stage celebrations and user-controlled sound. */
+let afaqAudioEnabled=localStorage.getItem('afaq_stars_sound')==='on';
+let afaqAudioContext=null, afaqLastEffect=0;
+const afaqReduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
+function afaqAudioContextReady(){
+ if(!afaqAudioEnabled)return null;
+ try{afaqAudioContext??=new (window.AudioContext||window.webkitAudioContext)();afaqAudioContext.resume?.();return afaqAudioContext}catch{return null}
+}
+function afaqTone(freq,start,duration,type='sine',vol=.052){
+ const ctx=afaqAudioContextReady();if(!ctx)return;
+ const oscillator=ctx.createOscillator(),gain=ctx.createGain(),t=ctx.currentTime+start;
+ oscillator.type=type;oscillator.frequency.setValueAtTime(freq,t);
+ gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(vol,t+.025);
+ gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
+ oscillator.connect(gain);gain.connect(ctx.destination);oscillator.start(t);oscillator.stop(t+duration+.04);
+}
+function afaqTune(stageNo,kind){
+ if(!afaqAudioEnabled)return;
+ const motifs={
+  correct:[[659,784,988,1319],[392,523,659,784],[523,659,880,1047],[440,587,784,1175],[587,740,988,1480]],
+  incorrect:[[523,440,392],[587,494,392],[622,494,370],[440,392,330],[494,415,349]],
+  start:[[392,523,659],[440,554,740],[523,659,784],[587,740,880],[659,831,988]],
+  finish:[[392,523,659,784,988,1319],[440,554,740,880,1108,1480],[523,659,784,1047,1319,1568],[587,740,880,1175,1480,1760],[659,831,988,1319,1661,1976]]
+ };
+ const pitches=motifs[kind]?.[Math.min(4,Math.max(0,stageNo-1))]||motifs.correct[0];
+ pitches.forEach((f,i)=>afaqTone(f,i*(kind==='finish'?.125:.108),kind==='finish'?.27:.16,kind==='incorrect'?'triangle':'sine',kind==='incorrect'?.032:.055));
+}
+function afaqDecorate(kind='confetti',quantity=16){
+ if(afaqReduceMotion())return;
+ const symbols=kind==='balloons'?['🎈','🎈','⭐','✨']:kind==='fireworks'?['🎆','🎇','✨','🌟','💫']:['⭐','🎉','✨','💫','🎊'];
+ const layer=document.createElement('div');layer.className='afaq-party-layer';layer.setAttribute('aria-hidden','true');
+ const width=Math.min(96,quantity);for(let i=0;i<width;i++){
+  const part=document.createElement('span');part.textContent=symbols[i%symbols.length];
+  part.className='afaq-party-piece '+(kind==='balloons'?'afaq-balloon':kind==='fireworks'?'afaq-firework':'afaq-confetti');
+  part.style.left=(4+(i*37)%92)+'%';part.style.animationDelay=((i*3)%17/22)+'s';
+  part.style.fontSize=(kind==='fireworks'?25+(i%4)*7:21+(i%3)*6)+'px';
+  layer.appendChild(part);
+ }
+ document.body.appendChild(layer);setTimeout(()=>layer.remove(),kind==='balloons'?4800:3300);
+}
+function afaqCelebrateCorrect(stageNo,final=false,stageEnd=false){
+ afaqTune(stageNo,final?'finish':'correct');
+ if(final)afaqDecorate('fireworks',52);
+ else if(stageEnd)afaqDecorate('balloons',19);
+ else afaqDecorate('confetti',12);
+}
+function afaqSoundButton(){
+ return '<button type="button" class="afaq-audio-toggle" id="afaqSoundToggle" aria-pressed="'+afaqAudioEnabled+'" title="التحكم بالمؤثرات الصوتية">🔊 '+(afaqAudioEnabled?'الصوت مفعّل':'تشغيل الصوت')+'</button>';
+}
+
 const root=document.getElementById('contestApp');
 const stageInfo=[
  {title:'جامبول وداروين',desc:'بوابة الأعداد والمفاهيم',time:25,detail:'١٠ أسئلة — ٢٥ ثانية لكل سؤال'},
@@ -14,7 +65,7 @@ const stageInfo=[
 const models={A:'المحاولة الرسمية الأولى',B:'المحاولة الرسمية الثانية',C:'نموذج الطالب',D:'نموذج الإدارة',E:'نموذج المشرف',F:'نموذج مساعد المشرف'};
 const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',supervisor_assistant:'F'};
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
-const STATE={token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',catalog:[],report:null,summary:null,staffReport:null,
+const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',catalog:[],report:null,summary:null,staffReport:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
  waitingUntil:0,waitingMessage:'',lastFeedback:null,feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -47,8 +98,8 @@ const api=(action,payload)=>request(API,action,payload);
 const back=(action,payload)=>request(GAME,action,payload);
 async function authenticate(){
  if(!STATE.token)return;
- try{let r=await api('me');STATE.user=r.user;STATE.grade=student()||STATE.user.role==='demo'?Number(r.user.grade||6):6;
-  if(student()||STATE.user.role==='demo'){STATE.report=(await back('my_results')).report}
+ try{let r=await api('me');STATE.user=r.user;STATE.displayName=STATE.user?.role==='demo'?'متسابق الصف '+(gradeNames[Number(r.user.grade)]||''):(STATE.displayName||STATE.user?.username||'المتسابق');STATE.grade=student()||STATE.user.role==='demo'?Number(r.user.grade||6):6;
+  if(student()||STATE.user.role==='demo'){STATE.report=(await back('my_results')).report;if(student()){try{const p=(await api('profile'))?.profile?.student;STATE.displayName=p?.full_name||p?.display_name||STATE.displayName}catch{}}}
   else {const values=await Promise.all([back('staff_summary'),back('staff_results')]);STATE.summary=values[0].stats;STATE.staffReport=values[1].students;}
  }catch(e){STATE.user=null;STATE.token='';sessionStorage.removeItem(tokenKey);}
 }
@@ -113,7 +164,7 @@ function quiz(){const q=getCurrent();if(!q)return '';
 }
 function transition(){
  const sec=clockSec(STATE.waitingUntil),n=STATE.feedbackStage||1,f=STATE.lastFeedback;
- const name=STATE.user?.username||'المتسابق';
+ const name=STATE.displayName||STATE.user?.username||'المتسابق';
  let heading='🌟 تم حفظ الإجابة',message=STATE.waitingMessage||'استعد للتحدي التالي.',solution='';
  if(f){
   if(f.unanswered){heading='⏰ انتهى وقت السؤال';message='يا '+name+'، راجع الإجابة ثم واصل المحاولة بثقة.';}
@@ -130,12 +181,12 @@ function transition(){
   '<span>الانتقال التلقائي إلى التحدي التالي خلال</span><strong id="nextCountdown">'+sec+'</strong><span>ثوانٍ</span></div>';
 }
 function result(){const r=STATE.result||{},score=Number(r.score??r.percent??0),raw=Number(r.raw_score??score/2);
- return '<div class="contest-finish"><div class="contest-giant">🏆🎉⭐</div><h2>'+(r.training?'أكملت '+trainingTitle():'اكتملت المحاولة الرسمية')+'</h2><h3>'+friendly(STATE.user?.username||'المتسابق')+'</h3><div class="contest-metrics"><div><strong>'+raw+' / ٥٠</strong><small>الدرجة الأصلية</small></div><div><strong>'+score+' / ١٠٠</strong><small>بعد المضاعفة</small></div></div><p>'+(r.training?'نتيجتك تدريبية لا تستهلك محاولات المنافسة.':'حفظت نتيجتك، وتُحتسب أفضل نتيجة من المحاولتين لهذه الوحدة.')+'</p>'+(r.training&&r.details?'<details class="contest-review"><summary>مراجعة الأجزاء والإجابات</summary>'+r.details.map((x,i)=>'<p>السؤال '+(i+1)+' : '+x.earned+' / '+x.max+' نقطة — '+friendly(x.explanation||'')+'</p>').join('')+'</details>':'')+'<button class="primary" id="returnHome">العودة إلى الوحدات والنتائج</button></div>';
+ return '<div class="contest-finish"><div class="contest-giant">🏆🎉⭐</div><h2>'+(r.training?'أكملت '+trainingTitle():'اكتملت المحاولة الرسمية')+'</h2><h3>'+friendly(STATE.displayName||STATE.user?.username||'المتسابق')+'</h3><div class="contest-metrics"><div><strong>'+raw+' / ٥٠</strong><small>الدرجة الأصلية</small></div><div><strong>'+score+' / ١٠٠</strong><small>بعد المضاعفة</small></div></div><p>'+(r.training?'نتيجتك تدريبية لا تستهلك محاولات المنافسة.':'حفظت نتيجتك، وتُحتسب أفضل نتيجة من المحاولتين لهذه الوحدة.')+'</p>'+(r.training&&r.details?'<details class="contest-review"><summary>مراجعة الأجزاء والإجابات</summary>'+r.details.map((x,i)=>'<p>السؤال '+(i+1)+' : '+x.earned+' / '+x.max+' نقطة — '+friendly(x.explanation||'')+'</p>').join('')+'</details>':'')+'<button class="primary" id="returnHome">العودة إلى الوحدات والنتائج</button></div>';
 }
 function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><a href="index.html#competition" class="primary">دخول منصة آفاق الرياضيات</a></div>'}
 function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
- root.innerHTML=!STATE.user?guest():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();bind();
+ root.innerHTML=!STATE.user?guest():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();root.insertAdjacentHTML('beforeend',afaqSoundButton());bind();document.getElementById('afaqSoundToggle')?.addEventListener('click',()=>{afaqAudioEnabled=!afaqAudioEnabled;localStorage.setItem('afaq_stars_sound',afaqAudioEnabled?'on':'off');if(afaqAudioEnabled){afaqAudioContextReady();afaqTune(STATE.feedbackStage||1,'start')}render()});
  if(STATE.waitingUntil>Date.now()){tickTransition();return}
  if(showQ&&!STATE.readyStage&&!STATE.result)tickGame();
 }
@@ -148,7 +199,7 @@ function tickGame(){clearInterval(STATE.timer);STATE.timer=setInterval(()=>{
  if(sec<=0){clearInterval(STATE.timer);q.stage<=3?submitResponse(null,true):expireStage()}
 },200)}
 function prepare(){resetPlay();STATE.readyStage=1;render()}
-async function beginStage(){if(STATE.busy||!STATE.readyStage)return;STATE.busy=true;STATE.error='';try{
+async function beginStage(){if(STATE.busy||!STATE.readyStage)return;afaqTune(STATE.readyStage,'start');STATE.busy=true;STATE.error='';try{
  if(STATE.mode==='official'){
    const r=STATE.attemptId&&STATE.readyStage>1?await back('begin_stage',{attempt_id:STATE.attemptId}):await back('start',{grade:STATE.grade,section:STATE.section});
    if(r.stage_ready){STATE.readyStage=r.stage_number;STATE.attemptId=r.attempt_id||STATE.attemptId;STATE.attemptNo=r.attempt_no||STATE.attemptNo;}
@@ -180,9 +231,9 @@ async function submitResponse(answer,expired=false){
    if(STATE.readyStage||STATE.result)STATE.waitingUntil=Date.now()+5000;
   }
   STATE.lastFeedback=feedback;STATE.feedbackStage=previousStage;
-  STATE.waitingMessage='راجع الإجابة الصحيحة يا '+(STATE.user?.username||'المتسابق')+' ثم استعد للمرحلة التالية.';
+  STATE.waitingMessage='راجع الإجابة الصحيحة يا '+(STATE.displayName||STATE.user?.username||'المتسابق')+' ثم استعد للمرحلة التالية.';
  }catch(err){STATE.error=err.message;STATE.feedback=err.message}
- finally{STATE.busy=false;render()}
+ finally{STATE.busy=false;render();if(STATE.lastFeedback){if(STATE.lastFeedback.correct)afaqCelebrateCorrect(previousStage,!!STATE.result,!!STATE.readyStage);else afaqTune(previousStage,'incorrect');}}
 }
 function adoptOfficial(r){
  if(r.finished){STATE.result={...r,training:false};STATE.report=r.report||STATE.report;STATE.question=null;STATE.questions=[];return}
