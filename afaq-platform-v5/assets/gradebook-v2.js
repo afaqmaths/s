@@ -1,10 +1,13 @@
-/* سجل نتائج آفاق الرياضيات — الشفوي ١٠، الكتابي ١٠، القصيرة ٢٠، الواجب ١٠، المشروع ١٠، منافسات A ٤٠. */
+/* سجل آفاق الرياضيات — شفوي ١٠ + سؤالان قصيران ١٠ + اختباران قصيران ٢٠ + كتابي ٥ + واجبات ٥ + مشروع ١٠ = ٦٠، ثم ٤٠ توقع/نهائي. */
 'use strict';
 const GB_COMPONENTS=[
  ['oral_score','الأعمال الشفوية',10],
- ['short1_score','سؤال الوحدة الأولى',5],['short2_score','سؤال الوحدة الثانية',5],
- ['short3_score','سؤال الوحدة الثالثة',5],['short4_score','سؤال الوحدة الرابعة',5],
- ['short_exam1_score','الاختبار القصير الأول',10],['short_exam2_score','الاختبار القصير الثاني',10],
+ ['short1_score','السؤال القصير الأول (دروس خارج الاختبارات القصيرة)',5],
+ ['short2_score','السؤال القصير الثاني (دروس خارج الاختبارات القصيرة)',5],
+ ['short_exam1_score','الاختبار القصير الأول',10],
+ ['short_exam2_score','الاختبار القصير الثاني',10],
+ ['written_score','الأعمال الكتابية',5],
+ ['homework_score','الواجبات المنزلية',5],
  ['project_score','المشروع الرياضي',10],
  ['a_score','توقع درجة النهائي وفق مؤشرات A+ وA−',40]
 ];
@@ -33,12 +36,14 @@ function gbSummary(p,staff=false){
  const a=p.assessment;
  if(!a)return '<section class="panel gb-summary"><h3>📊 نتائج الرياضيات من ١٠٠</h3><p class="notice">'+
   (p.assessment_status==='pending'?'درجات الطالب قيد الرصد والمراجعة.':'لم تُعتمد نتائج هذا الطالب بعد.')+
-  '</p><p>٦٠ درجة أعمال فصلية (شفوي ١٠، أربعة أسئلة وحدات × ٥، اختباران قصيران × ١٠، مشروع ١٠)، و٤٠ درجة للتوقع أو الاختبار النهائي.</p></section>';
+  '</p><p>٦٠ درجة أعمال فصلية: أعمال شفوية ١٠ + سؤالان قصيران (٢ × ٥) + اختباران قصيران (٢ × ١٠) + أعمال كتابية ٥ + واجبات منزلية ٥ + مشروع ١٠. وتضاف ٤٠ درجة للتوقع أو للاختبار النهائي.</p></section>';
  const approved=a.status==='approved',real=a.final_status==='approved'&&a.final_complete&&a.actual_total!==null;
  const sections=[
   ['الأعمال الشفوية',a.oral_score,10],
-  ['أسئلة الوحدات الأربع',a.short_questions,20],
+  ['السؤالان القصيران',a.short_questions,10],
   ['الاختباران القصيران',a.short_exams,20],
+  ['الأعمال الكتابية',a.written_score,5],
+  ['الواجبات المنزلية',a.homework_score,5],
   ['المشروع',a.project_score,10],
   ['التوقع A+ وA−',a.a_score,40]
  ].map(([label,value,max])=>'<div><strong>'+gbPresent(value)+' / '+gbNum(max)+'</strong><small>'+e(label)+'</small></div>').join('');
@@ -61,7 +66,7 @@ function gbSummary(p,staff=false){
  'توقع غير معتمد — لا ينشر للطالب')+'</p>'+
  '<div class="gb-tiles">'+sections+'<div class="gb-final"><strong>'+(a.complete?gbNum(a.estimated_total):'—')+' / ١٠٠</strong><small>النتيجة المتوقعة قبل النهائي</small></div></div>'+
  comparison+
- '<details class="gb-breakdown"><summary>تفاصيل أسئلة الوحدات والاختبارين القصيرين وسجل A</summary>'+
+ '<details class="gb-breakdown"><summary>تفاصيل السؤالين القصيرين والاختبارين القصيرين وسجل A</summary>'+
  '<table><thead><tr><th>المجال</th><th>الدرجة</th></tr></thead><tbody>'+detail+
  '<tr><td>الاختبار النهائي (عوضًا عن A في النتيجة الفعلية)</td><td>'+gbPresent(a.final_score)+' / ٤٠</td></tr></tbody></table>'+
  '<p>مؤشرات الدفتر: A+ = '+gbNum(a.a_plus_points)+'، A− = '+gbNum(a.a_minus_points)+
@@ -103,7 +108,7 @@ function gbCertificate(p,mode='prediction'){
  const date=gbDate(final?a.final_approved_at:a.approved_at);
  const isFinal=final,chosen=Number(final?a.final_score:a.a_score);
  const examRows=[1,2].map(n=>'<tr><td>الاختبار القصير '+gbNum(n)+'</td><td>'+gbNum(a['short_exam'+n+'_score'])+' / ١٠</td></tr>').join('');
- const questionRows=[1,2,3,4].map(n=>'<tr><td>سؤال الوحدة '+gbNum(n)+'</td><td>'+gbNum(a['short'+n+'_score'])+' / ٥</td></tr>').join('');
+ const questionRows=[1,2].map(n=>'<tr><td>السؤال القصير '+(n===1?'الأول':'الثاني')+'</td><td>'+gbNum(a['short'+n+'_score'])+' / ٥</td></tr>').join('');
  const comparison=final?'<p class="gb-cert-compare">المتوقع قبل النهائي: '+gbNum(a.estimated_total)+
   ' / ١٠٠ • الفعلي بعد النهائي: '+gbNum(total)+' / ١٠٠ • الفرق: '+gbSigned(a.difference)+'</p>':'';
  return '<section class="gb-certificate '+(final?'gb-cert-actual':'gb-cert-prediction')+
@@ -121,16 +126,18 @@ function gbCertificate(p,mode='prediction'){
  '<th>مجال التقييم</th><th>الدرجة</th></tr></thead><tbody>'+
  '<tr><td>الأعمال الشفوية</td><td>'+gbNum(a.oral_score)+' / ١٠</td></tr>'+
  questionRows+
- '<tr class="gb-cert-sub"><td>مجموع أسئلة الوحدات الأربع</td><td>'+gbNum(a.short_questions)+' / ٢٠</td></tr>'+
+ '<tr class="gb-cert-sub"><td>مجموع السؤالين القصيرين</td><td>'+gbNum(a.short_questions)+' / ١٠</td></tr>'+
  examRows+
  '<tr class="gb-cert-sub"><td>مجموع الاختبارين القصيرين</td><td>'+gbNum(a.short_exams)+' / ٢٠</td></tr>'+
+ '<tr><td>الأعمال الكتابية</td><td>'+gbNum(a.written_score)+' / ٥</td></tr>'+
+ '<tr><td>الواجبات المنزلية</td><td>'+gbNum(a.homework_score)+' / ٥</td></tr>'+
  '<tr><td>المشروع الرياضي</td><td>'+gbNum(a.project_score)+' / ١٠</td></tr>'+
  '<tr class="gb-cert-sub"><td>المجموع قبل النهائي</td><td>'+gbNum(sub)+' / ٦٠</td></tr>'+
  '<tr class="gb-cert-last"><td>'+(final?'الاختبار النهائي (الدرجة الحقيقية)':
  'توقع الاختبار النهائي من مؤشرات A+ وA−')+'</td><td>'+gbNum(chosen)+' / ٤٠</td></tr>'+
  '</tbody></table></div><div class="gb-cert-achievement"><div class="gb-cert-emblem">★ <span>'+
  e(total>=90?'متفوق':total>=75?'مجتهد ومتميز':'روح المثابرة')+'</span> ★</div>'+
- '<p>الأعمال الشفوية وأسئلة الوحدات والاختبارات والمشروع</p><strong>'+gbNum(sub)+' / ٦٠</strong>'+
+ '<p>الأعمال الشفوية والسؤالان القصيران والاختباران والكتابي والواجب والمشروع</p><strong>'+gbNum(sub)+' / ٦٠</strong>'+
  '<p>'+(final?'درجة الاختبار النهائي':'التوقع وفق A+ وA−')+'</p><strong>'+gbNum(chosen)+' / ٤٠</strong>'+
  '<div class="gb-cert-total"><span>'+(final?'الدرجة الحقيقية النهائية':'الدرجة المتوقعة قبل النهائي')+
  '</span><b>'+gbNum(total)+' / ١٠٠</b><small>'+gbNum(total)+'٪</small></div>'+
@@ -155,8 +162,10 @@ function gbShareText(p,mode){
  return ['منصة آفاق الرياضيات — '+(isFinal?'النتيجة الفعلية بعد الاختبار النهائي':'توقع النتيجة قبل الاختبار النهائي'),
   'الطالب: '+name,'الشعبة: '+(student.class_name||'السادس'),
   'الأعمال الشفوية: '+gbNum(a.oral_score)+'/١٠',
-  'أسئلة الوحدات الأربع: '+gbNum(a.short_questions)+'/٢٠',
+  'السؤالان القصيران (دروس غير داخلة في الاختبارين): '+gbNum(a.short_questions)+'/١٠',
   'الاختباران القصيران: '+gbNum(a.short_exams)+'/٢٠',
+  'الأعمال الكتابية: '+gbNum(a.written_score)+'/٥',
+  'الواجبات المنزلية: '+gbNum(a.homework_score)+'/٥',
   'المشروع: '+gbNum(a.project_score)+'/١٠',
   'المجموع قبل النهائي: '+gbNum(a.coursework)+'/٦٠',
   (isFinal?'الاختبار النهائي: '+gbNum(a.final_score)+'/٤٠':
@@ -218,7 +227,7 @@ function gbForm(p){
    gbNum(a.actual_total)+'/١٠٠</strong> • الفرق: <strong>'+gbSigned(a.difference)+'</strong></p>':'')+
   '</section>';
  return '<section class="gb-editor"><h3>📝 نظام رصد التوقع والنتيجة الحقيقية من ١٠٠</h3>'+
-  '<p>الشفوي ١٠ + أسئلة الوحدات الأربع ٢٠ (٤ × ٥) + اختباران قصيران ٢٠ (٢ × ١٠) + المشروع ١٠ = ٦٠. وتضاف ٤٠ نقطة للتوقع قبل النهائي أو درجة النهائي بعد أدائه.</p>'+
+  '<p>الشفوي ١٠ + سؤالان قصيران ١٠ (٢ × ٥) للدروس غير الداخلة في الاختبارات القصيرة + اختباران قصيران ٢٠ (٢ × ١٠) + الأعمال الكتابية ٥ + الواجبات المنزلية ٥ + المشروع ١٠ = ٦٠؛ وتضاف ٤٠ نقطة للتوقع قبل النهائي أو درجة النهائي بعد أدائه.</p>'+
   forecastStatus+
   '<form id="gbAssessmentForm"><div class="gb-input-grid">'+cells+'</div><div class="gb-form-buttons">'+save+'</div></form>'+
   '<div class="gb-form-buttons">'+admin+'</div>'+raw+finalForm+'<div id="gbAuditOutput"></div></section>';
@@ -266,8 +275,9 @@ function gbClassTableRows(report){
   const finalEntry=s.final_score===null||s.final_score===undefined?'—':
    gbNum(s.final_score)+(actual?'':'*');
   const cells=[
-   s.oral_score,s.short1_score,s.short2_score,s.short3_score,s.short4_score,
-   s.short_exam1_score,s.short_exam2_score,s.project_score,s.coursework,
+   s.oral_score,s.short1_score,s.short2_score,
+   s.short_exam1_score,s.short_exam2_score,
+   s.written_score,s.homework_score,s.project_score,s.coursework,
    s.a_plus_points,s.a_minus_points,s.a_score
   ];
   return '<tr class="'+(actual?'gb-class-actual':predicted?'gb-class-predicted':'gb-class-draft')+'">'+
@@ -292,8 +302,10 @@ function gbClassTable(report){
  '<th rowspan="2">النهائي الفعلي<br>٤٠</th>'+
  '<th colspan="3">المجموع والمقارنة (١٠٠)</th><th rowspan="2">الاعتماد</th></tr>'+
  '<tr class="gb-class-subheader">'+
- '<th>شفوي<br>١٠</th><th>س١<br>٥</th><th>س٢<br>٥</th><th>س٣<br>٥</th><th>س٤<br>٥</th>'+
- '<th>ق١<br>١٠</th><th>ق٢<br>١٠</th><th>مشروع<br>١٠</th><th>المجموع<br>٦٠</th>'+
+ '<th>شفوي<br>١٠</th><th title="السؤال القصير الأول؛ دروس خارج الاختبارات القصيرة">س١<br>٥</th>'+
+ '<th title="السؤال القصير الثاني؛ دروس خارج الاختبارات القصيرة">س٢<br>٥</th>'+
+ '<th>اخت١<br>١٠</th><th>اخت٢<br>١٠</th>'+
+ '<th>كتابي<br>٥</th><th>واجب<br>٥</th><th>مشروع<br>١٠</th><th>المجموع<br>٦٠</th>'+
  '<th>A+</th><th>A−</th><th>المتوقع<br>٤٠</th>'+
  '<th>المتوقع<br>١٠٠</th><th>الفعلي<br>١٠٠</th><th>الفرق</th></tr></thead>'+
  '<tbody>'+gbClassTableRows(report)+'</tbody></table>';
@@ -319,7 +331,7 @@ function gbClassReportMarkup(report){
   '<b>الفعلي:</b> الأعمال نفسها من ٦٠ + الاختبار النهائي من ٤٠ بعد اعتماده.</p>'+
   '<p><b>الرمز (—):</b> لم تُرصد الدرجة أو لم تُعتمد بعد. '+
   '<b>(*)</b> درجة نهائي مدخلة كمسودة ولا تدخل في المجموع الحقيقي حتى اعتماد المشرف. '+
-  'س١–س٤: أسئلة الوحدات الأربع؛ ق١ وق٢: الاختباران القصيران. والفرق = الفعلي − المتوقع.</p>'+
+  'س١ وس٢: السؤالان القصيران من دروس غير مشمولة بالاختبارين؛ اخت١ واخت٢: الاختباران القصيران، كل منهما من ١٠. والفرق = الفعلي − المتوقع.</p>'+
   '<p class="gb-class-private-note">للاستخدام التعليمي الداخلي من قبل المشرف؛ هذا كشف من المنصة ولا يحل محل سجلات المدرسة الرسمية.</p></div>'+
   '<div class="gb-class-signatures"><div><b>الإعداد والإشراف</b>'+
    '<strong>الأستاذ سعيد بن جمعة بن عبدالله البريكي</strong></div>'+
@@ -330,7 +342,7 @@ function gbClassPanel(){
  const report=auth.gbClassReport,cls=auth.gbSelectedClass;
  const choices=GB_CLASS_NAMES.map(name=>'<option value="'+e(name)+'"'+(cls===name?' selected':'')+'>'+e(name)+'</option>').join('');
  return '<section class="panel gb-class-panel"><h3>🧾 طباعة كشف الدرجات الجماعي لكل شعبة</h3>'+
- '<p>يعرض كشف الشعبة أسماء طلابها حسب الرقم التسلسلي المعتمد، والأعمال الفصلية من ٦٠، ومؤشرات A+ وA−، وتوقع درجة النهائي من ٤٠، ودرجته الحقيقية من ٤٠، والنتيجتين من ١٠٠ والفرق بينهما.</p>'+
+ '<p>يعرض كشف الشعبة أسماء طلابها حسب الرقم التسلسلي المعتمد، والشفوي ١٠، والسؤالين القصيرين ١٠، والاختبارين القصيرين ٢٠، والكتابي ٥، والواجب ٥، والمشروع ١٠؛ ثم التوقع وفق A+ وA− من ٤٠ والنهائي الحقيقي من ٤٠، والنتيجتين من ١٠٠ والفرق بينهما.</p>'+
  '<div class="gb-class-toolbar"><label for="gbClassSelect">اختر شعبة الصف السادس</label>'+
  '<select id="gbClassSelect">'+choices+'</select>'+
  '<button class="soft" type="button" id="gbClassReload" '+(auth.gbClassLoading?'disabled':'')+'>تحديث الكشف</button>'+
