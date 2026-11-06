@@ -163,7 +163,7 @@ function adoptOfficial(r){
  STATE.index=r.index;
  if(r.stage_ready){STATE.question=null;STATE.readyStage=r.stage_number;STATE.started=0;STATE.stageStarted=0;return}
  STATE.question=r.question;STATE.started=Date.parse(r.question_started_at)||Date.now();STATE.stageStarted=Date.parse(r.stage_started_at)||Date.now();
- STATE.waitingUntil=Math.max(Date.now()+8000,STATE.started);STATE.waitingMessage='تم حفظ إجابتك. تابع بعد ٨ ثوانٍ.';
+ STATE.waitingUntil=STATE.started;STATE.waitingMessage='تم حفظ إجابتك. تابع بعد ٨ ثوانٍ.';
 }
 async function expireStage(){if(STATE.busy||STATE.readyStage)return;STATE.busy=true;clearInterval(STATE.timer);try{
  if(STATE.mode==='official'){const r=await back('skip_stage',{attempt_id:STATE.attemptId,index:STATE.index});adoptOfficial(r)}
