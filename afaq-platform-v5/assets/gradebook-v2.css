@@ -126,3 +126,16 @@
  body.afaq-print-school-grade .gb-cert-signatures div{font-size:10pt!important;gap:.5mm!important}
  body.afaq-print-school-grade .gb-cert-signatures strong{font-size:11pt!important}
 }
+
+/* Keep the certificate in a standalone print mount, so no extra dashboard pages appear. */
+#afaqSchoolPrintMount{display:none}
+@media print{
+ body.afaq-print-school-grade > *:not(#afaqSchoolPrintMount){display:none!important}
+ body.afaq-print-school-grade #afaqSchoolPrintMount{
+  display:block!important;position:static!important;margin:0!important;padding:0!important;
+  visibility:visible!important;width:100%!important;height:auto!important;box-shadow:none!important
+ }
+ body.afaq-print-school-grade #afaqSchoolPrintMount,
+ body.afaq-print-school-grade #afaqSchoolPrintMount *{visibility:visible!important}
+ body.afaq-print-school-grade #afaqSchoolPrintMount .gb-certificate{position:static!important}
+}
