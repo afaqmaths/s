@@ -67,7 +67,7 @@ const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',su
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',catalog:[],report:null,summary:null,staffReport:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',lastFeedback:null,feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false};
+ waitingUntil:0,waitingMessage:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const allowedStaff=()=>['supervisor','supervisor_assistant','director','deputy'].includes(STATE.user?.role);
@@ -148,7 +148,15 @@ function home(){
  (STATE.error?'<p class="notice" role="alert">'+friendly(STATE.error)+'</p>':'')+
  '<div class="contest-start-wrap"><button class="primary" id="prepare" '+(allowed?'':'disabled')+'>'+(STATE.mode==='official'?'الاستعداد للمحاولة الرسمية':'بدء '+trainingTitle())+'</button></div>'+staffResults()+manager()+'</div>';
 }
-function readyPage(){const n=STATE.readyStage,st=stage(n);return '<section class="stage-ready-page"><div class="ready-art">'+image(stageArt(n),st.title,'stage-ready-photo')+'</div><span class="ready-kicker">استعد للمرحلة '+n+' من ٥</span><h2>'+st.title+'</h2><h3>'+st.desc+'</h3><p>'+st.detail+' — أحضر تركيزك واستعد للتحدي. سيبدأ وقت المرحلة بعد موافقتك على الانطلاق.</p><div class="ready-rules">✔️ تُعرض الأسئلة والرسومات المصورة • ✔️ ١٠ درجات لكل مرحلة • ✔️ الانتقال التلقائي بعد ٥ ثوانٍ مع عرض الإجابة الصحيحة وتعزيز باسم المتسابق</div>'+(STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+'<div class="ready-buttons"><button class="primary" id="beginStage" '+(STATE.busy?'disabled':'')+'>✅ أوافق على بدء المرحلة — انطلق!</button><button class="outline" id="exitStage">العودة إلى لوحة الوحدات</button></div></section>'}
+function readyPage(){
+ const n=STATE.readyStage,st=stage(n);
+ return '<div class="contest-between-stages">'+(n>1?stageResultsPanel():'')+
+ '<section class="stage-ready-page"><div class="ready-art">'+image(stageArt(n),st.title,'stage-ready-photo')+'</div><span class="ready-kicker">استعد للمرحلة '+stext(n)+' من ٥</span><h2>'+st.title+'</h2><h3>'+st.desc+'</h3>'+
+ '<p>'+st.detail+' — أحضر تركيزك واستعد للتحدي. سيبدأ وقت المرحلة بعد موافقتك على الانطلاق.</p>'+
+ '<div class="ready-rules">✔️ عرض الإجابة الصحيحة بالأخضر والخاطئة بالأحمر • ✔️ الدرجة والنسبة بعد كل سؤال • ✔️ نتائج كل مرحلة • ✔️ الانتقال بعد ٥ ثوانٍ</div>'+
+ (STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+
+ '<div class="ready-buttons"><button class="primary" id="beginStage" '+(STATE.busy?'disabled':'')+'>✅ أوافق على بدء المرحلة — انطلق!</button><button class="outline" id="exitStage">العودة إلى لوحة الوحدات</button></div></section></div>';
+}
 function figure(q){const svg=String(q?.visual_svg||'');if(!svg.trim().startsWith('<svg')||svg.length>22000)return '';
  const safeSvg='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
  return '<figure class="contest-figure"><img class="contest-diagram" src="'+safeSvg+'" alt="'+friendly(q.visual_caption||q.objective||'شكل توضيحي للسؤال')+'"><figcaption>'+friendly(q.visual_caption||'انظر إلى الرسم ثم أجب عن السؤال')+'</figcaption></figure>';
@@ -159,38 +167,70 @@ function remaining(){const q=getCurrent();if(!q)return 0;const st=stage(q.stage)
  return clockSec(STATE.stageStarted+st.time*1000);
 }
 function tformat(seconds,which){return which<=3?seconds+' ث':String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
+
+const nscore=v=>Number.isFinite(Number(v))?Number(v):0;
+const stext=v=>new Intl.NumberFormat('ar-OM',{maximumFractionDigits:2}).format(Math.round(nscore(v)*100)/100);
+const sper=(a,b)=>b>0?Math.max(0,Math.min(100,Math.round(nscore(a)/b*100))):0;
+const stcount=n=>n<=3?10:4;
+const ststep=q=>q.stage<=3?(q.ordinal-1)%10+1:(q.ordinal-31)%4+1;
+const sttotal=n=>STATE.stageScores[n]||{earned:0,possible:0,answered:0};
+const totalEarned=()=>Object.values(STATE.stageScores).reduce((s,v)=>s+nscore(v.earned),0);
+function logScore(n,f){if(!f)return;const s=STATE.stageScores[n]||(STATE.stageScores[n]={earned:0,possible:0,answered:0});s.earned+=nscore(f.earned);s.possible+=nscore(f.max);s.answered++;}
+function closeStage(n){if(n>=1&&n<=5&&!STATE.completedStages.includes(n))STATE.completedStages.push(n)}
+function raceTrack(q,answered=false){
+ if(!q)return '';
+ const count=stcount(q.stage),done=Math.min(count,Math.max(0,ststep(q)-(answered?0:1))),p=Math.round(100*done/count);
+ return '<section class="contest-race" aria-label="مؤشر التقدم في المرحلة"><div class="contest-race-heading"><strong>🚗 سباق المرحلة '+stext(q.stage)+'</strong><span>أُنجز '+stext(done)+' من '+stext(count)+' — '+stext(p)+'٪</span></div>'+
+ '<div class="contest-race-track" role="progressbar" aria-label="تقدم حل أسئلة المرحلة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p+'"><div class="contest-race-fill" style="width:'+p+'%"><span class="contest-race-car" aria-hidden="true">🚙</span></div><span class="contest-race-finish" aria-hidden="true">🏁</span></div></section>';
+}
+function stageResultsPanel(){
+ const done=STATE.completedStages.slice().sort((a,b)=>a-b);if(!done.length)return '';
+ const earned=done.reduce((s,n)=>s+nscore(sttotal(n).earned),0),max=done.length*10;
+ return '<section class="contest-stage-results"><h3>📊 حصيلة المراحل المنجزة</h3><div class="contest-stage-result-grid">'+done.map(n=>'<div class="contest-stage-result-item"><span>المرحلة '+stext(n)+' — '+friendly(stage(n).title)+'</span><strong>'+stext(sttotal(n).earned)+' / ١٠</strong><small>'+stext(sper(sttotal(n).earned,10))+'٪ من نقاط المرحلة</small></div>').join('')+
+ '</div><div class="contest-stage-total">مجموع المراحل المكتملة: <strong>'+stext(earned)+' / '+stext(max)+'</strong> — <strong>'+stext(sper(earned,max))+'٪</strong></div></section>';
+}
 function quiz(){const q=getCurrent();if(!q)return '';
  const st=stage(q.stage),isMulti=q.question_kind==='complex',n=q.stage<=3?(q.ordinal-1)%10+1:(q.ordinal-31)%4+1;
  const seconds=remaining(),frac=Math.max(0,Math.min(100,seconds/st.time*100));
  const choices=isMulti?(q.parts||[]).map((part,i)=>'<div class="contest-subpart"><h4>('+String(i+1)+') '+friendly(part.text)+'</h4>'+(part.type==='choice'?'<div class="contest-choice-grid">'+(part.choices||[]).map(v=>'<label><input type="radio" name="part'+i+'" value="'+friendly(v)+'"><span>'+friendly(v)+'</span></label>').join('')+'</div>':'<input class="contest-number" inputmode="decimal" data-part="'+i+'" placeholder="اكتب الإجابة">')+'</div>').join(''):(q.options||[]).map((v,i)=>'<button class="contest-option" data-choice="'+i+'"><span class="option-letter">'+['أ','ب','ج','د'][i]+'</span>'+friendly(v)+'</button>').join('');
- return '<div class="contest-playing"><div class="contest-headline"><div><span>'+(STATE.mode==='official'?'🏆 المحاولة الرسمية':'🎯 '+trainingTitle())+'</span><h2>'+unitName(STATE.grade,STATE.section)+'</h2><small>'+friendly(STATE.displayName||STATE.user?.username||'الطالب')+'</small></div><div class="contest-score-badge"><strong>٥٠ ← ١٠٠</strong><small>أفضل نتيجة</small></div></div>'+road(q.stage)+
+ return '<div class="contest-playing"><div class="contest-headline"><div><span>'+(STATE.mode==='official'?'🏆 المحاولة الرسمية':'🎯 '+trainingTitle())+'</span><h2>'+unitName(STATE.grade,STATE.section)+'</h2><small>'+friendly(STATE.displayName||STATE.user?.username||'الطالب')+'</small></div><div class="contest-score-badge"><strong>٥٠ ← ١٠٠</strong><small>أفضل نتيجة</small></div></div>'+road(q.stage)+raceTrack(q,false)+
  '<div class="contest-game-area"><div class="contest-stage-banner"><div class="contest-character">'+image(stageArt(q.stage),st.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+q.stage+' من ٥ — ١٠ درجات</span><h2>'+st.title+'</h2><p>'+st.desc+'</p></div><div class="contest-timer"><strong id="contestClock">'+tformat(seconds,q.stage)+'</strong><small>'+(q.stage<=3?'وقت السؤال':'وقت المرحلة')+'</small><span class="contest-timerline"><i id="contestTimerBar" style="width:'+frac+'%"></i></span></div></div><div class="contest-question-meta"><span>السؤال '+n+' من '+(q.stage<=3?10:4)+'</span><span>التقدم '+(STATE.index+1)+' / ٣٨</span><span>'+(isMulti?'مسألة متعددة الأجزاء':'اختيار من متعدد')+'</span></div><div class="contest-question"><h3>'+friendly(q.prompt)+'</h3>'+figure(q)+choices+
  '<div class="contest-help" id="contestHelp">'+friendly(STATE.feedback||('ركز يا '+(STATE.user?.username||'بطل')+'، ثم أجب عن السؤال.'))+'</div></div><div class="contest-controls">'+(isMulti?'<button id="sendComplex" class="primary">✅ إرسال الإجابات والمتابعة</button>':'<p class="auto-answer-hint">اختر الإجابة لعرض التصحيح والتعزيز ثم الانتقال تلقائيًا بعد ٥ ثوانٍ.</p>')+'<button id="finishEarly" class="outline">إنهاء '+(STATE.mode==='official'?'المحاولة':'التدريب')+' الآن</button></div>'+
  (STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+'</div></div>';
 }
 function transition(){
- const sec=clockSec(STATE.waitingUntil),n=STATE.feedbackStage||1,f=STATE.lastFeedback;
- const name=STATE.displayName||STATE.user?.username||'المتسابق';
- let heading='🌟 تم حفظ الإجابة',message=STATE.waitingMessage||'استعد للتحدي التالي.',solution='';
- if(f){
-  if(f.unanswered){heading='⏰ انتهى وقت السؤال';message='يا '+name+'، راجع الإجابة ثم واصل المحاولة بثقة.';}
-  else if(f.correct){heading='🌟 إجابة صحيحة!';message='أحسنت يا '+name+'! تفكيرك الرياضي متميز، استمر!';}
-  else{heading='💡 لنتعلم من الإجابة';message='يا '+name+'، حاول مجددًا في السؤال القادم، وستحقق تقدمًا بإذن الله.';}
-  const correct=Array.isArray(f.correct_answer)?f.correct_answer.join('، '):f.correct_answer;
-  solution='<div class="contest-solution"><strong>✅ الإجابة الصحيحة: '+friendly(correct??'—')+'</strong>'+
-   '<small>درجتك لهذا السؤال: '+Number(f.earned||0)+' من '+Number(f.max||1)+'</small>'+
-   (f.explanation?'<p>'+friendly(f.explanation)+'</p>':'')+'</div>';
+ const sec=clockSec(STATE.waitingUntil),n=STATE.feedbackStage||1,f=STATE.lastFeedback,q=STATE.feedbackQuestion,name=STATE.displayName||STATE.user?.username||'المتسابق';
+ let heading='🌟 تم حفظ الإجابة',msg=STATE.waitingMessage||'استعد للتحدي التالي.';
+ if(f?.unanswered){heading='⏰ انتهى وقت السؤال';msg='يا '+name+'، راجع الحل الصحيح ثم واصل بثقة.'}
+ else if(f?.correct){heading='🌟 إجابة صحيحة!';msg='أحسنت يا '+name+'! إجابة موفقة، استمر!'}
+ else if(f){heading='💡 تعلّم من المحاولة';msg='يا '+name+'، راجع التصحيح، والسؤال التالي فرصة جديدة.'}
+ let review='';
+ if(q){
+  let options='';
+  if(q.question_kind!=='complex'){
+   options='<div class="contest-review-options">'+(q.options||[]).map((v,i)=>{
+    const good=f&&String(v)===String(f.correct_answer),picked=STATE.feedbackAnswer!==null&&Number(STATE.feedbackAnswer)===i;
+    const cls=good?'answer-correct':picked?'answer-wrong':'',tag=good?'✓ الإجابة الصحيحة':picked?'✕ اختيارك':'';
+    return '<div class="contest-option contest-review-option '+cls+'"><span class="option-letter">'+['أ','ب','ج','د'][i]+'</span><span class="contest-option-value">'+friendly(v)+'</span>'+(tag?'<span class="contest-answer-tag">'+tag+'</span>':'')+'</div>';
+   }).join('')+'</div>';
+  }else{
+   const a=Array.isArray(STATE.feedbackAnswer)?STATE.feedbackAnswer:[],correct=Array.isArray(f?.correct_answer)?f.correct_answer:[];
+   options='<div class="contest-review-parts">'+(q.parts||[]).map((part,i)=>'<div class="contest-review-part"><strong>('+stext(i+1)+') '+friendly(part.text)+'</strong><span>إجابتك: '+friendly(a[i]??'لم تجب')+'</span><span class="contest-right-answer">✓ الإجابة الصحيحة: '+friendly(correct[i]??'—')+'</span></div>').join('')+'</div>';
+  }
+  review='<section class="contest-feedback-question"><h3>'+friendly(q.prompt)+'</h3>'+figure(q)+options+'</section>';
  }
- return '<div class="contest-transition '+(f?.correct?'feedback-success':f?'feedback-review':'')+'">'+
-  '<div class="transition-art">'+image(stageEndArt(n),'صورة نهاية السؤال','transition-photo')+'</div>'+
-  '<h2>'+heading+'</h2><p>'+friendly(message)+'</p>'+solution+
-  '<span>الانتقال التلقائي إلى التحدي التالي خلال</span><strong id="nextCountdown">'+sec+'</strong><span>ثوانٍ</span></div>';
+ const earned=nscore(f?.earned),max=nscore(f?.max)||1,stageValue=nscore(sttotal(n).earned),grand=totalEarned();
+ const metrics=f?'<div class="contest-feedback-metrics"><div><strong>'+stext(earned)+' / '+stext(max)+'</strong><small>درجة السؤال · '+stext(sper(earned,max))+'٪</small></div><div><strong>'+stext(stageValue)+' / ١٠</strong><small>حصيلة المرحلة · '+stext(sper(stageValue,10))+'٪</small></div><div><strong>'+stext(grand)+' / ٥٠</strong><small>الحصيلة العامة · '+stext(sper(grand,50))+'٪</small></div></div>':'';
+ return '<div class="contest-feedback-screen">'+raceTrack(q,true)+'<div class="contest-feedback-grid">'+review+
+ '<aside class="contest-feedback-summary '+(f?.correct?'is-success':'is-review')+'"><div class="contest-feedback-title">'+image(stageEndArt(n),'شخصية المرحلة','contest-feedback-avatar')+'<div><h2>'+heading+'</h2><p>'+friendly(msg)+'</p></div></div>'+
+ metrics+(f?.explanation?'<p class="contest-explanation">💡 '+friendly(f.explanation)+'</p>':'')+
+ '<div class="contest-next-box"><span>الانتقال تلقائيًا خلال</span><strong id="nextCountdown">'+stext(sec)+'</strong><span>ثوانٍ</span></div></aside></div></div>';
 }
 function result(){const r=STATE.result||{},score=Number(r.score??r.percent??0),raw=Number(r.raw_score??score/2);
- return '<div class="contest-finish"><div class="contest-giant">🏆🎉⭐</div><h2>'+(r.training?'أكملت '+trainingTitle():'اكتملت المحاولة الرسمية')+'</h2><h3>'+friendly(STATE.displayName||STATE.user?.username||'المتسابق')+'</h3><div class="contest-metrics"><div><strong>'+raw+' / ٥٠</strong><small>الدرجة الأصلية</small></div><div><strong>'+score+' / ١٠٠</strong><small>بعد المضاعفة</small></div>'+(STATE.grade!==6?'<div><strong>'+(raw/2)+' / ٢٥</strong><small>نقاط القسم من أصل ٢٥</small></div>':'')+'</div><p>'+(r.training?'نتيجتك تدريبية لا تستهلك محاولات المنافسة.':'حفظت نتيجتك، وتُحتسب أفضل نتيجة من المحاولتين لهذه الوحدة.')+'</p>'+(r.training&&r.details?'<details class="contest-review"><summary>مراجعة الأجزاء والإجابات</summary>'+r.details.map((x,i)=>'<p>السؤال '+(i+1)+' : '+x.earned+' / '+x.max+' نقطة — '+friendly(x.explanation||'')+'</p>').join('')+'</details>':'')+'<button class="primary" id="returnHome">العودة إلى الوحدات والنتائج</button></div>';
+ return '<div class="contest-finish"><div class="contest-giant">🏆🎉⭐</div><h2>'+(r.training?'أكملت '+trainingTitle():'اكتملت المحاولة الرسمية')+'</h2><h3>'+friendly(STATE.displayName||STATE.user?.username||'المتسابق')+'</h3><div class="contest-metrics"><div><strong>'+raw+' / ٥٠</strong><small>الدرجة الأصلية</small></div><div><strong>'+score+' / ١٠٠</strong><small>بعد المضاعفة</small></div>'+(STATE.grade!==6?'<div><strong>'+(raw/2)+' / ٢٥</strong><small>نقاط القسم من أصل ٢٥</small></div>':'')+'</div><p>'+(r.training?'نتيجتك تدريبية لا تستهلك محاولات المنافسة.':'حفظت نتيجتك، وتُحتسب أفضل نتيجة من المحاولتين لهذه الوحدة.')+'</p>'+stageResultsPanel()+(r.training&&r.details?'<details class="contest-review"><summary>مراجعة الأجزاء والإجابات</summary>'+r.details.map((x,i)=>'<p>السؤال '+(i+1)+' : '+x.earned+' / '+x.max+' نقطة — '+friendly(x.explanation||'')+'</p>').join('')+'</details>':'')+'<button class="primary" id="returnHome">العودة إلى الوحدات والنتائج</button></div>';
 }
 function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><a href="index.html#competition" class="primary">دخول منصة آفاق الرياضيات</a></div>'}
-function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false}
+function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
  root.innerHTML=!STATE.user?guest():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();root.insertAdjacentHTML('beforeend',afaqSoundButton());bind();document.getElementById('afaqSoundToggle')?.addEventListener('click',()=>{afaqAudioEnabled=!afaqAudioEnabled;localStorage.setItem('afaq_stars_sound',afaqAudioEnabled?'on':'off');if(afaqAudioEnabled){afaqAudioContextReady();afaqTune(STATE.feedbackStage||1,'start')}render()});
  if(STATE.waitingUntil>Date.now()){tickTransition();return}
@@ -236,7 +276,9 @@ async function submitResponse(answer,expired=false){
    else{STATE.started=Date.now()+5000;STATE.waitingUntil=STATE.started;if(previousStage>=4)STATE.stageStarted+=5000;}
    if(STATE.readyStage||STATE.result)STATE.waitingUntil=Date.now()+5000;
   }
-  STATE.lastFeedback=feedback;STATE.feedbackStage=previousStage;
+  STATE.lastFeedback=feedback;STATE.feedbackQuestion=q;STATE.feedbackAnswer=expired?null:answer;STATE.feedbackStage=previousStage;
+   logScore(previousStage,feedback);
+   if(STATE.readyStage>previousStage||STATE.result)closeStage(previousStage);
   STATE.waitingMessage='راجع الإجابة الصحيحة يا '+(STATE.displayName||STATE.user?.username||'المتسابق')+' ثم استعد للمرحلة التالية.';
  }catch(err){STATE.error=err.message;STATE.feedback=err.message}
  finally{STATE.busy=false;render();if(STATE.result){afaqTune(previousStage,'finish');afaqDecorate('fireworks',45)}else if(STATE.readyStage){afaqTune(previousStage,'finish');afaqDecorate('balloons',23)}else if(STATE.lastFeedback){if(STATE.lastFeedback.correct)afaqCelebrateCorrect(previousStage);else afaqTune(previousStage,'incorrect');}}
@@ -247,11 +289,12 @@ function adoptOfficial(r){
  if(r.stage_ready){STATE.question=null;STATE.readyStage=r.stage_number;STATE.started=0;STATE.stageStarted=0;return}
  STATE.question=r.question;STATE.started=Date.parse(r.question_started_at)||Date.now();STATE.stageStarted=Date.parse(r.stage_started_at)||Date.now();
 }
-async function expireStage(){if(STATE.busy||STATE.readyStage)return;STATE.busy=true;clearInterval(STATE.timer);try{
+async function expireStage(){if(STATE.busy||STATE.readyStage)return;const skippedStage=getCurrent()?.stage;STATE.busy=true;clearInterval(STATE.timer);try{
  if(STATE.mode==='official'){const r=await back('skip_stage',{attempt_id:STATE.attemptId,index:STATE.index});adoptOfficial(r)}
  else{const current=getCurrent()?.stage;while(getCurrent()?.stage===current){STATE.answers[getCurrent().id]=null;STATE.index++}
  if(STATE.index>=STATE.questions.length)await completeTraining();else STATE.readyStage=STATE.questions[STATE.index].stage;
  }
+ if(skippedStage&&(STATE.readyStage>skippedStage||STATE.result))closeStage(skippedStage);
 }catch(err){STATE.error=err.message}finally{STATE.busy=false;STATE.waitingUntil=0;render()}}
 async function completeTraining(){const r=await back('check_training',{grade:STATE.grade,section:STATE.section,answers:STATE.answers});STATE.result={...r,training:true};keepSample(r.raw_score);STATE.questions=[];STATE.question=null;STATE.waitingUntil=0;}
 async function finishEarly(){if(STATE.busy)return;if(!window.confirm('هل تريد إنهاء النموذج الآن دون إكمال بقية الأسئلة؟'))return;STATE.busy=true;clearInterval(STATE.timer);try{
