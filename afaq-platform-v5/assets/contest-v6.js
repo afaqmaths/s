@@ -338,76 +338,102 @@ function certMessage(score){
  if(score>=75)return 'نُثمن اجتهادك وحسن أدائك في حل التحديات الرياضية، ونتطلع إلى مزيد من التألق.';
  return 'نقدر مشاركتك ومثابرتك في خوض التحديات، ونشجعك على مواصلة التدريب والتقدم بخطى ثابتة.';
 }
+
+function certificateTrophyArt(){
+ return '<svg viewBox="0 0 138 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="كأس التميز الذهبي">'+
+ '<defs><linearGradient id="afaqCupGold" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fff2b5"/><stop offset=".42" stop-color="#ebbc53"/><stop offset="1" stop-color="#a8751e"/></linearGradient></defs>'+
+ '<g fill="none" stroke="#39866b" stroke-width="4.6" stroke-linecap="round"><path d="M34 123C17 106 12 88 17 63M104 123c17-17 22-35 17-60"/>'+
+ '<path d="M22 73l-12-8M23 84l-13-2M28 96l-13 4M35 108l-13 9M116 73l12-8M115 84l13-2M110 96l13 4M103 108l13 9"/></g>'+
+ '<path d="M43 30h52v47c0 21-16 36-26 36S43 98 43 77Z" fill="url(#afaqCupGold)" stroke="#98671a" stroke-width="2.5"/>'+
+ '<path d="M43 38H25c-3 25 5 36 20 36M95 38h18c3 25-5 36-20 36" fill="none" stroke="#bf8b30" stroke-width="8" stroke-linecap="round"/>'+
+ '<path d="M69 113v18M49 134h40" stroke="#aa771f" stroke-width="9" stroke-linecap="round"/>'+
+ '<path d="m69 48 6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2Z" fill="#fff7dc"/>'+
+ '<circle cx="35" cy="18" r="4.2" fill="#d1a544"/><circle cx="101" cy="17" r="4.2" fill="#d1a544"/>'+
+ '</svg>';
+}
+function certificateMedalArt(){
+ return '<svg viewBox="0 0 130 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ميدالية الإنجاز">'+
+ '<defs><linearGradient id="afaqMedalGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff9db"/><stop offset=".5" stop-color="#efca66"/><stop offset="1" stop-color="#a66b1d"/></linearGradient></defs>'+
+ '<path d="M37 12h25l20 63-21 10ZM93 12H68L48 75l21 10Z" fill="#bf2e3a" stroke="#f4e3c3" stroke-width="2"/>'+
+ '<circle cx="65" cy="94" r="39" fill="url(#afaqMedalGold)" stroke="#a87825" stroke-width="4"/>'+
+ '<circle cx="65" cy="94" r="30" fill="none" stroke="#fff5d7" stroke-width="3"/>'+
+ '<path d="m65 72 7 14 15 2-11 11 3 16-14-8-14 8 3-16-11-11 15-2Z" fill="#fff8df" stroke="#bb8a30" stroke-width="1.6"/>'+
+ '<g fill="#cc9e48"><circle cx="16" cy="70" r="4"/><circle cx="113" cy="65" r="4"/><circle cx="20" cy="117" r="3"/></g>'+
+ '</svg>';
+}
+function certificatePraise(cert,report){
+ const training=cert.training===true,total=report?nscore(report.total):nscore(cert.score),max=report?400:100;
+ const pct=max?total/max*100:0,finished=report?nscore(report.completed_units)===4:true;
+ if(!finished)return 'نُقدّر مشاركتك الجادّة والجهد الذي بذلته حتى الآن في حل التحديات الرياضية. نحثّك على مواصلة المحاولة وإكمال الوحدات المتبقية، ونتمنى لك دوام التقدم والنجاح.';
+ if(pct>=87.5)return training?
+  'نُشيد بتفوقك في التدريب وحُسن توظيف مهاراتك الرياضية، ونثمّن مثابرتك وجهدك المتميز. نتطلع إلى تألقك في المنافسة الرسمية.':
+  'نُبارك لك هذا التفوق الرياضي المتميز، ونُثمن دقتك ومثابرتك التي أثمرت تحقيق حد التأهل للمفاضلة على الجوائز. تستحق الشكر والتقدير على هذا الإنجاز.';
+ if(pct>=75)return 'نُشيد بمستواك الجيد والجهد الكبير الذي بذلته في إتمام التحديات الرياضية. ونتطلع إلى مواصلة التدريب للوصول إلى مراتب أعلى من التفوق والتميز.';
+ if(pct>=50)return 'نُقدّر اجتهادك ومثابرتك في إتمام وحدات المسابقة، ونشكرك على ما بذلته من جهد. نثق بقدرتك على تحسين النتائج بمزيد من المراجعة والتدريب.';
+ return 'نشكرك على شجاعة المحاولة والمشاركة وإتمام التحديات. كل محاولة خطوة نحو التعلم والتقدم؛ استمر في التدريب، ولا تتوقف عن اكتشاف إمكاناتك الرياضية.';
+}
 function certificateMarkup(cert){
  if(!cert)return '';
- const grade=gradeNames[cert.grade]||String(cert.grade),isSix=Number(cert.grade)===6,training=cert.training===true,portfolio=cert.portfolio===true;
+ const grade=gradeNames[cert.grade]||String(cert.grade),isSix=Number(cert.grade)===6,training=cert.training===true;
  const report=certificateReport400(cert);
- const total=report?nscore(report.total):null,completed=report?nscore(report.completed_units):0;
- const qualified=!training&&report?.qualified===true&&completed===4&&total>=350;
- const stages=Array.isArray(cert.stage_scores)&&cert.stage_scores.length===5&&cert.stage_scores.every(x=>x&&Number.isFinite(Number(x.earned)));
- const title=isSix?(completed===4?'شهادة إنجاز الوحدات الأربع وبيان النتائج':'بيان تقدم ونتائج الوحدات الأربع'):(stages?'شهادة إتمام المراحل وبيان النتائج':'بيان نتائج المحاولة');
- const subtitle=training?'نسخة تدريبية — لا تُحتسب في المنافسة الرسمية':'نتائج المسابقة المسجلة في المنصة';
+ const total=report?nscore(report.total):nscore(cert.score);
+ const maximum=isSix?400:100, percent=percentExact(total,maximum);
+ const completed=report?nscore(report.completed_units):0;
+ const qualified=!training&&isSix&&report?.qualified===true&&completed===4&&total>=350;
+ const allDone=isSix&&completed===4;
+ const note=training?'نسخة تدريبية لا تُحتسب في المنافسة الرسمية':'مسابقة نجوم آفاق الرياضيات';
+ const title=isSix?(allDone?'شهادة إنجاز وتقدير':'شهادة مشاركة وبيان نتائج'):'شهادة تقدير ونتائج';
+ const mark=training?'تدريب غير رسمي':qualified?'متأهل للمفاضلة على الجوائز':isSix&&completed<4?'لم يستكمل شروط التأهل':isSix?'غير متأهل للمفاضلة':'بيان أداء';
+ const statusClass=training?'is-training':qualified?'is-qualified':'is-not-qualified';
+ let status='';
+ if(training)status='هذه النتيجة تدريبية ولا تُعد تأهلًا للمسابقة أو اعتمادًا للجوائز.';
+ else if(!isSix)status='نتيجة هذا القسم لا تُعد شهادة تأهل رسمية.';
+ else if(!report)status='لم تتوفر بيانات الوحدات الأربع كاملة؛ يُرجى تحديث النتائج.';
+ else if(qualified)status='أكمل الوحدات الأربع وحصل على ٣٥٠ نقطة فأكثر؛ متأهل للمفاضلة على الجوائز.';
+ else if(completed<4&&total>=350)status='حقق ٣٥٠ نقطة فأكثر، لكن يلزمه إكمال جميع الوحدات الأربع للتأهل.';
+ else if(completed<4)status='لم يُكمل الوحدات الأربع؛ يلزم إتمامها وجمع ٣٥٠ نقطة فأكثر للتأهل.';
+ else status='أكمل الوحدات الأربع، لكنه لم يبلغ حد التأهل البالغ ٣٥٠ نقطة.';
+ const rows=isSix?[1,2,3,4].map(n=>{
+  const p=(report?.parts||[]).find(x=>Number(x.section)===n);
+  const available=p?.best!=null&&Number.isFinite(Number(p.best));
+  const value=available?nscore(p.best):null;
+  const done=!!p?.finished;
+  return '<tr><td>'+stext(n)+'</td><td>'+friendly(unitName(6,n))+'</td>'+
+   '<td>'+(available?stext(value):'—')+' / ١٠٠</td>'+
+   '<td>'+(available?stext(percentExact(value,100))+'٪':'—')+'</td>'+
+   '<td class="'+(done?'afaq-cert-done':'afaq-cert-pending')+'">'+(done?'مكتملة':available?'غير مكتملة':'لم تُستكمل')+'</td></tr>';
+ }).join(''):'';
+ const unitTable=isSix?'<section class="afaq-cert-units"><h4>النتائج في الوحدات الأربع</h4>'+
+  '<table class="afaq-cert-units-table"><thead><tr><th>الوحدة</th><th>مجال التحدي</th><th>الدرجة</th><th>النسبة</th><th>الحالة</th></tr></thead><tbody>'+rows+'</tbody></table></section>':'';
  const classLine=cert.class_name?'<span><b>الشعبة:</b> '+friendly(cert.class_name)+'</span>':'';
  const serialLine=cert.serial_no?'<span><b>الرقم التسلسلي:</b> '+friendly(cert.serial_no)+'</span>':'';
- let status='';
- if(training)status='نتائج تدريبية لا تُحتسب ضمن التأهل أو الجوائز الرسمية.';
- else if(!report)status='لا تتوفر حاليًا بيانات المجموع العام للوحدات الأربع؛ يرجى تحديث النتائج.';
- else if(qualified)status='متأهل للمفاضلة على الجوائز بعد إتمام الوحدات الأربع وتحقيق ٣٥٠ نقطة فأكثر من ٤٠٠.';
- else if(completed<4&&total>=350)status='بلغ المجموع ٣٥٠ نقطة فأكثر، لكن التأهل يتطلب إتمام الوحدات الأربع.';
- else if(completed<4)status='لم يكتمل التأهل بعد؛ يلزم إتمام الوحدات الأربع وتحقيق ٣٥٠ نقطة فأكثر.';
- else status='أتم الوحدات الأربع، لكنه لم يحقق حد التأهل البالغ ٣٥٠ نقطة.';
- let main='';
- if(isSix){
-  const rows=[1,2,3,4].map(n=>{
-   const p=(report?.parts||[]).find(x=>Number(x.section)===n);
-   const has=p?.best!=null&&Number.isFinite(Number(p.best));
-   const score=has?nscore(p.best):null;
-   return '<tr><td>'+stext(n)+'</td><td>'+friendly(unitName(6,n))+'</td><td>'+(has?stext(score):'—')+' / ١٠٠</td>'+
-    '<td>'+(has?stext(sper(score,100))+'٪':'—')+'</td><td>'+(p?.finished?'مكتملة':has?'غير مكتملة':'لم تُستكمل')+'</td></tr>';
-  }).join('');
-  main='<section class="afaq-cert-units"><h4>النتائج النهائية للوحدات الأربع</h4><table class="afaq-cert-units-table"><thead><tr>'+
-   '<th>الوحدة</th><th>المجال</th><th>الدرجة</th><th>النسبة</th><th>الحالة</th></tr></thead><tbody>'+rows+
-   '<tr class="afaq-cert-total"><td colspan="2">المجموع العام للمسابقة</td><td><strong>'+(report?stext(total):'—')+' / ٤٠٠</strong></td>'+
-   '<td><strong>'+(report?stext(percentExact(total,400))+'٪':'—')+'</strong></td><td>'+stext(completed)+' / ٤ مكتملة</td></tr></tbody></table>'+
-   '<div class="afaq-cert-overall"><span>المجموع النهائي للوحدات الأربع</span><strong>'+(report?stext(total):'—')+' / ٤٠٠</strong>'+
-   '<span>'+(report?stext(percentExact(total,400))+'٪':'—')+'</span></div>'+
-   '<p class="afaq-cert-qualification"><strong>حالة التأهل:</strong> '+friendly(status)+'</p></section>';
- }else{
-  main='<div class="afaq-cert-score"><span>نتيجة القسم الحالي</span><strong>'+stext(cert.score)+' / ١٠٠</strong><span>'+stext(sper(cert.score,100))+'٪</span></div>'+
-  '<p class="afaq-cert-qualification">'+friendly(status)+'</p>';
- }
- const denom=portfolio?40:10;
- const stageRows=stages?[1,2,3,4,5].map(n=>{
-  const x=cert.stage_scores.find(x=>Number(x.stage)===n),val=nscore(x?.earned);
-  return '<tr><td>'+stext(n)+'</td><td>'+friendly(stage(n).title)+'</td><td>'+stext(val)+' / '+stext(denom)+'</td>'+
-   '<td>'+stext(sper(val,denom))+'٪</td></tr>';
- }).join(''):'';
- const stageTitle=portfolio?'المراحل الخمس مجمعة عبر الوحدات الأربع':'تفاصيل المراحل الخمس للوحدة الحالية';
- const detail=stages?'<section class="afaq-cert-stages"><h4 class="afaq-cert-table-title">'+stageTitle+'</h4>'+
-  '<table class="afaq-cert-table"><thead><tr><th>م</th><th>المرحلة</th><th>الدرجة</th><th>النسبة</th></tr></thead><tbody>'+stageRows+
-  '<tr class="afaq-cert-total"><td colspan="2">مجموع المراحل</td><td>'+stext(nscore(cert.raw_score))+' / '+stext(portfolio?200:50)+'</td>'+
-  '<td>'+stext(sper(cert.raw_score,portfolio?200:50))+'٪</td></tr></tbody></table></section>':
-  (!portfolio?'<p class="afaq-cert-warning">تفاصيل المراحل غير متاحة حاليًا؛ يرجى إعادة فتح سجل المحاولة.</p>':'');
- const unitDetail=isSix&&!portfolio?'<p class="afaq-cert-unit-detail">نتيجة '+friendly(unitName(cert.grade,cert.section))+': <strong>'+stext(cert.score)+' / ١٠٠</strong></p>':'';
- const identifier=cert.id&&!training?'<p class="afaq-cert-id">معرّف المحاولة: <b dir="ltr">'+friendly(cert.id)+'</b></p>':'';
- const thanks=completed===4&&isSix?'تقديرًا لإتمام جميع وحدات المسابقة وإظهار المثابرة والجدية في التحديات الرياضية.':
-  'تقديرًا للمشاركة والجهد المبذول في التحديات الرياضية، وتحفيزًا لمواصلة التعلّم والتميّز.';
- return '<section class="afaq-certificate '+(portfolio?'afaq-cert-portfolio':'')+'" id="afaqPrintableCertificate" dir="rtl">'+
-  '<div class="afaq-cert-top"><div class="afaq-cert-star">★</div><div><strong>منصة آفاق الرياضيات</strong><span>مسابقة نجوم آفاق الرياضيات</span></div><div class="afaq-cert-seal">🏆<small>إنجاز وتميّز</small></div></div>'+
-  '<div class="afaq-cert-heading"><span>'+friendly(subtitle)+'</span><h2>'+friendly(title)+'</h2>'+
-  '<p>بكل فخر وتقدير، نتقدم بالشكر والثناء للمتسابق</p><h3>'+friendly(cert.display_name||'المتسابق')+'</h3>'+
-  '<p>'+friendly(thanks)+'</p></div>'+
-  '<div class="afaq-cert-details"><span><b>الصف:</b> '+friendly(grade)+'</span>'+classLine+serialLine+
-  (!portfolio?'<span><b>الوحدة / القسم:</b> '+friendly(unitName(cert.grade,cert.section))+'</span>':'')+
-  (!portfolio?'<span><b>النموذج:</b> '+friendly(models[cert.model]||cert.model||'التدريب')+'</span>':'')+
-  (!training&&!portfolio?'<span><b>رقم المحاولة:</b> '+stext(cert.attempt_no||1)+'</span>':'')+
-  '<span><b>التاريخ:</b> '+friendly(certificateDate(cert.ended_at))+'</span></div>'+
-  main+unitDetail+detail+identifier+
+ const scoreText=(report||!isSix)?stext(total):'—';
+ const pctText=(report||!isSix)?stext(percent)+'٪':'—';
+ const id=cert.id&&!training?'<span class="afaq-cert-ref"><b>رقم مرجعي:</b> <span dir="ltr">'+friendly(cert.id)+'</span></span>':'';
+ const thanks=certificatePraise(cert,report);
+ return '<section class="afaq-certificate afaq-cert-v4 '+statusClass+'" id="afaqPrintableCertificate" dir="rtl">'+
+  '<div class="afaq-cert-flag-ribbon" aria-hidden="true"><span></span><span></span><span></span></div>'+
+  '<div class="afaq-cert-top"><div class="afaq-cert-art">'+certificateTrophyArt()+'</div>'+
+   '<div class="afaq-cert-brand"><span class="afaq-cert-eyebrow">'+friendly(note)+'</span>'+
+    '<strong>منصة آفاق الرياضيات</strong><span>مسابقة نجوم آفاق الرياضيات</span></div>'+
+   '<div class="afaq-cert-art">'+certificateMedalArt()+'</div></div>'+
+  '<div class="afaq-cert-heading"><h2>'+friendly(title)+'</h2>'+
+   '<p>بكل فخر واعتزاز، نتقدم بالشكر والتقدير إلى المتسابق</p>'+
+   '<h3 class="afaq-cert-contestant">'+friendly(cert.display_name||'المتسابق')+'</h3></div>'+
+  '<div class="afaq-cert-details"><span><b>الصف:</b> '+friendly(grade)+'</span>'+
+   classLine+serialLine+'<span><b>التاريخ:</b> '+friendly(certificateDate(cert.ended_at))+'</span>'+id+'</div>'+
+  unitTable+
+  '<div class="afaq-cert-summary"><div class="afaq-cert-score-main"><span>المجموع الكلي '+(isSix?'للوحدات الأربع':'للقسم')+'</span>'+
+   '<strong>'+scoreText+' / '+stext(maximum)+'</strong><small>'+pctText+'</small></div>'+
+   '<div class="afaq-cert-status '+statusClass+'"><strong>'+friendly(mark)+'</strong>'+
+   '<span>'+friendly(status)+'</span></div></div>'+
+  '<p class="afaq-cert-praise">'+friendly(thanks)+'</p>'+
+  '<p class="afaq-cert-thanks">وفقك الله وسدد خطاك، ونتمنى لك مزيدًا من النجاح والتقدم.</p>'+
+  '<p class="afaq-cert-fineprint">هذه وثيقة نتائج من منصة آفاق الرياضيات حسب البيانات المتاحة، وليست تصديقًا رسميًا من المدرسة أو إعلانًا نهائيًا للفائزين.</p>'+
   '<div class="afaq-cert-footer"><div><b>الإعداد والإشراف</b><span>الأستاذ سعيد بن جمعة بن عبدالله البريكي</span></div>'+
-  '<div><b>مدير المدرسة</b><span>الأستاذ عبد الله بن علي العيسائي</span></div></div>'+
-  '<p class="afaq-cert-thanks">وفقك الله وسدد خطاك، وإلى مزيد من النجاح والتميز.</p>'+
-  '<p class="afaq-cert-fineprint">هذه وثيقة نتائج صادرة عن منصة آفاق الرياضيات وفق البيانات المتاحة؛ ولا تمثل تصديقًا رسميًا من المدرسة أو إعلانًا نهائيًا للفائزين.</p></section>';
+  '<div><b>مدير المدرسة</b><span>الأستاذ عبد الله بن علي العيسائي</span></div></div></section>';
 }
+
 function certificateActions(cert){
  const isSix=Number(cert?.grade)===6;const report=certificateReport400(cert);
  const ready=isSix?!!report:(Array.isArray(cert?.stage_scores)&&cert.stage_scores.length===5&&cert.stage_scores.every(x=>x&&Number.isFinite(Number(x.earned))));
