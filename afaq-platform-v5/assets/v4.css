@@ -68,3 +68,20 @@ footer,footer span,footer strong{font-size:clamp(15px,1.04vw,18px)}
 .v5-paper-card h3{font-size:clamp(19px,1.35vw,24px)!important;line-height:1.7}
 .v5-paper-card p{font-size:clamp(17px,1.15vw,20px)!important}
 @media(max-width:1190px){.desktopnav .youtube-nav-link{font-size:14px;padding:9px 7px}}
+
+/* تحسين القراءة العامة لمنصة آفاق - آخر تحديث */
+html{font-size:19px}
+body{font-size:clamp(19px,1.42vw,23px);line-height:2}
+.desktopnav button,.desktopnav a{font-size:clamp(16px,1.18vw,21px)}
+.primary,.outline,.soft,.chip,.v4-tabs button,.v4-grade-card strong{font-size:clamp(18px,1.22vw,23px);font-weight:900}
+.v4-section-card strong{font-size:clamp(22px,1.55vw,27px)}
+.v4-section-card span,.v4-section-card i{font-size:clamp(17px,1.22vw,21px)}
+.panel h2,.panel h3,.v4-library-card h3{font-size:clamp(25px,1.75vw,30px)!important}
+.panel p,.panel li,.resource p,.v4-library-card p,.notice,.muted{font-size:clamp(18px,1.28vw,22px)!important;line-height:1.96}
+.v4-hero p{font-size:clamp(21px,1.52vw,25px)!important}
+#app input,#app select,#app textarea,#app button{font-size:clamp(18px,1.3vw,24px)}
+#app label{font-size:clamp(19px,1.25vw,23px)}
+.contest-admin-table{border-collapse:collapse;width:100%;min-width:720px}
+.contest-admin-table th,.contest-admin-table td{padding:12px 14px;border-bottom:1px solid #dbe7f5;font-size:clamp(17px,1.1vw,20px)}
+.contest-admin-table th{background:#eaf2ff;color:#183e76}
+@media(max-width:850px){body{font-size:19px}.v4-hero p{font-size:19px!important}.desktopnav button,.desktopnav a{font-size:16px}}
