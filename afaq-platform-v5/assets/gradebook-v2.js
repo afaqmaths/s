@@ -284,6 +284,8 @@ function gbClassTableRows(report){
 }
 function gbClassTable(report){
  return '<table class="gb-class-grade-table" dir="rtl">'+
+ '<colgroup><col class="gb-col-no"><col class="gb-col-name">'+
+ Array.from({length:16},()=>'<col>').join('')+'<col class="gb-col-status"></colgroup>'+
  '<thead><tr class="gb-class-group-header">'+
  '<th rowspan="2">م</th><th rowspan="2" class="gb-class-name-header">اسم الطالب</th>'+
  '<th colspan="9">الأعمال الفصلية (٦٠)</th><th colspan="3">المؤشرات والتوقع</th>'+
@@ -381,7 +383,12 @@ staffPanel=function(){
    '<div class="chips">'+tabs+'</div>'+
    (auth.error||auth.message?infoMessage():'')+gbClassPanel();
  }
- if(auth.section!=='approvals'||!isAdmin())return gbOriginalStaffPanel();
+ if(auth.section!=='approvals'||!isAdmin()){
+  const base=gbOriginalStaffPanel();
+  if(gbClassAllowed()&&!isAdmin()&&base.includes('<div class="chips">'))
+   return base.replace('<div class="chips">','<div class="chips"><button class="chip" data-tab="class_results">كشوف الشعب</button>');
+  return base;
+ }
  const tabs=staffMenu.map(([key,title])=>'<button class="chip '+(auth.section===key?'sel':'')+'" data-tab="'+e(key)+'">'+e(title)+'</button>').join('');
  const rows=(auth.roster||[]).filter(x=>x.status==='draft'||x.status==='approved');
  const stats='<div class="gb-tiles"><div><strong>'+gbNum(rows.filter(x=>x.status==='draft').length)+'</strong><small>مسودات تحتاج مراجعة</small></div>'+
