@@ -169,34 +169,61 @@ function gbShareText(p,mode){
  ].join('\n');
 }
 
+
 function gbForm(p){
- const a=p?.assessment||{},approved=a.status==='approved';
- const cells=GB_COMPONENTS.map(([k,label,max])=>'<div><label for="gb-'+k+'">'+e(label)+' — من '+gbNum(max)+'</label>'+
- '<input id="gb-'+k+'" name="'+k+'" type="number" min="0" max="'+max+'" step="1" value="'+(a[k]==null?'':e(a[k]))+'" '+(approved?'disabled':'')+' placeholder="لم تُرصد بعد"></div>').join('');
- const fields='<div class="gb-input-grid">'+cells+'</div>';
- const raw='<div class="gb-raw-points"><h4>🏅 سجل المنافسات الصفية A+ وA−</h4>'+
- '<p>النقاط الموجبة للمسابقات والتميز؛ السالبة للإخفاق أو المخالفات. تُرصد أسباب كل واقعة، ثم تُحدد الدرجة الفعلية للمنافسات من ٤٠ يدويًا.</p>'+
- '<div class="gb-tiles"><div><strong>A+ = '+gbNum(a.a_plus_points||0)+'</strong><small>مجموع النقاط الموجبة</small></div>'+
- '<div><strong>A− = '+gbNum(a.a_minus_points||0)+'</strong><small>مجموع النقاط السالبة</small></div>'+
- '<div><strong>'+gbNum(a.a_suggested||0)+' / ٤٠</strong><small>مؤشر استرشادي فقط</small></div></div>'+
- (approved?'<p class="notice">أعيد فتح الدرجة المعتمدة أولًا قبل تعديل نقاط المنافسات.</p>':
- '<form id="gbEventForm"><div class="gb-input-grid">'+
- '<div><label>نوع الرصد</label><select id="gbKind" name="kind"><option value="plus">A+ موجب</option><option value="minus">A− سالب</option></select></div>'+
- '<div><label>سبب الرصد</label><select id="gbCategory" name="category">'+GB_PLUS.map(x=>'<option value="'+e(x)+'">'+e(x)+'</option>').join('')+'</select></div>'+
- '<div><label>عدد النقاط</label><input name="points" type="number" min="1" max="20" value="1" required></div>'+
- '<div><label>توضيح اختياري</label><input name="note" type="text" maxlength="400" placeholder="مثال: الفوز في دائرة الضوء"></div></div>'+
- '<button class="soft" type="submit">إضافة نقطة موثقة في سجل A</button></form>')+'</div>';
- const save=approved?'':('<button class="primary" type="submit">💾 حفظ درجات المسودة</button>');
- const status='<p class="gb-approval '+(approved?'gb-approved':'gb-draft')+'">'+(approved?'✓ هذه الدرجة معتمدة':'مسودة لم تُعتمد بعد')+'</p>';
+ const a=p?.assessment||{},approved=a.status==='approved',finalApproved=a.final_status==='approved';
+ const cells=GB_COMPONENTS.map(([key,label,max])=>
+  '<div><label for="gb-'+key+'">'+e(label)+' — من '+gbNum(max)+'</label>'+
+  '<input id="gb-'+key+'" name="'+key+'" type="number" min="0" max="'+max+
+  '" step="1" value="'+(a[key]==null?'':e(a[key]))+'" '+(approved?'disabled':'')+
+  ' placeholder="لم تُرصد بعد"></div>').join('');
+ const forecastStatus='<p class="gb-approval '+(approved?'gb-approved':'gb-draft')+'">'+
+  (approved?'✓ التوقع معتمد؛ لا يُعدل إلا بعد إعادة فتحه.':'التوقع مسودة لم تُعتمد بعد.')+'</p>';
+ const save=approved?'':'<button class="primary" type="submit">💾 حفظ درجات الشفوي والأعمال والتوقع كمسودة</button>';
  const admin=isAdmin()?(approved?
- '<button type="button" class="outline gb-reopen" id="gbReopen">🔓 إعادة فتح الدرجة المعتمدة للتعديل</button>':
- '<button type="button" class="primary gb-approve" id="gbApprove" '+(!a.complete?'disabled':'')+'>✓ اعتماد النتيجة النهائية ونشرها للطالب</button>')+
- '<button type="button" class="outline" id="gbAudit">سجل عمليات التعديل والاعتماد</button>':'';
- return '<section class="gb-editor"><h3>📝 توزيع الـ١٠٠ درجة واعتماد المشرف</h3>'+
- '<p>الشفوي ١٠ + الكتابي ١٠ + ٤ قصيرة × ٥ = ٢٠ + الواجب ١٠ + المشروع ١٠ = ٦٠، وتضاف درجة منافسات A الفعلية من ٤٠.</p>'+
- status+'<form id="gbAssessmentForm">'+fields+'<div class="gb-form-buttons">'+save+'</div></form>'+
- raw+'<div class="gb-form-buttons">'+admin+'</div><div id="gbAuditOutput"></div></section>';
+   '<button type="button" class="outline" id="gbReopen" '+(finalApproved?'disabled':'')+
+   '>🔓 إعادة فتح التوقع للتعديل</button>':
+   '<button type="button" class="primary" id="gbApprove" '+(!a.complete?'disabled':'')+
+   '>✓ اعتماد توقع الدرجة قبل النهائي ونشر الشهادة الأولى</button>')+
+   '<button type="button" class="outline" id="gbAudit">سجل التغييرات والاعتمادات</button>':'';
+ const raw='<section class="gb-raw-points"><h4>🏅 نقاط A+ وA− كمؤشرات لتوقع درجة الاختبار النهائي</h4>'+
+  '<p>تدوّن A+ للتميز والمسابقات الإيجابية، وتدوّن A− للإخفاق والملاحظات السلوكية. يراجعها المشرف ويحدد توقعًا من ٤٠ دون احتساب آلي.</p>'+
+  '<div class="gb-tiles"><div><strong>A+ = '+gbNum(a.a_plus_points||0)+'</strong><small>موجبة</small></div>'+
+  '<div><strong>A− = '+gbNum(a.a_minus_points||0)+'</strong><small>سالبة</small></div>'+
+  '<div><strong>'+gbNum(a.a_suggested||0)+' / ٤٠</strong><small>مؤشر غير ملزم</small></div></div>'+
+  (approved?'<p class="notice">لإضافة نقاط جديدة، يجب إعادة فتح التوقع؛ ولا يُلغى اعتماد الاختبار النهائي إلا بقرار مستقل من المشرف.</p>':
+  '<form id="gbEventForm"><div class="gb-input-grid">'+
+  '<div><label>نوع الرصد</label><select id="gbKind" name="kind"><option value="plus">A+ موجب</option>'+
+  '<option value="minus">A− سالب</option></select></div>'+
+  '<div><label>سبب الرصد</label><select id="gbCategory" name="category">'+GB_PLUS.map(x=>'<option value="'+e(x)+'">'+e(x)+'</option>').join('')+'</select></div>'+
+  '<div><label>عدد النقاط</label><input name="points" type="number" min="1" max="20" value="1" required></div>'+
+  '<div><label>توضيح اختياري</label><input name="note" type="text" maxlength="400" placeholder="مثال: إجابة مميزة في دائرة الضوء"></div></div>'+
+  '<button class="soft" type="submit">إضافة النقاط مع سببها في دفتر الرصد</button></form>')+'</section>';
+ const finalStatus='<p class="gb-approval '+(finalApproved?'gb-approved':'gb-draft')+'">'+
+  (finalApproved?'✓ تم اعتماد الدرجة الحقيقية والشهادة الثانية.':
+  a.final_score==null?'الاختبار النهائي لم تُدخل درجته بعد؛ لا تُحتسب في شهادة التوقع.':
+  'درجة النهائي مدخلة كمسودة؛ لا تدخل في النتيجة الحقيقية المنشورة قبل اعتمادها.')+'</p>';
+ const finalForm='<section class="gb-final-editor"><h4>🧾 الاختبار النهائي من ٤٠ — يحل محل توقع A بعد الاعتماد فقط</h4>'+
+  '<p>يمكن إدخال درجة النهائي الآن أو لاحقًا، ولا تتغير شهادة التوقع. يستلزم نشر شهادة النتيجة الحقيقية اعتماد المشرف.</p>'+
+  finalStatus+
+  '<form id="gbFinalForm"><div class="gb-input-grid"><div><label>الدرجة الفعلية للاختبار النهائي — من ٤٠</label>'+
+  '<input type="number" name="final_score" min="0" max="40" step="1" value="'+(a.final_score==null?'':e(a.final_score))+
+  '" '+(finalApproved?'disabled':'')+' placeholder="لا تُحتسب إلا بعد الاعتماد"></div></div>'+
+  (!finalApproved?'<button class="soft" type="submit">💾 حفظ درجة النهائي كمسودة مستقلة</button>':'')+'</form>'+
+  '<div class="gb-form-buttons">'+(isAdmin()?(finalApproved?
+   '<button class="outline" type="button" id="gbReopenFinal">🔓 إعادة فتح درجة النهائي للمراجعة</button>':
+   '<button class="primary" type="button" id="gbApproveFinal" '+(!approved||a.final_score==null?'disabled':'')+
+   '>✓ اعتماد الاختبار النهائي وإصدار الشهادة الثانية</button>'):'')+'</div>'+
+  ((approved&&finalApproved)?'<p class="gb-compare">المتوقع: <strong>'+gbNum(a.estimated_total)+'/١٠٠</strong> • الفعلي: <strong>'+
+   gbNum(a.actual_total)+'/١٠٠</strong> • الفرق: <strong>'+gbSigned(a.difference)+'</strong></p>':'')+
+  '</section>';
+ return '<section class="gb-editor"><h3>📝 نظام رصد التوقع والنتيجة الحقيقية من ١٠٠</h3>'+
+  '<p>الشفوي ١٠ + أسئلة الوحدات الأربع ٢٠ (٤ × ٥) + اختباران قصيران ٢٠ (٢ × ١٠) + المشروع ١٠ = ٦٠. وتضاف ٤٠ نقطة للتوقع قبل النهائي أو درجة النهائي بعد أدائه.</p>'+
+  forecastStatus+
+  '<form id="gbAssessmentForm"><div class="gb-input-grid">'+cells+'</div><div class="gb-form-buttons">'+save+'</div></form>'+
+  '<div class="gb-form-buttons">'+admin+'</div>'+raw+finalForm+'<div id="gbAuditOutput"></div></section>';
 }
+
 const gbOriginalPersonalPanel=personalPanel,gbOriginalStudentAdmin=studentAdmin;
 const gbOriginalStaffPanel=staffPanel,gbOriginalStaffOverview=staffOverview,gbOriginalAttachPortal=attachPortal;
 personalPanel=function(p){
@@ -221,14 +248,15 @@ staffPanel=function(){
  const stats='<div class="gb-tiles"><div><strong>'+gbNum(rows.filter(x=>x.status==='draft').length)+'</strong><small>مسودات تحتاج مراجعة</small></div>'+
  '<div><strong>'+gbNum(rows.filter(x=>x.status==='approved').length)+'</strong><small>نتائج معتمدة</small></div></div>';
  const entries=rows.map(x=>'<div class="admin-row"><span><b>'+e(x.full_name||x.display_name)+'</b> — '+e(x.class_name)+' • '+gbNum(x.serial_no)+
- ' — '+(x.status==='draft'?'قيد الاعتماد':'معتمد: '+gbNum(x.total)+' / ١٠٠')+'</span>'+
+ ' — '+(x.status==='draft'?'التوقع قيد الاعتماد':'التوقع معتمد: '+gbNum(x.total)+' / ١٠٠')+
+ (x.final_status==='approved'?' • الفعلي معتمد: '+gbNum(x.actual_total)+' / ١٠٠':'')+'</span>'+
  '<button class="soft" data-gb-open="'+e(x.class_name)+'|'+gbNum(x.serial_no)+'">فتح سجل الطالب</button></div>').join('');
  return '<div class="dashboard-banner"><div><h2>مراجعة واعتماد نتائج الطلاب</h2>'+
  '<p>المشرف الرئيسي وحده يعتمد النتائج ويعيد فتحها للمراجعة. وتبقى المسودات غير ظاهرة للطلاب.</p></div>'+
  '<button class="outline" id="portalLogout">خروج آمن</button></div>'+
  '<div class="chips">'+tabs+'</div>'+(auth.error||auth.message?infoMessage():'')+
  '<section class="panel"><h3>سجل الاعتماد المدرسي — مستقل عن مسابقة النجوم</h3>'+stats+
- '<p>تحقق من الدرجات التسع، بما فيها الدرجة الفعلية لمنافسات A من ٤٠، قبل الاعتماد.</p>'+
+ '<p>تحقق من درجات الأسئلة الأربعة والاختبارين والمشروع والشفوي، ومن التوقع A من ٤٠؛ واعتمد الاختبار النهائي لاحقًا بصورة مستقلة.</p>'+
  (entries||'<p>لا توجد مسودات مسجلة بعد. استخدم قسم «الطلاب والدرجات» لبدء الرصد.</p>')+'</section>';
 };
 staffOverview=function(){
@@ -241,11 +269,12 @@ const gbRefresh=async (profile,message)=>{
  render();
 };
 const gbSelected=()=>auth.selectedStudent;
-function gbPrint(){
- const certificate=document.getElementById('afaqSchoolGradeCertificate');
+
+function gbPrint(mode='prediction'){
+ if(!['prediction','final'].includes(mode))return;
+ const certificate=document.getElementById('afaqSchoolGradeCertificate-'+mode);
  if(!certificate)return;
- const previous=document.getElementById('afaqSchoolPrintMount');
- if(previous)previous.remove();
+ document.getElementById('afaqSchoolPrintMount')?.remove();
  const mount=document.createElement('div');
  mount.id='afaqSchoolPrintMount';
  mount.appendChild(certificate.cloneNode(true));
@@ -257,9 +286,23 @@ window.addEventListener('afterprint',()=>{
  document.body.classList.remove('afaq-print-school-grade');
  document.getElementById('afaqSchoolPrintMount')?.remove();
 });
+function gbShare(mode,channel){
+ if(!['prediction','final'].includes(mode)||!['whatsapp','email'].includes(channel))return;
+ const source=auth.user?.role==='student'?auth.profile:auth.selectedProfile;
+ const text=gbShareText(source,mode);
+ if(!text)return;
+ if(channel==='whatsapp'){
+  window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(text),'_blank','noopener,noreferrer');
+ }else{
+  const subject=mode==='final'?'نتيجة الرياضيات الفعلية بعد الاختبار النهائي':'توقع درجة الرياضيات قبل الاختبار النهائي';
+  window.location.href='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(text);
+ }
+}
+
 attachPortal=function(){
  gbOriginalAttachPortal();
- document.querySelectorAll('[data-print-gradebook]').forEach(el=>el.addEventListener('click',gbPrint));
+ document.querySelectorAll('[data-print-gradebook]').forEach(el=>el.addEventListener('click',()=>gbPrint(el.dataset.printGradebook)));
+ document.querySelectorAll('[data-gb-share]').forEach(el=>el.addEventListener('click',()=>gbShare(el.dataset.gbShare,el.dataset.gbChannel)));
  document.querySelectorAll('[data-gb-open]').forEach(el=>el.addEventListener('click',async()=>{
   const pair=el.dataset.gbOpen.split('|'),student=(auth.students||[]).find(x=>x.class_name===pair[0]&&gbNum(x.serial_no)===pair[1]);
   if(!student)return;
@@ -281,6 +324,34 @@ attachPortal=function(){
    await gbRefresh(result.profile,'حُفظت الدرجات كمسودة. لن تُنشر للطالب حتى تعتمد جميع عناصرها.')}
   catch(err){auth.error=gbErr(err.message);render()}
  });
+ 
+ document.getElementById('gbFinalForm')?.addEventListener('submit',async ev=>{
+  ev.preventDefault();const student=gbSelected();if(!student)return;
+  const data=new FormData(ev.currentTarget);
+  const raw=String(data.get('final_score')??'').trim();
+  try{
+   const result=await api('save_final_score',{student_id:student,
+    expected_updated_at:auth.selectedProfile?.assessment?.updated_at||null,
+    final_score:raw===''?null:Number(raw)});
+   await gbRefresh(result.profile,'حُفظت درجة الاختبار النهائي بصورة مستقلة، ولم تُنشر بعد في شهادة النتيجة الفعلية.');
+  }catch(err){auth.error=gbErr(err.message);render()}
+ });
+ for(const [id,action,success] of [
+  ['gbApproveFinal','approve_final_score','تم اعتماد الاختبار النهائي وإصدار شهادة الدرجة الحقيقية والمقارنة مع التوقع.'],
+  ['gbReopenFinal','reopen_final_score','أُعيد فتح درجة النهائي للمراجعة؛ بقيت شهادة التوقع الأولى معتمدة.']
+ ]){
+  document.getElementById(id)?.addEventListener('click',async()=>{
+   if(!isAdmin()||!gbSelected())return;
+   if(!window.confirm(action==='approve_final_score'?'اعتماد درجة النهائي من ٤٠ ونشر الشهادة الثانية؟':
+    'إلغاء اعتماد النتيجة الحقيقية مؤقتًا مع إبقاء التوقع معتمدًا؟'))return;
+   try{
+    const result=await api(action,{student_id:gbSelected(),
+     expected_updated_at:auth.selectedProfile?.assessment?.updated_at||null});
+    await gbRefresh(result.profile,success);
+   }catch(err){auth.error=gbErr(err.message);render()}
+  });
+ }
+
  document.getElementById('gbEventForm')?.addEventListener('submit',async ev=>{
   ev.preventDefault();const student=gbSelected();if(!student)return;
   const data=new FormData(ev.currentTarget);
@@ -291,11 +362,11 @@ attachPortal=function(){
    await gbRefresh(result.profile,'حُفظت نقاط A+ أو A− مع السبب، دون تغيير الدرجة النهائية المعتمدة من ٤٠.')}
   catch(err){auth.error=gbErr(err.message);render()}
  });
- for(const [id,action,success] of [['gbApprove','approve_assessment','تم اعتماد الدرجة ونشرها للطالب.'],
-                                  ['gbReopen','reopen_assessment','أعيد فتح الدرجة للمراجعة، ولم تعد معتمدة أمام الطالب.']]){
+ for(const [id,action,success] of [['gbApprove','approve_assessment','تم اعتماد درجة التوقع ونشر الشهادة الأولى للطالب.'],
+                                  ['gbReopen','reopen_assessment','أعيد فتح التوقع للمراجعة وأوقفت شهادته مؤقتًا.']]){
   document.getElementById(id)?.addEventListener('click',async()=>{
    if(!isAdmin()||!gbSelected())return;
-   if(!window.confirm(action==='approve_assessment'?'اعتماد جميع الدرجات ونشرها للطالب؟':'إلغاء الاعتماد مؤقتًا وإعادة فتح الدرجات؟'))return;
+   if(!window.confirm(action==='approve_assessment'?'اعتماد درجة التوقع ونشر الشهادة الأولى للطالب؟':'إعادة فتح التوقع للتعديل وإيقاف اعتماده مؤقتًا؟'))return;
    try{const result=await api(action,{student_id:gbSelected(),
      expected_updated_at:auth.selectedProfile?.assessment?.updated_at||null});
     await gbRefresh(result.profile,success)}
