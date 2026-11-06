@@ -21,7 +21,35 @@ async function reloadDashboard(){if(!auth.user)return;auth.error='';try{if(isSta
 async function publicContent(){try{const x=await api('public_content');auth.publicItems=x.items||[];if(['grade','library','initiatives','games','stars','parents','faculty','learning'].includes(state.page))render()}catch(err){console.warn('تعذر تحميل المواد المنشورة',err.message)}}
 function infoMessage(){return `<div class="notice" role="status">${e(auth.error||auth.message)}</div>`}
 function scoreTiles(s){return `<div class="scoregrid"><div class="scorebox"><b dir="ltr">${s.challenge} / 50</b><small>A+ (${s.plus}) − A− (${s.minus})</small></div><div class="scorebox"><b dir="ltr">${s.oral} / 20</b><small>التقييم الشفوي</small></div><div class="scorebox"><b dir="ltr">${s.written} / 20</b><small>التقييم الكتابي</small></div><div class="scorebox"><b dir="ltr">${s.homework} / 10</b><small>الواجبات</small></div><div class="scorebox"><b dir="ltr">${s.total} / 100</b><small>المجموع الحالي</small></div></div>`}
-function competitionView(p){const fresh=auth.contestReport;const current=fresh?`<div class="panel"><h3>مسابقة نجوم آفاق — النظام الجديد</h3><p>إجمالي الدرجات: <b dir="ltr">${fresh.total} / ${fresh.max}</b> — ${fresh.qualified?'حقق شرط التأهل المبدئي':'لم يتحقق شرط التأهل بعد'}</p><div class="grid">${(fresh.parts||[]).map(x=>`<div class="tile"><h3>الوحدة ${x.section}</h3><p>أفضل نتيجة: ${x.best??'لا توجد'} / ١٠٠</p><p>المحاولات الباقية: ${x.attempts_remaining}</p></div>`).join('')}</div></div>`:'<div class="panel"><h3>نتائج المسابقة الجديدة</h3><p class="muted">لا تتوفر نتيجة حديثة، أو لم تبدأ محاولات هذا الحساب بعد.</p></div>';if(!p?.competition)return current;return current+`<div class="panel"><h3>سجل الألعاب السابقة — مستقل عن المسابقة الجديدة</h3><p>مجموع الألعاب السابقة: ${p.competition.total} / ${p.competition.max} (إن وُجدت نتائج محفوظة)</p></div>`}
+function competitionView(p){
+ const r=auth.contestReport;
+ const head='<div class="panel afaq-progress-panel"><h3>🏆 مسابقة نجوم آفاق الرياضيات — تقدمي</h3>';
+ if(!r){
+  return head+'<p>لا توجد نتائج رسمية بعد؛ تستطيع التدرب دون احتساب أي محاولة.</p><a class="primary" href="competition.html">الدخول إلى بوابة المسابقة المستقلة</a></div>';
+ }
+ const total=Number(r.total||0),needed=Math.max(0,Number(r.points_needed??(350-total)));
+ const finished=Number(r.completed_units??(r.parts||[]).filter(x=>x.finished).length);
+ const remaining=Number(r.attempts_remaining??(r.parts||[]).reduce((sum,x)=>sum+Number(x.attempts_remaining||0),0));
+ const metrics='<div class="afaq-progress-grid">'+
+   '<div><strong>'+e(total)+' / ٤٠٠</strong><small>نتيجتي الرسمية الحالية</small></div>'+
+   '<div><strong>'+e(finished)+' / ٤</strong><small>الوحدات المنجزة</small></div>'+
+   '<div><strong>'+e(remaining)+'</strong><small>المحاولات المتبقية</small></div>'+
+   '<div><strong>'+e(needed)+'</strong><small>نقطة مطلوبة للوصول إلى ٣٥٠</small></div></div>';
+ const percent=Math.max(0,Math.min(100,Math.round(total/400*100)));
+ const track='<div class="afaq-progress-track"><span style="width:'+percent+'%"></span></div>';
+ const description=Boolean(r.qualified)?
+   '🏅 تهانينا! اكتملت الوحدات الأربع وتحققت درجة التأهل.':
+   needed===0?'بلغت ٣٥٠ نقطة؛ أكمل الوحدات المتبقية حتى يتحقق شرط إتمام المسابقة.':
+   'للتأهل تحتاج إلى مجموع ٣٥٠ نقطة فأكثر من أصل ٤٠٠، بعد إكمال الوحدات الأربع.';
+ const units='<div class="afaq-unit-progress">'+(r.parts||[]).map(x=>{
+  const attempts=Number(x.attempts_remaining||0);
+  return '<div><b>الوحدة '+e(x.section)+(x.finished?' ✓':'')+'</b><span>أفضل نتيجة: '+e(x.best??'لم تبدأ')+' / ١٠٠</span><small>المحاولات الباقية: '+e(attempts)+' من ٢</small></div>';
+ }).join('')+'</div>';
+ const newer=head+metrics+track+'<p>'+description+'</p>'+units+
+   '<a href="competition.html" class="primary">🏆 فتح بوابة نجوم آفاق الرياضيات</a></div>';
+ const legacy=p?.competition?'<div class="panel"><h3>سجل الألعاب التعليمية السابقة</h3><p>مجموع الألعاب السابقة: '+e(p.competition.total)+' / '+e(p.competition.max)+'. هذه الألعاب مستقلة عن نتيجة مسابقة النجوم الجديدة.</p></div>':'';
+ return newer+legacy;
+}
 function personalPanel(p){if(!p)return `<div class="panel">لم تُحمَّل بيانات الحساب. ${infoMessage()}</div>`;return `<div class="dashboard-banner"><div><h2>أهلًا ${e(p.student?.full_name||p.student?.display_name||'بك')}</h2><p>${e(p.student?.class_name||'حساب تجريبي')} ${p.student?.serial_no?'• رقمك في الشعبة: '+e(p.student.serial_no):''} ${p.demo?'— حساب رمزي للعرض والتدريب؛ لا تُعتمد منه نتائج فردية':''}</p></div><button class="outline" id="portalLogout">تسجيل الخروج</button></div>${p.demo?`<div class="notice">الحسابان ١٠٠٠ و٢٠٠٠ مخصصان للتجربة للصفوف الخامس والسابع والثامن؛ لا يشكلان سجلًا فرديًا لطالب بعينه.</div>`:scoreTiles(scoreView(p))}<div class="panel"><h3>الملاحظات التربوية المنشورة لك</h3>${p.notes?.length?p.notes.map(n=>`<p><span class="tag">${e(n.category)}</span> ${e(n.note)} <small>${e((n.created_at||'').slice(0,10))}</small></p>`).join(''):'<p class="muted">لا توجد ملاحظات منشورة حتى الآن.</p>'}</div>${competitionView(p)}<div class="toolbar"><button class="primary" data-route="learning">الدروس والأنشطة</button><a class="outline" href="competition.html">مسابقة نجوم آفاق</a><button class="soft" data-route="library">مكتبة الرياضيات</button></div>`}
 const staffMenu=[['overview','الملخص العام'],['students','الطلاب والدرجات'],['content','الموارد والاختبارات'],['messages','المراسلات'],['security','الحسابات والصلاحيات']];
 function staffPanel(){const role=auth.user.role,sections=staffMenu.filter(([key])=>isAdmin()||key==='overview'||key==='content'||canEdit()&&key==='students');return `<div class="dashboard-banner"><div><h2>${e(roleLabel[role])}</h2><p>لوحة حقيقية متصلة بقاعدة البيانات — الصلاحيات تُتحقق منها على الخادم</p></div><button class="outline" id="portalLogout">خروج آمن</button></div><div class="chips">${sections.map(([k,label])=>`<button class="chip ${auth.section===k?'sel':''}" data-tab="${k}">${label}</button>`).join('')}</div>${auth.error||auth.message?infoMessage():''}${auth.section==='overview'?staffOverview():auth.section==='students'&&canEdit()?studentAdmin():auth.section==='content'?contentAdmin():auth.section==='messages'&&isAdmin()?messagesAdmin():auth.section==='security'&&isAdmin()?securityAdmin():'<div class="notice">هذا القسم غير متاح لحسابك.</div>'}`}
