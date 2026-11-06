@@ -179,9 +179,9 @@ function logScore(n,f){if(!f)return;const s=STATE.stageScores[n]||(STATE.stageSc
 function closeStage(n){if(n>=1&&n<=5&&!STATE.completedStages.includes(n))STATE.completedStages.push(n)}
 function raceTrack(q,answered=false){
  if(!q)return '';
- const count=stcount(q.stage),done=Math.min(count,Math.max(0,ststep(q)-(answered?0:1))),p=Math.round(100*done/count);
+ const count=stcount(q.stage),done=Math.min(count,Math.max(0,ststep(q)-(answered?0:1))),p=Math.round(100*done/count),from=Math.round(100*Math.max(0,done-1)/count);
  return '<section class="contest-race" aria-label="مؤشر التقدم في المرحلة"><div class="contest-race-heading"><strong>🚗 سباق المرحلة '+stext(q.stage)+'</strong><span>أُنجز '+stext(done)+' من '+stext(count)+' — '+stext(p)+'٪</span></div>'+
- '<div class="contest-race-track" role="progressbar" aria-label="تقدم حل أسئلة المرحلة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p+'"><div class="contest-race-fill" style="width:'+p+'%"><span class="contest-race-car" aria-hidden="true">🚙</span></div><span class="contest-race-finish" aria-hidden="true">🏁</span></div></section>';
+ '<div class="contest-race-track" role="progressbar" aria-label="تقدم حل أسئلة المرحلة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p+'"><div class="contest-race-fill '+(answered?'race-advance':'')+'" style="width:'+p+'%;--race-start:'+from+'%;--race-end:'+p+'%"><span class="contest-race-car" aria-hidden="true">🚙</span></div><span class="contest-race-finish" aria-hidden="true">🏁</span></div></section>';
 }
 function stageResultsPanel(){
  const done=STATE.completedStages.slice().sort((a,b)=>a-b);if(!done.length)return '';
@@ -223,7 +223,7 @@ function transition(){
  const metrics=f?'<div class="contest-feedback-metrics"><div><strong>'+stext(earned)+' / '+stext(max)+'</strong><small>درجة السؤال · '+stext(sper(earned,max))+'٪</small></div><div><strong>'+stext(stageValue)+' / ١٠</strong><small>حصيلة المرحلة · '+stext(sper(stageValue,10))+'٪</small></div><div><strong>'+stext(grand)+' / ٥٠</strong><small>الحصيلة العامة · '+stext(sper(grand,50))+'٪</small></div></div>':'';
  return '<div class="contest-feedback-screen">'+raceTrack(q,true)+'<div class="contest-feedback-grid">'+review+
  '<aside class="contest-feedback-summary '+(f?.correct?'is-success':'is-review')+'"><div class="contest-feedback-title">'+image(stageEndArt(n),'شخصية المرحلة','contest-feedback-avatar')+'<div><h2>'+heading+'</h2><p>'+friendly(msg)+'</p></div></div>'+
- metrics+(f?.explanation?'<p class="contest-explanation">💡 '+friendly(f.explanation)+'</p>':'')+
+ metrics+(f?.correct_answer!==undefined?'<p class="contest-correction">✅ الإجابة الصحيحة: '+friendly(Array.isArray(f.correct_answer)?f.correct_answer.join('، '):f.correct_answer)+'</p>':'')+(f?.explanation?'<p class="contest-explanation">💡 '+friendly(f.explanation)+'</p>':'')+
  '<div class="contest-next-box"><span>الانتقال تلقائيًا خلال</span><strong id="nextCountdown">'+stext(sec)+'</strong><span>ثوانٍ</span></div></aside></div></div>';
 }
 function result(){const r=STATE.result||{},score=Number(r.score??r.percent??0),raw=Number(r.raw_score??score/2);
@@ -281,7 +281,7 @@ async function submitResponse(answer,expired=false){
    if(STATE.readyStage>previousStage||STATE.result)closeStage(previousStage);
   STATE.waitingMessage='راجع الإجابة الصحيحة يا '+(STATE.displayName||STATE.user?.username||'المتسابق')+' ثم استعد للمرحلة التالية.';
  }catch(err){STATE.error=err.message;STATE.feedback=err.message}
- finally{STATE.busy=false;render();if(STATE.result){afaqTune(previousStage,'finish');afaqDecorate('fireworks',45)}else if(STATE.readyStage){afaqTune(previousStage,'finish');afaqDecorate('balloons',23)}else if(STATE.lastFeedback){if(STATE.lastFeedback.correct)afaqCelebrateCorrect(previousStage);else afaqTune(previousStage,'incorrect');}}
+ finally{STATE.busy=false;render();if(STATE.waitingUntil>Date.now())root.scrollIntoView?.({block:'start',behavior:'auto'});if(STATE.result){afaqTune(previousStage,'finish');afaqDecorate('fireworks',45)}else if(STATE.readyStage){afaqTune(previousStage,'finish');afaqDecorate('balloons',23)}else if(STATE.lastFeedback){if(STATE.lastFeedback.correct)afaqCelebrateCorrect(previousStage);else afaqTune(previousStage,'incorrect');}}
 }
 function adoptOfficial(r){
  if(r.finished){STATE.result={...r,training:false};STATE.report=r.report||STATE.report;STATE.question=null;STATE.questions=[];return}
