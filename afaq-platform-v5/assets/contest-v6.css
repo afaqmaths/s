@@ -57,3 +57,16 @@
 .contest-bank textarea{width:100%;max-width:100%;direction:rtl}
 @media(max-width:850px){.contest-welcome-image{flex-wrap:wrap;justify-content:center;text-align:center}.contest-welcome-image>div:not(:first-child){width:100%}.entry-approved-avatar{width:147px;height:147px}.contest-character,.stage-banner-photo{width:115px;height:115px;min-width:115px}.contest-stage-banner{flex-wrap:wrap}.contest-game-area{padding:14px}.stage-ready-page{padding:26px 19px}.stage-pic{width:62px;height:62px}}
 @media(max-width:510px){.entry-approved-avatar{width:123px;height:123px}.ready-buttons{flex-direction:column}.ready-buttons button{width:100%;min-width:0}.contest-character,.stage-banner-photo{height:90px;width:90px;min-width:90px}.contest-question{padding:15px 6px}.contest-option{padding:11px 8px;min-height:74px}.option-letter{margin-left:7px}.contest-figure{padding:9px}.contest-stage-banner{padding:12px}}
+/* Stage-specific celebrations restored, with a calm reduced-motion fallback. */
+.afaq-audio-toggle{position:fixed;left:19px;bottom:18px;z-index:10001;background:linear-gradient(125deg,#18459b,#216bbf);color:white!important;border:2px solid #ffffffaa;border-radius:999px;padding:13px 18px;box-shadow:0 9px 26px #16295050;font-size:clamp(16px,1.1vw,19px);font-weight:900;cursor:pointer}
+.afaq-audio-toggle[aria-pressed="true"]{background:linear-gradient(120deg,#087f85,#0c9e86)}
+.afaq-party-layer{position:fixed;inset:0;pointer-events:none;z-index:9500;overflow:hidden}
+.afaq-party-piece{position:absolute;display:block;top:-10%;user-select:none;text-shadow:0 3px 6px #0003}
+.afaq-confetti{animation:afaq-confetti-fall 2.7s ease-in forwards}
+.afaq-balloon{top:auto;bottom:-15%;animation:afaq-balloon-rise 4.6s ease-out forwards}
+.afaq-firework{top:40%;animation:afaq-firework-burst 2.9s cubic-bezier(.18,.7,.32,1) forwards}
+@keyframes afaq-confetti-fall{0%{transform:translateY(-20vh) rotate(0) scale(.55);opacity:0}12%{opacity:1}100%{transform:translateY(125vh) rotate(840deg) scale(1.1);opacity:0}}
+@keyframes afaq-balloon-rise{0%{transform:translateY(15vh) rotate(-16deg) scale(.65);opacity:0}17%{opacity:1}100%{transform:translateY(-124vh) rotate(26deg) scale(1.25);opacity:0}}
+@keyframes afaq-firework-burst{0%{transform:translateY(0) scale(.2);opacity:0}23%{opacity:1}48%{transform:translateY(-20vh) scale(1.5);opacity:1}100%{transform:translateY(-28vh) rotate(75deg) scale(.35);opacity:0}}
+@media(prefers-reduced-motion:reduce){.afaq-party-layer{display:none}.afaq-confetti,.afaq-balloon,.afaq-firework{animation:none!important}}
+@media(max-width:600px){.afaq-audio-toggle{left:9px;bottom:9px;font-size:15px;padding:10px 13px}}
