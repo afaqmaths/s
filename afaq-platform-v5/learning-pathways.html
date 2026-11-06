@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1b5daa">
+<title>مسارات التعلّم | منصة آفاق الرياضيات</title>
+<style>
+:root{font-family:Tahoma,"Segoe UI",Arial,sans-serif;color:#17395b;background:#f2f7fe;font-size:19px;line-height:1.85}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}a{color:inherit;text-decoration:none}
+button,a.action{cursor:pointer;border:0;border-radius:14px;padding:12px 19px;font-weight:800;background:#e3eeff;color:#184d8b;display:inline-block}
+button:hover,a.action:hover{filter:brightness(.96)}button.primary,a.primary{background:#1557a3;color:white}.container{max-width:1300px;margin:auto;padding:24px}
+nav{background:linear-gradient(110deg,#104eaa,#127eaa);color:#fff;padding:16px 25px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+nav b{font-size:26px}nav a{background:#ffffff25;padding:9px 16px;border-radius:13px}
+header{background:linear-gradient(130deg,#113d90,#176ac0 55%,#118d9a);color:white;padding:45px 30px;border-radius:0 0 35px 35px}
+header h1{font-size:clamp(32px,4vw,53px);margin:0 0 8px}header p{font-size:21px;max-width:950px;margin:0}
+.tabs{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}.tabs button{border:2px solid #c4d6ee}.tabs button.active{background:#1557a3;color:#fff}
+.panel{background:white;border:1px solid #dae6f6;padding:26px;border-radius:25px;box-shadow:0 6px 18px #1b4d8620;margin:18px 0}
+.panel h2{font-size:clamp(25px,2.4vw,32px);margin:0 0 14px}.panel h3{font-size:24px}
+.note{padding:13px 18px;background:#fff6df;border-right:6px solid #e6ae37;border-radius:15px;margin:13px 0}
+.good{background:#e4f7ed;border-right-color:#27925d}.low{background:#f7f2eb;border-right-color:#b38a40}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.tile{border:1px solid #d9e8fa;border-radius:19px;background:#f9fcff;padding:19px}
+.tile strong{font-size:27px;color:#145596;display:block}.tile small{font-size:17px}
+.task{padding:20px;background:#f8fbff;border:1px solid #d8e6f7;border-radius:20px;margin:17px 0}
+.task h3{font-size:23px;margin:8px 0}.task .meta{font-size:16px;font-weight:700;color:#47637b}
+.option{display:block;margin:8px 0;padding:11px 15px;border:2px solid #e0eafa;border-radius:14px;background:white;cursor:pointer}
+.option:has(input:checked){border-color:#2a78ca;background:#eaf4ff}
+.task button{margin-top:10px}.feedback{margin-top:10px;padding:12px;border-radius:12px;background:#eef5fe;font-weight:700}
+table{border-collapse:collapse;width:100%;min-width:660px}th,td{padding:11px 12px;text-align:right;border-bottom:1px solid #dce7f2}th{background:#e8f2ff;font-size:19px}td{font-size:18px}.table-scroll{overflow:auto;max-height:470px}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}select,input[type="text"]{min-height:48px;border:1px solid #b8cde6;border-radius:13px;padding:10px 14px;max-width:100%;background:#fff}
+progress{width:100%;height:18px;accent-color:#157e91}
+.muted{color:#536d82;font-size:18px}.hidden{display:none!important}
+@media(max-width:600px){.container{padding:15px}header{padding:30px 19px}.panel{padding:17px}nav b{font-size:21px}.option{font-size:18px}}
+</style>
+</head>
+<body>
+<nav><b>📐 منصة آفاق الرياضيات</b><div class="row-actions"><a href="index.html">الرئيسية</a><a href="competition.html">🏆 نجوم آفاق</a><a href="index.html#dashboard">حسابي</a></div></nav>
+<header><div class="container"><h1>🌟 مسارات التعلم والتميز</h1><p>مسار علاجي مبسّط للوحدات الثلاث الأولى، ومسار إثرائي متقدم للوحدات الأربع، وفق نتائج الطلاب الفعلية في المنصة.</p></div></header>
+<main class="container">
+<div id="loader" class="panel">جارٍ التحقق من الحساب المتصل بالمنصة…</div>
+<div id="content" aria-live="polite"></div>
+</main>
+<script>
+'use strict';
+const API='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-platform-api';
+const TOKEN=sessionStorage.getItem('afaq_access_token_v2')||'';
+let user=null,plan=null,roster=null,excellence=null,tab=location.hash==='#support'?'support':'excellence';
+const element=document.getElementById('content'),loader=document.getElementById('loader');
+const E=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const staff=()=>['supervisor','supervisor_assistant','director','deputy'].includes(user?.role);
+const canSeeOriginal=()=>['supervisor','supervisor_assistant'].includes(user?.role);
+const groupName=n=>n==='support'?'الدعم العلاجي':n==='enrichment'?'الإثراء الرياضي':'لم يحدد مسار بعد';
+const unitName=u=>['الأعداد (١)','القياس','الهندسة','الأعداد (٢)'][u-1]||'الوحدة '+u;
+const gradeBadge=p=>p.score===null?'لم يُرصد':p.score+'٪';
+async function api(action,payload={}){
+ if(!TOKEN)throw Error('يلزم تسجيل الدخول إلى منصة آفاق أولًا.');
+ const response=await fetch(API,{method:'POST',cache:'no-store',
+ headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},body:JSON.stringify({action,...payload})});
+ const result=await response.json();
+ if(!response.ok||!result.ok)throw Error(result.error||'تعذر الاتصال بالخادم');
+ return result;
+}
+function menu(){
+ return '<div class="tabs">'+
+ '<button data-tab="excellence" class="'+(tab==='excellence'?'active':'')+'">🥇 الطلاب المجيدون</button>'+
+ '<button data-tab="support" class="'+(tab==='support'?'active':'')+'">🌱 مسار الدعم العلاجي</button>'+
+ '<button data-tab="mine" class="'+(tab==='mine'?'active':'')+'">🧮 أسئلتي وخطتي</button>'+
+ '</div>';
+}
+function explanatory(){
+ return '<div class="note"><b>ضوابط التصنيف:</b> أقل من ٣٠٪ للدعم العلاجي، وأكثر من ٦٠٪ للإثراء. درجة ٣٠٪ أو ٦٠٪ لا تدخل أيًا منهما. يعتمد الحساب على تقييم منصة آفاق من ١٠٠، وليس نتيجة المسابقة. الطالب الذي لم تُرصد درجته لا يُصنّف تلقائيًا.</div>';
+}
+function badges(){
+ return '<div class="tiles"><div class="tile"><strong>٣ وحدات</strong><small>أسئلة علاجية في الأعداد (١)، القياس، الهندسة</small></div>'+
+ '<div class="tile"><strong>٤ وحدات</strong><small>أسئلة إثرائية تشمل الأعداد (٢) أيضًا</small></div>'+
+ '<div class="tile"><strong>خطة شخصية</strong><small>أسئلة مختلفة بحسب رقم الطالب وشعبته؛ مع تسجيل الإجابة والتقدم</small></div></div>';
+}
+function personTable(items,type){
+ if(!items?.length)return '<div class="note '+(type==='support'?'low':'good')+'">لا توجد أسماء مستحقة لهذا المسار وفق النتائج المرصودة حاليًا.</div>';
+ return '<div class="table-scroll"><table><thead><tr><th>الطالب</th><th>الشعبة ورقم الكشف</th><th>النسبة في المنصة</th>'+(staff()?'<th>الخطة</th>':'')+'</tr></thead><tbody>'+
+ items.map(p=>'<tr><td>'+E(p.name)+'</td><td>'+E(p.class_name)+' / '+E(p.serial_no)+'</td><td>'+E(p.score)+'٪</td>'+
+ (staff()?'<td><button data-plan="'+E(p.student_id||p.serial_no)+'" data-class="'+E(p.class_name)+'">عرض الأسئلة والإنجاز</button></td>':'')+'</tr>').join('')+
+ '</tbody></table></div>';
+}
+function details(p,view){
+ if(!p)return '<div class="note">لم تتوفر خطة لهذا الحساب.</div>';
+ const who='<div class="panel"><h2>📋 خطة '+E(p.student.name)+'</h2><p class="muted">'+E(p.student.class_name)+' — رقم '+E(p.student.serial_no)+'</p>'+
+ '<div class="tiles"><div class="tile"><strong>'+gradeBadge(p)+'</strong><small>النتيجة الحالية في المنصة</small></div>'+
+ '<div class="tile"><strong>'+E(p.completed)+' / '+E(p.total)+'</strong><small>الأسئلة المجاب عنها</small></div>'+
+ '<div class="tile"><strong>'+E(p.correct)+'</strong><small>الإجابات الصحيحة</small></div></div>'+
+ '<progress max="'+Math.max(1,p.total)+'" value="'+p.completed+'"></progress></div>';
+ if(p.score===null)return who+'<div class="note">لا توجد درجة مرصودة بعد، وبالتالي لم تُخصص أسئلة لهذا الطالب.</div>';
+ if(!p.tier)return who+'<div class="note good">درجة الطالب بين ٣٠٪ و٦٠٪؛ تستمر الأنشطة الصفية المعتادة ويُراجع المشرف مستوى التقدم.</div>';
+ const intro='<div class="panel"><h2>'+ (p.tier==='support'?'🌱 التدريب العلاجي':'⭐ التحديات الإثرائية')+'</h2>'+
+ '<p>'+(p.tier==='support'?'أسئلة تأسيسية متدرجة من الوحدات الثلاث الأولى.':'أنشطة تطبيقية واستدلالية متنوعة من الوحدات الأربع.')+'</p></div>';
+ const tasks=(p.questions||[]).map((q,i)=>{
+ const prior=q.previous_answer;
+ return '<article class="task"><div class="meta">الوحدة '+E(q.unit)+' — '+E(unitName(q.unit))+' | '+E(q.lesson)+' | السؤال '+(i+1)+'</div>'+
+ '<h3>'+E(q.question)+'</h3>'+
+ (view?'<div class="note '+(prior?.correct?'good':'')+'">'+(prior?'الإجابة المحفوظة: '+(prior.correct?'صحيحة':'تحتاج إلى مراجعة'):'لم يُجب الطالب عن هذا السؤال بعد')+'</div>':
+ '<fieldset style="border:0;padding:0;margin:0"><legend class="muted">اختر الإجابة المناسبة:</legend>'+
+ (q.options||[]).map((opt,k)=>'<label class="option"><input type="radio" name="q'+E(q.id)+'" value="'+k+'" '+(prior?.choice_index===k?'checked':'')+'> '+E(opt)+'</label>').join('')+
+ '</fieldset><button class="primary" data-answer="'+E(q.id)+'">تسجيل الإجابة</button><div id="feedback-'+E(q.id)+'" class="feedback '+(!prior?'hidden':'')+'">'+(prior?(prior.correct?'أحسنت! هذه الإجابة صحيحة.':'يمكنك المحاولة مرة أخرى بعد المراجعة.'):'')+'</div>')+
+ '</article>';
+ }).join('');
+ return who+intro+tasks;
+}
+function content(){
+ if(!user)return '<div class="panel"><h2>🔒 دخول أعضاء المنصة</h2><p>يرجى تسجيل الدخول إلى حسابك في منصة آفاق لعرض المسارات والنتائج.</p><a href="index.html#dashboard" class="action primary">تسجيل الدخول عبر المنصة</a></div>';
+ if(tab==='mine'){
+  if(staff())return '<div class="panel"><h2>الخطط الفردية</h2><p>اختر طالبًا من قائمة الدعم أو المجيدين، ثم اضغط «عرض الأسئلة والإنجاز» للاطلاع على خطته.</p></div>';
+  return details(plan,false);
+ }
+ if(tab==='support'){
+  if(!staff())return '<div class="panel"><h2>🌱 بوابة الدعم العلاجي</h2><p>تُعرض قوائم الدعم العلاجي للمشرف وإدارة المدرسة فقط. يمكنك متابعة أسئلتك الشخصية من تبويب «أسئلتي وخطتي».</p><button data-tab="mine" class="primary">عرض أسئلتي الخاصة</button></div>';
+  return '<div class="panel"><h2>🌱 قائمة الطلاب المستفيدين من الدعم العلاجي</h2><p>الطلاب الذين تقل نتائجهم المرصودة عن ٣٠٪؛ تظهر القائمة هنا للمتابعة التربوية فقط.</p>'+
+   (roster?'<p class="muted">تم تقييم '+roster.graded+' طالبًا، ولا توجد نتيجة مرصودة لـ '+roster.ungraded+' طالبًا.</p>':'')+
+   personTable(roster?.support,'support')+'</div>';
+ }
+ return '<div class="panel"><h2>🥇 بوابة الطلاب المجيدين</h2><p>التقدير والتشجيع للطلاب الذين تزيد نتائجهم الفعلية على ٦٠٪. تظهر النسبة الحالية، مع توفير خطة إثرائية فردية في حساب الطالب.</p>'+
+ personTable(staff()?roster?.enrichment:excellence,'enrichment')+'</div>';
+}
+function render(){
+ element.innerHTML=menu()+explanatory()+badges()+content();
+ element.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;location.hash=tab;render()}));
+ element.querySelectorAll('[data-plan]').forEach(b=>b.addEventListener('click',async()=>{
+  const original=tab;const previous=b.textContent;b.disabled=true;b.textContent='جارٍ فتح الخطة…';
+  try{
+   const res=await api('learning_plan',{student_id:b.dataset.plan,class_name:b.dataset.class});
+   element.innerHTML=menu()+explanatory()+details(res.plan,true)+'<button id="returnList">العودة للقائمة</button>';
+   element.querySelector('#returnList')?.addEventListener('click',()=>{tab=original;render()});
+  }catch(err){alert('تعذر فتح خطة الطالب: '+err.message);render()}
+ }));
+ element.querySelectorAll('[data-answer]').forEach(button=>button.addEventListener('click',async()=>{
+  const id=button.dataset.answer,selected=element.querySelector('input[name="q'+id+'"]:checked');
+  if(!selected){alert('اختر إجابة قبل تسجيلها.');return}
+  button.disabled=true;button.textContent='جارٍ حفظ الإجابة…';
+  try{
+   const response=await api('learning_answer',{question_id:id,choice_index:Number(selected.value)});
+   plan=response.plan;
+   const msg=element.querySelector('#feedback-'+id);
+   if(msg){msg.classList.remove('hidden');msg.classList.toggle('good',response.correct);
+    msg.textContent=(response.correct?'أحسنت يا '+(user.username||'بطل')+'! إجابتك صحيحة.':'محاولة جيدة يا '+(user.username||'بطل')+'، الإجابة الصحيحة هي: '+
+    response.plan.questions.find(x=>x.id===id)?.options?.[response.correct_index]+'.')+' '+(response.explanation||'');
+   }
+   button.textContent='حُفظت الإجابة — يمكن التعديل';
+  }catch(err){alert('تعذر حفظ الإجابة: '+err.message);button.textContent='إعادة المحاولة'}
+  finally{button.disabled=false}
+ }));
+}
+(async()=>{
+ if(!TOKEN){loader.classList.add('hidden');render();return}
+ try{
+  const me=await api('me');user=me.user;
+  if(staff())roster=await api('learning_roster');
+  else{
+   const [r,p]=await Promise.all([api('excellence_roster'),api('learning_plan')]);
+   excellence=r.students;plan=p.plan;
+  }
+ }catch(err){loader.textContent='تعذر الوصول إلى البيانات: '+err.message;render();return}
+ loader.classList.add('hidden');render();
+})();
+</script>
+</body></html>
