@@ -59,3 +59,12 @@ footer,footer span,footer strong{font-size:clamp(15px,1.04vw,18px)}
 .afaq-unit-progress>div{display:flex;flex-direction:column;gap:6px;background:#f9fbff;padding:16px;border-radius:15px;border:1px solid #dce8f8}
 .afaq-unit-progress b{font-size:19px;color:#234b9b}.afaq-unit-progress span,.afaq-unit-progress small{font-size:16px;color:#47617b}
 @media(max-width:960px){.afaq-progress-grid,.afaq-unit-progress{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* V5.1 | الامتحانات السابقة واليوتيوب */
+.desktopnav .youtube-nav-link{color:#174a96;background:#fff3dc;border:1px solid #f1ca7b;padding:10px 12px;border-radius:13px;font-size:clamp(16px,1.04vw,19px);font-weight:900;white-space:nowrap}
+.youtube-nav-link:hover,.youtube-mobile:hover{background:#ffe6aa;color:#103976}
+.mobile-nav .youtube-mobile{display:block;padding:15px 20px;font-size:19px;font-weight:900;color:#1656b0;background:#fff7e6;border-radius:13px;margin:9px 4px}
+.v5-paper-card{border:1px solid #cfdef4;background:linear-gradient(165deg,#fff,#f8fbff);display:flex;flex-direction:column;min-height:270px}
+.v5-paper-card .v4-card-footer{margin-top:auto;padding-top:14px}
+.v5-paper-card h3{font-size:clamp(19px,1.35vw,24px)!important;line-height:1.7}
+.v5-paper-card p{font-size:clamp(17px,1.15vw,20px)!important}
+@media(max-width:1190px){.desktopnav .youtube-nav-link{font-size:14px;padding:9px 7px}}
