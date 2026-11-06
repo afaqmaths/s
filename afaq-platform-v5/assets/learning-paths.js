@@ -22,7 +22,7 @@ function studySupport(){
 }
 const studyBaseGeneric=genericSection;
 genericSection=function(page){if(page==='stars')return studyStars();if(page==='support')return studySupport();return studyBaseGeneric(page)};
-if(!sections.some(x=>x[0]==='support')){const n=sections.findIndex(x=>x[0]==='stars');sections.splice(n+1,0,['support','🌱','بوابة الدعم والتقدم','تدريبات علاجية شخصية من الوحدات الثلاث الأولى'])}
+if(!sections.some(x=>x[0]==='support')){const n=sections.findIndex(x=>x[0]==='stars');sections.splice(n+1,0,['support','🌱','بوابة الدعم والتقدم','تدريبات علاجية شخصية من الوحدات الأربع'])}
 function galleryHtml(students){
  if(!students.length)return '<p class="muted">لا توجد أسماء معتمدة للنشر حتى الآن. ستظهر بعد رصد التقييمات وتوثيق الموافقات.</p>';
  return '<div class="study-gallery">'+students.map(s=>'<article><span>🏅</span><h3>'+studyEsc(s.name)+'</h3><p>'+studyEsc(s.class_name)+' — رقم '+studyEsc(s.serial_no)+'</p><strong>'+studyEsc(s.score)+'٪</strong></article>').join('')+'</div>';
@@ -104,7 +104,7 @@ async function loadDashboardStudy(){
   try{const r=await studyRequest('my_path');if(!studentSlot.isConnected)return;
    const p=r.path;
    studentSlot.innerHTML='<div class="panel"><h3>🎯 مساري التعليمي</h3><p>'+(
-    p.track==='remedial'?'لديك '+p.total_tasks+' سؤالًا لتقوية أساسيات الوحدات الثلاث الأولى.':
+    p.track==='remedial'?'لديك '+p.total_tasks+' سؤالًا لتقوية أساسيات الوحدات الأربع.':
     p.track==='enrichment'?'لديك '+p.total_tasks+' سؤالًا إثرائيًا من الوحدات الأربع.':
     p.track==='ungraded'?'ستظهر خطة مخصصة بعد رصد درجتك.':'استمر في الدروس والألعاب والتمارين العامة.')+'</p>'+
     '<button type="button" class="primary" id="studyGo">فتح بوابة المسار</button></div>';
