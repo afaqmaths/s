@@ -447,6 +447,9 @@ function gbShare(mode,channel){
 
 attachPortal=function(){
  gbOriginalAttachPortal();
+ document.getElementById('portalLogout')?.addEventListener('click',()=>{
+  auth.gbClassReport=null;auth.gbClassError='';auth.gbClassLoading=false;
+ });
  document.querySelectorAll('[data-tab="class_results"]').forEach(el=>el.addEventListener('click',()=>{
   if(gbClassAllowed()&&!auth.gbClassReport&&!auth.gbClassLoading)
    gbLoadClassReport(auth.gbSelectedClass);
