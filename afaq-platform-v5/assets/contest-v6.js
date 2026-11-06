@@ -76,6 +76,10 @@ const student=()=>STATE.user?.role==='student';
 const official=()=>student()&&STATE.grade===6;
 const trainingModel=()=>roleModels[STATE.user?.role]||'C';
 const trainingTitle=()=>models[trainingModel()]||'نموذج التدريب';
+const sampleKey=()=> 'afaq_nonofficial_parts_'+(STATE.user?.username||'demo')+'_'+STATE.grade;
+const savedSample=()=>{try{return JSON.parse(sessionStorage.getItem(sampleKey())||'{}')}catch{return {}}};
+const keepSample=raw=>{if(STATE.grade===6)return;const p=savedSample();p[STATE.section]=Math.max(Number(p[STATE.section]||0),Number((raw/2).toFixed(2)));sessionStorage.setItem(sampleKey(),JSON.stringify(p))};
+const sampleScorePanel=()=>{if(STATE.grade===6)return '';const p=savedSample(),sum=Number(p[1]||0)+Number(p[2]||0);return '<section class="contest-progress"><h3>📈 ملخص القسمين التدريبيين</h3><div class="contest-metrics"><div><strong>'+Number(p[1]||0)+' / ٢٥</strong><small>القسم الأول</small></div><div><strong>'+Number(p[2]||0)+' / ٢٥</strong><small>القسم الثاني</small></div><div><strong>'+(sum*2)+' / ١٠٠</strong><small>المجموع بعد المضاعفة</small></div></div><p>هذه نتائج تدريبية محفوظة في جلسة المتصفح الحالية فقط؛ لا تُسجَّل كمحاولات رسمية ولا تُخلط بنتائج الطلاب.</p></section>'};
 const stage=(n)=>stageInfo[n-1]||stageInfo[0];
 const image=(src,alt,cls)=>src?'<img class="'+cls+'" src="'+src+'" alt="'+friendly(alt)+'" loading="lazy">':'';
 const entryArt=()=>window.AFAQ_ENTRY_ART?.[student()||STATE.user?.role==='demo'?'student':'staff']||'';
@@ -136,7 +140,7 @@ function home(){
  const allowed=STATE.mode!=='official'||approved;
  const avatar=image(entryArt(),student()?'الصورة المعتمدة للطالب':'الصورة المعتمدة للمشرف والإدارة','entry-approved-avatar');
  return '<div class="contest-home"><div class="contest-welcome contest-welcome-image">'+avatar+'<div><span class="contest-label">⭐ مسابقة نجوم آفاق الرياضيات ⭐</span><h2>مرحبًا '+friendly(STATE.user?.username||'بك')+'</h2><p>'+introduction+'</p></div><button class="outline" id="logoutContest">خروج</button></div>'+ (allowedStaff()?'<div class="contest-grades">'+[5,6,7,8].map(g=>'<button class="'+(STATE.grade===g?'chosen':'')+'" data-grade="'+g+'">الصف '+gradeNames[g]+'</button>').join('')+'</div>':'')+
- unitCards()+progress()+
+ unitCards()+progress()+sampleScorePanel()+
  '<h3 class="contest-title">اختر النموذج</h3><div class="contest-modes"><button class="'+(STATE.mode==='training'?'primary':'outline')+'" data-mode="training">🎯 '+trainingTitle()+'</button>'+(official()?'<button class="'+(STATE.mode==='official'?'primary':'outline')+'" data-mode="official">🏆 المحاولات الرسمية</button>':'')+'</div>'+
  '<p class="contest-instructions">المراحل الخمس في التدريب والمحاولات الرسمية متشابهة في العرض والتوقيت والصور. بعد كل إجابة تُعرض الإجابة الصحيحة والتعزيز باسم المتسابق خلال ٥ ثوانٍ ثم تنتقل اللعبة تلقائيًا. وقبل كل مرحلة تظهر شاشة «استعد وابدأ».</p>'+road()+
  '<div class="contest-rules"><b>طريقة احتساب الدرجة:</b> ثلاث مراحل سريعة، ثم مختبر مستر بين، ثم تحدي الأستاذ سعيد. لكل مرحلة ١٠ نقاط، فيكون المجموع ٥٠ ويُضاعف إلى ١٠٠. تُحتسب أفضل نتيجة لكل وحدة.</div>'+
@@ -235,7 +239,7 @@ async function submitResponse(answer,expired=false){
   STATE.lastFeedback=feedback;STATE.feedbackStage=previousStage;
   STATE.waitingMessage='راجع الإجابة الصحيحة يا '+(STATE.displayName||STATE.user?.username||'المتسابق')+' ثم استعد للمرحلة التالية.';
  }catch(err){STATE.error=err.message;STATE.feedback=err.message}
- finally{STATE.busy=false;render();if(STATE.lastFeedback){if(STATE.lastFeedback.correct)afaqCelebrateCorrect(previousStage,!!STATE.result,!!STATE.readyStage);else afaqTune(previousStage,'incorrect');}}
+ finally{STATE.busy=false;render();if(STATE.result){afaqTune(previousStage,'finish');afaqDecorate('fireworks',45)}else if(STATE.readyStage){afaqTune(previousStage,'finish');afaqDecorate('balloons',23)}else if(STATE.lastFeedback){if(STATE.lastFeedback.correct)afaqCelebrateCorrect(previousStage);else afaqTune(previousStage,'incorrect');}}
 }
 function adoptOfficial(r){
  if(r.finished){STATE.result={...r,training:false};STATE.report=r.report||STATE.report;STATE.question=null;STATE.questions=[];return}
@@ -249,7 +253,7 @@ async function expireStage(){if(STATE.busy||STATE.readyStage)return;STATE.busy=t
  if(STATE.index>=STATE.questions.length)await completeTraining();else STATE.readyStage=STATE.questions[STATE.index].stage;
  }
 }catch(err){STATE.error=err.message}finally{STATE.busy=false;STATE.waitingUntil=0;render()}}
-async function completeTraining(){const r=await back('check_training',{grade:STATE.grade,section:STATE.section,answers:STATE.answers});STATE.result={...r,training:true};STATE.questions=[];STATE.question=null;STATE.waitingUntil=0;}
+async function completeTraining(){const r=await back('check_training',{grade:STATE.grade,section:STATE.section,answers:STATE.answers});STATE.result={...r,training:true};keepSample(r.raw_score);STATE.questions=[];STATE.question=null;STATE.waitingUntil=0;}
 async function finishEarly(){if(STATE.busy)return;if(!window.confirm('هل تريد إنهاء النموذج الآن دون إكمال بقية الأسئلة؟'))return;STATE.busy=true;clearInterval(STATE.timer);try{
  if(STATE.mode==='official'){const r=await back('submit',{attempt_id:STATE.attemptId});STATE.result={...r,training:false};STATE.report=r.report||STATE.report;}
  else await completeTraining();STATE.readyStage=0;STATE.waitingUntil=0;
