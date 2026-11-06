@@ -1,0 +1,59 @@
+/* نجوم آفاق — العودة للرسومات الأصلية والواجهات المصوّرة / نصوص كبيرة */
+#contestApp{font-size:clamp(19px,1.35vw,23px);line-height:1.9}
+#contestApp h2{font-size:clamp(30px,2.65vw,42px);line-height:1.5}
+#contestApp h3{font-size:clamp(24px,2vw,33px)}
+#contestApp p,#contestApp label,#contestApp small{font-size:clamp(17px,1.2vw,21px);line-height:1.85}
+#contestApp button,#contestApp input,#contestApp select,#contestApp textarea{font-family:inherit;font-size:clamp(18px,1.25vw,23px)}
+#contestApp button{min-height:52px;white-space:normal}
+.contest-welcome-image{display:flex;align-items:center;gap:24px;background:linear-gradient(120deg,#0b2452,#244a92 60%,#137b8a);color:#fff;border-radius:29px;padding:28px;min-height:240px;box-shadow:0 20px 35px #15305b2a}
+.contest-welcome-image>div:not(:first-child){flex:1}
+.entry-approved-avatar{height:188px;width:188px;object-fit:cover;border-radius:50%;border:6px solid #ffda85;box-shadow:0 8px 28px #0003;background:#fff;flex-shrink:0}
+.contest-welcome-image h2,.contest-welcome-image p,.contest-welcome-image .contest-label{color:#fff}
+.contest-welcome-image #logoutContest{background:#fff;color:#1f4481}
+.stage-pic{display:block;height:80px;width:80px;object-fit:cover;border-radius:18px;border:3px solid #fff;box-shadow:0 5px 17px #224c8528;margin:auto auto 7px}
+.stage-ready-page{max-width:880px;margin:26px auto;padding:38px 44px;text-align:center;border-radius:32px;background:linear-gradient(155deg,#f1f8ff,#fff 65%,#fff3da);border:3px solid #b8d2f3;box-shadow:0 20px 52px #1738731f}
+.ready-art{display:grid;place-items:center;margin:6px auto 20px}
+.stage-ready-photo{display:block;width:min(300px,68vw);height:min(300px,68vw);border-radius:35px;object-fit:cover;background:#fff;border:6px solid #fff;box-shadow:0 15px 40px #1c52852d}
+.ready-kicker{font-size:clamp(19px,1.5vw,25px);font-weight:900;display:inline-block;color:#165e9e;border-radius:18px;background:#e0edff;padding:5px 17px}
+.stage-ready-page h2{font-size:clamp(36px,4vw,57px)!important;color:#163b76;margin:11px 0}
+.stage-ready-page h3{color:#166c80;font-size:clamp(24px,2.2vw,31px)}
+.stage-ready-page p{font-size:clamp(20px,1.5vw,25px)!important;color:#365671}
+.ready-rules{padding:18px 22px;background:#fff;border:2px dashed #6eb5c2;border-radius:18px;font-weight:800;font-size:clamp(18px,1.33vw,23px);color:#36547c}
+.ready-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin-top:24px}
+.ready-buttons button{min-width:230px;font-size:clamp(19px,1.5vw,25px)!important;padding:15px 24px}
+.contest-game-area{max-width:1180px;margin:auto;border:2px solid #dce6f7;background:linear-gradient(155deg,#fff,#f9fbff);border-radius:29px;overflow:hidden;padding:26px}
+.contest-stage-banner{display:flex;align-items:center;gap:18px;background:linear-gradient(120deg,#143e83,#2673aa);border-radius:23px;padding:18px 24px;color:white}
+.contest-stage-banner h2,.contest-stage-banner p,.contest-stage-banner .contest-label{color:#fff}
+.contest-character{min-width:150px;width:155px;height:155px;display:grid;place-items:center;background:transparent;border:0}
+.stage-banner-photo{width:153px;height:153px;object-fit:cover;border-radius:28px;border:4px solid #fff;box-shadow:0 8px 20px #0003}
+.contest-question{padding:26px 16px}
+.contest-question>h3{font-size:clamp(25px,2vw,34px)!important;color:#173b74;line-height:1.85;letter-spacing:.08px}
+.contest-figure{margin:20px auto 27px;max-width:850px;padding:16px;background:#fff;border:3px solid #c7daf3;border-radius:25px;box-shadow:0 11px 29px #1c4d8420;text-align:center}
+.contest-diagram{display:block;max-width:100%;width:100%;height:auto;max-height:440px;object-fit:contain;margin:0 auto}
+.contest-figure figcaption{font-size:clamp(18px,1.25vw,23px);color:#375b87;font-weight:700;margin:12px auto 0}
+.contest-option{font-size:clamp(21px,1.55vw,27px)!important;font-weight:800!important;min-height:79px;border:2px solid #b9d0ee;border-radius:18px;padding:16px 20px;line-height:1.65}
+.contest-option:focus-visible{outline:4px solid #f1b642;outline-offset:2px}
+.contest-option:hover{background:#edf7ff}
+.option-letter{width:41px;height:41px;min-width:41px;display:grid;place-items:center;border-radius:13px;background:#e5efff;color:#174d9e;font-size:23px;font-weight:900;margin-left:15px}
+.auto-answer-hint{font-size:clamp(19px,1.35vw,23px)!important;color:#205b93;font-weight:800}
+.contest-subpart{padding:18px;border:2px solid #dfebfa;border-radius:19px;margin:14px 0;background:#f9fcff}
+.contest-subpart h4{font-size:clamp(21px,1.55vw,27px)}
+.contest-number{width:100%;max-width:520px;min-height:57px;font-size:clamp(21px,1.5vw,26px)!important}
+.contest-timer strong{font-size:clamp(35px,3.3vw,53px)!important;color:#fff}
+.contest-transition{min-height:520px;text-align:center;max-width:750px;margin:20px auto;padding:35px;border-radius:31px;background:linear-gradient(150deg,#0c3473,#176d8e);color:white;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.contest-transition h2,.contest-transition p,.contest-transition span{color:white!important}
+.transition-photo{height:160px;width:160px;object-fit:cover;border-radius:27px;border:5px solid white}
+.contest-transition strong{font-size:clamp(74px,8vw,125px);line-height:1;color:#ffd38b}
+.staff-contest-panel{margin:26px auto}
+.result-table-scroll{overflow:auto;max-height:600px;border-radius:20px;border:1px solid #d8e3f4}
+.result-table-scroll table{width:100%;border-collapse:collapse;font-size:17px;min-width:760px;text-align:right}
+.result-table-scroll th,.result-table-scroll td{padding:11px 12px;border-bottom:1px solid #dfebf6}
+.result-table-scroll thead{position:sticky;top:0;background:#e9f0ff;color:#203c71}
+.contest-preview{max-width:570px}.contest-preview .contest-figure{max-width:100%}
+.guest-avatar-row{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin:23px auto}
+.approved-guest-avatar{width:190px;height:190px;object-fit:cover;border-radius:50%;border:5px solid #f4ce68;box-shadow:0 9px 22px #20436f28}
+.contest-bank details{border-top:1px solid #dde8f7;margin:12px 0;padding:12px}
+.contest-bank summary{cursor:pointer;font-size:20px;font-weight:800}
+.contest-bank textarea{width:100%;max-width:100%;direction:rtl}
+@media(max-width:850px){.contest-welcome-image{flex-wrap:wrap;justify-content:center;text-align:center}.contest-welcome-image>div:not(:first-child){width:100%}.entry-approved-avatar{width:147px;height:147px}.contest-character,.stage-banner-photo{width:115px;height:115px;min-width:115px}.contest-stage-banner{flex-wrap:wrap}.contest-game-area{padding:14px}.stage-ready-page{padding:26px 19px}.stage-pic{width:62px;height:62px}}
+@media(max-width:510px){.entry-approved-avatar{width:123px;height:123px}.ready-buttons{flex-direction:column}.ready-buttons button{width:100%;min-width:0}.contest-character,.stage-banner-photo{height:90px;width:90px;min-width:90px}.contest-question{padding:15px 6px}.contest-option{padding:11px 8px;min-height:74px}.option-letter{margin-left:7px}.contest-figure{padding:9px}.contest-stage-banner{padding:12px}}
