@@ -236,7 +236,7 @@ function render(){clearInterval(STATE.timer);const showQ=getCurrent();
  if(STATE.waitingUntil>Date.now()){tickTransition();return}
  if(showQ&&!STATE.readyStage&&!STATE.result)tickGame();
 }
-function tickTransition(){clearInterval(STATE.timer);STATE.timer=setInterval(()=>{const left=clockSec(STATE.waitingUntil);const place=document.getElementById('nextCountdown');if(place)place.textContent=left;if(left===0){clearInterval(STATE.timer);STATE.waitingUntil=0;render()}},150)}
+function tickTransition(){clearInterval(STATE.timer);STATE.timer=setInterval(()=>{const left=clockSec(STATE.waitingUntil);const place=document.getElementById('nextCountdown');if(place)place.textContent=stext(left);if(left===0){clearInterval(STATE.timer);STATE.waitingUntil=0;render()}},150)}
 function tickGame(){clearInterval(STATE.timer);STATE.timer=setInterval(()=>{
  const q=getCurrent();if(!q||STATE.busy||STATE.readyStage||STATE.waitingUntil)return;
  const sec=remaining(),label=document.getElementById('contestClock'),line=document.getElementById('contestTimerBar');
