@@ -179,6 +179,7 @@ function tformat(seconds,which){return which<=3?seconds+' ث':String(Math.floor(
 const nscore=v=>Number.isFinite(Number(v))?Number(v):0;
 const stext=v=>new Intl.NumberFormat('ar-OM',{maximumFractionDigits:2}).format(Math.round(nscore(v)*100)/100);
 const sper=(a,b)=>b>0?Math.max(0,Math.min(100,Math.round(nscore(a)/b*100))):0;
+const percentExact=(a,b)=>b>0?Math.max(0,Math.min(100,Math.round(nscore(a)/b*10000)/100)):0;
 const stcount=n=>n<=3?10:4;
 const ststep=q=>q.stage<=3?(q.ordinal-1)%10+1:(q.ordinal-31)%4+1;
 const sttotal=n=>STATE.stageScores[n]||{earned:0,possible:0,answered:0};
@@ -367,9 +368,9 @@ function certificateMarkup(cert){
   main='<section class="afaq-cert-units"><h4>النتائج النهائية للوحدات الأربع</h4><table class="afaq-cert-units-table"><thead><tr>'+
    '<th>الوحدة</th><th>المجال</th><th>الدرجة</th><th>النسبة</th><th>الحالة</th></tr></thead><tbody>'+rows+
    '<tr class="afaq-cert-total"><td colspan="2">المجموع العام للمسابقة</td><td><strong>'+(report?stext(total):'—')+' / ٤٠٠</strong></td>'+
-   '<td><strong>'+(report?stext(sper(total,400))+'٪':'—')+'</strong></td><td>'+stext(completed)+' / ٤ مكتملة</td></tr></tbody></table>'+
+   '<td><strong>'+(report?stext(percentExact(total,400))+'٪':'—')+'</strong></td><td>'+stext(completed)+' / ٤ مكتملة</td></tr></tbody></table>'+
    '<div class="afaq-cert-overall"><span>المجموع النهائي للوحدات الأربع</span><strong>'+(report?stext(total):'—')+' / ٤٠٠</strong>'+
-   '<span>'+(report?stext(sper(total,400))+'٪':'—')+'</span></div>'+
+   '<span>'+(report?stext(percentExact(total,400))+'٪':'—')+'</span></div>'+
    '<p class="afaq-cert-qualification"><strong>حالة التأهل:</strong> '+friendly(status)+'</p></section>';
  }else{
   main='<div class="afaq-cert-score"><span>نتيجة القسم الحالي</span><strong>'+stext(cert.score)+' / ١٠٠</strong><span>'+stext(sper(cert.score,100))+'٪</span></div>'+
@@ -428,7 +429,7 @@ function result(){
  '<div class="contest-metrics"><div><strong>'+stext(raw)+' / ٥٠</strong><small>الدرجة الأصلية</small></div>'+
  '<div><strong>'+stext(score)+' / ١٠٠</strong><small>بعد المضاعفة</small></div>'+
  (STATE.grade!==6?'<div><strong>'+stext(raw/2)+' / ٢٥</strong><small>نقاط القسم من أصل ٢٥</small></div>':'')+'</div>'+
- (STATE.grade===6&&report?'<div class="afaq-cert-overall"><span>المجموع العام للوحدات الأربع</span><strong>'+stext(report.total)+' / ٤٠٠</strong><span>'+stext(sper(report.total,400))+'٪</span></div>':'')+
+ (STATE.grade===6&&report?'<div class="afaq-cert-overall"><span>المجموع العام للوحدات الأربع</span><strong>'+stext(report.total)+' / ٤٠٠</strong><span>'+stext(percentExact(report.total,400))+'٪</span></div>':'')+
  '<p>'+(r.training?'هذه نتيجة تدريبية ولا تستهلك محاولات المنافسة الرسمية.':'تم حفظ النتيجة الرسمية في نظام المسابقة، وتُحتسب أفضل نتيجة لكل وحدة.')+'</p>'+
  '<h3 class="afaq-cert-section-title">📜 شهادتك وبيان نتائج المراحل</h3>'+
  certificateMarkup(cert)+certificateActions(cert)+
