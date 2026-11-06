@@ -224,6 +224,135 @@ function gbForm(p){
   '<div class="gb-form-buttons">'+admin+'</div>'+raw+finalForm+'<div id="gbAuditOutput"></div></section>';
 }
 
+
+/* كشف نتائج كل شعبة — قراءة وطباعة للمشرف والمشرف المساعد فقط. */
+const GB_CLASS_NAMES=['السادس / ٤','السادس / ٥','السادس / ٦'];
+auth.gbSelectedClass=auth.gbSelectedClass||GB_CLASS_NAMES[0];
+auth.gbClassReport=null;
+auth.gbClassLoading=false;
+auth.gbClassError='';
+const gbClassAllowed=()=>['supervisor','supervisor_assistant'].includes(auth.user?.role);
+async function gbLoadClassReport(className=auth.gbSelectedClass){
+ if(!gbClassAllowed()||!GB_CLASS_NAMES.includes(className))return;
+ auth.gbSelectedClass=className;auth.gbClassReport=null;
+ auth.gbClassLoading=true;auth.gbClassError='';render();
+ try{
+  const report=await api('class_assessments',{class_name:className});
+  if(auth.gbSelectedClass!==className)return;
+  auth.gbClassReport=report;
+ }catch(err){
+  if(auth.gbSelectedClass!==className)return;
+  auth.gbClassError=gbErr(err.message);
+ }finally{
+  if(auth.gbSelectedClass===className){auth.gbClassLoading=false;render()}
+ }
+}
+function gbClassScore(v){
+ return v===null||v===undefined?'—':gbNum(v);
+}
+function gbClassCell(v,extra=''){
+ return '<td'+(extra?' class="'+extra+'"':'')+'>'+gbClassScore(v)+'</td>';
+}
+function gbClassStatus(row){
+ if(row.final_status==='approved')return 'الفعلي معتمد';
+ if(row.assessment_status==='approved')return row.final_status==='draft'?'توقع معتمد • النهائي مسودة':'التوقع معتمد';
+ if(row.assessment_status==='draft')return 'مسودة غير معتمدة';
+ return 'لم تُرصد درجات';
+}
+function gbClassTableRows(report){
+ return [...(report?.students||[])].sort((a,b)=>Number(a.serial_no)-Number(b.serial_no))
+ .map(row=>{
+  const s=row.scores||{},predicted=row.assessment_status==='approved',actual=row.final_status==='approved';
+  const finalEntry=s.final_score===null||s.final_score===undefined?'—':
+   gbNum(s.final_score)+(actual?'':'*');
+  const cells=[
+   s.oral_score,s.short1_score,s.short2_score,s.short3_score,s.short4_score,
+   s.short_exam1_score,s.short_exam2_score,s.project_score,s.coursework,
+   s.a_plus_points,s.a_minus_points,s.a_score
+  ];
+  return '<tr class="'+(actual?'gb-class-actual':predicted?'gb-class-predicted':'gb-class-draft')+'">'+
+   '<td class="gb-class-no">'+gbNum(row.serial_no)+'</td>'+
+   '<td class="gb-class-student-name">'+e(row.full_name||row.display_name||'—')+'</td>'+
+   cells.map((v,i)=>gbClassCell(v,i===8?'gb-class-subtotal':i===11?'gb-class-a-est':'')).join('')+
+   '<td class="gb-class-real-40">'+finalEntry+'</td>'+
+   gbClassCell(s.estimated_total,'gb-class-est-total')+
+   gbClassCell(actual?s.actual_total:null,'gb-class-actual-total')+
+   '<td class="gb-class-difference">'+(actual&&s.difference!=null?gbSigned(s.difference):'—')+'</td>'+
+   '<td class="gb-class-status">'+e(gbClassStatus(row))+'</td>'+
+   '</tr>';
+ }).join('');
+}
+function gbClassTable(report){
+ return '<table class="gb-class-grade-table" dir="rtl">'+
+ '<thead><tr class="gb-class-group-header">'+
+ '<th rowspan="2">م</th><th rowspan="2" class="gb-class-name-header">اسم الطالب</th>'+
+ '<th colspan="9">الأعمال الفصلية (٦٠)</th><th colspan="3">المؤشرات والتوقع</th>'+
+ '<th rowspan="2">النهائي الفعلي<br>٤٠</th>'+
+ '<th colspan="3">المجموع والمقارنة (١٠٠)</th><th rowspan="2">الاعتماد</th></tr>'+
+ '<tr class="gb-class-subheader">'+
+ '<th>شفوي<br>١٠</th><th>س١<br>٥</th><th>س٢<br>٥</th><th>س٣<br>٥</th><th>س٤<br>٥</th>'+
+ '<th>ق١<br>١٠</th><th>ق٢<br>١٠</th><th>مشروع<br>١٠</th><th>المجموع<br>٦٠</th>'+
+ '<th>A+</th><th>A−</th><th>المتوقع<br>٤٠</th>'+
+ '<th>المتوقع<br>١٠٠</th><th>الفعلي<br>١٠٠</th><th>الفرق</th></tr></thead>'+
+ '<tbody>'+gbClassTableRows(report)+'</tbody></table>';
+}
+function gbClassReportMarkup(report){
+ if(!report)return '';
+ const classLabel=e(report.class_name||auth.gbSelectedClass);
+ const all=Number(report.count)||0,approved=Number(report.approved_predictions)||0,finals=Number(report.approved_finals)||0;
+ return '<section class="gb-class-sheet" id="gbPrintableClassSheet" dir="rtl">'+
+  '<div class="gb-class-flag" aria-hidden="true"><span></span><span></span><span></span></div>'+
+  '<div class="gb-class-heading"><div class="gb-class-icon" aria-hidden="true">📐</div>'+
+  '<div><span>سلطنة عُمان • مدرسة الحسين بن علي للتعليم الأساسي</span>'+
+  '<h2>منصة آفاق الرياضيات — كشف نتائج الشعبة</h2>'+
+  '<h3>'+classLabel+' | مقارنة المتوقع بالفعلي</h3></div>'+
+  '<div class="gb-class-icon" aria-hidden="true">🏆</div></div>'+
+  '<div class="gb-class-summary">'+
+  '<span><b>الشعبة:</b> '+classLabel+'</span><span><b>عدد الطلاب:</b> '+gbNum(all)+'</span>'+
+  '<span><b>التوقعات المعتمدة:</b> '+gbNum(approved)+'</span>'+
+  '<span><b>النتائج الفعلية المعتمدة:</b> '+gbNum(finals)+'</span>'+
+  '<span><b>تاريخ الكشف:</b> '+gbDate(report.generated_at)+'</span></div>'+
+  '<div class="gb-class-table-wrap">'+gbClassTable(report)+'</div>'+
+  '<div class="gb-class-legend"><p><b>المتوقع:</b> الأعمال الفصلية من ٦٠ + تقييم A+ وA− التقديري من ٤٠. '+
+  '<b>الفعلي:</b> الأعمال نفسها من ٦٠ + الاختبار النهائي من ٤٠ بعد اعتماده.</p>'+
+  '<p><b>الرمز (—):</b> لم تُرصد الدرجة أو لم تُعتمد بعد. '+
+  '<b>(*)</b> درجة نهائي مدخلة كمسودة ولا تدخل في المجموع الحقيقي حتى اعتماد المشرف. '+
+  'س١–س٤: أسئلة الوحدات الأربع؛ ق١ وق٢: الاختباران القصيران. والفرق = الفعلي − المتوقع.</p>'+
+  '<p class="gb-class-private-note">للاستخدام التعليمي الداخلي من قبل المشرف؛ هذا كشف من المنصة ولا يحل محل سجلات المدرسة الرسمية.</p></div>'+
+  '<div class="gb-class-signatures"><div><b>الإعداد والإشراف</b>'+
+   '<strong>الأستاذ سعيد بن جمعة بن عبدالله البريكي</strong></div>'+
+   '<div><b>مدير المدرسة</b><strong>الأستاذ عبد الله بن علي العيسائي</strong></div></div>'+
+  '</section>';
+}
+function gbClassPanel(){
+ const report=auth.gbClassReport,cls=auth.gbSelectedClass;
+ const choices=GB_CLASS_NAMES.map(name=>'<option value="'+e(name)+'"'+(cls===name?' selected':'')+'>'+e(name)+'</option>').join('');
+ return '<section class="panel gb-class-panel"><h3>🧾 طباعة كشف الدرجات الجماعي لكل شعبة</h3>'+
+ '<p>يعرض كشف الشعبة أسماء طلابها حسب الرقم التسلسلي المعتمد، والأعمال الفصلية من ٦٠، ومؤشرات A+ وA−، وتوقع درجة النهائي من ٤٠، ودرجته الحقيقية من ٤٠، والنتيجتين من ١٠٠ والفرق بينهما.</p>'+
+ '<div class="gb-class-toolbar"><label for="gbClassSelect">اختر شعبة الصف السادس</label>'+
+ '<select id="gbClassSelect">'+choices+'</select>'+
+ '<button class="soft" type="button" id="gbClassReload" '+(auth.gbClassLoading?'disabled':'')+'>تحديث الكشف</button>'+
+ '<button class="primary" type="button" id="gbClassPrint" '+(!report||auth.gbClassLoading?'disabled':'')+'>🖨️ طباعة كشف الشعبة • A4 أفقي / حفظ PDF</button></div>'+
+ (auth.gbClassLoading?'<p class="notice">يُحمّل سجل الشعبة من قاعدة البيانات...</p>':'')+
+ (auth.gbClassError?'<p class="notice">'+e(auth.gbClassError)+'</p>':'')+
+ (report?'<div class="gb-class-screen-result">'+gbClassReportMarkup(report)+'</div>':
+ !auth.gbClassLoading?'<p class="muted">اختر الشعبة ثم حدّث الكشف لعرض درجات جميع طلابها، حتى من لم تُسجل لهم درجات بعد.</p>':'')+
+ '</section>';
+}
+function gbPrintClassReport(){
+ if(!gbClassAllowed()||!auth.gbClassReport)return;
+ const source=document.getElementById('gbPrintableClassSheet');if(!source)return;
+ document.getElementById('afaqClassPrintMount')?.remove();
+ const mount=document.createElement('div');mount.id='afaqClassPrintMount';
+ mount.appendChild(source.cloneNode(true));document.body.appendChild(mount);
+ document.body.classList.add('afaq-print-class-sheet');
+ window.print();
+}
+window.addEventListener('afterprint',()=>{
+ document.body.classList.remove('afaq-print-class-sheet');
+ document.getElementById('afaqClassPrintMount')?.remove();
+});
+
 const gbOriginalPersonalPanel=personalPanel,gbOriginalStudentAdmin=studentAdmin;
 const gbOriginalStaffPanel=staffPanel,gbOriginalStaffOverview=staffOverview,gbOriginalAttachPortal=attachPortal;
 personalPanel=function(p){
@@ -241,7 +370,17 @@ studentAdmin=function(){
  return page;
 };
 if(!staffMenu.some(x=>x[0]==='approvals'))staffMenu.push(['approvals','اعتماد النتائج']);
+if(!staffMenu.some(x=>x[0]==='class_results'))staffMenu.push(['class_results','كشوف الشعب']);
 staffPanel=function(){
+ if(auth.section==='class_results'&&gbClassAllowed()){
+  const tabs=staffMenu.filter(([key])=>isAdmin()||key!=='approvals').map(([key,title])=>
+   '<button class="chip '+(auth.section===key?'sel':'')+'" data-tab="'+e(key)+'">'+e(title)+'</button>').join('');
+  return '<div class="dashboard-banner"><div><h2>كشوف درجات الشعب الثلاث</h2>'+
+   '<p>كشوف خاصة بالمشرف ومساعده؛ تعرض المتوقع والحقيقي وحالة اعتماد كل طالب.</p></div>'+
+   '<button class="outline" id="portalLogout">خروج آمن</button></div>'+
+   '<div class="chips">'+tabs+'</div>'+
+   (auth.error||auth.message?infoMessage():'')+gbClassPanel();
+ }
  if(auth.section!=='approvals'||!isAdmin())return gbOriginalStaffPanel();
  const tabs=staffMenu.map(([key,title])=>'<button class="chip '+(auth.section===key?'sel':'')+'" data-tab="'+e(key)+'">'+e(title)+'</button>').join('');
  const rows=(auth.roster||[]).filter(x=>x.status==='draft'||x.status==='approved');
@@ -301,6 +440,15 @@ function gbShare(mode,channel){
 
 attachPortal=function(){
  gbOriginalAttachPortal();
+ document.querySelectorAll('[data-tab="class_results"]').forEach(el=>el.addEventListener('click',()=>{
+  if(gbClassAllowed()&&!auth.gbClassReport&&!auth.gbClassLoading)
+   gbLoadClassReport(auth.gbSelectedClass);
+ }));
+ document.getElementById('gbClassSelect')?.addEventListener('change',ev=>{
+  const selected=ev.target.value;if(GB_CLASS_NAMES.includes(selected))gbLoadClassReport(selected);
+ });
+ document.getElementById('gbClassReload')?.addEventListener('click',()=>gbLoadClassReport(auth.gbSelectedClass));
+ document.getElementById('gbClassPrint')?.addEventListener('click',gbPrintClassReport);
  document.querySelectorAll('[data-print-gradebook]').forEach(el=>el.addEventListener('click',()=>gbPrint(el.dataset.printGradebook)));
  document.querySelectorAll('[data-gb-share]').forEach(el=>el.addEventListener('click',()=>gbShare(el.dataset.gbShare,el.dataset.gbChannel)));
  document.querySelectorAll('[data-gb-open]').forEach(el=>el.addEventListener('click',async()=>{
