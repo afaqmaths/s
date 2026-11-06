@@ -221,3 +221,38 @@
  #contestApp .afaq-cert-warning{font-size:10px!important}
  #contestApp .afaq-certificate{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+/* AFAQ 400-POINT CERTIFICATE */
+.afaq-certificate .afaq-cert-units{margin-top:12px}
+.afaq-certificate .afaq-cert-units h4{font-size:clamp(21px,1.65vw,26px);color:#173f76;margin:12px 0 10px}
+.afaq-certificate .afaq-cert-units-table th:nth-child(2){width:31%}
+.afaq-certificate .afaq-cert-overall,
+.contest-finish>.afaq-cert-overall{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:15px;background:linear-gradient(125deg,#103d71,#137b83);color:white;border-radius:16px;padding:14px 19px;margin:15px 0;font-size:clamp(19px,1.3vw,23px);font-weight:850}
+.afaq-certificate .afaq-cert-overall strong,
+.contest-finish>.afaq-cert-overall strong{font-size:clamp(34px,3vw,47px);font-weight:950;color:#ffe7a6;white-space:nowrap}
+.afaq-certificate .afaq-cert-stages{margin-top:14px;padding:11px;background:#f8fbff;border:1px solid #dbe8f5;border-radius:14px}
+.afaq-certificate .afaq-cert-stages h4{font-size:clamp(18px,1.3vw,22px)}
+.afaq-certificate .afaq-cert-unit-detail{font-size:clamp(15px,1.1vw,19px)!important;color:#375b85;margin:8px auto!important}
+.afaq-certificate .afaq-cert-thanks{font-size:clamp(17px,1.1vw,20px)!important;color:#77551d;font-weight:850;margin:9px 0 3px!important}
+.afaq-certificate .afaq-cert-footer{direction:rtl;align-items:flex-start}
+.afaq-certificate .afaq-cert-footer>div:first-child{text-align:right}
+.afaq-certificate .afaq-cert-footer>div:last-child{text-align:left}
+.afaq-certificate .afaq-cert-footer span{font-weight:850;color:#184879}
+@media(max-width:650px){
+ .afaq-certificate .afaq-cert-footer>div{text-align:center!important}
+ .afaq-certificate .afaq-cert-overall{padding:10px;gap:8px}
+ .afaq-certificate .afaq-cert-overall strong{font-size:29px}
+}
+@media print{
+ #contestApp .afaq-certificate .afaq-cert-units{margin-top:4px!important}
+ #contestApp .afaq-certificate .afaq-cert-units h4{font-size:15px!important;margin:5px 0 3px!important}
+ #contestApp .afaq-certificate .afaq-cert-overall{padding:5px 12px!important;margin:6px 0!important;gap:12px!important;border-radius:6px!important}
+ #contestApp .afaq-certificate .afaq-cert-overall span{font-size:13px!important}
+ #contestApp .afaq-certificate .afaq-cert-overall strong{font-size:25px!important}
+ #contestApp .afaq-certificate .afaq-cert-stages{margin-top:6px!important;padding:4px!important;border-radius:5px!important}
+ #contestApp .afaq-certificate .afaq-cert-stages h4{margin:3px 0!important;font-size:13px!important}
+ #contestApp .afaq-certificate .afaq-cert-unit-detail{font-size:11px!important;margin:3px auto!important}
+ #contestApp .afaq-certificate .afaq-cert-thanks{font-size:12px!important;margin:4px 0 1px!important}
+ #contestApp .afaq-certificate .afaq-cert-footer>div{font-size:12px!important}
+ #contestApp .afaq-certificate .afaq-cert-qualification{font-size:12px!important;padding:4px 7px!important;margin:4px 0!important}
+}
