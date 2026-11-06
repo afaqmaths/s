@@ -133,3 +133,8 @@
 @media(max-width:880px){.contest-feedback-grid{grid-template-columns:1fr}.contest-feedback-summary{position:static;grid-row:1}.contest-feedback-question{grid-row:2}.contest-feedback-avatar{width:65px;height:65px}.contest-feedback-screen{padding:0 4px}}
 @media(max-width:520px){.contest-race{padding:11px 14px 20px}.contest-race-track{margin-right:12px;margin-left:12px}.contest-feedback-summary,.contest-feedback-question{padding:13px}.contest-feedback-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.contest-feedback-metrics>div{padding:8px 3px}.contest-feedback-metrics strong{font-size:18px}.contest-feedback-metrics small{font-size:13px!important}.contest-review-option{padding:8px!important;min-height:58px!important}.contest-answer-tag{font-size:14px}.contest-feedback-title h2{font-size:23px!important}.contest-feedback-title p{font-size:15px!important}.contest-stage-results{padding:15px}}
 @media(prefers-reduced-motion:reduce){.contest-race-car{animation:none}.contest-race-fill{transition:none}}
+
+/* Advance only on answered questions; never jump backwards between questions. */
+@keyframes afaq-race-advance{from{width:var(--race-start)}to{width:var(--race-end)}}
+.contest-race-fill.race-advance{animation:afaq-race-advance .8s cubic-bezier(.18,.65,.2,1) both}
+@media(prefers-reduced-motion:reduce){.contest-race-fill.race-advance{animation:none}}
