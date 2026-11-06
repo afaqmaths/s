@@ -64,3 +64,8 @@
 .contest-bank-item{margin:12px 0;border:1px solid #d5e1f2;border-radius:15px;padding:15px}.contest-bank-item summary{cursor:pointer;font-size:18px;font-weight:800}.contest-bank-item form>*{display:block;width:100%;margin:8px 0}
 @media(max-width:1060px){.contest-units{grid-template-columns:repeat(2,minmax(0,1fr))}.stage-track{grid-template-columns:repeat(3,minmax(0,1fr))}.contest-stage-banner{flex-wrap:wrap}}
 @media(max-width:700px){.contest-units{grid-template-columns:1fr}.stage-track{grid-template-columns:repeat(2,minmax(0,1fr))}.contest-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.contest-stage-banner{padding:16px}.contest-character{width:78px;height:78px;font-size:43px}.contest-timer{width:100%;margin:0}.contest-question{padding:20px 15px}.contest-question-meta{padding:12px 15px 0}.contest-headline{flex-wrap:wrap}.contest-controls{padding:0 15px 18px}.contest-score-badge{width:100%}.contest-start-wrap .primary{width:100%}}
+/* صور المراحل الأصلية المحفوظة من ألعاب آفاق الرياضيات */
+.stage-emoji img{width:69px;height:69px;border-radius:17px;object-fit:cover;border:2px solid #fff;box-shadow:0 8px 16px #14316722;display:block}
+.contest-character img{width:100%;height:100%;object-fit:cover;border-radius:26px;display:block}
+.contest-hero h1{color:#fff!important}.contest-hero p{color:#e7f6ff!important}
+@media(max-width:700px){.stage-emoji img{width:57px;height:57px}.contest-character img{border-radius:19px}}
