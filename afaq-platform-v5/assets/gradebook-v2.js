@@ -161,11 +161,21 @@ const gbRefresh=async (profile,message)=>{
 };
 const gbSelected=()=>auth.selectedStudent;
 function gbPrint(){
- if(!document.getElementById('afaqSchoolGradeCertificate'))return;
+ const certificate=document.getElementById('afaqSchoolGradeCertificate');
+ if(!certificate)return;
+ const previous=document.getElementById('afaqSchoolPrintMount');
+ if(previous)previous.remove();
+ const mount=document.createElement('div');
+ mount.id='afaqSchoolPrintMount';
+ mount.appendChild(certificate.cloneNode(true));
+ document.body.appendChild(mount);
  document.body.classList.add('afaq-print-school-grade');
  window.print();
 }
-window.addEventListener('afterprint',()=>document.body.classList.remove('afaq-print-school-grade'));
+window.addEventListener('afterprint',()=>{
+ document.body.classList.remove('afaq-print-school-grade');
+ document.getElementById('afaqSchoolPrintMount')?.remove();
+});
 attachPortal=function(){
  gbOriginalAttachPortal();
  document.querySelectorAll('[data-print-gradebook]').forEach(el=>el.addEventListener('click',gbPrint));
