@@ -1,11 +1,12 @@
 /* سجل نتائج آفاق الرياضيات — الشفوي ١٠، الكتابي ١٠، القصيرة ٢٠، الواجب ١٠، المشروع ١٠، منافسات A ٤٠. */
 'use strict';
 const GB_COMPONENTS=[
- ['oral_score','الشفوي',10],['written_score','الأعمال الكتابية',10],
- ['short1_score','الاختبار القصير الأول',5],['short2_score','الاختبار القصير الثاني',5],
- ['short3_score','الاختبار القصير الثالث',5],['short4_score','الاختبار القصير الرابع',5],
- ['homework_score','الواجب المنزلي',10],['project_score','المشروع الرياضي',10],
- ['a_score','الدرجة الفعلية للمنافسات الصفية A',40]
+ ['oral_score','الأعمال الشفوية',10],
+ ['short1_score','سؤال الوحدة الأولى',5],['short2_score','سؤال الوحدة الثانية',5],
+ ['short3_score','سؤال الوحدة الثالثة',5],['short4_score','سؤال الوحدة الرابعة',5],
+ ['short_exam1_score','الاختبار القصير الأول',10],['short_exam2_score','الاختبار القصير الثاني',10],
+ ['project_score','المشروع الرياضي',10],
+ ['a_score','توقع درجة النهائي وفق مؤشرات A+ وA−',40]
 ];
 const GB_PLUS=['دائرة الضوء','إجابة مميزة','المعلم الصغير','الحل السريع','مسابقة صفية','مشاركة إيجابية','مبادرة أخرى','ترحيل من الدفتر'];
 const GB_MINUS=['إخفاق في مسابقة','التحدث أثناء الشرح','الإهمال','سلوك غير مناسب داخل الصف','سلوك غير مناسب داخل المدرسة','مخالفة أخرى','ترحيل من الدفتر'];
@@ -20,36 +21,72 @@ const gbErr=code=>({
  reopen_approved_first:'الدرجات معتمدة؛ على المشرف إعادة فتحها أولًا.',
  assessment_not_found:'لا يوجد تقييم مسجل لهذا الطالب.',
  already_approved:'النتيجة معتمدة بالفعل.',
- not_approved:'الدرجات ليست معتمدة حاليًا.'
+ not_approved:'الدرجات ليست معتمدة حاليًا.',
+ invalid_final_score:'درجة الاختبار النهائي يجب أن تكون من ٠ إلى ٤٠.',
+ prediction_not_approved:'يجب اعتماد التوقع أولًا قبل اعتماد الدرجة الفعلية.',
+ final_score_required:'أدخل درجة الاختبار النهائي من ٤٠ قبل اعتماد النتيجة.',
+ reopen_final_first:'أعد فتح اعتماد الاختبار النهائي أولًا قبل تعديل التوقع.'
 })[code]||code;
+
 function gbSummary(p,staff=false){
  if(!p||p.demo)return '';
  const a=p.assessment;
  if(!a)return '<section class="panel gb-summary"><h3>📊 نتائج الرياضيات من ١٠٠</h3><p class="notice">'+
-  (p.assessment_status==='pending'?'الدرجات قيد الرصد والمراجعة من المشرف.':'لم تُعتمد نتائج هذا الطالب بعد.')+
-  '</p><p>الشفوي ١٠، الكتابي ١٠، أربع اختبارات قصيرة × ٥، الواجب ١٠، المشروع ١٠، منافسات A من ٤٠.</p></section>';
- const approved=a.status==='approved';
- const cards=[
- ['الشفوي',a.oral_score,10],['الأعمال الكتابية',a.written_score,10],
- ['الأسئلة القصيرة',a.short_tests,20],['الواجب المنزلي',a.homework_score,10],
- ['المشروع',a.project_score,10],['المنافسات الصفية A',a.a_score,40]
- ];
- const sections=cards.map(x=>'<div><strong>'+gbPresent(x[1])+' / '+gbNum(x[2])+'</strong><small>'+e(x[0])+'</small></div>').join('');
- const detail=GB_COMPONENTS.map(x=>'<tr><td>'+e(x[1])+'</td><td>'+gbPresent(a[x[0]])+' / '+gbNum(x[2])+'</td></tr>').join('');
- const ev=(p.assessment_events||[]).slice(0,30).map(x=>'<tr><td>'+(x.kind==='plus'?'A+':'A−')+'</td><td>'+e(x.category)+'</td><td>'+gbNum(x.points)+'</td><td>'+e(x.note||'—')+'</td><td>'+gbDate(x.created_at)+'</td></tr>').join('');
- return '<section class="panel gb-summary"><h3>📊 '+(staff?'متابعة درجات الطالب':'نتيجتي في مادة الرياضيات')+' — ١٠٠ درجة</h3>'+
- '<p class="gb-approval '+(approved?'gb-approved':'gb-draft')+'">'+(approved?'✓ نتيجة معتمدة من مشرف المنصة':'مسودة قيد الاعتماد — ليست نتيجة نهائية')+'</p>'+
- '<div class="gb-tiles">'+sections+'<div class="gb-final"><strong>'+(a.complete?gbNum(a.total):'—')+' / ١٠٠</strong><small>المجموع الكلي</small></div></div>'+
- '<details class="gb-breakdown"><summary>إظهار تفاصيل التقييمات الأربعة القصيرة وبقية الدرجات</summary>'+
- '<table><thead><tr><th>مجال التقييم</th><th>الدرجة</th></tr></thead><tbody>'+detail+'</tbody></table>'+
- '<p>نقاط الدفتر: A+ = '+gbNum(a.a_plus_points)+'، A− = '+gbNum(a.a_minus_points)+
- '. الفرق الاسترشادي: '+gbNum(a.a_suggested)+' / ٤٠؛ لا يحلّ محل الدرجة الفعلية التي يحددها المشرف.</p>'+
- (ev?'<h4>سجل رصد نقاط A+ وA−</h4><div class="gb-table-scroll"><table><thead><tr><th>النوع</th><th>السبب</th><th>النقاط</th><th>ملاحظات</th><th>التاريخ</th></tr></thead><tbody>'+ev+'</tbody></table></div>':'')+
+  (p.assessment_status==='pending'?'درجات الطالب قيد الرصد والمراجعة.':'لم تُعتمد نتائج هذا الطالب بعد.')+
+  '</p><p>٦٠ درجة أعمال فصلية (شفوي ١٠، أربعة أسئلة وحدات × ٥، اختباران قصيران × ١٠، مشروع ١٠)، و٤٠ درجة للتوقع أو الاختبار النهائي.</p></section>';
+ const approved=a.status==='approved',real=a.final_status==='approved'&&a.final_complete&&a.actual_total!==null;
+ const sections=[
+  ['الأعمال الشفوية',a.oral_score,10],
+  ['أسئلة الوحدات الأربع',a.short_questions,20],
+  ['الاختباران القصيران',a.short_exams,20],
+  ['المشروع',a.project_score,10],
+  ['التوقع A+ وA−',a.a_score,40]
+ ].map(([label,value,max])=>'<div><strong>'+gbPresent(value)+' / '+gbNum(max)+'</strong><small>'+e(label)+'</small></div>').join('');
+ const detail=GB_COMPONENTS.map(([key,label,max])=>'<tr><td>'+e(label)+'</td><td>'+gbPresent(a[key])+' / '+gbNum(max)+'</td></tr>').join('');
+ const events=(p.assessment_events||[]).slice(0,30).map(x=>'<tr><td>'+(x.kind==='plus'?'A+':'A−')+'</td><td>'+e(x.category)+'</td><td>'+gbNum(x.points)+'</td><td>'+e(x.note||'—')+'</td><td>'+gbDate(x.created_at)+'</td></tr>').join('');
+ const comparison=real?'<section class="gb-compare"><h4>📈 مقارنة الدرجة المتوقعة بالدرجة الفعلية بعد الاختبار النهائي</h4>'+
+ '<div class="gb-compare-grid"><div><small>النتيجة المتوقعة</small><strong>'+gbNum(a.estimated_total)+' / ١٠٠</strong></div>'+
+ '<div><small>النتيجة الحقيقية</small><strong>'+gbNum(a.actual_total)+' / ١٠٠</strong></div>'+
+ '<div><small>الفرق (الحقيقية − المتوقعة)</small><strong>'+gbSigned(a.difference)+' درجة</strong></div></div>'+
+ '<p>'+e(gbCompareText(a.difference))+'</p></section>':
+ (a.final_score!==null&&a.final_score!==undefined&&staff?
+ '<p class="notice">درجة الاختبار النهائي مسجلة كمسودة من ٤٠، ولم تُعتمد بعد، لذلك لا تظهر للطالب.</p>':'');
+ const predictionButtons=approved?gbActions('prediction')+'<div class="gb-print-zone">'+gbCertificate(p,'prediction')+'</div>':
+ '<p class="muted">شهادة التوقع لا تُتاح للطالب قبل اعتماد رصد الأعمال الفصلية ومؤشر A من ٤٠.</p>';
+ const finalButtons=real?gbActions('final')+'<div class="gb-print-zone">'+gbCertificate(p,'final')+'</div>':
+ '<p class="muted">الشهادة الفعلية متاحة بعد رصد درجة الاختبار النهائي من ٤٠ واعتماد المشرف لها.</p>';
+ return '<section class="panel gb-summary"><h3>📊 '+(staff?'متابعة نتيجة الطالب':'نتائجي في الرياضيات')+' — ١٠٠ درجة</h3>'+
+ '<p class="gb-approval '+(approved?'gb-approved':'gb-draft')+'">'+
+ (approved?'✓ التوقع معتمد — '+(real?'والنتيجة الفعلية معتمدة':'والاختبار النهائي لم يُعتمد بعد'):
+ 'توقع غير معتمد — لا ينشر للطالب')+'</p>'+
+ '<div class="gb-tiles">'+sections+'<div class="gb-final"><strong>'+(a.complete?gbNum(a.estimated_total):'—')+' / ١٠٠</strong><small>النتيجة المتوقعة قبل النهائي</small></div></div>'+
+ comparison+
+ '<details class="gb-breakdown"><summary>تفاصيل أسئلة الوحدات والاختبارين القصيرين وسجل A</summary>'+
+ '<table><thead><tr><th>المجال</th><th>الدرجة</th></tr></thead><tbody>'+detail+
+ '<tr><td>الاختبار النهائي (عوضًا عن A في النتيجة الفعلية)</td><td>'+gbPresent(a.final_score)+' / ٤٠</td></tr></tbody></table>'+
+ '<p>مؤشرات الدفتر: A+ = '+gbNum(a.a_plus_points)+'، A− = '+gbNum(a.a_minus_points)+
+ '. الفرق الاسترشادي: '+gbNum(a.a_suggested)+' / ٤٠؛ الدرجة المتوقعة تعتمد على تقدير المشرف، وليس على حساب آلي للنقاط.</p>'+
+ (events?'<h4>سجل رصد A+ وA−</h4><div class="gb-table-scroll"><table><thead><tr><th>النوع</th><th>السبب</th><th>النقاط</th><th>ملاحظات</th><th>التاريخ</th></tr></thead><tbody>'+events+'</tbody></table></div>':'')+
  '</details>'+
- (approved?'<div class="gb-print-controls"><button class="primary" type="button" data-print-gradebook>🖨️ طباعة شهادة النتائج / حفظ PDF (A4 أفقي)</button></div>'+
- '<div class="gb-print-zone">'+gbCertificate(p)+'</div>':'<p class="muted">تتاح الشهادة بعد رصد جميع الدرجات واعتماد المشرف الرئيسي.</p>')+
- '</section>';
+ '<section class="gb-two-certificates"><h4>الشهادة الأولى: توقع النتيجة قبل الاختبار النهائي</h4>'+
+ '<p>٦٠ درجة أعمال وتقييمات + ٤٠ درجة متوقعة وفق مؤشرات A+ وA−.</p>'+predictionButtons+
+ '<h4>الشهادة الثانية: النتيجة الحقيقية بعد الاختبار النهائي</h4>'+
+ '<p>٦٠ درجة أعمال وتقييمات + ٤٠ درجة الاختبار النهائي المعتمدة، مع المقارنة بالتوقع.</p>'+finalButtons+'</section></section>';
 }
+const gbSigned=v=>v>0?'+'+gbNum(v):gbNum(v);
+function gbCompareText(delta){
+ if(delta===null||delta===undefined)return 'النتيجة الفعلية لم تُعتمد بعد.';
+ if(delta===0)return 'تطابقت النتيجة المتوقعة والنتيجة الحقيقية تمامًا.';
+ if(delta>0)return 'تجاوزت النتيجة الحقيقية التوقع بمقدار '+gbNum(delta)+' درجات.';
+ return 'جاءت النتيجة الحقيقية أقل من التوقع بمقدار '+gbNum(Math.abs(delta))+' درجات.';
+}
+function gbActions(mode){
+ const label=mode==='final'?'شهادة الدرجة الحقيقية':'شهادة الدرجة المتوقعة';
+ return '<div class="gb-print-controls"><button class="primary" type="button" data-print-gradebook="'+mode+'">🖨️ طباعة '+label+' / حفظ PDF</button>'+
+ '<button class="outline" type="button" data-gb-share="'+mode+'" data-gb-channel="whatsapp">مشاركة الملخص عبر واتساب</button>'+
+ '<button class="outline" type="button" data-gb-share="'+mode+'" data-gb-channel="email">إرسال الملخص بالبريد الإلكتروني</button></div>';
+}
+
 function gbPraise(total){
  if(total>=90)return 'تقديرًا لتفوقك المتميز وجهودك المتواصلة في تعلم الرياضيات والمنافسات الصفية، نهنئك على هذا الإنجاز ونتمنى لك دوام الإبداع والتألق.';
  if(total>=80)return 'نُشيد بأدائك المتفوق واجتهادك في الأنشطة والاختبارات والمنافسات الصفية، ونثمن ما بذلته من جهد لتحقيق هذه النتيجة.';
@@ -57,37 +94,81 @@ function gbPraise(total){
  if(total>=50)return 'نثمّن جهودك ومثابرتك في أداء الواجبات والتقييمات، ونشجعك على مواصلة المحاولة والمراجعة والتقدم.';
  return 'نقدّر جهودك ومحاولاتك في التعلم، وندعوك إلى عدم التوقف عن التدريب؛ فكل محاولة خطوة نحو مزيد من الفهم والنجاح.';
 }
-function gbCertificate(p){
- const a=p?.assessment,st=p?.student||{};
+
+function gbCertificate(p,mode='prediction'){
+ const a=p?.assessment,st=p?.student||{},final=mode==='final';
  if(!a||a.status!=='approved'||!a.complete)return '';
- const total=Number(a.total||0),date=gbDate(a.approved_at);
- const qs=[1,2,3,4].map(n=>'<tr><td>الاختبار القصير '+gbNum(n)+'</td><td>'+gbNum(a['short'+n+'_score'])+' / ٥</td></tr>').join('');
- const award=total>=90?'شهادة تفوق وتقدير':'شهادة نتائج وتقدير';
- return '<section class="gb-certificate" id="afaqSchoolGradeCertificate" dir="rtl">'+
+ if(final&&!(a.final_status==='approved'&&a.final_complete&&a.actual_total!==null))return '';
+ const total=Number(final?a.actual_total:a.estimated_total),sub=Number(a.coursework||0);
+ const date=gbDate(final?a.final_approved_at:a.approved_at);
+ const isFinal=final,chosen=Number(final?a.final_score:a.a_score);
+ const examRows=[1,2].map(n=>'<tr><td>الاختبار القصير '+gbNum(n)+'</td><td>'+gbNum(a['short_exam'+n+'_score'])+' / ١٠</td></tr>').join('');
+ const questionRows=[1,2,3,4].map(n=>'<tr><td>سؤال الوحدة '+gbNum(n)+'</td><td>'+gbNum(a['short'+n+'_score'])+' / ٥</td></tr>').join('');
+ const comparison=final?'<p class="gb-cert-compare">المتوقع قبل النهائي: '+gbNum(a.estimated_total)+
+  ' / ١٠٠ • الفعلي بعد النهائي: '+gbNum(total)+' / ١٠٠ • الفرق: '+gbSigned(a.difference)+'</p>':'';
+ return '<section class="gb-certificate '+(final?'gb-cert-actual':'gb-cert-prediction')+
+  '" id="afaqSchoolGradeCertificate-'+mode+'" dir="rtl">'+
  '<div class="gb-flag"><span></span><span></span><span></span></div>'+
- '<div class="gb-cert-head"><div class="gb-icon" aria-hidden="true">🏆</div><div><p>سلطنة عُمان • مدرسة الحسين بن علي للتعليم الأساسي</p>'+
- '<h2>منصة آفاق الرياضيات</h2><h3>'+award+' — مادة الرياضيات</h3></div><div class="gb-icon" aria-hidden="true">🥇</div></div>'+
- '<div class="gb-cert-name"><span>تتقدم المنصة بالشكر والتقدير للطالب</span><strong>'+e(st.full_name||st.display_name||'الطالب')+'</strong>'+
- '<small>'+e(st.class_name||'الصف السادس')+' • الرقم في الشعبة: '+e(st.serial_no??'—')+' • '+e(date)+'</small></div>'+
- '<div class="gb-cert-content"><div class="gb-cert-grades"><table><thead><tr><th>مجال التقييم</th><th>الدرجة المستحقة</th></tr></thead><tbody>'+
- '<tr><td>الشفوي</td><td>'+gbNum(a.oral_score)+' / ١٠</td></tr>'+
- '<tr><td>الأعمال الكتابية</td><td>'+gbNum(a.written_score)+' / ١٠</td></tr>'+
- qs+'<tr class="gb-cert-sub"><td>مجموع الاختبارات القصيرة</td><td>'+gbNum(a.short_tests)+' / ٢٠</td></tr>'+
- '<tr><td>الواجب المنزلي</td><td>'+gbNum(a.homework_score)+' / ١٠</td></tr>'+
+ '<div class="gb-cert-head"><div class="gb-icon" aria-hidden="true">🏆</div>'+
+ '<div><p>سلطنة عُمان • مدرسة الحسين بن علي للتعليم الأساسي</p>'+
+ '<h2>منصة آفاق الرياضيات</h2><h3>'+(final?'شهادة النتيجة الفعلية بعد الاختبار النهائي':
+ 'شهادة النتيجة المتوقعة قبل الاختبار النهائي')+'</h3></div>'+
+ '<div class="gb-icon" aria-hidden="true">🥇</div></div>'+
+ '<div class="gb-cert-name"><span>تتقدم المنصة بالشكر والتقدير للطالب</span>'+
+ '<strong>'+e(st.full_name||st.display_name||'الطالب')+'</strong>'+
+ '<small>'+e(st.class_name||'الصف السادس')+' • الرقم في الشعبة: '+e(st.serial_no??'—')+' • تاريخ الاعتماد: '+e(date)+'</small></div>'+
+ '<div class="gb-cert-content"><div class="gb-cert-grades"><table><thead><tr>'+
+ '<th>مجال التقييم</th><th>الدرجة</th></tr></thead><tbody>'+
+ '<tr><td>الأعمال الشفوية</td><td>'+gbNum(a.oral_score)+' / ١٠</td></tr>'+
+ questionRows+
+ '<tr class="gb-cert-sub"><td>مجموع أسئلة الوحدات الأربع</td><td>'+gbNum(a.short_questions)+' / ٢٠</td></tr>'+
+ examRows+
+ '<tr class="gb-cert-sub"><td>مجموع الاختبارين القصيرين</td><td>'+gbNum(a.short_exams)+' / ٢٠</td></tr>'+
  '<tr><td>المشروع الرياضي</td><td>'+gbNum(a.project_score)+' / ١٠</td></tr>'+
- '<tr><td>الدرجة المعتمدة للمنافسات الصفية A</td><td>'+gbNum(a.a_score)+' / ٤٠</td></tr>'+
- '</tbody></table></div><div class="gb-cert-achievement"><div class="gb-cert-emblem">★ <span>'+e(total>=90?'متفوق':total>=75?'مجتهد ومتميز':'روح المثابرة')+'</span> ★</div>'+
- '<p>المهام والتقويمات</p><strong>'+gbNum(a.coursework)+' / ٦٠</strong>'+
- '<p>المنافسات الصفية</p><strong>'+gbNum(a.a_score)+' / ٤٠</strong>'+
- '<div class="gb-cert-total"><span>المجموع النهائي</span><b>'+gbNum(total)+' / ١٠٠</b><small>'+gbNum(total)+'٪</small></div>'+
- '<p class="gb-cert-a">نقاط الدفتر: A+ = '+gbNum(a.a_plus_points)+' وA− = '+gbNum(a.a_minus_points)+'</p>'+
- '<p class="gb-cert-ok">الدرجة معتمدة من مشرف المنصة</p></div></div>'+
- '<div class="gb-cert-praise">'+e(gbPraise(total))+'</div>'+
+ '<tr class="gb-cert-sub"><td>المجموع قبل النهائي</td><td>'+gbNum(sub)+' / ٦٠</td></tr>'+
+ '<tr class="gb-cert-last"><td>'+(final?'الاختبار النهائي (الدرجة الحقيقية)':
+ 'توقع الاختبار النهائي من مؤشرات A+ وA−')+'</td><td>'+gbNum(chosen)+' / ٤٠</td></tr>'+
+ '</tbody></table></div><div class="gb-cert-achievement"><div class="gb-cert-emblem">★ <span>'+
+ e(total>=90?'متفوق':total>=75?'مجتهد ومتميز':'روح المثابرة')+'</span> ★</div>'+
+ '<p>الأعمال الشفوية وأسئلة الوحدات والاختبارات والمشروع</p><strong>'+gbNum(sub)+' / ٦٠</strong>'+
+ '<p>'+(final?'درجة الاختبار النهائي':'التوقع وفق A+ وA−')+'</p><strong>'+gbNum(chosen)+' / ٤٠</strong>'+
+ '<div class="gb-cert-total"><span>'+(final?'الدرجة الحقيقية النهائية':'الدرجة المتوقعة قبل النهائي')+
+ '</span><b>'+gbNum(total)+' / ١٠٠</b><small>'+gbNum(total)+'٪</small></div>'+
+ (!final?'<p class="gb-cert-a">مؤشرات الدفتر: A+ = '+gbNum(a.a_plus_points)+'، A− = '+gbNum(a.a_minus_points)+'</p>':
+ '<p class="gb-cert-a">درجة A المتوقعة: '+gbNum(a.a_score)+' / ٤٠، واستُبدلت في الحساب بدرجة النهائي الحقيقية.</p>')+
+ '<p class="gb-cert-ok">'+(final?'تم اعتماد درجة الاختبار النهائي من المشرف':
+ 'التوقع معتمد لكنه ليس الدرجة النهائية للفصل')+'</p></div></div>'+
+ comparison+'<div class="gb-cert-praise">'+e(gbPraise(total))+'</div>'+
  '<p class="gb-cert-wish">وفقك الله وسدد خطاك، وإلى مزيد من النجاح والتميّز.</p>'+
- '<p class="gb-cert-legal">وثيقة نتائج صادرة عن منصة آفاق الرياضيات؛ ليست بديلًا عن كشوف درجات المدرسة الرسمية.</p>'+
- '<div class="gb-cert-signatures"><div><b>الإعداد والإشراف</b><strong>الأستاذ سعيد بن جمعة بن عبدالله البريكي</strong></div>'+
+ '<p class="gb-cert-legal">'+(final?'هذه النتيجة مبنية على الدرجة المعتمدة للاختبار النهائي.':
+ 'هذا تقدير استرشادي قبل الاختبار النهائي، ولا يحل محل درجته الحقيقية.')+
+ ' وثيقة من منصة آفاق الرياضيات وليست بديلًا عن السجل الرسمي للمدرسة.</p>'+
+ '<div class="gb-cert-signatures"><div><b>الإعداد والإشراف</b>'+
+ '<strong>الأستاذ سعيد بن جمعة بن عبدالله البريكي</strong></div>'+
  '<div><b>مدير المدرسة</b><strong>الأستاذ عبد الله بن علي العيسائي</strong></div></div></section>';
 }
+function gbShareText(p,mode){
+ const a=p?.assessment,student=p?.student||{},isFinal=mode==='final';
+ if(!a||a.status!=='approved'||(!isFinal&&a.estimated_total===null)|| 
+  (isFinal&&(a.final_status!=='approved'||a.actual_total===null)))return '';
+ const value=Number(isFinal?a.actual_total:a.estimated_total),name=student.full_name||student.display_name||'طالب';
+ return ['منصة آفاق الرياضيات — '+(isFinal?'النتيجة الفعلية بعد الاختبار النهائي':'توقع النتيجة قبل الاختبار النهائي'),
+  'الطالب: '+name,'الشعبة: '+(student.class_name||'السادس'),
+  'الأعمال الشفوية: '+gbNum(a.oral_score)+'/١٠',
+  'أسئلة الوحدات الأربع: '+gbNum(a.short_questions)+'/٢٠',
+  'الاختباران القصيران: '+gbNum(a.short_exams)+'/٢٠',
+  'المشروع: '+gbNum(a.project_score)+'/١٠',
+  'المجموع قبل النهائي: '+gbNum(a.coursework)+'/٦٠',
+  (isFinal?'الاختبار النهائي: '+gbNum(a.final_score)+'/٤٠':
+  'توقع النهائي وفق A+ وA−: '+gbNum(a.a_score)+'/٤٠'),
+  'النتيجة: '+gbNum(value)+'/١٠٠',
+  ...(isFinal?['النتيجة المتوقعة سابقًا: '+gbNum(a.estimated_total)+'/١٠٠',
+    'الفرق (الحقيقية − المتوقعة): '+gbSigned(a.difference)]:[]),
+  isFinal?'درجة نهائية معتمدة في سجل المنصة.':'توقع استرشادي معتمد؛ لا يحل محل الاختبار النهائي.',
+  'الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي'
+ ].join('\n');
+}
+
 function gbForm(p){
  const a=p?.assessment||{},approved=a.status==='approved';
  const cells=GB_COMPONENTS.map(([k,label,max])=>'<div><label for="gb-'+k+'">'+e(label)+' — من '+gbNum(max)+'</label>'+
