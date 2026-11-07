@@ -1,7 +1,10 @@
 /* API منفصلة لبوابات آفاق العامة، دون تعديل نظام نتائج الطلاب والمسابقات الرسمي. */
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import {createClient} from "npm:@supabase/supabase-js@2.95.0";
-const db=createClient(Deno.env.get("SUPABASE_URL")||"",Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||"",{auth:{persistSession:false,autoRefreshToken:false}});
+const url=Deno.env.get("SUPABASE_URL")||"";
+let secret=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||"";
+try{secret=JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS")||"{}").default||secret}catch{}
+const db=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
 const allowOrigins=new Set(["https://afaqmaths.github.io","http://localhost:8000","http://localhost:5500","http://127.0.0.1:8000","http://127.0.0.1:5500"]);
 const headers=(origin:string)=>({"Content-Type":"application/json; charset=utf-8","Access-Control-Allow-Origin":allowOrigins.has(origin)?origin:"https://afaqmaths.github.io","Access-Control-Allow-Headers":"authorization,content-type","Access-Control-Allow-Methods":"POST,OPTIONS","Cache-Control":"no-store","Vary":"Origin"});
 const ok=(o:string,data:object,status=200)=>new Response(JSON.stringify({ok:true,...data}),{status,headers:headers(o)});
