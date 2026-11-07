@@ -68,6 +68,7 @@ function afVideoId(v){
 }
 function afAudioPage(){
  const count=afAudio.items.filter(x=>x.published).length;
+ const featuredSong=afAudio.items.find(x=>x.published&&x.category==='motivation'&&x.featured&&x.youtube_url);
  const matches=afAudio.items.filter(x=>x.published&&
  (afAudio.selected==='all'||afAudio.selected===x.category)&&
  (!afAudio.search||[x.title,x.performer,x.summary,x.spoken_text].some(v=>String(v||'').toLocaleLowerCase('ar').includes(afAudio.search.toLocaleLowerCase('ar')))));
@@ -84,10 +85,11 @@ function afAudioPage(){
  '<button class="af-button-white" data-route="visitor">بوابة الزائر</button>'+
  '<span>'+afNum(count)+' مادة منشورة</span></div></div>'+
  '<div class="af-hero-art" role="img" aria-label="سماعات حديثة وموجات صوتية"><span>🎧</span><i>♪</i><i>♫</i><i>★</i></div></section>'+
- '<section class="af-featured-story"><span class="af-story-star">⭐</span>'+
- '<div><strong>اختيار تحفيزي: حكاية الأبطال — علاء الخالدي</strong>'+
- '<p>مقطع عن الطموح والنجاح، يُشغَّل من فيديو صاحبه الرسمي؛ لا يُنسخ أو يُنزّل صوتيًا دون إذن.</p></div>'+
- '<button class="hub-secondary" type="button" data-af-cat="motivation">استكشف التحفيز والنجاح</button></section>'+
+ (featuredSong?'<section class="af-featured-story"><span class="af-story-star">⭐</span>'+
+ '<div><strong>اختيار تحفيزي: '+afEsc(featuredSong.title)+'</strong>'+
+ '<p>'+afEsc(featuredSong.summary||'مقطع تحفيزي عن الطموح والنجاح.')+
+ ' يُعرض من مصدره الرسمي دون إعادة نشر الملف الصوتي.</p></div>'+
+ '<button class="hub-secondary" type="button" data-af-cat="motivation">استكشف التحفيز والنجاح</button></section>':'')+
  '<section class="af-catalog-panel"><div class="af-heading"><h2>اختر قسم الاستماع</h2>'+
  '<p>اضغط على القسم لتصفية المواد، أو ابحث عن اسم القارئ أو عنوان المقطع.</p></div>'+
  '<div class="af-categories">'+cats+'</div>'+
