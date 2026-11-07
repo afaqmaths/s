@@ -133,3 +133,177 @@ function ssPlanView(kind){
  ssTxt('مؤشرات الإنجاز والشواهد','evidence',b.evidence||'',3)+
  '<button class="primary" type="submit">حفظ الخطة</button></form>'+ssRecordList(type)+'</section>';
 }
+
+
+function ssLessonCatalogView(){
+ const units=Object.keys(SS_CATALOG[ssState.term]||{});
+ const added=ssCustomLessons();
+ return '<section class="ss-card ss-index"><h3>فهرس رياضيات الصف السادس</h3>'+
+ '<p>'+(ssState.term===1?'أسماء الدروس المعروضة مستندة إلى فهرس كتاب الطالب للفصل الأول وإلى نماذج التحضير المرفقة، وهي قابلة للتعديل والإضافة.':
+ 'لم يُرفق كتاب الفصل الثاني للتحقق من فهرسه كاملاً؛ أضف الوحدات والدروس دون اعتبار المقترحات افتراضًا للمقرر الرسمي.')+'</p>'+
+ (units.length?'<div class="ss-index-grid">'+units.map(u=>'<div><h4>'+ssEsc(u)+'</h4><ol>'+SS_CATALOG[ssState.term][u].map(l=>'<li>'+ssEsc(l)+'</li>').join('')+'</ol></div>').join('')+'</div>':'')+
+ (added.length?'<h4>دروس أضافها المشرف</h4><p>'+added.map(x=>ssEsc(x.unit+' — '+x.lesson)).join('، ')+'</p>':'')+
+ '<details><summary>إضافة وحدة أو درس إلى الفهرس</summary>'+
+ '<form id="ssCustomLessonForm" class="ss-grid">'+
+ ssInp('الوحدة / المجال','unit','','text','required')+
+ ssInp('عنوان الدرس الجديد','lesson','','text','required')+
+ ssTxt('الأهداف المقترحة (كل هدف في سطر)','objectives','',3)+
+ '<button class="soft" type="submit">إضافة الدرس إلى قائمة الاختيار</button></form></details></section>';
+}
+function ssLessonForm(){
+ const r=ssCurrentEdit('lesson_plan'),b=r?.body||{};
+ const all=ssAllLessons(),units=ssUniq([...Object.keys(SS_CATALOG[ssState.term]||{}),...ssCustomLessons().map(x=>x.unit)]);
+ const unit=ssState.lessonUnit||r?.unit||units[0]||'وحدة جديدة',
+ lessons=ssUniq(all.filter(x=>x.unit===unit).map(x=>x.lesson));
+ const lesson=ssState.lessonName||r?.lesson||lessons[0]||'درس جديد';
+ const goals=(SS_OBJECTIVES[lesson]||ssState.records.find(x=>x.record_type==='custom_lesson'&&x.lesson===lesson)?.body?.objectives||[]);
+ const oldGoals=Array.isArray(b.learning_objectives)?b.learning_objectives:[];
+ const suggested=goals.length?'<div class="ss-catalog-objectives"><h4>أهداف قابلة للاختيار'+(SS_OBJECTIVES[lesson]?' (مستخرجة من نموذج التحضير المرفق)':' (مقترحة)')+'</h4>'+
+ ssOptChecks('learning_objectives',goals,oldGoals)+'</div>':
+ '<p class="muted">لا توجد أهداف موثقة في الملفات المتاحة لهذا الدرس؛ أضف الأهداف القابلة للقياس أدناه.</p>';
+ const customGoals=oldGoals.filter(x=>!goals.includes(x)).join('\n');
+ const checked=(key,list)=>ssOptChecks(key,list,Array.isArray(b[key])?b[key]:[]);
+ const free=(label,key,rows=3)=>ssTxt(label,key,b[key]||'',rows);
+ return '<section class="ss-card"><h3>التحضير اليومي الشامل للدرس</h3>'+
+ '<p>مرجع عملي مستخلص من نماذج المساحة والمحيط، وتمييز المضلعات، والمجسمات ومقاطعها: تعلم قبلي، أهداف، نشاط أساسي، أنشطة متنوعة، تقويم تكويني وختامي، واجب، تمايز وإثراء وعلاج.</p>'+
+ ssNewButton()+ssLessonCatalogView()+
+ '<form id="ssRecordForm" data-type="lesson_plan">'+
+ '<div class="ss-grid">'+
+ ssFieldSelect('الوحدة / المجال','unit',units.length?units:[unit],unit)+
+ ssFieldSelect('الدرس','lesson',lessons.length?lessons:[lesson],lesson)+
+ ssInp('عنوان الخطة','title',r?.title||('تحضير درس: '+lesson),'text','required')+
+ ssInp('تاريخ الإعداد','date_prepared',b.date_prepared||'','date')+
+ '</div><div class="ss-grid">'+
+ '<label class="ss-field"><span>الفصول المستهدفة</span>'+checked('classes',['السادس / ٤','السادس / ٥','السادس / ٦'])+'</label>'+
+ '<label class="ss-field"><span>أيام التدريس (تاريخ في كل سطر)</span>'+
+ '<textarea name="teach_days" id="ssTeachDays" rows="3">'+ssEsc((b.teach_days||[]).join('\n'))+'</textarea>'+
+ '<div class="ss-date-helper"><input type="date" id="ssDayPicker"><button type="button" class="soft" id="ssAddDay">إضافة يوم</button></div></label></div>'+
+ suggested+free('أهداف إضافية / مخرجات التعلم (هدف في كل سطر)','custom_objectives',4)+
+ '<div class="ss-grid">'+free('التعلم القبلي / التهيئة / التمهيد','prior_learning',3)+
+ free('النشاط الأساسي: المهمة، السؤال، خطوات التنفيذ','main_activity',5)+'</div>'+
+ '<h4>أنماط الأنشطة التعليمية (اختيار متعدد)</h4>'+checked('activities',SS_ACTIVITIES)+
+ free('وصف النشاط الفردي والثنائي والجماعي','activity_details',4)+
+ '<h4>استراتيجيات التعلم (اختيار متعدد)</h4>'+checked('strategies',SS_STRATEGIES)+
+ free('استراتيجية إضافية / توضيح توظيفها','extra_strategies',3)+
+ '<h4>وسائل تعليمية محسوسة</h4>'+checked('physical_resources',SS_MATERIALS)+
+ free('وسائل محسوسة إضافية','extra_physical_resources',2)+
+ '<h4>وسائل تعليمية غير محسوسة ورقمية</h4>'+checked('digital_resources',SS_DIGITAL)+
+ '<h4>البرامج والتطبيقات التعليمية</h4>'+checked('apps',SS_APPS)+
+ free('برامج وتطبيقات إضافية','extra_apps',2)+
+ free('روابط العروض والألعاب والمحاكاة والفيديو والمرفقات (رابط لكل سطر)','resource_links',3)+
+ '<h4>التقويم بأنواعه (اختيار متعدد)</h4>'+checked('assessment_types',SS_ASSESSMENTS)+
+ '<div class="ss-grid">'+free('التقويم القبلي','diagnostic_assessment',2)+
+ free('التقويم التكويني أثناء الدرس','formative',3)+
+ free('التقويم الختامي / تذكرة الخروج','final_assessment',3)+
+ free('أسئلة الدرس وأسئلة الاختبارات بحسب الأهداف','assessment_questions',4)+
+ free('الواجب المنزلي','homework',3)+
+ free('نشاط إثرائي للطلاب المتفوقين','enrichment',3)+
+ free('نشاط علاجي للطلاب ذوي الصعوبات','remedial',3)+
+ free('تأمل المعلم والتغذية الراجعة','reflection',3)+
+ free('ملاحظات / أدلة وشواهد','notes',3)+'</div>'+
+ '<button type="submit" class="primary">💾 حفظ تحضير الدرس في سجل المعلم</button></form>'+
+ ssRecordList('lesson_plan')+'</section>';
+}
+function ssResourceView(mode){
+ const isExam=mode==='exams',type=isExam?'exam_resource':'resource',r=ssCurrentEdit(type),b=r?.body||{};
+ const items=(isExam?SS_EXAMS:[
+ {name:'Polypad — ملعب الرياضيات التفاعلي (Amplify)',url:'https://polypad.amplify.com/',source:'أدوات رياضية افتراضية مجانية'},
+ {name:'GeoGebra — برنامج الهندسة والرسوم البيانية',url:'https://www.geogebra.org/',source:'منصة رياضية تفاعلية'},
+ {name:'منصة Microsoft Sway',url:'https://sway.cloud.microsoft/',source:'توثيق الدروس والشواهد'},
+ {name:'Microsoft Teams للتعليم',url:'https://teams.microsoft.com/',source:'المتابعة والتواصل التعليمي'}
+ ]);
+ return '<section class="ss-card"><h3>'+(isExam?'الاختبارات السابقة والتمارين والروابط التعليمية':'الموارد التعليمية والبرامج الرقمية')+'</h3>'+
+ '<p>'+(isExam?'الروابط الرسمية التالية ملفات الوزارة مباشرة، بدل الاعتماد على صفحة وسيطة قد تتعطل. افتح الملف في المتصفح ثم استخدم زر التنزيل أو الطباعة؛ وموقع عمان سكول مصدر إضافي غير رسمي.':
+ 'تظهر برامج الرياضيات والتطبيقات التعليمية وروابطها المباشرة، مع إمكانية حفظ أي لعبة أو عرض أو فيديو أو ملف خارجي.')+'</p>'+
+ '<div class="ss-resources">'+items.map(x=>'<article><strong>'+ssEsc(x.name)+'</strong>'+
+ '<p>'+ssEsc(x.source)+'</p><a href="'+ssEsc(x.url)+'" target="_blank" rel="noopener noreferrer">فتح المورد والتحقق من التنزيل ↗</a></article>').join('')+'</div>'+
+ '<p class="muted">توفر الرابط الخارجي قد يتغير. المنصة لا تزعم وجود ملفات قابلة للتنزيل قبل اختبار المصدر من متصفحك.</p>'+
+ ssNewButton()+'<form id="ssRecordForm" data-type="'+type+'">'+
+ ssInp('عنوان المورد / الاختبار','title',r?.title||'','text','required')+
+ ssInp('الرابط المباشر الآمن HTTPS','resource_url',b.resource_url||'','url','placeholder="https://..."')+
+ ssFieldSelect('تصنيف المورد','classification',['اختبار سابق','اختبار قصير','اختبار تدريبي','ورقة عمل','عروض تقديمية','لعبة','فيديو','محاكاة','ملف تعليمي','كتاب أو دليل'],b.classification||(isExam?'اختبار سابق':'محاكاة'))+
+ ssTxt('وصف المورد ومحتواه','description',b.description||'',4)+
+ ssTxt('ملاحظات الاستخدام والربط بالدرس','notes',b.notes||'',3)+
+ '<button type="submit" class="primary">حفظ الرابط في مكتبة المعلم</button></form>'+
+ ssRecordList(type)+'</section>';
+}
+async function ssLoadRecords(year=ssState.year){
+ if(!canEdit())return;
+ if(ssState.loading)return;
+ ssState.loading=true;ssState.error='';render();
+ try{
+  const response=await api('teacher_records',{academic_year:year});
+  if(year!==ssState.year)return;
+  ssState.records=response.items||[];ssState.loadedYear=year;
+ }catch(err){ssState.error=err.message}
+ finally{ssState.loading=false;render()}
+}
+async function ssLoadContacts(){
+ if(!canEdit()||ssState.loading)return;
+ ssState.loading=true;ssState.error='';render();
+ try{
+  const response=await api('staff_directory');
+  ssState.contacts=response.items||[];ssState.contactsLoaded=true;
+ }catch(err){ssState.error=err.message}
+ finally{ssState.loading=false;render()}
+}
+function ssCollectForm(form){
+ const f=new FormData(form),type=form.dataset.type,body={};
+ const title=ssStr(f.get('title'));
+ if(!title)return null;
+ const excl=['title','unit','lesson','date_prepared','resource_url'];
+ if(type==='lesson_plan'){
+  const arr=['classes','activities','strategies','physical_resources','digital_resources','apps','assessment_types'];
+  for(const key of arr)body[key]=f.getAll(key).map(ssStr).filter(Boolean);
+  const selected=f.getAll('learning_objectives').map(ssStr);
+  body.learning_objectives=ssUniq([...selected,...ssItems(f.get('custom_objectives'))]);
+  body.teach_days=ssUniq(ssItems(f.get('teach_days')));
+  body.date_prepared=ssStr(f.get('date_prepared'));
+  for(const [key,val] of f.entries())if(![...arr,'learning_objectives','custom_objectives','teach_days',...excl].includes(key))
+   body[key]=ssStr(val);
+ }else{
+  for(const [key,value] of f.entries())if(!excl.includes(key))body[key]=ssStr(value);
+  if(type==='motto')body.values=ssItems(f.get('values'));
+  if(type==='resource'||type==='exam_resource')body.resource_url=ssStr(f.get('resource_url'));
+ }
+ const r=ssState.editing?.record_type===type?ssState.editing:null;
+ return {id:r?.id,expected_updated_at:r?.updated_at,
+  title,record_type:type,academic_year:ssState.year,semester:ssState.term,
+  unit:type==='lesson_plan'?ssStr(f.get('unit')):r?.unit||null,
+  lesson:type==='lesson_plan'?ssStr(f.get('lesson')):r?.lesson||null,
+  body};
+}
+async function ssSaveRecord(form){
+ const payload=ssCollectForm(form);
+ if(!payload){ssState.error='يجب إدخال عنوان السجل.';render();return}
+ try{
+  await api('save_teacher_record',payload);
+  ssState.editing=null;ssState.error='';auth.message='تم حفظ السجل في قاعدة البيانات مع المحافظة على نسخ التعديلات السابقة.';
+  await ssLoadRecords();
+ }catch(err){ssState.error=err.message;render()}
+}
+async function ssAddCustomLesson(form){
+ const f=new FormData(form);const unit=ssStr(f.get('unit')),lesson=ssStr(f.get('lesson'));
+ if(unit.length<2||lesson.length<2)return;
+ try{
+  await api('save_teacher_record',{record_type:'custom_lesson',title:lesson,unit,lesson,
+    academic_year:ssState.year,semester:ssState.term,body:{objectives:ssItems(f.get('objectives'))}});
+  ssState.lessonUnit=unit;ssState.lessonName=lesson;auth.message='تمت إضافة الدرس إلى فهرس الاختيار.';
+  await ssLoadRecords();
+ }catch(err){ssState.error=err.message;render()}
+}
+function ssTeacherView(){
+ let part='';
+ if(ssState.tab==='motto')part=ssMottoView();
+ if(ssState.tab==='goals')part=ssGoalView('goals');
+ if(ssState.tab==='initiatives')part=ssGoalView('initiatives');
+ if(ssState.tab==='annual')part=ssPlanView('annual');
+ if(ssState.tab==='term')part=ssPlanView('term');
+ if(ssState.tab==='lessons')part=ssLessonForm();
+ if(ssState.tab==='resources')part=ssResourceView('resources');
+ if(ssState.tab==='exams')part=ssResourceView('exams');
+ return ssBanner('دليل أعمال معلم الرياضيات','رسالة المعلم ← أهداف إجادة ← المبادرات ← الخطة الدراسية ← التحضير اليومي ← التقويم والمصادر')+
+ ssMenu(auth.user?.role)+
+ '<div class="ss-workspace"><p class="ss-privacy">مساحة عمل خاصة بالمشرف والمساعد؛ جميع الإضافات محفوظة في قاعدة البيانات، ويمكن تعديلها أو أرشفتها دون المساس بسجلات المسابقة أو النتائج.</p>'+
+ ssYearsAndTerm()+ssTabs()+ssDataNotice()+part+'</div>';
+}
