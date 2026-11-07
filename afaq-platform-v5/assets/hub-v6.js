@@ -780,6 +780,11 @@ async function hubRefreshPrintData(){
  render();
 }
 function hubAttach(){
+ document.getElementById('portalLogout')?.addEventListener('click',()=>{
+  hub.parentIssued=null;hub.adminItems=[];hub.inbox=[];hub.legacyInbox=[];
+  hub.stats=null;hub.adminLoaded=false;hub.inboxLoaded=false;hub.statsLoaded=false;
+  hub.parentProfile=null;hub.parentsStatus=null;
+ });
  if(state.page==='guest_trial'&&!hub.trialLoaded&&!hub.trialBusy){
   hub.trialLoaded=true;
   hubTrialLoad();
