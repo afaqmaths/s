@@ -4,12 +4,12 @@ const HUB_API='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-public
 const hub={
  catalog:[], visitorCount:null,visitPinged:false,fetching:false,error:'',
  libraryCat:'all',funCat:'all',trial:null,trialAnswers:{},trialBusy:false,
- trialStarted:false,supportTickets:[],supportTicketResult:null,
+ trialStarted:false,trialLoaded:false,supportTickets:[],supportTicketResult:null,
  parentToken:sessionStorage.getItem('afaq_parent_access_v6')||'',
  parentProfile:null,parentStatus:'',parentBusy:false,
  adminItems:[],adminLoaded:false,adminEdit:null,
  inbox:[],legacyInbox:[],inboxLoaded:false,
- stats:null,loading:false,
+ stats:null,statsLoaded:false,loading:false,
  parentIssued:null,selectedClass:'السادس / ٤',selectedSerial:1,parentsStatus:null,
  printOrientation:'portrait',printChosen:'intro'
 };
@@ -460,6 +460,7 @@ function hubStaffDashboard(){
 }
 async function hubLoadStaffStats(){
  if(!canEdit())return;
+ hub.statsLoaded=true;
  try{const d=await hubCall('staff_stats',{},auth.token);hub.stats=d.stats;if(state.page==='dashboard'&&auth.section==='overview')render()}
  catch(err){hub.error=err.message}
 }
@@ -774,6 +775,13 @@ async function hubRefreshPrintData(){
  render();
 }
 function hubAttach(){
+ if(state.page==='guest_trial'&&!hub.trialLoaded&&!hub.trialBusy){
+  hub.trialLoaded=true;
+  hubTrialLoad();
+ }
+ if(state.page==='dashboard'&&auth.section==='overview'&&canEdit()&&!hub.statsLoaded){
+  hubLoadStaffStats();
+ }
  document.querySelectorAll('[data-hub-login]').forEach(x=>x.addEventListener('click',()=>hubSetLogin(x.dataset.hubLogin)));
  document.querySelectorAll('[data-hub-library]').forEach(x=>x.addEventListener('click',()=>{
   hub.libraryCat=x.dataset.hubLibrary;render();
