@@ -184,3 +184,12 @@ body{background:#f6f9ff}
 .hub-original-comic figcaption{font-size:13px;color:#6a8095;margin-top:7px}
 
 .stars-shortcut[hidden]{display:none!important}
+
+/* Three equal public competition portals, highlighted in the visitor gateway */
+.hub-free-contests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
+.hub-free-contests .hub-resource-card{padding:22px 19px;border-width:2px;border-color:#c7d9e9;min-height:320px}
+.hub-free-contests .hub-resource-card>b{font-size:20px;min-height:58px}
+.hub-free-contests .hub-visual{width:115px;height:115px;min-width:115px;min-height:115px}
+.hub-free-contests .hub-visual svg{width:81px;height:81px}
+@media(max-width:900px){.hub-free-contests{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.hub-free-contests{grid-template-columns:1fr}}
