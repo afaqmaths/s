@@ -224,3 +224,157 @@ function hubFun(){
  '<section class="hub-main"><h2>تحدٍّ فكري قصير</h2><p>عدد زوجي أكبر من ٢٠ وأصغر من ٣٠، وهو من مضاعفات العدد ٤. ما العدد؟</p>'+
  '<details><summary>افتح الحل</summary><strong>٢٤</strong>؛ لأنه زوجي ومن مضاعفات ٤.</details></section></div>';
 }
+
+
+async function hubTrialLoad(){
+ if(hub.trialBusy)return;hub.trialBusy=true;
+ try{
+  const d=await hubCall('guest_trial_status',{visitor_id:hubVisitorKey()});
+  hub.trial=d.trial;hub.error='';
+ }catch(e){hub.error=e.message}
+ finally{hub.trialBusy=false;if(state.page==='guest_trial')render()}
+}
+async function hubTrialStart(){
+ if(hub.trialBusy)return;hub.trialBusy=true;hub.error='';render();
+ try{
+  const d=await hubCall('guest_trial_start',{visitor_id:hubVisitorKey()});
+  hub.trial=d.trial;hub.trialAnswers={};
+ }catch(e){hub.error=e.message}
+ finally{hub.trialBusy=false;render()}
+}
+async function hubTrialSubmit(){
+ if(!hub.trial||hub.trial.completed_at||hub.trialBusy)return;
+ const answers=hub.trial.questions.map((q,i)=>hub.trialAnswers[i]);
+ if(answers.some(x=>!Number.isInteger(x))){window.alert('أجب عن جميع الأسئلة العشرة أولًا.');return}
+ if(!window.confirm('هل تريد تسليم تجربة الزائر؟ لا يمكن تكرارها بعد التسليم.'))return;
+ hub.trialBusy=true;render();
+ try{
+  const d=await hubCall('guest_trial_submit',{visitor_id:hubVisitorKey(),answers});
+  hub.trial=d.trial;hub.error='';
+ }catch(e){hub.error=e.message}
+ finally{hub.trialBusy=false;render()}
+}
+function hubTrialPage(){
+ const t=hub.trial,done=t?.completed_at;
+ const completed=done?'<div class="hub-trial-result"><h2>أكملت تجربة نجوم آفاق!</h2>'+
+ '<strong>'+hn(t.score)+' / ١٠</strong>'+
+ '<p>هذه نتيجة ترفيهية للزائر ولا تؤثر في المحاولات الرسمية أو الجوائز أو ترتيب الطلاب. لا تتاح إعادة التجربة لهذا المتصفح.</p>'+
+ '<button class="hub-secondary" data-route="contests">العودة إلى المسابقات</button></div>':'';
+ const ready=t&&!done?'<form id="hubTrialForm"><p>اختر إجابة واحدة لكل سؤال. لا توجد درجة سالبة على الخطأ.</p>'+
+ t.questions.map((q,i)=>'<fieldset class="hub-trial-q"><legend>'+hn(i+1)+'. '+hv(q.text)+'</legend>'+
+ '<div>'+q.options.map((choice,j)=>'<label><input name="trial'+i+'" type="radio" value="'+j+'" data-hub-answer="'+i+'"'+(hub.trialAnswers[i]===j?' checked':'')+'><span>'+hv(choice)+'</span></label>').join('')+'</div></fieldset>').join('')+
+ '<button class="hub-primary" type="submit"'+(hub.trialBusy?' disabled':'')+'>تسليم إجاباتي وإنهاء المحاولة</button></form>':'';
+ const start=!t?'<div class="hub-trial-cta"><p>لا توجد محاولة مسجلة لهذا المتصفح. عند الضغط على البدء ستُحجز محاولتك المجانية الوحيدة؛ إذا أغلقت الصفحة قبل التسليم، يمكنك استكمالها لاحقًا على المتصفح نفسه.</p>'+
+ '<button class="hub-primary" id="hubStartTrial"'+(hub.trialBusy?' disabled':'')+'>ابدأ المحاولة المجانية الوحيدة</button></div>':'';
+ return '<div class="container hub-page"><section class="hub-page-head"><span>تجربة مجانية للزائر</span><h1>نموذج مبسط من نجوم آفاق</h1>'+
+ '<p>١٠ أسئلة سهلة، ومحاولة واحدة لكل متصفح، مستقلة عن نتائج المسابقة الرسمية للصف السادس.</p>'+
+ hubIcon('trophy','gold')+'</section>'+
+ '<section class="hub-main"><h2>قبل البدء</h2><p>اقرأ الأسئلة واختر الإجابات المناسبة. تبدأ المحاولة عند الضغط على زر البدء، وتُحفظ على الخادم. لا تُجمع أسماء الطلاب في هذه التجربة.</p>'+
+ '<p class="hub-note">قيد المحاولة مرتبط بمعرّف محفوظ في هذا المتصفح؛ تغيير الجهاز أو مسح بيانات المتصفح قد يتيح معرّفًا جديدًا، لذا لا يعد ذلك تحققًا من هوية الشخص.</p>'+
+ (hub.error?'<p class="hub-error">'+hv(hub.error)+'</p>':'')+
+ (hub.trialBusy?'<p>جارٍ تحديث المحاولة...</p>':'')+completed+ready+start+
+ '</section><section class="hub-main"><button class="hub-secondary" data-route="visitor">دليل الزائر والمسابقات</button></section></div>';
+}
+function hubSupport(){
+ const last=hub.supportTickets.slice(-8).reverse();
+ return '<div class="container hub-page"><section class="hub-page-head"><span>الدعم والتواصل</span><h1>نستمع إليك ونقدّر مساهمتك</h1>'+
+ '<p>إرسال اقتراح أو شكوى أو رسالة إلى مشرف آفاق الرياضيات، ثم متابعة الرد عبر رقم متابعة خاص.</p>'+
+ hubIcon('smartphone','cyan')+'</section>'+
+ '<div class="hub-support-grid"><section class="hub-main"><h2>إنشاء رسالة</h2>'+
+ '<form id="hubSupportForm"><label>نوع الرسالة<select name="kind"><option value="suggestion">اقتراح لتطوير المنصة</option>'+
+ '<option value="complaint">شكوى أو مشكلة</option><option value="support">تواصل مع مشرف المنصة</option></select></label>'+
+ '<label>الاسم أو اسم مستعار<input name="sender" maxlength="100" minlength="2" required placeholder="الاسم الذي ترغب في ظهوره للمشرف"></label>'+
+ '<label>البريد الإلكتروني (اختياري)<input name="contact_email" type="email" autocomplete="email" placeholder="للتواصل الخارجي عند الحاجة"></label>'+
+ '<label>نص الرسالة<textarea name="message" rows="6" minlength="8" maxlength="2500" required placeholder="وضح اقتراحك أو المشكلة بالتفصيل"></textarea></label>'+
+ '<label class="hub-consent"><input type="checkbox" required>أقر بأنني لا أشارك معلومات طالب خاصة أو كلمات مرور في رسالة عامة.</label>'+
+ '<button class="hub-primary" type="submit">إرسال الرسالة إلى صندوق المشرف</button></form>'+
+ (hub.supportTicketResult?'<div class="hub-ticket-result"><strong>تم تسجيل رسالتك.</strong><p>احتفظ بهذا الرمز السري لمتابعة الرد:</p>'+
+ '<code>'+hv(hub.supportTicketResult)+'</code><button type="button" data-hub-copy-ticket>نسخ رمز المتابعة</button></div>':'')+
+ '</section><section class="hub-main"><h2>متابعة رد المشرف</h2>'+
+ '<form id="hubTicketCheckForm"><label>رمز الرسالة<input name="ticket" minlength="20" maxlength="28" placeholder="الرمز الذي ظهر عند الإرسال" required></label>'+
+ '<button class="hub-secondary" type="submit">عرض حالة الطلب والرد</button></form><div id="hubTicketAnswer"></div>'+
+ (last.length?'<h3>رسائلك المحفوظة على هذا المتصفح</h3>'+
+ '<div class="hub-inline-actions">'+last.map(t=>'<button class="hub-mini" data-hub-check-ticket="'+hv(t)+'">'+hv(t.slice(0,6))+'…</button>').join('')+'</div>':'')+
+ '<p class="hub-note">لا تُعرض الرسائل للعموم. رمز المتابعة خاص بصاحب الرسالة؛ احتفظ به ولا تشاركه علنًا.</p></section></div></div>';
+}
+async function hubSubmitSupport(form){
+ const fields=Object.fromEntries(new FormData(form));
+ try{
+  const d=await hubCall('support_submit',{...fields,visitor_id:hubVisitorKey()});
+  hub.supportTicketResult=d.ticket;
+  hub.supportTickets=[...new Set([...hub.supportTickets,d.ticket])].slice(-15);
+  localStorage.setItem('afaq_support_tickets_v6',JSON.stringify(hub.supportTickets));
+  hub.error='';render();
+ }catch(err){window.alert(err.message)}
+}
+async function hubCheckTicket(code){
+ try{
+  const d=await hubCall('support_check',{ticket:code});
+  const area=document.getElementById('hubTicketAnswer');
+  if(area)area.innerHTML='<div class="hub-ticket-result"><strong>'+(d.ticket.response?'تم الرد على رسالتك':'الرسالة قيد المراجعة')+'</strong>'+
+   (d.ticket.response?'<p>'+hv(d.ticket.response)+'</p>':'<p>لم يصدر رد بعد. يمكنك العودة برمز المتابعة نفسه.</p>')+'</div>';
+ }catch(err){window.alert(err.message)}
+}
+function hubParentPage(){
+ const p=hub.parentProfile,s=p?.student||{},a=p?.assessment||null;
+ const account=hub.parentToken&&p?'<section class="hub-main"><h2>مرحبًا بولي أمر '+hv(s.full_name||'الطالب')+'</h2>'+
+ '<p>الشعبة: '+hv(s.class_name||'')+' • الرقم: '+hn(s.serial_no)+'</p>'+
+ (a?'<div class="hub-parent-scores"><article><small>الأعمال الفصلية</small><strong>'+hn(a.coursework)+'/٦٠</strong></article>'+
+ '<article><small>المجموع المتوقع</small><strong>'+hn(a.estimated_total)+'/١٠٠</strong></article>'+
+ '<article><small>المجموع الحقيقي بعد النهائي</small><strong>'+(a.actual_total===null?'لم يُعتمد':hn(a.actual_total)+'/١٠٠')+'</strong></article>'+
+ '<article><small>الرصيد التراكمي A+ / A−</small><strong>'+hn(a.a_plus)+' / '+hn(a.a_minus)+'</strong></article></div>':
+ '<p class="hub-note">لم تُعتمد نتيجة هذا الطالب بعد. لا تظهر المسودات أو معلومات الطلاب الآخرين.</p>')+
+ '<h3>ملاحظات ومتابعة الطالب المتاحة للأسرة</h3>'+
+ ((p.notes||[]).length?'<div class="hub-notes">'+p.notes.map(n=>'<p>'+hv(n.category)+' — '+hv(n.note)+'</p>').join('')+'</div>':
+ '<p>لا توجد ملاحظات مخصصة للمشاركة حاليًا.</p>')+
+ '<h3>مراسلاتك مع المشرف</h3>'+
+ ((p.messages||[]).length?'<div class="hub-notes">'+p.messages.map(n=>'<article><p>'+hv(n.message)+'</p>'+
+ (n.response?'<p><b>رد المشرف:</b> '+hv(n.response)+'</p>':'<small>في انتظار الرد</small>')+'</article>').join('')+'</div>':'<p>لا توجد رسائل سابقة.</p>')+
+ '<form id="hubParentMessage"><label>رسالة خاصة إلى مشرف المنصة<textarea name="message" rows="5" minlength="8" maxlength="2500" required></textarea></label>'+
+ '<button class="hub-primary" type="submit">إرسال رسالة ومتابعة الرد من هنا</button></form>'+
+ '<button class="hub-secondary" id="hubParentLogout">الخروج من حساب ولي الأمر</button></section>':'';
+ const login=!p?'<section class="hub-main"><h2>الدخول الآمن لولي الأمر</h2>'+
+ '<p>يُصدر المشرف الرئيسي رمزًا خاصًا بولي أمر كل طالب، ولا يُستخدم رمز الطالب نفسه. تظل النتائج الخاصة محمية.</p>'+
+ '<form id="hubParentLogin"><label>شعبة الصف السادس<select name="class_name">'+
+ ['السادس / ٤','السادس / ٥','السادس / ٦'].map(x=>'<option>'+x+'</option>').join('')+'</select></label>'+
+ '<label>الرقم التسلسلي للطالب<input name="serial_no" type="number" min="1" max="60" required></label>'+
+ '<label>رمز ولي الأمر المخصص (٦ أرقام)<input name="pin" type="password" inputmode="numeric" pattern="[0-9٠-٩]{6}" minlength="6" maxlength="6" autocomplete="off" required></label>'+
+ '<button class="hub-primary" type="submit">الدخول للاطلاع على بيانات ابني / ابنتي</button></form>'+
+ (hub.parentStatus?'<p class="hub-error">'+hv(hub.parentStatus)+'</p>':'')+
+ '<p class="hub-note">للحصول على الرمز، تواصل مع مشرف المنصة عبر قنوات المدرسة الرسمية. يحظر مشاركة الرمز علنًا.</p></section>':'';
+ return '<div class="container hub-page"><section class="hub-page-head"><span>بوابة أولياء الأمور</span><h1>الشراكة مع الأسرة أساس النجاح</h1>'+
+ '<p>استكشف الموارد العامة كزائر، وسجّل الدخول برمز ولي الأمر للاطلاع على نتيجة الطالب المعتمدة ومتابعته والتواصل مع المشرف.</p>'+
+ hubIcon('heart-handshake','rose')+'</section>'+
+ '<div class="hub-inline-actions"><button class="hub-secondary" data-route="visitor">التصفح العام كزائر</button>'+
+ '<button class="hub-secondary" data-route="library">المكتبة التعليمية</button></div>'+login+account+'</div>';
+}
+async function hubParentLogin(form){
+ if(hub.parentBusy)return;hub.parentBusy=true;
+ try{
+  const fields=Object.fromEntries(new FormData(form));
+  const result=await hubCall('parent_login',fields);
+  hub.parentToken=result.token;
+  sessionStorage.setItem('afaq_parent_access_v6',result.token);
+  hub.parentStatus='';await hubLoadParent();
+ }catch(err){hub.parentStatus=err.message;render()}
+ finally{hub.parentBusy=false}
+}
+async function hubLoadParent(){
+ if(!hub.parentToken)return;
+ try{
+  const result=await hubCall('parent_profile',{},hub.parentToken);
+  hub.parentProfile=result;hub.parentStatus='';if(state.page==='parent')render();
+ }catch(err){hub.parentToken='';sessionStorage.removeItem('afaq_parent_access_v6');hub.parentProfile=null;
+  hub.parentStatus=err.message;if(state.page==='parent')render()}
+}
+async function hubParentMessage(form){
+ try{
+  const r=await hubCall('parent_message',Object.fromEntries(new FormData(form)),hub.parentToken);
+  window.alert('تم إرسال الرسالة إلى مشرف المنصة ويمكن متابعة الرد من حساب ولي الأمر.');
+  await hubLoadParent();
+ }catch(err){window.alert(err.message)}
+}
+async function hubParentLogout(){
+ try{if(hub.parentToken)await hubCall('parent_logout',{},hub.parentToken)}catch{}
+ hub.parentToken='';hub.parentProfile=null;sessionStorage.removeItem('afaq_parent_access_v6');render();
+}
