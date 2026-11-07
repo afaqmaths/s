@@ -182,3 +182,5 @@ body{background:#f6f9ff}
 .hub-original-comic{max-width:700px;margin:12px auto;text-align:center;padding:16px 18px;background:#fbfdff;border:1px solid #cddfee;border-radius:17px}
 .hub-original-comic svg{max-width:100%;height:auto;border-radius:13px}
 .hub-original-comic figcaption{font-size:13px;color:#6a8095;margin-top:7px}
+
+.stars-shortcut[hidden]{display:none!important}
