@@ -87,7 +87,8 @@ function gbCompareText(delta){
 }
 function gbActions(mode){
  const label=mode==='final'?'شهادة الدرجة الحقيقية':'شهادة الدرجة المتوقعة';
- return '<div class="gb-print-controls"><button class="primary" type="button" data-print-gradebook="'+mode+'">🖨️ طباعة '+label+' / حفظ PDF</button>'+
+ return '<div class="gb-print-controls"><label class="ss-print-label">اتجاه الورق <select id="gbOrientation-'+mode+'"><option value="portrait">A4 عمودي</option><option value="landscape">A4 أفقي</option></select></label>'+
+ '<button class="primary" type="button" data-print-gradebook="'+mode+'">🖨️ طباعة '+label+' / حفظ PDF</button>'+
  '<button class="outline" type="button" data-gb-share="'+mode+'" data-gb-channel="whatsapp">مشاركة الملخص عبر واتساب</button>'+
  '<button class="outline" type="button" data-gb-share="'+mode+'" data-gb-channel="email">إرسال الملخص بالبريد الإلكتروني</button></div>';
 }
@@ -345,8 +346,9 @@ function gbClassPanel(){
  '<p>يعرض كشف الشعبة أسماء طلابها حسب الرقم التسلسلي المعتمد، والشفوي ١٠، والسؤالين القصيرين ١٠، والاختبارين القصيرين ٢٠، والكتابي ٥، والواجب ٥، والمشروع ١٠؛ ثم التوقع وفق A+ وA− من ٤٠ والنهائي الحقيقي من ٤٠، والنتيجتين من ١٠٠ والفرق بينهما.</p>'+
  '<div class="gb-class-toolbar"><label for="gbClassSelect">اختر شعبة الصف السادس</label>'+
  '<select id="gbClassSelect">'+choices+'</select>'+
+ '<label class="ss-print-label">اتجاه الورق <select id="gbClassOrientation"><option value="landscape">A4 أفقي (كشف جدولي)</option><option value="portrait">A4 عمودي (بطاقات واضحة لكل طالب)</option></select></label>'+
  '<button class="soft" type="button" id="gbClassReload" '+(auth.gbClassLoading?'disabled':'')+'>تحديث الكشف</button>'+
- '<button class="primary" type="button" id="gbClassPrint" '+(!report||auth.gbClassLoading?'disabled':'')+'>🖨️ طباعة كشف الشعبة • A4 أفقي / حفظ PDF</button></div>'+
+ '<button class="primary" type="button" id="gbClassPrint" '+(!report||auth.gbClassLoading?'disabled':'')+'>🖨️ طباعة كشف الشعبة / حفظ PDF</button></div>'+
  (auth.gbClassLoading?'<p class="notice">يُحمّل سجل الشعبة من قاعدة البيانات...</p>':'')+
  (auth.gbClassError?'<p class="notice">'+e(auth.gbClassError)+'</p>':'')+
  (report?'<div class="gb-class-screen-result">'+gbClassReportMarkup(report)+'</div>':
@@ -356,6 +358,10 @@ function gbClassPanel(){
 function gbPrintClassReport(){
  if(!gbClassAllowed()||!auth.gbClassReport)return;
  const source=document.getElementById('gbPrintableClassSheet');if(!source)return;
+ const orientation=document.getElementById('gbClassOrientation')?.value||'landscape';
+ if(typeof staffSuitePrint==='function'){
+  staffSuitePrint(source,'class',orientation,auth.gbClassReport);return
+ }
  document.getElementById('afaqClassPrintMount')?.remove();
  const mount=document.createElement('div');mount.id='afaqClassPrintMount';
  mount.appendChild(source.cloneNode(true));document.body.appendChild(mount);
@@ -432,6 +438,10 @@ function gbPrint(mode='prediction'){
  if(!['prediction','final'].includes(mode))return;
  const certificate=document.getElementById('afaqSchoolGradeCertificate-'+mode);
  if(!certificate)return;
+ const orientation=document.getElementById('gbOrientation-'+mode)?.value||'portrait';
+ if(typeof staffSuitePrint==='function'){
+  staffSuitePrint(certificate,'certificate',orientation);return
+ }
  document.getElementById('afaqSchoolPrintMount')?.remove();
  const mount=document.createElement('div');
  mount.id='afaqSchoolPrintMount';
