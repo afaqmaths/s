@@ -154,25 +154,31 @@ function hubResourceGrid(categories){
  if(!items.length)return '<p class="hub-empty">لا توجد موارد منشورة في هذا القسم حاليًا. يستطيع مشرف المنصة إضافة موارد جديدة.</p>';
  return '<div class="hub-resource-grid">'+items.map(hubCard).join('')+'</div>';
 }
+
 function hubVisitor(){
- return '<div class="container hub-page"><section class="hub-page-head"><span>بوابة الزوار</span><h1>أهلًا بك في آفاق الرياضيات</h1>'+
- '<p>استكشف موارد المنصة دون حساب، واقرأ عن المسابقات وطريقة المشاركة وجرب النموذج المجاني البسيط.</p>'+
+ const contests=hub.catalog.filter(x=>x.published&&x.category==='contest'&&x.resource_url!=='competition.html');
+ return '<div class="container hub-page"><section class="hub-page-head"><span>بوابة الزوار</span>'+
+ '<h1>أهلًا بك في آفاق الرياضيات</h1>'+
+ '<p>تصفح المكتبة والدروس والمحتوى الثقافي، وتعرف إلى نظام المسابقة الرسمية، واستمتع بثلاث مسابقات مجانية منفصلة.</p>'+
  hubIcon('globe','cyan')+'</section>'+
  '<section class="hub-main"><div class="hub-heading"><h2>استكشف بوابات المنصة</h2></div>'+
  '<div class="hub-gate-grid">'+
  hubSectionCard('التعليم والتعلّم','graduation-cap','دروس وأنشطة عامة','learning','green')+
  hubSectionCard('المكتبة العامة','book-open','تاريخ وعلماء وكتب وامتحانات','library','blue')+
  hubSectionCard('المرح والتسلية','smile','ألغاز ورسوم ومقالات','fun','rose')+
- hubSectionCard('الألعاب والمسابقات','trophy','تعرف إلى نجوم آفاق وتحدي جنى','contests','gold')+
+ hubSectionCard('الألعاب والمسابقات','trophy','نجوم آفاق، تحدي جنى، والتحدي السريع','contests','gold')+
  hubSectionCard('الدعم والتواصل','smartphone','راسل المشرف وأرسل فكرة أو شكوى','support','cyan')+
  '</div></section>'+hubAbout()+
+ '<section class="hub-main"><div class="hub-heading"><h2>المسابقات المجانية الثلاث للزائر</h2>'+
+ '<p>نموذج نجوم آفاق الكامل له الشخصيات والمراحل الخمس والتوقيت والتصحيح أنفسها مع أسئلة أسهل قليلًا؛ بجانبه تحدي جنى والتحدي السريع.</p></div>'+
+ (contests.length?'<div class="hub-resource-grid hub-free-contests">'+contests.map(hubCard).join('')+'</div>':
+ '<p class="hub-empty">لم تُنشر مسابقات مجانية في الوقت الحالي.</p>')+
+ '<div class="hub-inline-actions"><button class="hub-secondary" data-route="contests">عرض جميع تفاصيل المسابقات</button></div></section>'+
  hubCompetitionGuide()+
- '<section class="hub-main hub-trial-teaser"><h2>تجربة الزائر المجانية — نموذج مبسّط</h2>'+
- '<p>عشرة أسئلة سهلة للتعرّف إلى أسلوب اللعب، ومحاولة واحدة لهذا المتصفح فقط. لا تدخل هذه النتيجة في ترتيب الطلاب أو التأهل للجوائز.</p>'+
- '<button class="hub-primary" data-route="guest_trial">بدء التجربة المجانية أو متابعة محاولتي</button></section>'+
  '<div class="hub-counter"><span>المتصفحات الزائرة المسجلة</span><strong>'+hn(hub.visitorCount||0)+'</strong>'+
  '<small>إحصاء تقريبي حسب معرّف المتصفح، لا يجمع أسماء الزوار.</small></div></div>';
 }
+
 const HUB_PRIZES=[100,75,50,40,30,20,10,5,5,5];
 function hubCompetitionGuide(){
  return '<section class="hub-main hub-guide"><div class="hub-heading"><span>دليل المسابقة الرسمية</span>'+
@@ -191,20 +197,32 @@ function hubCompetitionGuide(){
   '<p>الدخول إلى المسابقة الرسمية غير منشور حاليًا في البوابة.</p>')+
  '<button class="hub-secondary" data-route="guest_trial">تجربة الزائر (مرة واحدة)</button></div></section>';
 }
+
 function hubContests(){
- const contests=hub.catalog.filter(x=>x.published&&x.category==='contest');
- const games=hub.catalog.filter(x=>x.published&&['game','flash'].includes(x.category));
- return '<div class="container hub-page"><section class="hub-page-head"><span>بوابة الألعاب والمسابقات</span><h1>تحديات للجميع، وتعلّم ممتع</h1>'+
- '<p>المسابقات الرسمية والحسابات المجانية مستقلة عن تجربة الزوار، ويحدد المشرف ما يظهر في هذه البوابة.</p>'+
- hubIcon('gamepad-2','gold')+'</section><section class="hub-main"><h2>المسابقات المنشورة</h2>'+
- (contests.length?'<div class="hub-resource-grid">'+contests.map(hubCard).join('')+'</div>':'<p class="hub-empty">لا توجد مسابقات منشورة حاليًا.</p>')+
- '</section><section class="hub-main"><h2>تجربة الزائر</h2><p>نموذج بسيط من ١٠ أسئلة، ومحاولة واحدة مستقلة عن النتائج الرسمية.</p>'+
- '<button class="hub-primary" data-route="guest_trial">فتح تجربة الزائر</button></section>'+
+ const all=hub.catalog.filter(x=>x.published&&x.category==='contest');
+ const free=all.filter(x=>x.resource_url!=='competition.html');
+ const official=all.find(x=>x.resource_url==='competition.html');
+ return '<div class="container hub-page"><section class="hub-page-head">'+
+ '<span>بوابة الألعاب والمسابقات</span><h1>ثلاث مسابقات مجانية في مكان واحد</h1>'+
+ '<p>اختر بين نموذج «نجوم آفاق» الكامل بمراحله الخمس الأصلية، وتحدي جنى وأصدقائها، والتحدي السريع ذي الأسئلة العشرة. هذه المسابقات الثلاث مستقلة عن محاولات الطلاب الرسمية.</p>'+
+ hubIcon('gamepad-2','gold')+'</section>'+
+ '<section class="hub-main"><div class="hub-heading"><span>تحديات الزوار</span><h2>اختر مسابقتك المجانية</h2>'+
+ '<p>لنجوم آفاق وتجربة جنى حساب مجاني باسم مستعار ورمز دخول، وللتحدي السريع محاولة واحدة دون حساب.</p></div>'+
+ (free.length?'<div class="hub-resource-grid hub-free-contests">'+free.map(hubCard).join('')+'</div>':
+ '<p class="hub-empty">لا توجد مسابقات مجانية منشورة حاليًا؛ يتحكم المشرف في إتاحتها.</p>')+
+ '</section>'+
+ '<section class="hub-main"><h2>الفرق بين تجربة نجوم آفاق والمسابقة الرسمية</h2>'+
+ '<p>التجربة الكاملة للزائر تطابق نظام المراحل الخمس الأصلي (٣٨ سؤالًا ودرجة من ١٠٠)، بأسئلة أبسط قليلًا، ومحاولة واحدة بحساب مجاني. أما المسابقة الرسمية فمخصصة للطلاب المسجلين، وتشمل أربع وحدات، ومحاولتين لكل وحدة، والتأهل بعد إكمالها وتحقيق ٣٥٠ من ٤٠٠.</p>'+
+ (official?'<a class="hub-secondary" href="competition.html">الدخول إلى المسابقة الرسمية للطلاب المسجلين</a>':
+ '<p class="hub-note">الدخول إلى المسابقة الرسمية غير منشور حاليًا من المشرف.</p>')+
+ '</section>'+
  hubCompetitionGuide()+
- '<section class="hub-main"><h2>ألعاب وفلاشات أخرى</h2>'+hubResourceGrid(['game','flash'])+
- '<div class="hub-inline-actions"><button class="hub-secondary" data-route="games">عرض الألعاب التفاعلية</button>'+
- '<button class="hub-secondary" data-route="flashes">عرض الفلاشات</button></div></section></div>';
+ '<section class="hub-main"><h2>ألعاب وفلاشات رياضية أخرى</h2>'+
+ hubResourceGrid(['game','flash'])+
+ '<div class="hub-inline-actions"><button class="hub-secondary" data-route="games">الألعاب التفاعلية</button>'+
+ '<button class="hub-secondary" data-route="flashes">الفلاشات</button></div></section></div>';
 }
+
 function hubLibrary(){
  const categories=[['all','جميع محتويات المكتبة'],['history','تاريخ الرياضيات'],['scholars','العلماء'],['daily_math','الرياضيات في الحياة'],['books','الكتب'],['exams','الاختبارات'],['question_bank','بنك الأسئلة'],['video','يوتيوب تعليمي'],['game','الألعاب'],['flash','الفلاشات']];
  let chosen=hub.libraryCat;
