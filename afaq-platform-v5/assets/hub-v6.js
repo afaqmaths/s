@@ -422,7 +422,7 @@ function hubStaffDashboard(){
  const blocks=HUB_STAFF_BLOCKS.map(([title,items])=>{
   const entries=items.filter(([label,icon,desc,attribute])=>admin||!['data-tab="hub_catalog"','data-tab="hub_catalog_contests"','data-tab="hub_parent_codes"'].includes(attribute));
   return '<section class="hub-staff-group"><div class="hub-heading"><h2>'+title+'</h2></div>'+
-  '<div class="hub-gate-grid">'+entries.map(([name,icon,desc,attr,color])=>hubGate(name,icon,desc,'data-'+attr,color)).join('')+'</div></section>';
+  '<div class="hub-gate-grid">'+entries.map(([name,icon,desc,attr,color])=>hubGate(name,icon,desc,attr.startsWith('data-')?attr:'data-'+attr,color)).join('')+'</div></section>';
  }).join('');
  const overview=typeof staffOverview==='function'?staffOverview():'';
  return '<div class="container hub-staff-home">'+
@@ -664,3 +664,178 @@ function hubExportWord(){
  a.download='آفاق-الرياضيات-'+new Date().toISOString().slice(0,10)+'.doc';document.body.appendChild(a);a.click();a.remove();
  setTimeout(()=>URL.revokeObjectURL(url),3000);
 }
+
+
+/* تفعيل الطبقة الجديدة دون إعادة كتابة وظائف المسابقة أو صفحة نتائج الطلاب. */
+const hubOldHome=home,hubOldLibrary=library;
+home=function(){return hubHome()};
+library=function(){return hubLibrary()};
+const hubOriginalStaffPanel=staffPanel;
+staffPanel=function(){
+ if(!canEdit())return hubOriginalStaffPanel();
+ if(auth.section==='overview')return hubStaffDashboard();
+ if(auth.section==='hub_catalog'||auth.section==='hub_catalog_contests'){
+  if(!isAdmin())return '<div class="notice">تعديل الموارد والمسابقات متاح للمشرف الرئيسي فقط.</div>';
+  return hubAdminCatalog();
+ }
+ if(auth.section==='hub_inbox')return hubInbox();
+ if(auth.section==='hub_parent_codes'){
+  if(!isAdmin())return '<div class="notice">إصدار رمز ولي الأمر يتطلب صلاحية المشرف الرئيسي.</div>';
+  return hubParentCodes();
+ }
+ if(auth.section==='hub_apps')return hubApps();
+ if(auth.section==='hub_print')return hubPrintCenter();
+ const prev=hubOriginalStaffPanel();
+ if(!prev.includes('hub-staff-nav'))return prev.replace('<div class="chips">',hubStaffNav()+'<div class="chips">');
+ return prev;
+};
+const hubLastRender=render;
+const hubCustomRoutes=['visitor','fun','contests','guest_trial','parent','support'];
+render=function(){
+ if(hubCustomRoutes.includes(state.page)){
+  const html=state.page==='visitor'?hubVisitor():state.page==='fun'?hubFun():
+    state.page==='contests'?hubContests():state.page==='guest_trial'?hubTrialPage():
+    state.page==='parent'?hubParentPage():hubSupport();
+  document.getElementById('app').innerHTML=html;
+  document.querySelectorAll('[data-route]').forEach(node=>node.classList.toggle('active',node.dataset.route===state.page));
+  attach();
+  attachPortal();
+  return;
+ }
+ hubLastRender();
+};
+const hubOldAttach=attach;
+attach=function(){
+ hubOldAttach();
+ hubAttach();
+};
+function hubSetLogin(role){
+ const select=document.getElementById('loginRole');
+ if(!select)return;
+ select.value=role;
+ if(typeof loginUi==='function')loginUi();
+ document.getElementById('authDialog')?.showModal();
+}
+function hubSelectWork(tab){
+ if(!canEdit())return;
+ ssState.tab=tab;
+ ssState.editing=null;
+ auth.section='staff_hub';render();
+ if(ssState.loadedYear!==ssState.year&&!ssState.loading)ssLoadRecords();
+}
+function hubLoadForTab(id){
+ if(!canEdit())return;
+ if(['hub_catalog','hub_catalog_contests'].includes(id)&&isAdmin()&&!hub.adminLoaded)hubLoadAdminCatalog();
+ if(id==='hub_inbox'&&!hub.inboxLoaded)hubLoadInbox();
+ if(id==='overview'&&!hub.stats)hubLoadStaffStats();
+ if(id==='hub_print'){
+  if(isAdmin()&&!hub.adminLoaded)hubLoadAdminCatalog();
+  if(ssState.loadedYear!==ssState.year&&!ssState.loading)ssLoadRecords();
+ }
+ if(id==='hub_parent_codes'){
+  const cls=hub.selectedClass;
+  const set=auth.students.filter(x=>x.class_name===cls).sort((a,b)=>Number(a.serial_no)-Number(b.serial_no));
+  if(set.length)hub.selectedSerial=set[0].serial_no;
+ }
+}
+async function hubReplySupport(form){
+ const id=Number(form.dataset.hubTicket),data=new FormData(form);
+ try{await hubCall('support_reply',{id,response:data.get('response')},auth.token);await hubLoadInbox();
+  auth.message='تم حفظ الرد في التذكرة، وأصبح متاحًا لصاحب رمز المتابعة.';render();
+ }catch(e){window.alert(e.message)}
+}
+function hubPrintUpdateState(){
+ hub.printChosen=document.getElementById('hubPrintSource')?.value||hub.printChosen;
+ hub.printOrientation=document.getElementById('hubPrintOrientation')?.value||hub.printOrientation;
+}
+async function hubRefreshPrintData(){
+ if(!canEdit())return;
+ if(isAdmin()&&!hub.adminLoaded)await hubLoadAdminCatalog();
+ if(ssState.loadedYear!==ssState.year&&!ssState.loading)await ssLoadRecords();
+ render();
+}
+function hubAttach(){
+ document.querySelectorAll('[data-hub-login]').forEach(x=>x.addEventListener('click',()=>hubSetLogin(x.dataset.hubLogin)));
+ document.querySelectorAll('[data-hub-library]').forEach(x=>x.addEventListener('click',()=>{
+  hub.libraryCat=x.dataset.hubLibrary;render();
+ }));
+ document.querySelectorAll('[data-hub-fun]').forEach(x=>x.addEventListener('click',()=>{
+  hub.funCat=x.dataset.hubFun;render();
+ }));
+ document.getElementById('hubStartTrial')?.addEventListener('click',hubTrialStart);
+ document.querySelectorAll('[data-hub-answer]').forEach(x=>x.addEventListener('change',()=>{
+  hub.trialAnswers[Number(x.dataset.hubAnswer)]=Number(x.value);
+ }));
+ document.getElementById('hubTrialForm')?.addEventListener('submit',ev=>{ev.preventDefault();hubTrialSubmit()});
+ document.getElementById('hubSupportForm')?.addEventListener('submit',ev=>{ev.preventDefault();hubSubmitSupport(ev.currentTarget)});
+ document.getElementById('hubTicketCheckForm')?.addEventListener('submit',ev=>{
+  ev.preventDefault();hubCheckTicket(new FormData(ev.currentTarget).get('ticket'));
+ });
+ document.querySelectorAll('[data-hub-check-ticket]').forEach(x=>x.addEventListener('click',()=>hubCheckTicket(x.dataset.hubCheckTicket)));
+ document.querySelectorAll('[data-hub-copy-ticket]').forEach(x=>x.addEventListener('click',async()=>{
+  if(hub.supportTicketResult)await navigator.clipboard?.writeText(hub.supportTicketResult);
+ }));
+ document.getElementById('hubParentLogin')?.addEventListener('submit',ev=>{ev.preventDefault();hubParentLogin(ev.currentTarget)});
+ document.getElementById('hubParentMessage')?.addEventListener('submit',ev=>{ev.preventDefault();hubParentMessage(ev.currentTarget)});
+ document.getElementById('hubParentLogout')?.addEventListener('click',hubParentLogout);
+ document.getElementById('hubStatsReload')?.addEventListener('click',hubLoadStaffStats);
+ document.querySelectorAll('[data-hub-work]').forEach(x=>x.addEventListener('click',()=>hubSelectWork(x.dataset.hubWork)));
+ document.querySelectorAll('[data-hub-staff]').forEach(x=>x.addEventListener('click',()=>hubSelectWork(x.dataset.hubStaff)));
+ document.querySelectorAll('[data-tab]').forEach(x=>x.addEventListener('click',()=>hubLoadForTab(x.dataset.tab)));
+ document.getElementById('hubCatalogForm')?.addEventListener('submit',ev=>{ev.preventDefault();hubSaveCatalog(ev.currentTarget)});
+ document.getElementById('hubCancelCatalogEdit')?.addEventListener('click',()=>{hub.adminEdit=null;render()});
+ document.querySelectorAll('[data-hub-edit-item]').forEach(x=>x.addEventListener('click',()=>{
+  hub.adminEdit=hub.adminItems.find(r=>String(r.id)===x.dataset.hubEditItem)||null;
+  render();document.getElementById('hubCatalogForm')?.scrollIntoView({behavior:'smooth'});
+ }));
+ document.querySelectorAll('[data-hub-toggle-item]').forEach(x=>x.addEventListener('click',()=>hubToggleCatalog(x.dataset.hubToggleItem)));
+ document.querySelectorAll('[data-hub-delete-item]').forEach(x=>x.addEventListener('click',()=>hubDeleteCatalog(x.dataset.hubDeleteItem)));
+ document.getElementById('hubInboxReload')?.addEventListener('click',hubLoadInbox);
+ document.querySelectorAll('.hubReplyForm').forEach(x=>x.addEventListener('submit',ev=>{ev.preventDefault();hubReplySupport(ev.currentTarget)}));
+ document.getElementById('hubParentClass')?.addEventListener('change',ev=>{
+  hub.selectedClass=ev.target.value;
+  hub.parentIssued=null;
+  const kids=auth.students.filter(x=>x.class_name===hub.selectedClass).sort((a,b)=>a.serial_no-b.serial_no);
+  hub.selectedSerial=kids[0]?.serial_no||1;render();
+ });
+ document.getElementById('hubParentCodeForm')?.addEventListener('submit',ev=>{
+  ev.preventDefault();hub.selectedSerial=Number(new FormData(ev.currentTarget).get('serial_no'));
+  hubManageParentCode(ev.currentTarget,ev.submitter);
+ });
+ document.getElementById('hubCopyParentCode')?.addEventListener('click',async()=>{
+  if(hub.parentIssued)await navigator.clipboard?.writeText(hub.parentIssued);
+ });
+ document.getElementById('hubPrintSource')?.addEventListener('change',hubPrintUpdateState);
+ document.getElementById('hubPrintOrientation')?.addEventListener('change',hubPrintUpdateState);
+ document.getElementById('hubPrintPDF')?.addEventListener('click',()=>{hubPrintUpdateState();hubPdfPrint()});
+ document.getElementById('hubPrintWord')?.addEventListener('click',()=>{hubPrintUpdateState();hubExportWord()});
+ document.getElementById('hubPrintPreview')?.addEventListener('click',()=>{
+  hubPrintUpdateState();const area=document.getElementById('hubPrintPreviewArea');
+  if(area)area.innerHTML=hubPaper();
+ });
+ document.getElementById('hubPrintReload')?.addEventListener('click',hubRefreshPrintData);
+}
+const HUB_MAIN_MENU=[
+ ['home','الرئيسية'],['learning','التعليم والتعلّم'],['library','المكتبة العامة'],
+ ['fun','المرح والتسلية'],['contests','الألعاب والمسابقات'],['support','الدعم والتواصل']
+];
+function hubTopNavigation(){
+ const nav=document.querySelector('.desktopnav');
+ if(nav)nav.innerHTML=HUB_MAIN_MENU.map(([key,name])=>'<button data-route="'+key+'">'+name+'</button>').join('');
+ const mnav=document.getElementById('mobileNav');
+ if(mnav)mnav.innerHTML=HUB_MAIN_MENU.map(([key,name])=>'<button data-route="'+key+'">'+name+'</button>').join('');
+ const mainBtn=document.getElementById('accountBtn');
+ if(mainBtn)mainBtn.textContent=auth.user?'حسابي • '+(roleLabel?.[auth.user.role]||'مستخدم'):'دخول المنصة';
+}
+function hubInitial(){
+ try{hub.supportTickets=JSON.parse(localStorage.getItem('afaq_support_tickets_v6')||'[]').filter(x=>typeof x==='string').slice(-15)}catch{}
+ hubTopNavigation();
+ hubLoadCatalog();
+ hubVisit();
+ if(hub.parentToken)hubLoadParent();
+ // أنشئت الواجهة بعد تحميل السكربت؛ لا تُنقل حسابات قديمة ولا تُمسح النتائج.
+ const oldHash=(location.hash||'').replace('#','');
+ if(hubCustomRoutes.includes(oldHash)){state.page=oldHash;render()}
+ else render();
+}
+hubInitial();
