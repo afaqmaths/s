@@ -52,17 +52,32 @@ const starsEasyComplexSource=[
  {prompt:"لدى طالب ٩٦ بطاقة ويريد تقسيمها على مجموعات متساوية.",
   topic:"القسمة والاستدلال",parts:[["كم ناتج ٩٦ ÷ ٣؟",32],["كم ناتج ٩٦ ÷ ٤؟",24],["كم ناتج ٩٦ ÷ ٦؟",16]]}
 ] as const;
+
+const starsVisual=(topic:string,ordinal:number)=>{
+ const palette=["#145c91","#1c9277","#a57928","#8057ad","#b96084"];
+ const stroke=palette[(ordinal-1)%5];
+ const chips=Array.from({length:5},(_,i)=>'<rect x="'+(56+i*128)+'" y="111" rx="15" width="94" height="76" fill="#fff" stroke="'+stroke+'" stroke-width="3"/>'+
+ '<circle cx="'+(102+i*128)+'" cy="149" r="'+(12+(i%3)*4)+'" fill="'+stroke+'" opacity=".8"/>').join('');
+ return '<svg xmlns="http://www.w3.org/2000/svg" width="720" height="235" viewBox="0 0 720 235">'+
+ '<rect x="3" y="3" width="714" height="229" rx="26" fill="#f2f9ff" stroke="'+stroke+'" stroke-width="4"/>'+
+ '<text x="360" y="59" text-anchor="middle" font-size="32" font-family="Tahoma, Arial" font-weight="bold" fill="'+stroke+'">'+topic+'</text>'+
+ chips+
+ '<text x="360" y="220" text-anchor="middle" font-size="17" font-family="Tahoma, Arial" fill="'+stroke+'">تأمل الفكرة الرياضية ثم أجب عن السؤال</text></svg>';
+};
+
 const starsEasyQuestions=[
  ...starsEasyChoiceSource.map((x,i)=>{
   const options=["","","",""];const idx=i%4;options[idx]=starsDigits(x[1]);
   let a=0;for(let n=0;n<4;n++)if(n!==idx)options[n]=starsDigits(x[2][a++]);
   return {id:"stars-easy-"+(i+1),ordinal:i+1,stage:Math.floor(i/10)+1,question_kind:"choice",
-   prompt:starsDigits(x[0]),objective:x[3],options,answer_index:idx,parts:[],explanation:"تأكد من فهمك للمفهوم، ثم راجع خطوات الحل.",visual_svg:"",visual_caption:""};
+   prompt:starsDigits(x[0]),objective:x[3],options,answer_index:idx,parts:[],explanation:"تأكد من فهمك للمفهوم، ثم راجع خطوات الحل.",
+   visual_svg:starsVisual(x[3],i+1),visual_caption:"شكل تعليمي مبسّط يرافق السؤال"};
  }),
  ...starsEasyComplexSource.map((q,i)=>({id:"stars-easy-"+(i+31),ordinal:i+31,stage:i<4?4:5,
   question_kind:"complex",prompt:starsDigits(q.prompt),objective:q.topic,options:[],
   answer_index:null,parts:q.parts.map(p=>({type:"number",text:starsDigits(p[0]),answer:p[1],
-    displayAnswer:starsDigits(p[1])})),explanation:"فكّر في خطوات المسألة واحدة بعد الأخرى.",visual_svg:"",visual_caption:""}))
+    displayAnswer:starsDigits(p[1])})),explanation:"فكّر في خطوات المسألة واحدة بعد الأخرى.",
+   visual_svg:starsVisual(q.topic,i+31),visual_caption:"تمثيل مرئي للمسألة متعددة الأجزاء"}))
 ];
 const starsQuestionPublic=(q:any)=>({id:q.id,ordinal:q.ordinal,stage:q.stage,question_kind:q.question_kind,
  prompt:q.prompt,options:q.question_kind==="choice"?q.options:[],parts:q.question_kind==="complex"?
