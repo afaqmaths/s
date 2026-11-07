@@ -833,5 +833,40 @@ document.getElementById("playAgainBtn").onclick=restartGame;
 updateHud();
 renderTimer();
 </script>
+<script>
+/* تحدي جنى وأصدقائها: حفظ اختياري للنتيجة بعد نهاية المراحل، من دون تغيير اللعبة الأصلية. */
+(function(){
+ const params=new URLSearchParams(location.search);
+ if(params.get('afaqChallenge')!=='1')return;
+ const token=sessionStorage.getItem('afaq_jana_token_v6');
+ if(!token){location.replace('afaq-platform-v5/jana-challenge.html?login=required');return}
+ const nickname=sessionStorage.getItem('afaq_jana_name_v6')||'النجم الرياضي';
+ document.title='تحدي جنى وأصدقائها — '+nickname;
+ const banner=document.createElement('div');
+ banner.style.cssText='max-width:1000px;margin:12px auto 0;padding:12px 20px;border:2px solid #d4b45b;border-radius:15px;background:#fff7dd;text-align:center;color:#3d5a83;font:900 17px Tahoma,Arial,sans-serif';
+ banner.textContent='🏆 تحدي جنى وأصدقائها — اللاعب: '+nickname+' — تُحفظ نتيجتك المجانية بعد إكمال المراحل الثلاث.';
+ document.body.insertBefore(banner,document.body.firstChild);
+ let posted=false;
+ const originalShowFinal=showFinal;
+ showFinal=function(){
+  originalShowFinal();
+  if(posted)return;posted=true;
+  finalTitle.textContent=correctTotal===30?'نجم / نجمة الأعداد الذهبية':'أحسنت! أكملت تحدي جنى وأصدقائها';
+  finalMessage.textContent='تهانينا '+nickname+'! نتيجتك '+correctTotal+' من ٣٠. شكرًا لمشاركتك في تحدي جنى وأصدقائها. يمكنك الاستمرار في التدريب وتحسين مستواك.';
+  const status=document.createElement('p');
+  status.style.cssText='text-align:center;color:#135c79;font-weight:900;font-size:16px';
+  status.textContent='جارٍ حفظ نتيجتك في حساب آفاق المجاني...';
+  finalMessage.appendChild(status);
+  fetch('https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-public-hub',{
+   method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+   body:JSON.stringify({action:'jana_score',score:correctTotal}),cache:'no-store'
+  }).then(r=>r.json().then(x=>({ok:r.ok&&x.ok,error:x.error})))
+   .then(x=>{status.textContent=x.ok?'✅ حُفظت نتيجتك. شاهد الترتيب من بوابة تحدي جنى.':'تعذّر حفظ النتيجة: '+(x.error||'حاول العودة إلى البوابة')})
+   .catch(()=>{status.textContent='تعذر الاتصال لحفظ النتيجة؛ راجع الاتصال بالإنترنت.'});
+ };
+ const originalRestart=restartGame;
+ restartGame=function(){posted=false;return originalRestart()};
+})();
+</script>
 </body>
 </html>
