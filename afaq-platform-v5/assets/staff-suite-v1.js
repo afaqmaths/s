@@ -4,7 +4,7 @@ const ssState={
  year:'2026/2027',term:1,tab:'motto',records:[],contacts:[],
  loadedYear:'',contactsLoaded:false,loading:false,error:'',
  editing:null,editingContact:null,contactStudent:null,contactId:'',
- commDraft:'',commChannel:'whatsapp',commRecipient:'',
+ commDraft:'',commChannel:'whatsapp',commRecipient:'',recipientType:'ولي الأمر / الطالب',
  dayDraft:[],customLesson:'',printOrientation:'landscape'
 };
 const ssEsc=v=>e(v??'');
@@ -267,7 +267,8 @@ function ssCollectForm(form){
   if(type==='motto')body.values=ssItems(f.get('values'));
   if(type==='resource'||type==='exam_resource')body.resource_url=ssStr(f.get('resource_url'));
  }
- const r=ssState.editing?.record_type===type?ssState.editing:null;
+ const r=ssState.editing?.record_type===type?ssState.editing:
+  type==='motto'?ssState.records.find(x=>x.record_type==='motto'):null;
  return {id:r?.id,expected_updated_at:r?.updated_at,
   title,record_type:type,academic_year:ssState.year,semester:ssState.term,
   unit:type==='lesson_plan'?ssStr(f.get('unit')):r?.unit||null,
@@ -378,11 +379,12 @@ function ssComposeView(){
  '<p>اختر واقعة من دفتر A+ وA− أو من الملاحظات السلوكية، ثم راجع نص الرسالة قبل فتح التطبيق. لا تُرسل المنصة أي رسالة آليًا، ولا تحفظ أرقام أولياء الأمور دون طلب مستقل.</p>'+
  '<div class="ss-grid">'+ssComposeStudentSelect()+ssComposeNoteOptions()+
  '<label class="ss-field"><span>وجهة الاتصال</span><select id="ssRecipientType">'+
- ['ولي الأمر / الطالب','إدارة المدرسة','المشرف على المنصة','جهة أخرى'].map(x=>'<option>'+x+'</option>').join('')+
+ ['ولي الأمر / الطالب','إدارة المدرسة','المشرف على المنصة','جهة أخرى'].map(x=>'<option'+(x===ssState.recipientType?' selected':'')+'>'+x+'</option>').join('')+
  '</select></label>'+
  '<label class="ss-field"><span>طريقة المشاركة</span><select id="ssCommChannel">'+
- '<option value="whatsapp">واتساب</option><option value="instagram">إنستجرام (نسخ النص يدويًا)</option>'+
- '<option value="email">بريد إلكتروني / البريد الوزاري</option></select></label>'+
+ '<option value="whatsapp"'+(ssState.commChannel==='whatsapp'?' selected':'')+'>واتساب</option>'+
+ '<option value="instagram"'+(ssState.commChannel==='instagram'?' selected':'')+'>إنستجرام (نسخ النص يدويًا)</option>'+
+ '<option value="email"'+(ssState.commChannel==='email'?' selected':'')+'>بريد إلكتروني / البريد الوزاري</option></select></label>'+
  ssInp('رقم واتساب المستلم الدولي أو بريده (يُدخل يدويًا للطالب أو ولي أمره)','recipient',ssState.commRecipient,'text','id="ssCommRecipient" placeholder="968XXXXXXXX أو name@example.com"')+
  ssTxt('نص الرسالة بعد المراجعة','message',ssState.commDraft||'',7)+'</div>'+
  '<label class="ss-consent"><input type="checkbox" id="ssShareConsent">أؤكد أنني مخوّل بمشاركة هذه المعلومات مع الجهة المحددة، وقد راجعت خلوها من بيانات غير لازمة.</label>'+
@@ -560,6 +562,16 @@ function staffSuitePrint(source,kind='certificate',orientation='portrait',report
  return true;
 }
 const ssFormerStaffPanel=staffPanel;
+const ssFormerStudentAdmin=studentAdmin;
+studentAdmin=function(){
+ const html=ssFormerStudentAdmin();
+ if(!canEdit()||!auth.selectedStudent||!auth.selectedProfile)return html;
+ return html+'<section class="panel ss-followup-panel"><h3>التواصل التربوي بشأن الطالب</h3>'+
+ '<p>يمكن مشاركة أحدث رصد A+ أو A−، أو ملاحظة سلوكية أو تعليمية، مع ولي الأمر أو إدارة المدرسة اختياريًا بعد مراجعة النص.</p>'+
+ '<button class="soft" type="button" data-ss-share-latest="event">مشاركة آخر نقطة A</button> '+
+ '<button class="outline" type="button" data-ss-share-latest="note">مشاركة آخر ملاحظة سلوكية / تعليمية</button> '+
+ '<button class="outline" type="button" data-ss-share-latest="school">تواصل مع إدارة المدرسة</button></section>';
+};
 const ssFormerAttachPortal=attachPortal;
 staffPanel=function(){
  if(!canEdit())return ssFormerStaffPanel();
@@ -622,8 +634,15 @@ function ssAttachStudentSelection(){
  document.getElementById('ssContactNote')?.addEventListener('change',ev=>{
   ssState.commDraft=ssComposeMessageFromSelection(ev.target.value);render();
  });
- document.getElementById('ssRecipientType')?.addEventListener('change',ssContactInfoSelected);
- document.getElementById('ssCommChannel')?.addEventListener('change',ssContactInfoSelected);
+ document.getElementById('ssRecipientType')?.addEventListener('change',ev=>{
+  ssState.recipientType=ev.target.value;ssContactInfoSelected();
+ });
+ document.getElementById('ssCommChannel')?.addEventListener('change',ev=>{
+  ssState.commChannel=ev.target.value;ssContactInfoSelected();
+ });
+ document.getElementById('ssCommRecipient')?.addEventListener('input',ev=>{ssState.commRecipient=ev.target.value});
+ document.querySelector('textarea[name="message"]')?.addEventListener('input',ev=>{ssState.commDraft=ev.target.value});
+ if(ssState.recipientType!=='ولي الأمر / الطالب'&&!ssState.commRecipient)ssContactInfoSelected();
  document.querySelectorAll('[data-ss-fill-contact]').forEach(el=>el.addEventListener('click',()=>{
   const x=ssState.contacts.find(v=>String(v.id)===el.dataset.ssFillContact);
   if(!x)return;
@@ -714,5 +733,21 @@ attachPortal=function(){
   render();
   if(!ssState.contactsLoaded)ssLoadContacts();
  }));
+ document.querySelectorAll('[data-ss-share-latest]').forEach(b=>b.addEventListener('click',()=>{
+  if(!canEdit()||!auth.selectedProfile)return;
+  const kind=b.dataset.ssShareLatest;
+  ssState.contactId=auth.selectedStudent||'';
+  ssState.contactStudent=auth.selectedProfile;
+  ssState.recipientType=kind==='school'?'إدارة المدرسة':'ولي الأمر / الطالب';
+  ssState.commRecipient='';
+  ssState.commDraft=ssComposeMessageFromSelection(kind==='note'?'note:0':kind==='event'?'event:0':'');
+  ssState.error='';auth.section='staff_contacts';render();
+  if(!ssState.contactsLoaded)ssLoadContacts();
+ }));
+ document.getElementById('portalLogout')?.addEventListener('click',()=>{
+  ssState.records=[];ssState.contacts=[];ssState.contactStudent=null;ssState.contactId='';
+  ssState.contactsLoaded=false;ssState.loadedYear='';ssState.editing=null;ssState.editingContact=null;
+  ssState.commDraft='';ssState.commRecipient='';ssState.lessonDraft=null;
+ });
  ssAttachStudentSelection();
 };
