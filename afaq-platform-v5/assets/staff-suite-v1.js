@@ -457,3 +457,244 @@ function ssShareMessage(){
   ssCopyText(text).then(ok=>{if(!ok)window.prompt('انسخ نص الرسالة وألصقه بنفسك في إنستجرام:',text);else window.alert('نُسخ النص، ويمكنك لصقه في رسالة إنستجرام بعد اختيار المستلم.')});
  }
 }
+
+
+/* اختيار اتجاه ورق A4 حسب المهمة؛ العرض العمودي لكشوف الشعب يتحول إلى بطاقات مفصلة. */
+function ssClassPortraitLayout(report){
+ const rows=[...(report?.students||[])].sort((a,b)=>Number(a.serial_no)-Number(b.serial_no));
+ const cell=(label,v,max)=>'<span><b>'+ssEsc(label)+'</b><strong>'+gbClassScore(v)+(max?' / '+max:'')+'</strong></span>';
+ return '<main class="ss-portrait-sheet" dir="rtl"><header><p>سلطنة عُمان — مدرسة الحسين بن علي للتعليم الأساسي</p>'+
+ '<h1>منصة آفاق الرياضيات — كشف الدرجات التفصيلي</h1><h2>'+ssEsc(report?.class_name||'')+
+ ' • عدد الطلاب '+gbNum(rows.length)+'</h2><p>كشف بالطباعة العمودية A4 • التوقع مقابل الحقيقي</p></header>'+
+ rows.map(row=>{
+  const s=row.scores||{},approved=row.assessment_status==='approved',real=row.final_status==='approved';
+  return '<article class="ss-portrait-student"><div class="ss-portrait-student-title"><span>'+
+  '<b>'+gbNum(row.serial_no)+'</b> '+ssEsc(row.full_name||row.display_name||'—')+'</span>'+
+  '<small>'+ssEsc(gbClassStatus(row))+'</small></div>'+
+  '<div class="ss-portrait-grade-line">'+
+  cell('شفوي',s.oral_score,'١٠')+cell('سؤال ١',s.short1_score,'٥')+cell('سؤال ٢',s.short2_score,'٥')+
+  cell('اختبار ١',s.short_exam1_score,'١٠')+cell('اختبار ٢',s.short_exam2_score,'١٠')+
+  cell('كتابي',s.written_score,'٥')+cell('واجب',s.homework_score,'٥')+
+  cell('مشروع',s.project_score,'١٠')+'</div>'+
+  '<div class="ss-portrait-totals">'+
+  cell('الأعمال الفصلية',s.coursework,'٦٠')+
+  cell('A+ / A−',gbClassScore(s.a_plus_points)+' / '+gbClassScore(s.a_minus_points),'')+
+  cell('التوقع',s.a_score,'٤٠')+
+  cell('الاختبار النهائي',s.final_score,'٤٠')+
+  cell('المجموع المتوقع',approved?s.estimated_total:null,'١٠٠')+
+  cell('المجموع الحقيقي',real?s.actual_total:null,'١٠٠')+
+  cell('الفرق',real?s.difference:null,'')+
+  '</div></article>';
+ }).join('')+
+ '<footer><p>علامة (—) تعني عدم الرصد أو عدم الاعتماد. تُحسب الدرجة الحقيقية من ٦٠ للأعمال + ٤٠ للنهائي بعد اعتماده فقط.</p>'+
+ '<div><b>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</b>'+
+ '<b>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</b></div>'+
+ '<small>كشف من منصة آفاق الرياضيات، لا يُغني عن سجلات المدرسة الرسمية.</small></footer></main>';
+}
+function ssPrintableRecord(record){
+ const fields=record?.body||{},names={
+ statement:'رسالة المعلم',values:'القيم والمبادئ',description:'الوصف',
+ domain:'المجال',kpis:'مؤشرات الأداء',steps:'خطوات التنفيذ',evidence:'الشواهد',
+ deadline:'الموعد',status:'الحالة',general_goals:'الأهداف العامة',units:'وحدات التعلم',
+ pacing:'التوزيع الزمني',teaching_methods:'طرائق التدريس',
+ assessment_plan:'الخطة التقويمية',intervention:'المتابعة والتمايز',
+ date_prepared:'تاريخ الإعداد',teach_days:'أيام التدريس',classes:'الشعب',
+ learning_objectives:'الأهداف / المخرجات',prior_learning:'التعلم القبلي',
+ main_activity:'النشاط الأساسي',activities:'أنماط الأنشطة',activity_details:'تفاصيل الأنشطة',
+ strategies:'الاستراتيجيات',physical_resources:'المصادر المحسوسة',
+ digital_resources:'المصادر غير المحسوسة',apps:'التطبيقات',
+ resource_links:'روابط المصادر',assessment_types:'أنواع التقويم',
+ diagnostic_assessment:'التقويم القبلي',formative:'التقويم التكويني',
+ final_assessment:'التقويم الختامي',assessment_questions:'أسئلة الاختبارات للدرس',
+ homework:'الواجب المنزلي',enrichment:'النشاط الإثرائي',remedial:'النشاط العلاجي',
+ reflection:'تأمل المعلم',notes:'الملاحظات',classification:'التصنيف',resource_url:'رابط المورد'};
+ const body=Object.entries(fields).filter(([key,v])=>v!=null&&v!==''&&(!Array.isArray(v)||v.length)&&key!=='is_sample')
+ .map(([key,v])=>'<div><h3>'+ssEsc(names[key]||key)+'</h3><p>'+ssEsc(Array.isArray(v)?v.join('، '):v).replace(/\n/g,'<br>')+'</p></div>').join('');
+ return '<main class="ss-print-record" dir="rtl"><header><h1>منصة آفاق الرياضيات — سجل أعمال المعلم</h1>'+
+ '<p>مدرسة الحسين بن علي للتعليم الأساسي • العام '+ssEsc(record.academic_year||ssState.year)+'</p>'+
+ '<h2>'+ssEsc(record.title||'سجل')+'</h2>'+
+ (record.unit?'<p>الوحدة: '+ssEsc(record.unit)+' • الدرس: '+ssEsc(record.lesson||'')+'</p>':'')+
+ (fields.is_sample?'<p>نموذج استرشادي مستخلص من التحاضير المرفقة — يُراجع قبل الاستخدام.</p>':'')+
+ '</header><section>'+body+'</section>'+
+ '<footer><b>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</b>'+
+ '<b>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</b></footer></main>';
+}
+function staffSuitePrint(source,kind='certificate',orientation='portrait',report=null){
+ if(!source&&!report)return false;
+ const orient=orientation==='landscape'?'landscape':'portrait';
+ const paper=kind==='class'&&orient==='portrait'?ssClassPortraitLayout(report):
+  kind==='teacher'?ssPrintableRecord(report):source?.outerHTML||'';
+ const cssLocation=new URL('assets/gradebook-v2.css',document.baseURI).href;
+ const suiteCss=new URL('assets/staff-suite-v1.css',document.baseURI).href;
+ const baseCss=new URL('assets/style.css',document.baseURI).href;
+ const bodyClass=kind==='class'?'afaq-print-class-sheet':kind==='certificate'?'afaq-print-school-grade':'ss-print-teacher';
+ const wrap=kind==='class'?'afaqClassPrintMount':kind==='certificate'?'afaqSchoolPrintMount':'ssTeacherPrintMount';
+ const portraitClass=kind==='class'&&orient==='portrait'?' ss-print-portrait':'';
+ const pop=window.open('','_blank');
+ if(!pop){window.alert('تعذر فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة لهذا الموقع ثم أعد المحاولة.');return false}
+ const extra='<style>@page{size:A4 '+orient+';margin:9mm}'+
+ 'body{font-family:Tahoma,Arial,sans-serif!important;direction:rtl;margin:0!important;padding:0!important;'+
+ 'background:#fff!important}'+
+ '#'+wrap+'{display:block!important;position:static!important;visibility:visible!important}'+
+ '#'+wrap+' *{visibility:visible!important}'+
+ (kind==='certificate'&&orient==='portrait'?
+ '.gb-certificate{height:auto!important;min-height:265mm!important;max-width:100%!important;'+
+ 'padding:8mm!important}.gb-cert-content{display:block!important}.gb-cert-grades{margin-bottom:5mm!important}'+
+ '.gb-cert-grades table{font-size:10pt!important}.gb-cert-grades td{padding:1.4mm!important}'+
+ '.gb-cert-achievement{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2mm!important}'+
+ '.gb-cert-achievement .gb-cert-emblem{display:none!important}.gb-cert-total{grid-column:1/-1!important}'+
+ '.gb-cert-praise{margin-top:2mm!important}':'')+
+ (kind==='teacher'?'.ss-print-record{border:none!important;box-shadow:none!important;width:100%!important}':'')+
+ '</style>';
+ const html='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>آفاق الرياضيات — طباعة '+orient+
+ '</title><link rel="stylesheet" href="'+baseCss+'"><link rel="stylesheet" href="'+cssLocation+'">'+
+ '<link rel="stylesheet" href="'+suiteCss+'">'+extra+'</head>'+
+ '<body class="'+bodyClass+portraitClass+'"><div id="'+wrap+'">'+paper+'</div></body></html>';
+ pop.document.open();pop.document.write(html);pop.document.close();
+ pop.onload=()=>{pop.focus();pop.print()};
+ return true;
+}
+const ssFormerStaffPanel=staffPanel;
+const ssFormerAttachPortal=attachPortal;
+staffPanel=function(){
+ if(!canEdit())return ssFormerStaffPanel();
+ if(auth.section==='staff_hub')return ssTeacherView();
+ if(auth.section==='staff_contacts')return ssContactsView();
+ const basic=ssFormerStaffPanel();
+ const trigger='<div class="chips">';
+ if(!basic.includes(trigger))return basic;
+ return basic.replace(trigger,trigger+
+  '<button class="chip" data-tab="staff_hub">دليل أعمال المعلم</button>'+
+  '<button class="chip" data-tab="staff_contacts">التواصل والدليل</button>');
+};
+const ssRefresh=()=>{auth.message='';render()};
+const ssChooseTeacherRecord=id=>{
+ const item=ssState.records.find(x=>String(x.id)===String(id));if(!item)return;
+ ssState.editing=item;
+ ssState.lessonUnit=item.unit||'';
+ ssState.lessonName=item.lesson||'';
+ const mapping={motto:'motto',egada_goal:'goals',initiative:'initiatives',annual_plan:'annual',
+  term_plan:'term',lesson_plan:'lessons',resource:'resources',exam_resource:'exams'};
+ ssState.tab=mapping[item.record_type]||'lessons';
+ ssRefresh();
+};
+function ssTeacherRecordArchive(id){
+ const item=ssState.records.find(x=>String(x.id)===String(id));if(!item||auth.user?.role!=='supervisor')return;
+ if(!window.confirm('أرشفة هذا السجل من العرض دون حذفه نهائيًا؟'))return;
+ api('archive_teacher_record',{id:item.id,expected_updated_at:item.updated_at})
+ .then(()=>{ssState.editing=null;return ssLoadRecords()})
+ .catch(err=>{ssState.error=err.message;render()});
+}
+function ssLessonFormChange(ev){
+ const form=ev.currentTarget.closest('#ssRecordForm');if(!form)return;
+ if(!ssState.lessonUnit)return;
+ if(!ssState.lessonDraft)ssState.lessonDraft={};
+ const fields=Object.fromEntries(new FormData(form).entries());
+ const groups=['classes','activities','strategies','physical_resources','digital_resources','apps','assessment_types','learning_objectives'];
+ for(const group of groups)fields[group]=new FormData(form).getAll(group);
+ ssState.lessonDraft=fields;
+}
+function ssRestoreLessonDraft(){
+ const form=document.querySelector('#ssRecordForm[data-type="lesson_plan"]'),draft=ssState.lessonDraft;
+ if(!form||!draft)return;
+ for(const [key,value] of Object.entries(draft)){
+  if(['unit','lesson','title'].includes(key))continue;
+  const fields=form.querySelectorAll('[name="'+key+'"]');
+  for(const field of fields){
+   if(field.type==='checkbox')field.checked=Array.isArray(value)&&value.includes(field.value);
+   else if(!Array.isArray(value))field.value=value;
+  }
+ }
+}
+function ssAttachStudentSelection(){
+ document.getElementById('ssContactStudent')?.addEventListener('change',async ev=>{
+  const id=ev.target.value;ssState.contactId=id;ssState.contactStudent=null;ssState.commDraft='';
+  if(!id){render();return}
+  try{
+   const r=await api('profile',{student_id:id});ssState.contactStudent=r.profile;
+  }catch(err){ssState.error=err.message}
+  render();
+ });
+ document.getElementById('ssContactNote')?.addEventListener('change',ev=>{
+  ssState.commDraft=ssComposeMessageFromSelection(ev.target.value);render();
+ });
+ document.getElementById('ssRecipientType')?.addEventListener('change',ssContactInfoSelected);
+ document.getElementById('ssCommChannel')?.addEventListener('change',ssContactInfoSelected);
+ document.querySelectorAll('[data-ss-fill-contact]').forEach(el=>el.addEventListener('click',()=>{
+  const x=ssState.contacts.find(v=>String(v.id)===el.dataset.ssFillContact);
+  if(!x)return;
+  const type=document.getElementById('ssRecipientType'),receiver=document.getElementById('ssCommRecipient');
+  if(type)type.value='إدارة المدرسة';
+  if(receiver)receiver.value=document.getElementById('ssCommChannel')?.value==='email'?(x.email||''):(x.whatsapp||x.phone||'');
+ }));
+ document.getElementById('ssCommCopy')?.addEventListener('click',()=>{
+  const text=ssCommText();if(!text)return;
+  ssCopyText(text).then(ok=>window.alert(ok?'تم نسخ الرسالة.':'تعذر النسخ؛ حدد نص الرسالة وانسخه بنفسك.'));
+ });
+ document.getElementById('ssCommSend')?.addEventListener('click',ssShareMessage);
+}
+attachPortal=function(){
+ ssFormerAttachPortal();
+ // تسمح روابط الأقسام الأصلية بتغيير العرض ثم يبدأ تحميل البيانات حسب الصلاحية.
+ document.querySelectorAll('[data-tab="staff_hub"]').forEach(b=>b.addEventListener('click',()=>{
+  if(canEdit()&&ssState.loadedYear!==ssState.year)ssLoadRecords();
+ }));
+ document.querySelectorAll('[data-tab="staff_contacts"]').forEach(b=>b.addEventListener('click',()=>{
+  if(canEdit()&&!ssState.contactsLoaded)ssLoadContacts();
+ }));
+ document.getElementById('ssYear')?.addEventListener('change',ev=>{
+  ssState.year=ev.target.value;ssState.editing=null;ssState.lessonUnit='';
+  ssState.lessonName='';ssState.lessonDraft=null;ssState.loadedYear='';ssLoadRecords();
+ });
+ document.getElementById('ssTerm')?.addEventListener('change',ev=>{
+  ssState.term=Number(ev.target.value)===2?2:1;ssState.editing=null;ssState.lessonUnit='';
+  ssState.lessonName='';ssState.lessonDraft=null;render();
+ });
+ document.querySelectorAll('[data-ss-tab]').forEach(b=>b.addEventListener('click',()=>{
+  ssState.tab=b.dataset.ssTab;ssState.editing=null;ssState.lessonDraft=null;render();
+ }));
+ document.getElementById('ssNewRecord')?.addEventListener('click',()=>{
+  ssState.editing=null;ssState.lessonUnit='';ssState.lessonName='';
+  ssState.lessonDraft=null;render();
+ });
+ document.querySelectorAll('[data-ss-edit]').forEach(b=>b.addEventListener('click',()=>ssChooseTeacherRecord(b.dataset.ssEdit)));
+ document.querySelectorAll('[data-ss-archive]').forEach(b=>b.addEventListener('click',()=>ssTeacherRecordArchive(b.dataset.ssArchive)));
+ document.getElementById('ssRecordForm')?.addEventListener('submit',ev=>{
+  ev.preventDefault();ssSaveRecord(ev.currentTarget);
+ });
+ document.getElementById('ssCustomLessonForm')?.addEventListener('submit',ev=>{
+  ev.preventDefault();ssAddCustomLesson(ev.currentTarget);
+ });
+ const lessonForm=document.querySelector('#ssRecordForm[data-type="lesson_plan"]');
+ lessonForm?.querySelector('select[name="unit"]')?.addEventListener('change',ev=>{
+  ssLessonFormChange(ev);ssState.lessonUnit=ev.target.value;
+  ssState.lessonName='';ssState.editing=null;render();
+ });
+ lessonForm?.querySelector('select[name="lesson"]')?.addEventListener('change',ev=>{
+  ssLessonFormChange(ev);ssState.lessonName=ev.target.value;ssState.editing=null;render();
+ });
+ ssRestoreLessonDraft();
+ document.getElementById('ssAddDay')?.addEventListener('click',()=>{
+  const day=document.getElementById('ssDayPicker')?.value,input=document.getElementById('ssTeachDays');
+  if(!day||!input)return;
+  const days=ssUniq([...ssItems(input.value),day]);input.value=days.join('\n');
+ });
+ document.querySelectorAll('[data-ss-contact-edit]').forEach(el=>el.addEventListener('click',()=>{
+  ssState.editingContact=ssState.contacts.find(x=>String(x.id)===el.dataset.ssContactEdit)||null;render();
+ }));
+ document.getElementById('ssContactNew')?.addEventListener('click',()=>{ssState.editingContact=null;render()});
+ document.getElementById('ssContactForm')?.addEventListener('submit',async ev=>{
+  ev.preventDefault();const f=Object.fromEntries(new FormData(ev.currentTarget)),r=ssState.editingContact;
+  try{
+   await api('save_staff_contact',{...f,id:r?.id,expected_updated_at:r?.updated_at});
+   ssState.editingContact=null;auth.message='حُفظت جهة الاتصال بنجاح.';
+   await ssLoadContacts();
+  }catch(err){ssState.error=err.message;render()}
+ });
+ document.querySelectorAll('[data-ss-contact-archive]').forEach(el=>el.addEventListener('click',async()=>{
+  if(!window.confirm('أرشفة جهة الاتصال المحددة؟'))return;
+  try{await api('archive_staff_contact',{id:Number(el.dataset.ssContactArchive)});await ssLoadContacts()}
+  catch(err){ssState.error=err.message;render()}
+ }));
+ ssAttachStudentSelection();
+};
