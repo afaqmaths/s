@@ -142,7 +142,9 @@ function gbCertificate(p,mode='prediction'){
  '<p>'+(final?'درجة الاختبار النهائي':'التوقع وفق A+ وA−')+'</p><strong>'+gbNum(chosen)+' / ٤٠</strong>'+
  '<div class="gb-cert-total"><span>'+(final?'الدرجة الحقيقية النهائية':'الدرجة المتوقعة قبل النهائي')+
  '</span><b>'+gbNum(total)+' / ١٠٠</b><small>'+gbNum(total)+'٪</small></div>'+
- (!final?'<p class="gb-cert-a">مؤشرات الدفتر: A+ = '+gbNum(a.a_plus_points)+'، A− = '+gbNum(a.a_minus_points)+'</p>':
+ (!final?'<p class="gb-cert-a">مؤشرات الدفتر عند اعتماد التوقع: A+ = '+
+ gbNum(a.a_plus_at_approval??a.a_plus_points)+'، A− = '+
+ gbNum(a.a_minus_at_approval??a.a_minus_points)+'</p>':
  '<p class="gb-cert-a">درجة A المتوقعة: '+gbNum(a.a_score)+' / ٤٠، واستُبدلت في الحساب بدرجة النهائي الحقيقية.</p>')+
  '<p class="gb-cert-ok">'+(final?'تم اعتماد درجة الاختبار النهائي من المشرف':
  'التوقع معتمد لكنه ليس الدرجة النهائية للفصل')+'</p></div></div>'+
@@ -201,14 +203,15 @@ function gbForm(p){
   '<div class="gb-tiles"><div><strong>A+ = '+gbNum(a.a_plus_points||0)+'</strong><small>موجبة</small></div>'+
   '<div><strong>A− = '+gbNum(a.a_minus_points||0)+'</strong><small>سالبة</small></div>'+
   '<div><strong>'+gbNum(a.a_suggested||0)+' / ٤٠</strong><small>مؤشر غير ملزم</small></div></div>'+
-  (approved?'<p class="notice">لإضافة نقاط جديدة، يجب إعادة فتح التوقع؛ ولا يُلغى اعتماد الاختبار النهائي إلا بقرار مستقل من المشرف.</p>':
+  (approved?'<p class="notice">يمكنك مواصلة رصد النقاط تراكميًا بعد الاعتماد، لكن توقع الاختبار النهائي المحفوظ من ٤٠ لا يتغير، وتبقى الشهادة الأولى معتمدة برصيد يوم الاعتماد.</p>':'')+
   '<form id="gbEventForm"><div class="gb-input-grid">'+
   '<div><label>نوع الرصد</label><select id="gbKind" name="kind"><option value="plus">A+ موجب</option>'+
   '<option value="minus">A− سالب</option></select></div>'+
   '<div><label>سبب الرصد</label><select id="gbCategory" name="category">'+GB_PLUS.map(x=>'<option value="'+e(x)+'">'+e(x)+'</option>').join('')+'</select></div>'+
   '<div><label>عدد النقاط</label><input name="points" type="number" min="1" max="20" value="1" required></div>'+
   '<div><label>توضيح اختياري</label><input name="note" type="text" maxlength="400" placeholder="مثال: إجابة مميزة في دائرة الضوء"></div></div>'+
-  '<button class="soft" type="submit">إضافة النقاط مع سببها في دفتر الرصد</button></form>')+'</section>';
+  '<button class="soft" type="submit">إضافة نقاط متكررة مع سببها إلى الرصيد التراكمي</button></form>'+
+  '<button class="outline" type="button" data-ss-open-comm>💬 مشاركة الرصد الأخير اختياريًا مع ولي الأمر أو إدارة المدرسة</button></section>';
  const finalStatus='<p class="gb-approval '+(finalApproved?'gb-approved':'gb-draft')+'">'+
   (finalApproved?'✓ تم اعتماد الدرجة الحقيقية والشهادة الثانية.':
   a.final_score==null?'الاختبار النهائي لم تُدخل درجته بعد؛ لا تُحتسب في شهادة التوقع.':
