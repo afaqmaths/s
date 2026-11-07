@@ -307,3 +307,153 @@ function ssTeacherView(){
  '<div class="ss-workspace"><p class="ss-privacy">مساحة عمل خاصة بالمشرف والمساعد؛ جميع الإضافات محفوظة في قاعدة البيانات، ويمكن تعديلها أو أرشفتها دون المساس بسجلات المسابقة أو النتائج.</p>'+
  ssYearsAndTerm()+ssTabs()+ssDataNotice()+part+'</div>';
 }
+
+
+/* التواصل: إنشاء مسودات يراجعها المشرف، لا إرسال صامت أو تلقائي لبيانات القُصّر. */
+function ssSafeUrl(v){const x=ssStr(v);return /^https:\/\/[a-z0-9.-]+(?:\/|$)/i.test(x)?x:''}
+const ssWa=n=>{let x=String(n||'').replace(/[^\d]/g,'');if(x.length===8)x='968'+x;return /^\d{9,15}$/.test(x)?x:''};
+const ssContactsByOrg=org=>ssState.contacts.filter(x=>x.organization_type===org);
+function ssDirectoryList(){
+ if(!ssState.contacts.length)return '<p class="muted">لا توجد أرقام في دليل الهاتف، أو لم يتم تحميلها بعد.</p>';
+ return '<div class="ss-contacts-grid">'+ssState.contacts.map(x=>'<article class="ss-contact">'+
+ '<h4>'+ssEsc(x.label)+'</h4><p>'+ssEsc(x.organization)+' • '+ssEsc(x.organization_type)+'</p>'+
+ (x.phone?'<p>الهاتف: <a href="tel:'+ssEsc(x.phone)+'">'+ssEsc(x.phone)+'</a></p>':'')+
+ (x.whatsapp&&ssWa(x.whatsapp)?'<a target="_blank" rel="noopener noreferrer" href="https://wa.me/'+ssWa(x.whatsapp)+'">محادثة واتساب</a>':'')+
+ (x.email?'<a href="mailto:'+encodeURIComponent(x.email)+'">بريد إلكتروني</a>':'')+
+ (x.resource_url&&ssSafeUrl(x.resource_url)?'<a href="'+ssEsc(x.resource_url)+'" target="_blank" rel="noopener noreferrer">خدمة / موقع المؤسسة</a>':'')+
+ (x.notes?'<p>'+ssEsc(x.notes)+'</p>':'')+
+ '<div class="ss-row-buttons"><button type="button" class="outline" data-ss-contact-edit="'+x.id+'">تحرير</button>'+
+ (auth.user?.role==='supervisor'&&!x.built_in?'<button type="button" class="outline" data-ss-contact-archive="'+x.id+'">أرشفة</button>':'')+'</div></article>').join('')+'</div>';
+}
+function ssContactForm(){
+ const r=ssState.editingContact||{};
+ const groups=['school','directorate','ministry','other'];
+ const names={'school':'المدرسة','directorate':'المديرية التعليمية','ministry':'وزارة التربية والتعليم','other':'جهة أخرى'};
+ return '<section class="ss-card"><h3>دليل الهاتف المؤسسي القابل للإضافة</h3>'+
+ '<p>يمكن إضافة اسم وعنوان جهة، والمؤسسة التابعة لها، ورقم الهاتف أو الواتساب والبريد والرابط الرسمي؛ وتُعرض المعلومات للمشرف ومساعده فقط بعد تسجيل الدخول.</p>'+
+ '<button type="button" id="ssContactNew" class="outline">إضافة جهة جديدة</button>'+
+ '<form id="ssContactForm"><div class="ss-grid">'+
+ ssInp('عنوان جهة الاتصال','label',r.label||'','text','required maxlength="120"')+
+ ssInp('المؤسسة التي تتبعها','organization',r.organization||'','text','required')+
+ '<label class="ss-field"><span>نوع المؤسسة</span><select name="organization_type">'+
+ groups.map(k=>'<option value="'+k+'"'+(r.organization_type===k?' selected':'')+'>'+names[k]+'</option>').join('')+'</select></label>'+
+ ssInp('هاتف الاتصال','phone',r.phone||'','tel','placeholder="242550000"')+
+ ssInp('رقم الواتساب الدولي','whatsapp',r.whatsapp||'','tel','placeholder="9689XXXXXXX"')+
+ ssInp('البريد الإلكتروني','email',r.email||'','email')+
+ ssInp('رابط المؤسسة HTTPS','resource_url',r.resource_url||'','url')+
+ ssTxt('ملاحظات الجهة','notes',r.notes||'',2)+'</div>'+
+ '<button type="submit" class="primary">حفظ جهة الاتصال</button></form></section>';
+}
+function ssReferralLinks(){
+ return '<section class="ss-card"><h3>التواصل مع إدارة المدرسة والمديرية والوزارة</h3>'+
+ '<p>اختر وسيلة اتصال رسمية؛ تفتح المنصة الرابط فقط وتترك كتابة الطلب وإرساله لمستخدم الحساب، دون إرسال تلقائي.</p>'+
+ '<div class="ss-resources">'+SS_FORMS.map(x=>'<article><strong>'+ssEsc(x.title)+'</strong>'+
+ '<p>استمارة رسمية قد تتطلب التحقق أو تسجيل الدخول.</p>'+
+ '<a href="'+ssEsc(x.url)+'" target="_blank" rel="noopener noreferrer">فتح نموذج خدمات المراجعين</a></article>').join('')+'</div>'+
+ '<p>يمكن الوصول إلى مدير المدرسة وأرقام الوزارة من الدليل أدناه. يُراعى توثيق المراسلات المهمة وفق الإجراءات المدرسية المعتمدة.</p></section>';
+}
+function ssComposeStudentSelect(){
+ const rows=Array.isArray(auth.students)?[...auth.students].sort((a,b)=>String(a.class_name||'').localeCompare(String(b.class_name||''),'ar')||Number(a.serial_no)-Number(b.serial_no)):[];
+ return '<label class="ss-field"><span>الطالب (اختياري)</span><select id="ssContactStudent"><option value="">مراسلة عامة بدون بيانات طالب</option>'+
+ rows.map(x=>'<option value="'+ssEsc(x.student_id)+'"'+(ssState.contactId===x.student_id?' selected':'')+'>'+
+ ssEsc(x.class_name)+' — '+ssEsc(x.serial_no)+' — '+ssEsc(x.full_name||x.display_name)+'</option>').join('')+'</select></label>';
+}
+function ssComposeNoteOptions(){
+ const p=ssState.contactStudent;if(!p)return '';
+ const events=(p.assessment_events||[]).slice(0,50);
+ const notes=(p.notes||[]).slice(0,20);
+ let items=events.map((x,i)=>'<option value="event:'+i+'">'+(x.kind==='plus'?'A+':'A−')+
+ ' • '+ssEsc(x.category)+' • '+ssEsc(x.points)+' نقطة</option>');
+ items=items.concat(notes.map((x,i)=>'<option value="note:'+i+'">ملاحظة: '+ssEsc(x.category)+' — '+ssEsc(x.note.slice(0,70))+'</option>'));
+ return '<label class="ss-field"><span>إدراج نقطة A أو ملاحظة سلوكية أو دراسية في المسودة (اختياري)</span>'+
+ '<select id="ssContactNote"><option value="">اختر واقعة لإدراجها</option>'+items.join('')+'</select></label>';
+}
+function ssComposeView(){
+ const school=ssContactsByOrg('school'),manager=school.find(x=>/مدير المدرسة/.test(x.label)),sender=school.find(x=>/مشرف/.test(x.label));
+ return '<section class="ss-card"><h3>إنشاء رسالة اختيارية للطالب أو ولي الأمر أو إدارة المدرسة</h3>'+
+ '<p>اختر واقعة من دفتر A+ وA− أو من الملاحظات السلوكية، ثم راجع نص الرسالة قبل فتح التطبيق. لا تُرسل المنصة أي رسالة آليًا، ولا تحفظ أرقام أولياء الأمور دون طلب مستقل.</p>'+
+ '<div class="ss-grid">'+ssComposeStudentSelect()+ssComposeNoteOptions()+
+ '<label class="ss-field"><span>وجهة الاتصال</span><select id="ssRecipientType">'+
+ ['ولي الأمر / الطالب','إدارة المدرسة','المشرف على المنصة','جهة أخرى'].map(x=>'<option>'+x+'</option>').join('')+
+ '</select></label>'+
+ '<label class="ss-field"><span>طريقة المشاركة</span><select id="ssCommChannel">'+
+ '<option value="whatsapp">واتساب</option><option value="instagram">إنستجرام (نسخ النص يدويًا)</option>'+
+ '<option value="email">بريد إلكتروني / البريد الوزاري</option></select></label>'+
+ ssInp('رقم واتساب المستلم الدولي أو بريده (يُدخل يدويًا للطالب أو ولي أمره)','recipient',ssState.commRecipient,'text','id="ssCommRecipient" placeholder="968XXXXXXXX أو name@example.com"')+
+ ssTxt('نص الرسالة بعد المراجعة','message',ssState.commDraft||'',7)+'</div>'+
+ '<label class="ss-consent"><input type="checkbox" id="ssShareConsent">أؤكد أنني مخوّل بمشاركة هذه المعلومات مع الجهة المحددة، وقد راجعت خلوها من بيانات غير لازمة.</label>'+
+ '<div class="ss-row-buttons"><button class="primary" type="button" id="ssCommSend">فتح تطبيق المشاركة (لا يرسل تلقائيًا)</button>'+
+ '<button class="outline" type="button" id="ssCommCopy">نسخ الرسالة فقط</button></div>'+
+ '<p class="muted">إنستجرام لا يدعم إنشاء رسالة خاصة جاهزة عبر رابط ويب موثوق؛ ننسخ النص ونفتح صندوق الرسائل لتلصقه بنفسك.</p>'+
+ (manager?'<div class="ss-contact-shortcuts"><p>جهة الإدارة المدرسية: <b>'+ssEsc(manager.label)+'</b></p>'+
+ '<button class="soft" type="button" data-ss-fill-contact="'+manager.id+'">اختيار جهة المدير للمراسلة</button></div>':'')+
+ (sender?'<p class="muted">التوقيع المقترح: '+ssEsc(sender.label)+'</p>':'')+
+ '</section>';
+}
+function ssContactsView(){
+ return ssBanner('التواصل المهني ودليل الهاتف','إدارة المدرسة • المديرية التعليمية • وزارة التربية والتعليم • أولياء الأمور')+
+ ssMenu(auth.user?.role)+
+ '<div class="ss-workspace">'+ssDataNotice()+ssReferralLinks()+ssComposeView()+
+ ssContactForm()+ssDirectoryList()+'</div>';
+}
+function ssComposeMessageFromSelection(selected){
+ const p=ssState.contactStudent,student=p?.student||{};
+ const name=student.full_name||student.display_name||'';
+ const intro='السلام عليكم ورحمة الله وبركاته،\n';
+ let detail='';
+ if(selected.startsWith('event:')){
+  const x=p?.assessment_events?.[Number(selected.slice(6))];
+  if(x)detail='نوع الرصد: '+(x.kind==='plus'?'A+ موجب (تميز ومشاركة)':'A− سالب (تحدٍ أو ملاحظة)')+
+   '\nسبب الرصد: '+x.category+'\nعدد النقاط: '+x.points+
+   (x.note?'\nالتفصيل: '+x.note:'');
+ }else if(selected.startsWith('note:')){
+  const x=p?.notes?.[Number(selected.slice(5))];
+  if(x)detail='نوع المتابعة: '+x.category+'\nالملاحظة: '+x.note;
+ }
+ const studentLine=name?'بشأن الطالب: '+name+' — '+(student.class_name||'')+'\n':'';
+ return intro+studentLine+(detail?detail+'\n':'')+
+ 'نرجو الاطلاع والمتابعة بما يخدم مصلحة الطالب، مع الشكر والتقدير.\n'+
+ 'الأستاذ سعيد بن جمعة بن عبدالله البريكي\nمنصة آفاق الرياضيات.';
+}
+function ssContactInfoSelected(){
+ const select=document.getElementById('ssRecipientType');
+ const receiver=document.getElementById('ssCommRecipient');
+ if(!select||!receiver)return;
+ const type=select.value,contacts=ssState.contacts;
+ let c=null;
+ if(type==='إدارة المدرسة')c=contacts.find(x=>x.organization_type==='school'&&/مدير المدرسة/.test(x.label));
+ else if(type==='المشرف على المنصة')c=contacts.find(x=>x.organization_type==='school'&&/مشرف/.test(x.label));
+ const channel=document.getElementById('ssCommChannel')?.value||'whatsapp';
+ if(c)receiver.value=channel==='email'?(c.email||''):(c.whatsapp||c.phone||'');
+}
+function ssCommText(){
+ const m=ssStr(document.querySelector('#ssContactsView_dummy')?.value||
+ document.querySelector('#ssContactForm')?.dataset?.unused||
+ document.querySelector('.ss-card textarea[name="message"]')?.value);
+ return m;
+}
+function ssCopyText(text){
+ if(navigator.clipboard?.writeText)return navigator.clipboard.writeText(text).then(()=>true).catch(()=>false);
+ const area=document.createElement('textarea');area.value=text;area.style.position='fixed';
+ area.style.opacity='0';document.body.appendChild(area);area.select();
+ let ok=false;try{ok=document.execCommand('copy')}catch{}
+ area.remove();return Promise.resolve(ok);
+}
+function ssShareMessage(){
+ const text=ssCommText(),approved=document.getElementById('ssShareConsent')?.checked;
+ if(!text||!approved){window.alert('اكتب رسالة وفعّل إقرار مراجعة معلومات الطالب والمستلم قبل فتح المشاركة.');return}
+ const channel=document.getElementById('ssCommChannel')?.value||'whatsapp',
+ recipient=ssStr(document.getElementById('ssCommRecipient')?.value);
+ if(channel==='whatsapp'){
+  const phone=ssWa(recipient);
+  if(!phone){window.alert('أدخل رقم واتساب دوليًا صحيحًا للمستلم؛ مثلاً 968XXXXXXXX.');return}
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text),'_blank','noopener,noreferrer');
+ }else if(channel==='email'){
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)){window.alert('أدخل عنوان بريد إلكتروني صحيحًا.');return}
+  const subject='متابعة تربوية — منصة آفاق الرياضيات';
+  window.location.href='mailto:'+recipient+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(text);
+ }else{
+  window.open('https://www.instagram.com/direct/inbox/','_blank','noopener,noreferrer');
+  ssCopyText(text).then(ok=>{if(!ok)window.prompt('انسخ نص الرسالة وألصقه بنفسك في إنستجرام:',text);else window.alert('نُسخ النص، ويمكنك لصقه في رسالة إنستجرام بعد اختيار المستلم.')});
+ }
+}
