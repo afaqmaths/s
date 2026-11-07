@@ -1,0 +1,98 @@
+/* منصة آفاق الرياضيات — دليل المعلم المهني والتواصل المدرسي */
+.ss-workspace{direction:rtl;background:linear-gradient(140deg,#f5faff,#fffdfa);padding:18px 22px;max-width:1300px;margin:auto;color:#183e65}
+.ss-main-menu{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0!important}
+.ss-privacy{border-inline-start:5px solid #c69a37;background:#fff8e9;border-radius:10px;padding:13px 16px;font-weight:750;line-height:1.8}
+.ss-filters{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:18px 0}
+.ss-filters label{font-size:17px;color:#275679;font-weight:900;display:flex;align-items:center;gap:10px}
+.ss-filters select,.ss-field input,.ss-field select,.ss-field textarea{font-family:Tahoma,Arial,sans-serif;font-size:15px;border:1px solid #b8cede;border-radius:10px;min-height:41px;color:#213c5a;background:#fff;box-sizing:border-box}
+.ss-filters select{padding:8px 12px}
+.ss-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0;padding:13px;background:#e9f4fe;border-radius:15px;border:1px solid #bed6e7}
+.ss-tabs button{border:1px solid #b8cede;background:#fff;color:#28587b;border-radius:20px;padding:11px 14px;font:850 15px Tahoma,Arial,sans-serif;cursor:pointer}
+.ss-tabs button.sel{background:#215b86;color:#fff;border-color:#215b86;box-shadow:0 3px 8px #0f4d8433}
+.ss-card{direction:rtl;border:1px solid #cbdeeb;border-radius:17px;padding:19px 22px;margin:14px 0 22px;background:#fff;box-shadow:0 5px 22px #1252820d}
+.ss-card h3{font-size:clamp(20px,1.8vw,27px);color:#174c76;font-weight:950;margin:5px 0 13px}
+.ss-card h4{color:#205980;font-size:18px;margin:18px 0 10px}
+.ss-card>p{line-height:1.75;color:#496981;margin:10px 0}
+.ss-card form>button.primary,.ss-card button.primary{font-weight:900;font-size:17px;padding:11px 18px;margin-top:12px}
+.ss-card details{margin:14px 0;padding:11px 14px;border:1px solid #d6e3ed;border-radius:12px;background:#fcfdff}
+.ss-card summary{cursor:pointer;color:#256388;font-weight:900;font-size:17px}
+.ss-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;padding:10px 0}
+.ss-field{display:flex;flex-direction:column;gap:7px;margin:12px 0;min-width:0;flex:1}
+.ss-field>span{color:#265475;font-weight:900;font-size:15px}
+.ss-field input,.ss-field select{padding:10px 12px;max-width:100%;width:100%}
+.ss-field textarea{max-width:100%;width:100%;resize:vertical;padding:12px 13px;line-height:1.75}
+.ss-field textarea:focus,.ss-field input:focus,.ss-field select:focus{outline:2px solid #e5af44;border-color:#d49e35}
+.ss-checks{display:flex;flex-wrap:wrap;align-items:center;gap:7px 11px;max-width:100%;margin:8px 0 13px}
+.ss-checks label{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid #d8e4ee;border-radius:22px;background:#f7fbff;cursor:pointer;font-size:14px;font-weight:800;color:#294c65}
+.ss-checks label:has(input:checked){background:#e3f5ec;border-color:#9cd5bd;color:#175b43}
+.ss-checks input{width:17px;height:17px;accent-color:#208669}
+.ss-catalog-objectives{background:#eff9ff;border:1px solid #c7e4f0;padding:12px;border-radius:12px;margin:12px 0}
+.ss-date-helper{display:flex;gap:10px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.ss-date-helper input{max-width:210px}
+.ss-record-list{display:flex;flex-direction:column;gap:8px;margin:15px 0}
+.ss-record{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 15px;border:1px solid #d6e1ed;border-radius:12px;background:#f9fcff}
+.ss-record div:first-child{display:flex;flex-direction:column;gap:4px;max-width:78%}
+.ss-record strong{font-size:16px;color:#17486d}
+.ss-record small{font-size:13px;color:#64819a}
+.ss-record div:last-child{display:flex;gap:6px;flex-wrap:wrap}
+.ss-index{background:linear-gradient(140deg,#fffefb,#f5faff);margin:13px 0 18px}
+.ss-index-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.ss-index-grid>div{border:1px solid #d8e6ef;border-radius:12px;background:#fff;padding:10px 14px}
+.ss-index-grid h4{color:#9e6b22;margin:7px 0}
+.ss-index-grid ol{padding-inline-start:24px;line-height:1.8;color:#274e6d}
+.ss-resources,.ss-contacts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:13px;margin:16px 0}
+.ss-resources article,.ss-contact{background:#f8fbfe;border:1px solid #d1deea;border-radius:14px;padding:15px;display:flex;flex-direction:column;gap:9px}
+.ss-resources strong{font-size:16px;color:#1c5279}
+.ss-resources p,.ss-contact p{color:#58718b;font-size:14px;line-height:1.55;margin:2px 0}
+.ss-resources a,.ss-contact a{color:#096e76;font-size:15px;font-weight:900;text-decoration:underline;overflow-wrap:anywhere}
+.ss-contact h4{margin:2px 0;font-size:17px;color:#21577a}
+.ss-row-buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px}
+.ss-contact-shortcuts{margin:12px 0;padding:10px 13px;border-radius:10px;background:#e9f8ed}
+.ss-consent{display:flex;align-items:flex-start;gap:10px;border:1px solid #ddc896;border-radius:12px;padding:13px;background:#fff8e6;line-height:1.7;font-weight:750;margin:10px 0}
+.ss-consent input{width:19px;height:19px;flex:0 0 auto;accent-color:#278554;margin-top:3px}
+.ss-teacher-action{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.ss-print-record{direction:rtl;width:100%;background:#fff;color:#23465e;padding:7mm 8mm;font-family:Tahoma,Arial,sans-serif}
+.ss-print-record header{text-align:center;border-bottom:3px double #af863e;padding-bottom:3mm}
+.ss-print-record h1{color:#20547b;font-size:20pt}
+.ss-print-record h2{color:#ab7326;font-size:17pt}
+.ss-print-record section{display:grid;grid-template-columns:1fr 1fr;gap:3mm 5mm;margin:5mm 0}
+.ss-print-record section>div{border:1px solid #dbe7ec;break-inside:avoid;border-radius:6px;padding:2mm 3mm}
+.ss-print-record h3{font-size:12pt;color:#1c5880;margin:0 0 1mm}
+.ss-print-record p{font-size:10pt;line-height:1.65;white-space:normal;margin:1mm 0}
+.ss-print-record footer{display:flex;justify-content:space-between;gap:8mm;border-top:2px double #af863e;padding-top:3mm;margin-top:8mm;font-size:9pt}
+.ss-portrait-sheet{direction:rtl;font:11pt Tahoma,Arial,sans-serif;background:#fff;color:#1c4767;padding:0}
+.ss-portrait-sheet>header{text-align:center;border-bottom:3px double #ae8a43;padding-bottom:2mm;break-inside:avoid;margin-bottom:4mm}
+.ss-portrait-sheet h1{font-size:16pt;color:#225178;margin:2mm auto}
+.ss-portrait-sheet h2{font-size:13pt;color:#af7922;margin:1mm auto}
+.ss-portrait-sheet>header p{font-size:9pt;margin:1mm 0}
+.ss-portrait-student{border:2px solid #c6dce9;border-radius:7px;padding:2.6mm 3mm;margin:2.5mm 0;background:#fff;break-inside:avoid;page-break-inside:avoid}
+.ss-portrait-student-title{display:flex;align-items:center;justify-content:space-between;gap:4mm;border-bottom:1px solid #d4e2ed;padding-bottom:1mm}
+.ss-portrait-student-title span{font-size:11pt;font-weight:900;color:#154f78}
+.ss-portrait-student-title span>b{background:#225982;color:#fff;padding:.5mm 2mm;border-radius:4px;margin-inline-end:2mm}
+.ss-portrait-student-title small{font-size:7pt;color:#65788a}
+.ss-portrait-grade-line,.ss-portrait-totals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1mm;margin-top:1.5mm}
+.ss-portrait-grade-line>span,.ss-portrait-totals>span{display:flex;justify-content:space-between;gap:1mm;padding:1.1mm 1.4mm;border-radius:3px;background:#f0f7fb;font-size:8pt}
+.ss-portrait-grade-line strong,.ss-portrait-totals strong{color:#1b5c82}
+.ss-portrait-totals>span{background:#fff4da}
+.ss-portrait-totals>span:last-child{background:#e7f6ed}
+.ss-portrait-sheet footer{border-top:2px solid #ba9751;padding-top:2mm;line-height:1.6;margin-top:5mm}
+.ss-portrait-sheet footer p{font-size:8pt}
+.ss-portrait-sheet footer div{display:flex;justify-content:space-between;gap:6mm;font-size:8pt}
+.ss-portrait-sheet footer small{font-size:7pt;color:#60778c}
+@media(max-width:660px){
+ .ss-workspace{padding:12px}
+ .ss-card{padding:14px}
+ .ss-grid{grid-template-columns:1fr}
+ .ss-record div:first-child{max-width:100%}
+ .ss-portrait-grade-line,.ss-portrait-totals{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media print{
+ body.ss-print-teacher .ss-print-record{width:100%!important;max-width:none!important}
+ body.ss-print-teacher .ss-print-record section{grid-template-columns:1fr 1fr!important}
+ body.ss-print-portrait .ss-portrait-sheet{width:100%!important;min-width:0!important;box-sizing:border-box!important}
+ body.ss-print-portrait .ss-portrait-sheet>*{visibility:visible!important}
+ body.ss-print-portrait .ss-portrait-student{break-inside:avoid!important}
+ body.ss-print-portrait .ss-portrait-student-title span{font-size:10pt!important}
+ body.ss-print-portrait .ss-portrait-grade-line>span,body.ss-print-portrait .ss-portrait-totals>span{font-size:7.8pt!important}
+ body.ss-print-portrait .ss-portrait-grade-line,body.ss-print-portrait .ss-portrait-totals{grid-template-columns:repeat(4,1fr)!important}
+}
