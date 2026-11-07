@@ -221,7 +221,7 @@ function starsVisitorEnd(){
  const qualifier=score>=90?'🌟 متفوق في التحدي':score>=75?'🏅 أداء مميز':score>=50?'👏 اجتهاد يستحق التقدير':'💪 بداية جيدة، واصل التدريب';
  const done=STATE.visitorAttempt?.stage_scores||{};
  const rows=[1,2,3,4,5].map(n=>'<tr><td>'+stage(n).title+'</td>'+
- '<td>'+stext(Number(done[n]||sttotal(n).earned||0))+' / ١٠</td></tr>').join('');
+ '<td>'+stext(Number(done[n]??sttotal(n).earned??0))+' / ١٠</td></tr>').join('');
  return '<div class="contest-finish"><div class="contest-giant">🏆🎉⭐</div>'+
  '<h2>أكملت نموذج الزائر من نجوم آفاق!</h2><h3>'+friendly(STATE.displayName||'نجم الرياضيات')+'</h3>'+
  '<div class="contest-metrics"><div><strong>'+stext(raw)+' / ٥٠</strong><small>نقاط المراحل</small></div>'+
