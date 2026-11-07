@@ -378,3 +378,289 @@ async function hubParentLogout(){
  try{if(hub.parentToken)await hubCall('parent_logout',{},hub.parentToken)}catch{}
  hub.parentToken='';hub.parentProfile=null;sessionStorage.removeItem('afaq_parent_access_v6');render();
 }
+
+
+const HUB_STAFF_BLOCKS=[
+ ['المعلم والتخطيط',[
+  ['التحضير اليومي','notebook-pen','إعداد الدروس والأهداف والأنشطة والاستراتيجيات','hub-staff="lessons"','blue'],
+  ['أهداف إجادة والمبادرات','lightbulb','الأهداف والخطط ومؤشرات الأداء','hub-staff="goals"','gold'],
+  ['الخطة الدراسية','book-open','التخطيط السنوي والفصلي للمنهج','hub-staff="term"','green'],
+  ['التطبيقات والبرامج','calculator','GeoGebra وPolypad وTeams وغيرها','data-tab="hub_apps"','purple']
+ ]],
+ ['الطلاب والتقويم',[
+  ['تقويم الطلبة','list-checks','الدرجات والشفوي والأنشطة وA+ وA−','data-tab="students"','green'],
+  ['كشوف النتائج والشهادات','file-text','مقارنة المتوقع والحقيقي وطباعة الشهادات','data-tab="class_results"','blue'],
+  ['حسابات أولياء الأمور','heart-handshake','إصدار رمز سري خاص للأسرة','data-tab="hub_parent_codes"','rose'],
+  ['مركز الطباعة والتصدير','printer','طباعة A4 أفقي أو عمودي، PDF وWord','data-tab="hub_print"','gold']
+ ]],
+ ['الموارد والمحتوى',[
+  ['إدارة المكتبة العامة','book-open','إضافة وحذف ونشر مواد المكتبة','data-tab="hub_catalog"','purple'],
+  ['إدارة الألعاب والمسابقات','trophy','إضافة أو إخفاء مسابقات المنصة','data-tab="hub_catalog_contests"','gold'],
+  ['بنك الأسئلة والاختبارات','file-text','نماذج سابقة وتدريبية','hub-staff="exams"','blue'],
+  ['الموارد التعليمية','video','دروس وفيديوهات وتطبيقات وفلاشات','data-tab="hub_apps"','green']
+ ]],
+ ['التواصل والدعم',[
+  ['إدارة المدرسة','school','التواصل مع المدير ومساعده','data-tab="staff_contacts"','blue'],
+  ['المديرية التعليمية','globe','روابط خدمات المراجعين بالمديرية','data-tab="staff_contacts"','cyan'],
+  ['وزارة التربية والتعليم','school','التواصل والخدمات الوزارية','data-tab="staff_contacts"','gold'],
+  ['الجهات الأخرى ودليل الهاتف','smartphone','تسجيل جهات جديدة وأرقامها','data-tab="staff_contacts"','rose'],
+  ['صندوق الاقتراحات والشكاوى','message-circle','قراءة الرسائل والرد على أصحابها','data-tab="hub_inbox"','purple']
+ ]]
+];
+function hubStaffNav(){
+ const routes=[
+  ['overview','الرئيسية'],['staff_hub','التحضير'],['students','تقويم الطلبة'],
+  ['hub_apps','التطبيقات والبرامج'],['class_results','كشوف الشعب'],
+  ['hub_catalog','إدارة المحتوى'],['staff_contacts','التواصل المؤسسي'],
+  ['hub_inbox','الرسائل والدعم'],['hub_parent_codes','أولياء الأمور'],
+  ['hub_print','مركز الطباعة']
+ ];
+ return '<div class="hub-staff-nav">'+routes.map(([id,label])=>'<button class="'+(auth.section===id?'selected':'')+'" data-tab="'+id+'">'+label+'</button>').join('')+'</div>';
+}
+function hubStaffDashboard(){
+ const role=auth.user?.role;const admin=role==='supervisor';
+ const blocks=HUB_STAFF_BLOCKS.map(([title,items])=>{
+  const entries=items.filter(([label,icon,desc,attribute])=>admin||!['data-tab="hub_catalog"','data-tab="hub_catalog_contests"','data-tab="hub_parent_codes"'].includes(attribute));
+  return '<section class="hub-staff-group"><div class="hub-heading"><h2>'+title+'</h2></div>'+
+  '<div class="hub-gate-grid">'+entries.map(([name,icon,desc,attr,color])=>hubGate(name,icon,desc,'data-'+attr,color)).join('')+'</div></section>';
+ }).join('');
+ const overview=typeof staffOverview==='function'?staffOverview():'';
+ return '<div class="container hub-staff-home">'+
+ (typeof ssBanner==='function'?ssBanner('لوحة '+(admin?'مشرف المنصة':'المشرف المساعد'),
+ 'دليل منظم من التخطيط العام إلى التقييم والتواصل والطباعة مع الصلاحيات المحفوظة'):
+ '<div class="dashboard-banner"><h2>لوحة أعمال المعلم</h2></div>')+
+ hubStaffNav()+
+ '<section class="hub-main hub-staff-stats"><h2>إحصاءات البوابة</h2>'+
+ (hub.stats?'<div class="hub-stats-grid">'+
+ [['زوار المتصفحات',hub.stats.visitors],['تجارب الزوار المكتملة',hub.stats.trial_finished],
+ ['حسابات تحدي جنى',hub.stats.jana_accounts],['نتائج تحدي جنى',hub.stats.jana_scores],
+ ['رسائل بانتظار الرد',hub.stats.unanswered]].map(([k,v])=>'<article><b>'+hn(v)+'</b><small>'+k+'</small></article>').join('')+
+ '</div>':'<p>تُحمّل إحصاءات الزيارات والمسابقات والرسائل عند فتح لوحة المشرف.</p>')+
+ '<button class="hub-secondary" id="hubStatsReload">تحديث الإحصاءات</button></section>'+blocks+
+ '<details class="hub-staff-old"><summary>الملخص الأصلي والبيانات السابقة للمنصة</summary>'+overview+'</details></div>';
+}
+async function hubLoadStaffStats(){
+ if(!canEdit())return;
+ try{const d=await hubCall('staff_stats',{},auth.token);hub.stats=d.stats;if(state.page==='dashboard'&&auth.section==='overview')render()}
+ catch(err){hub.error=err.message}
+}
+async function hubLoadAdminCatalog(){
+ if(!isAdmin())return;
+ try{const d=await hubCall('catalog_admin',{},auth.token);hub.adminItems=d.items||[];hub.adminLoaded=true;
+  if(state.page==='dashboard'&&['hub_catalog','hub_catalog_contests'].includes(auth.section))render()}
+ catch(err){hub.error=err.message}
+}
+async function hubLoadInbox(){
+ if(!canEdit())return;
+ try{const d=await hubCall('support_inbox',{},auth.token);hub.inbox=d.tickets||[];hub.legacyInbox=d.legacy||[];hub.inboxLoaded=true;
+  if(state.page==='dashboard'&&auth.section==='hub_inbox')render()}
+ catch(err){hub.error=err.message}
+}
+function hubAdminCatalog(){
+ const type=auth.section==='hub_catalog_contests'?'contest':null;
+ const items=(hub.adminLoaded?hub.adminItems:hub.catalog).filter(x=>!type||x.category===type);
+ const r=hub.adminEdit&&(!type||hub.adminEdit.category===type)?hub.adminEdit:null;
+ const fields=['contest','history','scholars','daily_math','books','exams','question_bank','video','game','flash','cartoon','article','fun_book','learning','other'];
+ return '<div class="container hub-admin-page">'+
+ (typeof ssBanner==='function'?ssBanner('إدارة المكتبة والمسابقات','النشر والإخفاء والإضافة والحذف من حساب المشرف الرئيسي'):'')+
+ hubStaffNav()+
+ '<section class="hub-main"><h2>إضافة محتوى أو مسابقة</h2>'+
+ '<p>تتحكم حالة «منشور» في ظهوره للزوار. يُسمح بإضافة رابط لعبة أو مصدر من موقع موثوق؛ لا تُحذف بيانات الطلاب أو نتائجهم عند إخفاء مسابقة من القائمة.</p>'+
+ '<form id="hubCatalogForm" class="hub-admin-form"><div class="hub-form-grid">'+
+ '<label>نوع المادة<select name="category">'+fields.map(cat=>'<option value="'+cat+'"'+((r?.category||type||'contest')===cat?' selected':'')+'>'+hv(H_CATEGORIES[cat])+'</option>').join('')+'</select></label>'+
+ '<label>العنوان<input name="title" minlength="2" maxlength="180" required value="'+hv(r?.title||'')+'"></label>'+
+ '<label>رمز الصورة / الأيقونة<select name="icon">'+
+ ['trophy','gamepad-2','landmark','graduation-cap','book-open','ruler','lightbulb','file-text','list-checks','video','joystick','sparkles','smile','notebook-pen','puzzle','calculator','smartphone','globe','music','palette','brain','shapes'].map(v=>'<option value="'+v+'"'+((r?.icon||'book-open')===v?' selected':'')+'>'+v+'</option>').join('')+'</select></label>'+
+ '<label>الصف المستهدف (اختياري)<select name="grade"><option value="">جميع الصفوف</option>'+
+ [2,5,6,7,8].map(n=>'<option value="'+n+'"'+(Number(r?.grade)===n?' selected':'')+'>'+hn(n)+'</option>').join('')+'</select></label>'+
+ '<label>ترتيب العرض<input name="sort_order" type="number" value="'+(r?.sort_order??100)+'"></label>'+
+ '<label>رابط المادة أو المسابقة<input name="resource_url" placeholder="https://... أو competition.html" value="'+hv(r?.resource_url||'')+'"></label></div>'+
+ '<label>وصف مختصر<textarea name="description" rows="3" maxlength="500">'+hv(r?.description||'')+'</textarea></label>'+
+ '<label>نص معلوماتي للمكتبة<textarea name="body" rows="5" maxlength="4500">'+hv(r?.body||'')+'</textarea></label>'+
+ '<div class="hub-inline-actions"><label class="hub-check"><input type="checkbox" name="published"'+((r?r.published:true)?' checked':'')+'> منشور للزوار</label>'+
+ '<label class="hub-check"><input type="checkbox" name="featured"'+(r?.featured?' checked':'')+'> محتوى مميز</label></div>'+
+ '<button class="hub-primary" type="submit">'+(r?'حفظ تعديلات المحتوى':'إضافة محتوى جديد')+'</button>'+
+ (r?'<button type="button" class="hub-secondary" id="hubCancelCatalogEdit">إلغاء التحرير</button>':'')+
+ '</form></section><section class="hub-main"><h2>العناصر المدرجة ('+hn(items.length)+')</h2>'+
+ '<div class="hub-admin-item-list">'+items.map(item=>'<article><div class="hub-admin-item-head"><b>'+hv(item.title)+'</b>'+
+ '<small>'+(item.published?'منشور':'مخفي')+' — '+hv(H_CATEGORIES[item.category]||item.category)+'</small></div>'+
+ '<p>'+hv(item.description||'')+'</p><div class="hub-inline-actions">'+
+ '<button class="hub-secondary" data-hub-edit-item="'+item.id+'">تحرير</button>'+
+ '<button class="hub-secondary" data-hub-toggle-item="'+item.id+'">'+(item.published?'إخفاء عن الزوار':'إظهار للزوار')+'</button>'+
+ '<button class="hub-danger" data-hub-delete-item="'+item.id+'">حذف العنصر</button></div></article>').join('')+'</div></section></div>';
+}
+async function hubSaveCatalog(form){
+ const f=new FormData(form),data=Object.fromEntries(f.entries()),r=hub.adminEdit;
+ const payload={...data,id:r?.id,grade:data.grade===''?null:Number(data.grade),
+  sort_order:Number(data.sort_order||100),published:f.has('published'),featured:f.has('featured')};
+ try{await hubCall('catalog_save',payload,auth.token);hub.adminEdit=null;await hubLoadAdminCatalog();await hubLoadCatalog();
+  auth.message='تم حفظ العنصر وتحديث حالة نشره.';render()}
+ catch(err){window.alert(err.message)}
+}
+async function hubToggleCatalog(id){
+ const r=hub.adminItems.find(x=>String(x.id)===String(id));if(!r)return;
+ try{await hubCall('catalog_toggle',{id:r.id,published:!r.published},auth.token);await hubLoadAdminCatalog();await hubLoadCatalog()}
+ catch(err){window.alert(err.message)}
+}
+async function hubDeleteCatalog(id){
+ const r=hub.adminItems.find(x=>String(x.id)===String(id));if(!r)return;
+ if(!window.confirm('حذف «'+r.title+'» من دليل المحتوى نهائيًا؟ لا يحذف هذا الإجراء ملفات اللعبة أو نتائج الطلاب.'))return;
+ try{await hubCall('catalog_archive',{id:r.id},auth.token);hub.adminEdit=null;await hubLoadAdminCatalog();await hubLoadCatalog()}
+ catch(err){window.alert(err.message)}
+}
+function hubInbox(){
+ const rows=hub.inbox||[];
+ return '<div class="container hub-admin-page">'+
+ (typeof ssBanner==='function'?ssBanner('الدعم والاقتراحات والشكاوى','صندوق رسائل خاص مع إمكانية كتابة الرد ومتابعته بواسطة صاحب الرسالة'):'')+
+ hubStaffNav()+
+ '<section class="hub-main"><h2>صندوق الرسائل ('+hn(rows.length)+')</h2>'+
+ '<button class="hub-secondary" id="hubInboxReload">تحديث الصندوق</button>'+
+ (!rows.length?'<p class="hub-empty">لا توجد رسائل زوار أو أولياء أمور جديدة.</p>':'')+
+ '<div class="hub-inbox-list">'+rows.map(row=>'<article class="hub-inbox-ticket"><div class="hub-admin-item-head"><b>'+hv(row.sender)+' — '+hv(row.kind)+'</b>'+
+ '<small>'+hv(new Date(row.created_at).toLocaleDateString('ar-OM'))+' • '+(row.answered_at?'تم الرد':'بانتظار الرد')+'</small></div>'+
+ '<p>'+hv(row.message)+'</p>'+
+ (row.contact_email?'<p><b>بريد المرسل:</b> '+hv(row.contact_email)+'</p>':'')+
+ '<form class="hubReplyForm" data-hub-ticket="'+row.id+'"><label>الرد الذي سيظهر لصاحب رمز المتابعة<textarea name="response" rows="3" minlength="3" maxlength="2500" required>'+
+ hv(row.response||'')+'</textarea></label><button class="hub-primary" type="submit">'+(row.response?'تحديث الرد':'إرسال الرد إلى صندوق الرسالة')+'</button></form></article>').join('')+'</div></section>'+
+ '<section class="hub-main"><h2>المراسلات القديمة في المنصة</h2><p>يمكن قراءة الرسائل السابقة هنا، لكنها لم تكن مزودة برمز متابعة؛ لذلك لا يُفترض أن الرد عليها يصل لصاحبها تلقائيًا.</p>'+
+ (hub.legacyInbox.length?'<div class="hub-inbox-list">'+hub.legacyInbox.map(m=>'<article><b>'+hv(m.sender)+'</b><p>'+hv(m.message)+'</p></article>').join('')+'</div>':'<p>لا توجد مراسلات قديمة.</p>')+
+ '</section></div>';
+}
+function hubParentCodes(){
+ const cls=hub.selectedClass;
+ const nums=Array.isArray(auth.students)?auth.students.filter(x=>x.class_name===cls).sort((a,b)=>a.serial_no-b.serial_no):[];
+ return '<div class="container hub-admin-page">'+
+ (typeof ssBanner==='function'?ssBanner('رموز دخول أولياء الأمور','رمز مستقل لكل طالب، وتُحفظ الرموز مشفرة ولا تظهر إلا عند الإصدار'):'')+
+ hubStaffNav()+
+ '<section class="hub-main"><h2>إصدار أو إيقاف رمز ولي الأمر</h2><p>اختر الشعبة والرقم التسلسلي، ثم أصدر رمزًا من ٦ أرقام وأبلغه لولي الأمر عبر وسيلة رسمية خاصة.</p>'+
+ '<form id="hubParentCodeForm" class="hub-admin-form"><div class="hub-form-grid">'+
+ '<label>الشعبة<select name="class_name" id="hubParentClass">'+
+ ['السادس / ٤','السادس / ٥','السادس / ٦'].map(x=>'<option'+(cls===x?' selected':'')+'>'+x+'</option>').join('')+'</select></label>'+
+ '<label>الطالب ورقمه التسلسلي<select name="serial_no">'+
+ nums.map(x=>'<option value="'+x.serial_no+'"'+(hub.selectedSerial===x.serial_no?' selected':'')+'>'+
+ hn(x.serial_no)+' — '+hv(x.full_name||x.display_name||'')+'</option>').join('')+'</select></label></div>'+
+ '<div class="hub-inline-actions"><button class="hub-primary" name="task" value="create" type="submit">إصدار رمز جديد (يلغي القديم)</button>'+
+ '<button class="hub-secondary" name="task" value="status" type="submit">التحقق من حالة الرمز</button>'+
+ '<button class="hub-danger" name="task" value="disable" type="submit">إيقاف رمز ولي الأمر</button></div></form>'+
+ (hub.parentIssued?'<div class="hub-ticket-result"><p>الرمز الجديد يظهر مرة واحدة:</p><strong class="hub-secret-number">'+hv(hub.parentIssued)+'</strong>'+
+ '<button class="hub-secondary" id="hubCopyParentCode">نسخ الرمز لتسليمه بصورة خاصة</button></div>':'')+
+ (hub.parentsStatus?'<p class="hub-note">'+hv(hub.parentsStatus)+'</p>':'')+
+ '</section></div>';
+}
+async function hubManageParentCode(form,button){
+ const values=Object.fromEntries(new FormData(form));
+ const task=button?.value||'status';
+ if(task==='disable'&&!window.confirm('هل تريد إيقاف رمز ولي الأمر وإلغاء جميع جلساته؟'))return;
+ try{
+  const action=task==='create'?'parent_code_create':task==='disable'?'parent_code_disable':'parent_code_status';
+  const d=await hubCall(action,values,auth.token);
+  hub.parentIssued=d.code||null;
+  hub.parentsStatus=task==='status'?(d.configured?'الرمز مُفعّل. آخر تعديل: '+(d.updated_at||''):'لم يصدر رمز نشط لهذا الطالب.'):
+    task==='disable'?'أُوقف الرمز وأُلغيت الجلسات السابقة.':'صدر رمز جديد، وجرى إلغاء الجلسات والرموز القديمة.';
+  render();
+ }catch(err){window.alert(err.message)}
+}
+function hubApps(){
+ const picks=['GeoGebra','Polypad','Microsoft Teams','Microsoft Sway','Canva','Google Forms','Wordwall','Kahoot','PowerPoint'];
+ const urls=['https://www.geogebra.org/','https://polypad.amplify.com/','https://teams.microsoft.com/',
+  'https://sway.cloud.microsoft/','https://www.canva.com/','https://forms.google.com/',
+  'https://wordwall.net/','https://kahoot.com/','https://www.microsoft.com/microsoft-365/powerpoint'];
+ return '<div class="container hub-admin-page">'+
+ (typeof ssBanner==='function'?ssBanner('التطبيقات والبرامج','وسائل رقمية تساعد المعلم في الشرح والتقويم والتوثيق'):'')+
+ hubStaffNav()+'<section class="hub-main"><h2>أدوات المعلم الرقمية</h2><div class="hub-resource-grid">'+
+ picks.map((p,i)=>'<article class="hub-resource-card"><b>'+hv(p)+'</b>'+
+ hubIcon(i<2?'calculator':i<5?'video':'notebook-pen',i%2?'green':'blue')+
+ '<p>استخدم الأداة بحسب الهدف التعليمي وطبيعة النشاط.</p><a class="hub-resource-link" href="'+urls[i]+'" target="_blank" rel="noopener noreferrer">فتح البرنامج</a></article>').join('')+
+ '</div><div class="hub-inline-actions"><button class="hub-secondary" data-hub-work="resources">إضافة رابط في دليل أعمال المعلم</button>'+
+ '<button class="hub-secondary" data-tab="hub_catalog">إضافة مصدر إلى المكتبة العامة</button></div></section></div>';
+}
+function hubPrintableList(){
+ const current=ssState?.records||[],sources=[
+ ['intro','تعريف المنصة وبوابات الدخول','صفحة عامة من المنصة'],
+ ['library','محتويات المكتبة المنشورة','المكتبة العامة'],
+ ['contest_guide','شرح مسابقة النجوم والجوائز','دليل زوار المسابقة'],
+ ['class','كشف درجات الشعبة الحالية','يحتاج تحميل الشعبة أولًا'],
+ ['student_pred','شهادة الطالب المتوقعة (إن كانت معتمدة)','حساب المشرف'],
+ ['student_final','شهادة الطالب الحقيقية (إن كانت معتمدة)','حساب المشرف']
+ ];
+ for(const r of current)sources.push(['record:'+r.id,r.title,'سجل أعمال المعلم']);
+ for(const row of hub.adminItems.filter(x=>x.published))sources.push(['item:'+row.id,row.title,'مورد من المكتبة العامة']);
+ return sources;
+}
+function hubPrintCenter(){
+ const opts=hubPrintableList(),selected=hub.printChosen;
+ return '<div class="container hub-admin-page">'+
+ (typeof ssBanner==='function'?ssBanner('مركز الطباعة والتصدير','اجمع التقارير والمصادر من المنصة واطبعها أفقيًا أو عموديًا'):'')+
+ hubStaffNav()+
+ '<section class="hub-main"><h2>اختيار محتوى للطباعة</h2>'+
+ '<p>اختر المصدر أولًا ثم اختر نوع الورق؛ يطبع PDF من نافذة المتصفح، ويُنشأ ملف Word قابل للتحرير للمستندات النصية. ملفات PDF الخارجية تُفتح من مصدرها ولا تُحوّل إلى Word تلقائيًا.</p>'+
+ '<div class="hub-form-grid"><label>المستند<select id="hubPrintSource">'+opts.map(([key,label,desc])=>'<option value="'+hv(key)+'"'+(key===selected?' selected':'')+'>'+hv(label)+' — '+hv(desc)+'</option>').join('')+'</select></label>'+
+ '<label>اتجاه الورق<select id="hubPrintOrientation"><option value="portrait"'+(hub.printOrientation==='portrait'?' selected':'')+'>A4 عمودي</option>'+
+ '<option value="landscape"'+(hub.printOrientation==='landscape'?' selected':'')+'>A4 أفقي</option></select></label></div>'+
+ '<div class="hub-inline-actions"><button class="hub-primary" id="hubPrintPDF">طباعة / حفظ PDF</button>'+
+ '<button class="hub-secondary" id="hubPrintWord">تصدير Word</button>'+
+ '<button class="hub-secondary" id="hubPrintPreview">معاينة المحتوى</button>'+
+ '<button class="hub-secondary" id="hubPrintReload">تحديث قائمة المستندات</button></div>'+
+ '<div id="hubPrintPreviewArea"></div></section></div>';
+}
+function hubPrintHtml(){
+ const src=hub.printChosen;
+ if(src.startsWith('record:')){
+  const r=ssState.records.find(x=>String(x.id)===src.slice(7));
+  return r&&typeof ssPrintableRecord==='function'?ssPrintableRecord(r):'<p>هذا السجل غير محمّل حاليًا.</p>';
+ }
+ if(src==='student_pred'||src==='student_final'){
+  const p=auth.selectedProfile;return p&&typeof gbCertificate==='function'?
+   gbCertificate(p,src==='student_pred'?'prediction':'final')||'<p>لا توجد شهادة معتمدة.</p>':
+   '<p>حدد طالبًا من تبويب تقويم الطلبة وافتح نتيجته أولًا.</p>';
+ }
+ if(src==='class'){
+  if(!auth.gbClassReport)return '<p>اختر شعبة وحمّل الكشف من تبويب كشوف الشعب أولًا.</p>';
+  return hub.printOrientation==='portrait'&&typeof ssClassPortraitLayout==='function'?
+   ssClassPortraitLayout(auth.gbClassReport):gbClassReportMarkup(auth.gbClassReport);
+ }
+ if(src.startsWith('item:')){
+  const item=hub.adminItems.find(x=>String(x.id)===src.slice(5));if(!item)return '<p>المادة غير موجودة.</p>';
+  return '<h2>'+hv(item.title)+'</h2><p>'+hv(item.description||'')+'</p><p>'+hv(item.body||'')+'</p>'+
+   (item.resource_url?'<p>رابط المصدر: '+hv(item.resource_url)+'</p>':'');
+ }
+ if(src==='library')return '<h2>محتويات المكتبة العامة</h2>'+
+ hub.catalog.filter(x=>x.published).map(x=>'<h3>'+hv(x.title)+'</h3><p>'+hv(x.description||'')+'</p>').join('');
+ if(src==='contest_guide')return '<h2>دليل مسابقة النجوم</h2><p>٤ وحدات × ١٠٠ = ٤٠٠، محاولتان رسميتان لكل وحدة، التأهل بإكمال الوحدات و٣٥٠ نقطة على الأقل.</p>'+
+ '<p>جوائز المراكز: '+HUB_PRIZES.map((x,i)=>(i+1)+' ـ '+x+' ر.ع').join(' | ')+'</p>';
+ return '<h2>آفاق الرياضيات — التعريف بالمنصة</h2><p>بوابة للمعلمين والطلاب وأولياء الأمور والزوار.</p><p>أقسام: التعليم والتعلم؛ المكتبة العامة؛ المرح والتسلية؛ الألعاب والمسابقات؛ الدعم والتواصل.</p>';
+}
+function hubPaper(){
+ return '<article class="hub-printed-document" dir="rtl"><header><p>سلطنة عُمان • مدرسة الحسين بن علي للتعليم الأساسي</p>'+
+ '<h1>منصة آفاق الرياضيات</h1></header><main>'+hubPrintHtml()+'</main>'+
+ '<footer>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي<br>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</footer></article>';
+}
+function hubPdfPrint(){
+ const data=hubPaper(),orient=hub.printOrientation==='landscape'?'landscape':'portrait',pop=window.open('','_blank');
+ if(!pop){window.alert('اسمح بفتح نافذة الطباعة الجديدة في المتصفح.');return}
+ const page='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
+ '<title>طباعة آفاق الرياضيات</title><style>@page{size:A4 '+orient+';margin:10mm}'+
+ 'body{direction:rtl;font-family:Tahoma,Arial,sans-serif;color:#1a436b}'+
+ '.hub-printed-document{max-width:100%;line-height:1.65}'+
+ '.hub-printed-document header{border-bottom:3px solid #bd9c5b;text-align:center}'+
+ '.hub-printed-document h1{font-size:22pt}.hub-printed-document main{padding:8mm 0}'+
+ '.hub-printed-document footer{border-top:2px solid #bd9c5b;padding-top:3mm;margin-top:8mm}'+
+ '.hub-printed-document table{border-collapse:collapse;width:100%;font-size:7pt}'+
+ '.hub-printed-document th,.hub-printed-document td{border:1px solid #aaa;padding:2mm}'+
+ '.gb-certificate{font-size:9pt!important;min-height:0!important;max-width:none!important;}'+
+ '.ss-portrait-student{border:1px solid #aaa;margin-bottom:2mm;padding:2mm;break-inside:avoid}'+
+ '.ss-portrait-grade-line,.ss-portrait-totals{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;font-size:8pt}'+
+ '</style></head><body>'+data+'</body></html>';
+ pop.document.open();pop.document.write(page);pop.onload=()=>{pop.focus();pop.print()};pop.document.close();
+}
+function hubExportWord(){
+ const html=hubPaper().replace(/<svg[\s\S]*?<\/svg>/g,'');
+ const content='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
+ '<style>body{font-family:Tahoma,Arial;direction:rtl;line-height:1.65}'+
+ 'table{border-collapse:collapse;width:100%}td,th{border:1px solid #aaa;padding:4px}'+
+ 'h1,h2,h3{color:#17476d}footer{border-top:1px solid #aaa;margin-top:25px}</style></head><body>'+html+'</body></html>';
+ const blob=new Blob(['\ufeff',content],{type:'application/msword;charset=utf-8'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;
+ a.download='آفاق-الرياضيات-'+new Date().toISOString().slice(0,10)+'.doc';document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
