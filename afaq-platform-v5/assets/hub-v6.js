@@ -209,6 +209,12 @@ function hubLibrary(){
  '<div class="hub-tabs">'+categories.map(([c,t])=>'<button type="button" data-hub-library="'+c+'"'+(filter===c?' class="selected"':'')+'>'+t+'</button>').join('')+'</div>'+
  '<section class="hub-main"><h2>'+hv(categories.find(x=>x[0]===filter)?.[1]||'المكتبة')+'</h2>'+
  hubResourceGrid(filter==='all'?['history','scholars','daily_math','books','exams','question_bank','video','game','flash','learning']: [filter])+
+ '</section><section class="hub-main"><h2>بنك الأسئلة حسب المرحلة التعليمية</h2>'+
+ '<div class="hub-audience">'+
+ '<article><b>الصفوف ١–٤</b><p>مساحة لاستقبال التدريبات التأسيسية الملائمة للصفوف الأولى. لم تُنشر ملفات رسمية في هذه المجموعة بعد.</p></article>'+
+ '<article><b>الصفوف ٥–٨</b><p>نماذج وتمارين تدريبية متاحة من بوابة الاختبارات الحالية.</p></article>'+
+ '<article><b>الصفوف ٩–١٢</b><p>تُضاف مواد هذه الصفوف بعد مراجعة توافقها مع المناهج المعتمدة.</p></article>'+
+ '<article><b>المشرف</b><p>يمكنه إضافة محتوى لكل صف من ١ إلى ١٢ ثم نشره أو إخفاؤه.</p></article></div>'+
  '</section><section class="hub-main"><h2>خيارات إضافية</h2>'+
  '<div class="hub-inline-actions"><a class="hub-secondary" href="exams.html">اختبارات قابلة للطباعة والتنزيل بصيغة Word</a>'+
  '<button class="hub-secondary" data-route="learning">الوحدات والدروس</button></div></section></div>';
@@ -221,6 +227,19 @@ function hubFun(){
  hubIcon('smile','rose')+'</section>'+
  '<div class="hub-tabs">'+cats.map(([v,t])=>'<button data-hub-fun="'+v+'"'+(value===v?' class="selected"':'')+'>'+t+'</button>').join('')+'</div>'+
  '<section class="hub-main">'+hubResourceGrid(value==='all'?['cartoon','article','fun_book']:[value])+'</section>'+
+ '<section class="hub-main hub-cartoon"><h2>موقف رياضي مصوّر من آفاق</h2>'+
+ '<figure class="hub-original-comic" role="img" aria-label="كاريكاتير تعليمي لعددين يتحدثان عن الجمع">'+
+ '<svg viewBox="0 0 520 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+ '<rect width="520" height="170" rx="22" fill="#f4faff"/>'+
+ '<circle cx="104" cy="90" r="49" fill="#fff0c9" stroke="#c4a159" stroke-width="3"/>'+
+ '<circle cx="378" cy="90" r="49" fill="#e0f5eb" stroke="#6cbfa0" stroke-width="3"/>'+
+ '<text x="104" y="105" text-anchor="middle" font-family="Tahoma" font-size="52" fill="#9b6b2a">٥</text>'+
+ '<text x="378" y="105" text-anchor="middle" font-family="Tahoma" font-size="52" fill="#147b62">٥</text>'+
+ '<rect x="170" y="24" width="140" height="74" rx="15" fill="white" stroke="#bed8ea" stroke-width="2"/>'+
+ '<text x="240" y="54" text-anchor="middle" font-family="Tahoma" font-size="15" fill="#1c5179">لو اجتمعنا،</text>'+
+ '<text x="240" y="77" text-anchor="middle" font-family="Tahoma" font-size="15" fill="#1c5179">فكم نصبح؟</text>'+
+ '<text x="240" y="144" text-anchor="middle" font-family="Tahoma" font-weight="bold" font-size="23" fill="#9a6c30">٥ + ٥ = ١٠</text>'+
+ '</svg><figcaption>رسم تعليمي أصلي لتوظيف العمليات الحسابية في قصص قصيرة.</figcaption></figure></section>'+
  '<section class="hub-main"><h2>تحدٍّ فكري قصير</h2><p>عدد زوجي أكبر من ٢٠ وأصغر من ٣٠، وهو من مضاعفات العدد ٤. ما العدد؟</p>'+
  '<details><summary>افتح الحل</summary><strong>٢٤</strong>؛ لأنه زوجي ومن مضاعفات ٤.</details></section></div>';
 }
@@ -472,7 +491,7 @@ function hubAdminCatalog(){
  '<label>رمز الصورة / الأيقونة<select name="icon">'+
  ['trophy','gamepad-2','landmark','graduation-cap','book-open','ruler','lightbulb','file-text','list-checks','video','joystick','sparkles','smile','notebook-pen','puzzle','calculator','smartphone','globe','music','palette','brain','shapes'].map(v=>'<option value="'+v+'"'+((r?.icon||'book-open')===v?' selected':'')+'>'+v+'</option>').join('')+'</select></label>'+
  '<label>الصف المستهدف (اختياري)<select name="grade"><option value="">جميع الصفوف</option>'+
- [2,5,6,7,8].map(n=>'<option value="'+n+'"'+(Number(r?.grade)===n?' selected':'')+'>'+hn(n)+'</option>').join('')+'</select></label>'+
+ Array.from({length:12},(_,i)=>i+1).map(n=>'<option value="'+n+'"'+(Number(r?.grade)===n?' selected':'')+'>'+hn(n)+'</option>').join('')+'</select></label>'+
  '<label>ترتيب العرض<input name="sort_order" type="number" value="'+(r?.sort_order??100)+'"></label>'+
  '<label>رابط المادة أو المسابقة<input name="resource_url" placeholder="https://... أو competition.html" value="'+hv(r?.resource_url||'')+'"></label></div>'+
  '<label>وصف مختصر<textarea name="description" rows="3" maxlength="500">'+hv(r?.description||'')+'</textarea></label>'+
