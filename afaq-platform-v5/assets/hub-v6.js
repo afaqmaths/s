@@ -127,6 +127,8 @@ function hubVisitorKey(){
 async function hubLoadCatalog(){
  try{
   const result=await hubCall('public_catalog');hub.catalog=result.items||[];
+  const contestLink=document.querySelector('.stars-shortcut');
+  if(contestLink)contestLink.hidden=!hub.catalog.some(x=>x.published&&x.category==='contest'&&x.resource_url==='competition.html');
   if(['home','visitor','library','fun','contests'].includes(state.page))render();
  }catch(e){hub.error=e.message}
 }
@@ -183,7 +185,10 @@ function hubCompetitionGuide(){
  '<h3>الجوائز المعلنة للمراكز من الأول إلى العاشر (بالريال العُماني)</h3>'+
  '<div class="hub-prizes">'+HUB_PRIZES.map((v,i)=>'<span><strong>'+hn(i+1)+'</strong><b>'+hn(v)+' ر.ع</b></span>').join('')+'</div>'+
  '<p class="hub-note">المراكز والجوائز خاضعة لإجراءات الإشراف والتحقق من النتائج؛ ويُرجع إلى الإعلان المعتمد لأي تعديل.</p>'+
- '<div class="hub-inline-actions"><a class="hub-primary" href="competition.html">دخول نجوم آفاق الرسمية</a>'+
+ '<div class="hub-inline-actions">'+
+ (hub.catalog.some(x=>x.published&&x.category==='contest'&&x.resource_url==='competition.html')?
+  '<a class="hub-primary" href="competition.html">دخول نجوم آفاق الرسمية</a>':
+  '<p>الدخول إلى المسابقة الرسمية غير منشور حاليًا في البوابة.</p>')+
  '<button class="hub-secondary" data-route="guest_trial">تجربة الزائر (مرة واحدة)</button></div></section>';
 }
 function hubContests(){
