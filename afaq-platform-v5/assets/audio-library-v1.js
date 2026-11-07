@@ -1,8 +1,9 @@
 'use strict';
 /* إضافة مستقلة لبوابة الاستماع لا تمس المسابقات أو درجات الطلاب. */
 const afAudio={
- items:[],adminItems:[],loaded:false,loading:false,adminLoaded:false,adminLoading:false,
- selected:'all',search:'',playingVideo:null,edit:null,uploaded:null,
+ items:[],adminItems:[],loaded:false,loading:false,loadAttempted:false,
+ adminLoaded:false,adminLoading:false,adminAttempted:false,
+ selected:'all',search:'',visibleCount:6,playingVideo:null,edit:null,uploaded:null,
  busy:false,warning:'',message:''
 };
 const AF_CATS=[
@@ -31,16 +32,15 @@ function afAudioCTA(){
 }
 function afCard(item){
  const video=afVideoId(item.youtube_url);
- const playing=Number(afAudio.playingVideo)===Number(item.id);
- const src=(item.audio_url||'');
  const source=item.source_url||item.youtube_url||'';
- const ready=item.media_type==='audio'&&src;
- const audioBar=ready?'<div class="af-audio-player"><audio controls preload="none" playsinline src="'+afEsc(src)+'" aria-label="الاستماع إلى '+afEsc(item.title)+'">متصفحك لا يدعم التشغيل الصوتي.</audio>'+
- '<small>قد يعتمد التشغيل على سماح الموقع المصدر بالوصول المباشر إلى ملف الصوت.</small></div>':'';
+ const ready=item.media_type==='audio'&&item.audio_url;
+ // لا نضع رابط MP3 داخل عنصر audio حتى يضغط الزائر تشغيل:
+ // بعض المتصفحات تجلب بيانات الملف رغم preload="none".
+ const audioBar=ready?'<div class="af-audio-player"><button type="button" class="af-action-play" data-af-play-audio="'+item.id+'">▶ تشغيل الصوت عند الطلب</button>'+
+ '<small>لن يبدأ تحميل الملف قبل الضغط على زر التشغيل.</small></div>':'';
+ // لا ننشئ iframe يوتيوب قبل طلب تشغيل الفيديو.
  const youtubeBar=item.media_type==='youtube'&&video?
-  (playing?'<div class="af-youtube-player"><iframe title="'+afEsc(item.title)+'" src="https://www.youtube-nocookie.com/embed/'+video+
-  '?rel=0" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>':
-   '<button type="button" class="af-action-play" data-af-video="'+item.id+'">▶ مشاهدة واستماع داخل البوابة</button>'):'';
+  '<button type="button" class="af-action-play" data-af-video="'+item.id+'">▶ مشاهدة واستماع داخل البوابة</button>':'';
  const tts=item.media_type==='spoken'&&item.spoken_text?
  '<div class="af-audio-tts"><blockquote>'+afEsc(item.spoken_text)+'</blockquote>'+
  '<button type="button" class="af-action-play" data-af-speak="'+item.id+'">🔊 استمع بصوت قراءة عربية آلية</button>'+
@@ -68,7 +68,6 @@ function afVideoId(v){
 }
 function afAudioPage(){
  const count=afAudio.items.filter(x=>x.published).length;
- const featuredSong=afAudio.items.find(x=>x.published&&x.category==='motivation'&&x.featured&&x.youtube_url);
  const matches=afAudio.items.filter(x=>x.published&&
  (afAudio.selected==='all'||afAudio.selected===x.category)&&
  (!afAudio.search||[x.title,x.performer,x.summary,x.spoken_text].some(v=>String(v||'').toLocaleLowerCase('ar').includes(afAudio.search.toLocaleLowerCase('ar')))));
@@ -85,12 +84,7 @@ function afAudioPage(){
  '<button class="af-button-white" data-route="visitor">بوابة الزائر</button>'+
  '<span>'+afNum(count)+' مادة منشورة</span></div></div>'+
  '<div class="af-hero-art" role="img" aria-label="سماعات حديثة وموجات صوتية"><span>🎧</span><i>♪</i><i>♫</i><i>★</i></div></section>'+
- (featuredSong?'<section class="af-featured-story"><span class="af-story-star">⭐</span>'+
- '<div><strong>اختيار تحفيزي: '+afEsc(featuredSong.title)+'</strong>'+
- '<p>'+afEsc(featuredSong.summary||'مقطع تحفيزي عن الطموح والنجاح.')+
- ' يُعرض من مصدره الرسمي دون إعادة نشر الملف الصوتي.</p></div>'+
- '<button class="hub-secondary" type="button" data-af-cat="motivation">استكشف التحفيز والنجاح</button></section>':'')+
- '<section class="af-catalog-panel"><div class="af-heading"><h2>اختر قسم الاستماع</h2>'+
+'<section class="af-catalog-panel"><div class="af-heading"><h2>اختر قسم الاستماع</h2>'+
  '<p>اضغط على القسم لتصفية المواد، أو ابحث عن اسم القارئ أو عنوان المقطع.</p></div>'+
  '<div class="af-categories">'+cats+'</div>'+
  '<form id="afSearchForm" class="af-search"><label for="afSearchTerm">البحث داخل المكتبة الصوتية</label>'+
@@ -98,10 +92,13 @@ function afAudioPage(){
  '<button class="hub-primary" type="submit">🔎 بحث</button>'+
  (afAudio.search?'<button class="hub-secondary" type="button" id="afClearSearch">مسح البحث</button>':'')+
  '</form></section>'+
- (afAudio.warning?'<p class="af-warning">'+afEsc(afAudio.warning)+'</p>':'')+
+ (afAudio.warning?'<div class="af-warning" role="alert">'+afEsc(afAudio.warning)+
+ '<button id="afRetryPublic" class="hub-secondary" type="button">إعادة محاولة تحميل القائمة</button></div>':'')+
  (afAudio.loading?'<section class="af-loading" role="status">جارٍ تحميل المواد الصوتية المنشورة...</section>':
-  matches.length?'<div class="af-item-count">يعرض '+afNum(matches.length)+' من '+afNum(count)+' مادة</div>'+
-  '<section class="af-cards">'+matches.map(afCard).join('')+'</section>':
+  matches.length?'<div class="af-item-count">يعرض '+afNum(Math.min(afAudio.visibleCount,matches.length))+' من '+afNum(matches.length)+' مادة مطابقة</div>'+
+  '<section class="af-cards">'+matches.slice(0,afAudio.visibleCount).map(afCard).join('')+'</section>'+
+  (matches.length>afAudio.visibleCount?'<div class="af-load-more"><button id="afLoadMore" class="hub-secondary" type="button">عرض المزيد ('+
+  afNum(matches.length-afAudio.visibleCount)+' مواد متبقية)</button></div>':''):
   '<section class="af-loading">لا توجد مواد مطابقة لهذا الاختيار. يمكنك تجربة قسم آخر.</section>')+
  '<section class="af-guide"><h2>كيف أستمع أو أحمل ملفًا؟</h2>'+
  '<div><article><b>▶ التشغيل</b><p>المقاطع ذات الملف الصوتي المصرّح به تعمل في مشغل الصوت، ومقاطع يوتيوب تُعرض عبر المشغل الرسمي، والتلاوات المرجعية تُفتح لدى المصدر.</p></article>'+
@@ -110,18 +107,21 @@ function afAudioPage(){
  '<footer class="af-audio-footer"><span>إعداد وإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>'+
  '<span>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</span></footer></div>';
 }
-async function afLoadPublic(){
- if(afAudio.loading)return;afAudio.loading=true;afAudio.warning='';
+async function afLoadPublic(force=false){
+ // منع الحلقة اللانهائية: عند فشل اتصال أول لا نعيد الطلب تلقائيًا مع كل render.
+ if(afAudio.loading||(!force&&afAudio.loadAttempted))return;
+ afAudio.loadAttempted=true;afAudio.loading=true;afAudio.warning='';
  try{
   const r=await hubCall('audio_list');afAudio.items=r.items||[];afAudio.loaded=true;
- }catch(e){afAudio.warning=e.message}
+ }catch(e){afAudio.warning=e.message||'تعذّر تحميل المواد. جرّب مجددًا عند تحسن الاتصال.'}
  finally{afAudio.loading=false;if(state.page==='audio')render()}
 }
-async function afLoadAdmin(){
- if(!isAdmin()||afAudio.adminLoading)return;afAudio.adminLoading=true;
+async function afLoadAdmin(force=false){
+ if(!isAdmin()||afAudio.adminLoading||(!force&&afAudio.adminAttempted))return;
+ afAudio.adminAttempted=true;afAudio.adminLoading=true;
  try{const r=await hubCall('audio_admin',{},auth.token);
   afAudio.adminItems=r.items||[];afAudio.adminLoaded=true;afAudio.warning='';
- }catch(e){afAudio.warning=e.message}
+ }catch(e){afAudio.warning=e.message||'تعذّر تحميل بيانات الإدارة.'}
  finally{afAudio.adminLoading=false;if(state.page==='dashboard'&&auth.section==='hub_audio')render()}
 }
 function afAdminPage(){
@@ -173,6 +173,8 @@ function afAdminPage(){
  '<button type="submit" class="hub-primary">⬆ رفع الملف وربطه بالنموذج أعلاه</button></form>'+
  (afAudio.message?'<p class="af-success">'+afEsc(afAudio.message)+'</p>':'')+
  '</section><section class="hub-main"><h2>إدارة المواد المحفوظة ('+afNum(afAudio.adminItems.length)+')</h2>'+
+ (afAudio.warning?'<div class="af-warning" role="alert">'+afEsc(afAudio.warning)+
+ '<button type="button" id="afRetryAdmin" class="hub-secondary">إعادة تحميل القائمة</button></div>':'')+
  '<div class="af-admin-list">'+(forms||'<p>لا توجد مواد بعد.</p>')+'</div>'+
  '</section></div>';
 }
@@ -189,7 +191,7 @@ async function afSaveForm(form){
  try{
   await hubCall('audio_save',payload,auth.token);
   afAudio.edit=null;afAudio.message='تم حفظ المادة الصوتية بنجاح.';
-  await Promise.all([afLoadAdmin(),afLoadPublic()]);
+  await Promise.all([afLoadAdmin(true),afLoadPublic(true)]);
  }catch(e){window.alert(e.message)}
  finally{afAudio.busy=false;render()}
 }
@@ -229,7 +231,7 @@ async function afToggle(id){
  if(!isAdmin())return;
  const item=afAudio.adminItems.find(x=>Number(x.id)===Number(id));if(!item)return;
  try{await hubCall('audio_toggle',{id,published:!item.published},auth.token);
-  await Promise.all([afLoadAdmin(),afLoadPublic()]);
+  await Promise.all([afLoadAdmin(true),afLoadPublic(true)]);
  }catch(e){window.alert(e.message)}
 }
 async function afDelete(id){
@@ -237,7 +239,7 @@ async function afDelete(id){
  const item=afAudio.adminItems.find(x=>Number(x.id)===Number(id));if(!item)return;
  if(!window.confirm('حذف «'+item.title+'» من المكتبة الصوتية نهائيًا؟'))return;
  try{await hubCall('audio_delete',{id},auth.token);afAudio.edit=null;
-  await Promise.all([afLoadAdmin(),afLoadPublic()]);
+  await Promise.all([afLoadAdmin(true),afLoadPublic(true)]);
  }catch(e){window.alert(e.message)}
 }
 function afSpeech(item){
@@ -253,27 +255,86 @@ function afSpeech(item){
  if(voice)u.voice=voice;
  window.speechSynthesis.speak(u);
 }
+
+function afStopMedia(exclude=null){
+ // إيقاف كل تشغيل سابق دون إعادة إنشاء الصفحة بالكامل.
+ document.querySelectorAll('.af-audio-player audio').forEach(a=>{
+  if(a!==exclude){a.pause();a.preload='none';a.removeAttribute('src');a.load()}
+ });
+ window.speechSynthesis?.cancel();
+ document.querySelectorAll('.af-youtube-player').forEach(box=>{
+  const id=box.dataset.afVideoActive;
+  const button=document.createElement('button');
+  button.type='button';button.className='af-action-play';
+  button.textContent='▶ مشاهدة واستماع داخل البوابة';
+  button.dataset.afVideo=id;
+  button.addEventListener('click',()=>afOpenVideo(button));
+  box.replaceWith(button);
+ });
+}
+function afOpenAudio(button){
+ const item=afAudio.items.find(x=>String(x.id)===button.dataset.afPlayAudio);
+ if(!item||item.media_type!=='audio'||!item.audio_url)return;
+ afStopMedia();
+ const player=document.createElement('audio');
+ player.controls=true;player.preload='none';player.playsInline=true;
+ player.setAttribute('aria-label','الاستماع إلى '+item.title);
+ player.addEventListener('play',()=>afStopMedia(player));
+ player.addEventListener('error',()=>{
+  const wrap=player.closest('.af-audio-player');
+  if(wrap){
+   const msg=wrap.querySelector('.af-player-error')||document.createElement('small');
+   msg.className='af-player-error';msg.textContent='تعذّر التشغيل من المصدر؛ استخدم رابط المصدر الخارجي.';
+   wrap.appendChild(msg);
+  }
+ });
+ button.replaceWith(player);
+ player.src=item.audio_url;
+ player.play().catch(()=>{}); // قد يمنع المتصفح التشغيل التلقائي؛ تبقى أزرار المشغّل متاحة.
+}
+function afOpenVideo(button){
+ const item=afAudio.items.find(x=>String(x.id)===button.dataset.afVideo);
+ const id=afVideoId(item?.youtube_url);
+ if(!item||!id)return;
+ afStopMedia();
+ const box=document.createElement('div');box.className='af-youtube-player';box.dataset.afVideoActive=String(item.id);
+ const frame=document.createElement('iframe');
+ frame.title=item.title;frame.loading='lazy';
+ frame.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
+ frame.referrerPolicy='strict-origin-when-cross-origin';frame.allowFullscreen=true;
+ const close=document.createElement('button');
+ close.type='button';close.className='af-secondary af-close-video';close.textContent='إيقاف الفيديو';
+ close.addEventListener('click',()=>{
+  const again=document.createElement('button');
+  again.type='button';again.className='af-action-play';again.textContent='▶ مشاهدة واستماع داخل البوابة';
+  again.dataset.afVideo=String(item.id);again.addEventListener('click',()=>afOpenVideo(again));
+  box.replaceWith(again);
+ });
+ box.append(frame,close);button.replaceWith(box);
+ frame.src='https://www.youtube-nocookie.com/embed/'+id+'?rel=0&autoplay=1';
+}
 function afBind(){
  document.querySelectorAll('[data-af-cat]').forEach(b=>b.addEventListener('click',()=>{
-  afAudio.selected=b.dataset.afCat;afAudio.playingVideo=null;
+  afAudio.selected=b.dataset.afCat;afAudio.visibleCount=6;afAudio.playingVideo=null;
   window.speechSynthesis?.cancel();render();
  }));
  document.getElementById('afSearchForm')?.addEventListener('submit',e=>{
   e.preventDefault();afAudio.search=String(new FormData(e.currentTarget).get('query')||'').trim().slice(0,100);
-  afAudio.playingVideo=null;render();
+  afAudio.visibleCount=6;afAudio.playingVideo=null;render();
  });
- document.getElementById('afClearSearch')?.addEventListener('click',()=>{afAudio.search='';render()});
- document.querySelectorAll('[data-af-video]').forEach(b=>b.addEventListener('click',()=>{
-  afAudio.playingVideo=Number(b.dataset.afVideo);window.speechSynthesis?.cancel();render();
- }));
+ document.getElementById('afClearSearch')?.addEventListener('click',()=>{afAudio.search='';afAudio.visibleCount=6;render()});
+ document.getElementById('afRetryPublic')?.addEventListener('click',()=>afLoadPublic(true));
+ document.getElementById('afRetryAdmin')?.addEventListener('click',()=>afLoadAdmin(true));
+ document.getElementById('afLoadMore')?.addEventListener('click',()=>{
+  afAudio.visibleCount+=6;render();
+ });
+ document.querySelectorAll('[data-af-play-audio]').forEach(b=>b.addEventListener('click',()=>afOpenAudio(b)));
+ document.querySelectorAll('[data-af-video]').forEach(b=>b.addEventListener('click',()=>afOpenVideo(b)));
  document.querySelectorAll('[data-af-speak]').forEach(b=>b.addEventListener('click',()=>{
   const item=afAudio.items.find(x=>String(x.id)===b.dataset.afSpeak);if(item)afSpeech(item);
  }));
  document.querySelectorAll('[data-af-stop-speech]').forEach(b=>b.addEventListener('click',()=>window.speechSynthesis?.cancel()));
- document.querySelectorAll('.af-audio-player audio').forEach(a=>a.addEventListener('play',()=>{
-  document.querySelectorAll('.af-audio-player audio').forEach(other=>{if(other!==a)other.pause()});
-  window.speechSynthesis?.cancel();
- }));
+ // مشغلات الصوت لا تُنشأ إلا بعد ضغط المستخدم على زر تشغيل ملف بعينه.
  document.getElementById('afAdminForm')?.addEventListener('submit',e=>{e.preventDefault();afSaveForm(e.currentTarget)});
  document.getElementById('afUploadForm')?.addEventListener('submit',e=>{e.preventDefault();afUpload(e.currentTarget)});
  document.getElementById('afCancelEdit')?.addEventListener('click',()=>{afAudio.edit=null;render()});
@@ -284,7 +345,8 @@ function afBind(){
  document.querySelectorAll('[data-af-toggle]').forEach(b=>b.addEventListener('click',()=>afToggle(b.dataset.afToggle)));
  document.querySelectorAll('[data-af-delete]').forEach(b=>b.addEventListener('click',()=>afDelete(b.dataset.afDelete)));
  document.getElementById('portalLogout')?.addEventListener('click',()=>{
-  afAudio.adminItems=[];afAudio.adminLoaded=false;afAudio.edit=null;afAudio.uploaded=null;afAudio.message='';
+  afAudio.adminItems=[];afAudio.adminLoaded=false;afAudio.adminAttempted=false;
+  afAudio.edit=null;afAudio.uploaded=null;afAudio.message='';
  });
 }
 /* ربط غير تدميري للبوابات السابقة. */
@@ -334,11 +396,11 @@ render=function(){
   document.getElementById('app').innerHTML=afAudioPage();
   document.querySelectorAll('[data-route]').forEach(x=>x.classList.toggle('active',x.dataset.route==='audio'));
   attach();attachPortal();
-  if(!afAudio.loaded&&!afAudio.loading)afLoadPublic();
+  if(!afAudio.loaded&&!afAudio.loading&&!afAudio.loadAttempted)afLoadPublic();
   return;
  }
  afOldRender();
- if(state.page==='dashboard'&&auth.section==='hub_audio'&&isAdmin()&&!afAudio.adminLoaded&&!afAudio.adminLoading)
+ if(state.page==='dashboard'&&auth.section==='hub_audio'&&isAdmin()&&!afAudio.adminLoaded&&!afAudio.adminLoading&&!afAudio.adminAttempted)
   afLoadAdmin();
 };
 const afOldAttach=attach;
@@ -346,7 +408,7 @@ attach=function(){afOldAttach();afBind();};
 const afOrigLoadStaff=hubLoadForTab;
 hubLoadForTab=function(tab){
  afOrigLoadStaff(tab);
- if(tab==='hub_audio'&&isAdmin()&&!afAudio.adminLoaded&&!afAudio.adminLoading)afLoadAdmin();
+ if(tab==='hub_audio'&&isAdmin()&&!afAudio.adminLoaded&&!afAudio.adminLoading&&!afAudio.adminAttempted)afLoadAdmin();
 };
 HUB_MAIN_MENU.splice(3,0,['audio','الاستماع']);
 hubTopNavigation();
