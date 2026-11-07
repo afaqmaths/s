@@ -657,13 +657,27 @@ function bind(){
  document.getElementById('prepare')?.addEventListener('click',()=>{
   if(STATE.visitorAttempt?.status==='completed'){STATE.error='استُنفدت المحاولة الوحيدة لهذا الحساب.';render();return}
   if(STATE.visitorAttempt?.status==='in_progress'){
+   if(!STATE.questions.length){
+    STATE.busy=true;STATE.error='';
+    back('stars_preview_me').then(r=>{
+     STATE.visitorAttempt=r.attempt;STATE.questions=r.attempt?.questions||[];
+     STATE.index=r.attempt?.current_index||0;
+     STATE.readyStage=STATE.questions[STATE.index]?.stage||1;STATE.result=null;
+     for(const [k,v] of Object.entries(r.attempt?.stage_scores||{})){
+      const n=Number(k);if(n>=1&&n<=5)STATE.stageScores[n]={earned:Number(v),possible:10,answered:0};
+     }
+     for(let n=1;n<STATE.readyStage;n++)closeStage(n);
+    }).catch(err=>{STATE.error=err.message}).finally(()=>{STATE.busy=false;render()});
+    return;
+   }
    STATE.readyStage=STATE.questions[STATE.index]?.stage||1;STATE.result=null;render();return;
   }
   prepare();
  });
  document.getElementById('beginStage')?.addEventListener('click',beginStage);
  document.getElementById('exitStage')?.addEventListener('click',()=>{
-  resetPlay();STATE.questions=STATE.visitorAttempt?.questions||[];STATE.index=STATE.visitorAttempt?.current_index||0;render();
+  if(!window.confirm('ستُحفظ إجاباتك، ويمكنك استئناف المحاولة الوحيدة عند العودة إلى هذه الصفحة. هل تريد الخروج إلى بوابة المسابقات؟'))return;
+  window.location.href='index.html#contests';
  });
  document.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('[data-choice]').forEach(x=>x.disabled=true);
@@ -672,7 +686,8 @@ function bind(){
  document.getElementById('sendComplex')?.addEventListener('click',()=>submitResponse(getParts()));
  document.getElementById('finishEarly')?.addEventListener('click',finishEarly);
  document.getElementById('returnHome')?.addEventListener('click',async()=>{
-  resetPlay();try{await authenticate()}catch{}render();
+  resetPlay();try{STATE.visitorRanking=(await back('stars_preview_leaderboard')).ranking||[]}catch{}
+  render();
  });
  document.getElementById('printVisitorResult')?.addEventListener('click',()=>window.print());
 }
