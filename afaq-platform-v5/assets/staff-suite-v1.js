@@ -72,6 +72,7 @@ function ssRecordList(type){
  '<div><strong>'+ssEsc(r.title)+'</strong><small>'+ssEsc(r.unit||'')+(r.lesson?' • '+ssEsc(r.lesson):'')+
  (r.body?.is_sample?' • نموذج استرشادي مستخلص من الملف المرفق':'')+' • تحديث: '+ssEsc((r.updated_at||'').slice(0,10))+'</small></div>'+
  '<div><button type="button" class="soft" data-ss-edit="'+r.id+'">تحرير</button>'+
+ '<button type="button" class="outline" data-ss-print="'+r.id+'">طباعة السجل A4</button>'+
  (auth.user?.role==='supervisor'?'<button type="button" class="outline" data-ss-archive="'+r.id+'">أرشفة</button>':'')+'</div></article>').join('')+'</div>';
 }
 function ssYearsAndTerm(){
@@ -174,7 +175,7 @@ function ssLessonForm(){
  ssInp('عنوان الخطة','title',r?.title||('تحضير درس: '+lesson),'text','required')+
  ssInp('تاريخ الإعداد','date_prepared',b.date_prepared||'','date')+
  '</div><div class="ss-grid">'+
- '<label class="ss-field"><span>الفصول المستهدفة</span>'+checked('classes',['السادس / ٤','السادس / ٥','السادس / ٦'])+'</label>'+
+ '<div class="ss-field"><span>الفصول المستهدفة</span>'+checked('classes',['السادس / ٤','السادس / ٥','السادس / ٦'])+'</div>'+
  '<label class="ss-field"><span>أيام التدريس (تاريخ في كل سطر)</span>'+
  '<textarea name="teach_days" id="ssTeachDays" rows="3">'+ssEsc((b.teach_days||[]).join('\n'))+'</textarea>'+
  '<div class="ss-date-helper"><input type="date" id="ssDayPicker"><button type="button" class="soft" id="ssAddDay">إضافة يوم</button></div></label></div>'+
@@ -305,7 +306,10 @@ function ssTeacherView(){
  return ssBanner('دليل أعمال معلم الرياضيات','رسالة المعلم ← أهداف إجادة ← المبادرات ← الخطة الدراسية ← التحضير اليومي ← التقويم والمصادر')+
  ssMenu(auth.user?.role)+
  '<div class="ss-workspace"><p class="ss-privacy">مساحة عمل خاصة بالمشرف والمساعد؛ جميع الإضافات محفوظة في قاعدة البيانات، ويمكن تعديلها أو أرشفتها دون المساس بسجلات المسابقة أو النتائج.</p>'+
- ssYearsAndTerm()+ssTabs()+ssDataNotice()+part+'</div>';
+ ssYearsAndTerm()+'<label class="ss-field ss-print-choice"><span>اتجاه ورق طباعة السجلات</span>'+
+ '<select id="ssTeacherOrientation"><option value="portrait">A4 عمودي</option>'+
+ '<option value="landscape">A4 أفقي</option></select></label>'+
+ ssTabs()+ssDataNotice()+part+'</div>';
 }
 
 
@@ -550,8 +554,9 @@ function staffSuitePrint(source,kind='certificate',orientation='portrait',report
  '</title><link rel="stylesheet" href="'+baseCss+'"><link rel="stylesheet" href="'+cssLocation+'">'+
  '<link rel="stylesheet" href="'+suiteCss+'">'+extra+'</head>'+
  '<body class="'+bodyClass+portraitClass+'"><div id="'+wrap+'">'+paper+'</div></body></html>';
- pop.document.open();pop.document.write(html);pop.document.close();
+ pop.document.open();pop.document.write(html);
  pop.onload=()=>{pop.focus();pop.print()};
+ pop.document.close();
  return true;
 }
 const ssFormerStaffPanel=staffPanel;
@@ -587,7 +592,6 @@ function ssTeacherRecordArchive(id){
 }
 function ssLessonFormChange(ev){
  const form=ev.currentTarget.closest('#ssRecordForm');if(!form)return;
- if(!ssState.lessonUnit)return;
  if(!ssState.lessonDraft)ssState.lessonDraft={};
  const fields=Object.fromEntries(new FormData(form).entries());
  const groups=['classes','activities','strategies','physical_resources','digital_resources','apps','assessment_types','learning_objectives'];
@@ -659,6 +663,10 @@ attachPortal=function(){
  });
  document.querySelectorAll('[data-ss-edit]').forEach(b=>b.addEventListener('click',()=>ssChooseTeacherRecord(b.dataset.ssEdit)));
  document.querySelectorAll('[data-ss-archive]').forEach(b=>b.addEventListener('click',()=>ssTeacherRecordArchive(b.dataset.ssArchive)));
+ document.querySelectorAll('[data-ss-print]').forEach(b=>b.addEventListener('click',()=>{
+  const record=ssState.records.find(r=>String(r.id)===b.dataset.ssPrint);
+  if(record)staffSuitePrint(null,'teacher',document.getElementById('ssTeacherOrientation')?.value||'portrait',record);
+ }));
  document.getElementById('ssRecordForm')?.addEventListener('submit',ev=>{
   ev.preventDefault();ssSaveRecord(ev.currentTarget);
  });
@@ -695,6 +703,16 @@ attachPortal=function(){
   if(!window.confirm('أرشفة جهة الاتصال المحددة؟'))return;
   try{await api('archive_staff_contact',{id:Number(el.dataset.ssContactArchive)});await ssLoadContacts()}
   catch(err){ssState.error=err.message;render()}
+ }));
+
+ document.querySelectorAll('[data-ss-open-comm]').forEach(b=>b.addEventListener('click',()=>{
+  if(!canEdit()||!auth.selectedProfile)return;
+  ssState.contactId=auth.selectedStudent||'';
+  ssState.contactStudent=auth.selectedProfile;
+  ssState.commDraft=ssComposeMessageFromSelection('event:0');
+  ssState.error='';auth.section='staff_contacts';
+  render();
+  if(!ssState.contactsLoaded)ssLoadContacts();
  }));
  ssAttachStudentSelection();
 };
