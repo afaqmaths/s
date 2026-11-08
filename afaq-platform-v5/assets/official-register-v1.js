@@ -80,10 +80,8 @@ function ofRow(s){
  const mark=(key,max)=>'<td>'+ofAssessmentInput(key,max,marks,s.serial_no)+'</td>';
  const base=OF_FIELDS.slice(0,9).map(([key,,max])=>mark(key,max));
  const diag='<td><div class="of-diag-cell">'+
- '<input class="of-number-input" type="number" data-of-field="diagnostic_score" min="0" step="0.5" max="'+ofSafe(marks.diagnostic_max??10)+'" '+
- 'value="'+(marks.diagnostic_score??'')+'" placeholder="—" '+(!ofEdit()||locked?'disabled':'')+' aria-label="درجة التشخيص">'+
- '<small>من</small><input class="of-diag-max" data-of-field="diagnostic_max" type="number" min="1" max="100" step="1"'+
- ' value="'+ofSafe(marks.diagnostic_max??10)+'" '+(!ofEdit()||locked?'disabled':'')+' aria-label="الدرجة القصوى للتشخيص"></div></td>';
+ '<input class="of-number-input" type="number" data-of-field="diagnostic_score" min="0" max="10" step="0.5" '+
+ 'value="'+(marks.diagnostic_score??'')+'" placeholder="—" '+(!ofEdit()||locked?'disabled':'')+' aria-label="الاختبار التشخيصي من ١٠"></div></td>';
  const aPlus=marks.a_plus_points,aMinus=marks.a_minus_points;
  const indicator=(aPlus===null||aPlus===undefined||aPlus==='' )&&
   (aMinus===null||aMinus===undefined||aMinus==='')?null:
@@ -96,8 +94,8 @@ function ofRow(s){
  '<button type="button" data-of-save="'+s.serial_no+'" class="of-save">حفظ</button>'+
  (ofAdmin()&&result.total!==null?'<button type="button" data-of-approve="'+s.serial_no+'" class="of-soft">اعتماد</button>':'');
  return '<tr data-of-serial="'+s.serial_no+'" class="'+(locked?'of-locked':'')+'">'+
- '<th class="of-name">'+ofNameCell(s)+'</th>'+
  '<th class="of-serial">'+ofNumber(s.serial_no)+'</th>'+
+ '<th class="of-name">'+ofNameCell(s)+'</th>'+
  diag+base.join('')+
  '<td class="of-subtotal" data-of-subtotal="'+s.serial_no+'">'+
  (result.seen===0?'—':result.seen===9?ofNumber(result.sum):ofNumber(result.sum)+'*')+'</td>'+
@@ -113,11 +111,11 @@ function ofRow(s){
 }
 function ofTable(report){
  const students=report?.students||[];
- const cols=['name','serial','diagnostic',...Array(9).fill('mark'),'subtotal','final','total','level','indicator','remarks','actions'];
+ const cols=['serial','name','diagnostic',...Array(9).fill('mark'),'subtotal','final','total','level','indicator','remarks','actions'];
  return '<div class="of-table-scroll"><table class="of-table" dir="rtl">'+
  '<colgroup>'+cols.map(c=>'<col class="of-col-'+c+'">').join('')+'</colgroup>'+
  '<thead><tr class="of-group-row">'+
- '<th rowspan="2">اسم الطالب</th><th rowspan="2">م</th><th rowspan="2" class="of-diagnostic-head">الاختبار التشخيصي<br><small>مؤشر تحديد المستوى</small></th>'+
+ '<th rowspan="2">م</th><th rowspan="2">اسم الطالب</th><th rowspan="2" class="of-diagnostic-head">الاختبار التشخيصي<br>١٠ درجات<br><small>خارج المجموع</small></th>'+
  '<th colspan="2">الأعمال الشفوية</th><th colspan="2">الواجبات المنزلية</th>'+
  '<th colspan="2">الأسئلة القصيرة</th><th colspan="2">الاختبارات القصيرة</th>'+
  '<th rowspan="2">المشروع<br>١٠</th><th rowspan="2" class="of-summary-head">مجموع<br>٦٠</th>'+
@@ -171,7 +169,8 @@ function ofPage(){
  '<div class="of-legend"><b>رموز المستويات:</b> A (أ) من ٩٠ إلى ١٠٠؛ B (ب) من ٨٠ إلى ٨٩؛ C (ج) من ٦٥ إلى ٧٩؛ D (د) من ٥٠ إلى ٦٤؛ E (هـ) من صفر إلى ٤٩.'+
  '<p>عند عدم اكتمال درجات الفصل والنهائي لا يُعرض مستوى نهائي؛ ويمكن طباعة المسودات في أي وقت.</p></div></section>':
  '<section class="of-panel"><p>اختر الشعبة والفصل لعرض كشف الطلاب المسجلين.</p></section>')+
- '<footer class="of-footer"><span>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>'+
+ '<div class="of-signatures-screen">'+ofSignatureTable()+'</div>'+
+  '<footer class="of-footer"><span>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>'+
  '<span>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</span></footer></div>';
 }
 async function ofLoad(force=false){
@@ -219,9 +218,9 @@ async function ofSave(serial){
  const s=ofFindStudent(serial),tr=document.querySelector('[data-of-serial="'+serial+'"]');
  if(!s||!tr)return;
  const {values}=ofDraft(tr);
- const diagMax=Number(values.diagnostic_max||10);
- if(diagMax<=0||diagMax>100||!Number.isFinite(diagMax)){
-  window.alert('الاختبار التشخيصي: حدد الدرجة العظمى بين ١ و١٠٠.');return;
+ const diagMax=10;
+ if(values.diagnostic_score!==''&&(!Number.isFinite(Number(values.diagnostic_score))||Number(values.diagnostic_score)<0||Number(values.diagnostic_score)>10)){
+  window.alert('الاختبار التشخيصي: أدخل درجة من صفر إلى ١٠.');return;
  }
  const fields={diagnostic_max:diagMax,diagnostic_score:values.diagnostic_score||null,
   remarks:values.remarks||''};
@@ -267,19 +266,24 @@ async function ofApproval(serial,reopen){
   render();
  }catch(err){window.alert(ofError(err))}
 }
+const ofSignatureTable=()=>'<table class="of-signatures" dir="rtl"><tbody>'+
+ '<tr><th>المعلم<br><b>سعيد جمعة عبدالله البريكي</b></th><th>المعلم الأول<br><b>أحمد العجمي</b></th>'+
+ '<th>المشرف التربوي<br><b>حمود السعيدي</b></th><th>مدير المدرسة<br><b>عبد الله علي العيسائي</b></th></tr>'+
+ '<tr><td>التوقيع: ........................</td><td>التوقيع: ........................</td>'+
+ '<td>التوقيع: ........................</td><td>التوقيع: ........................</td></tr></tbody></table>';
 function ofPrintedTable(report){
  const rows=report.students||[];
- return '<table class="of-print-table"><thead><tr><th rowspan="2">اسم الطالب</th><th rowspan="2">م</th>'+
- '<th rowspan="2">تشخيصي</th><th colspan="2">الأعمال الشفوية</th><th colspan="2">الواجبات المنزلية</th>'+
+ return '<table class="of-print-table"><thead><tr><th rowspan="2">م</th><th rowspan="2">اسم الطالب</th>'+
+ '<th rowspan="2">تشخيصي /١٠</th><th colspan="2">الأعمال الشفوية</th><th colspan="2">الواجبات المنزلية</th>'+
  '<th colspan="2">الأسئلة القصيرة</th><th colspan="2">الاختبارات القصيرة</th>'+
  '<th rowspan="2">مشروع /١٠</th><th rowspan="2">المجموع /٦٠</th><th rowspan="2">النهائي /٤٠</th>'+
  '<th rowspan="2">الإجمالي /١٠٠</th><th rowspan="2">المستوى</th>'+
  '<th rowspan="2">مؤشر A± /٢٠</th><th rowspan="2">الملاحظات</th></tr>'+
  '<tr>'+[5,5,5,5,5,5,10,10].map((n,i)=>'<th>'+(i%2+1)+' /'+n+'</th>').join('')+'</tr></thead><tbody>'+
  rows.map(row=>{
-  const v=row.marks||{},c=ofCourse(v),diag=v.diagnostic_score==null?'—':ofNumber(v.diagnostic_score)+'/'+ofNumber(v.diagnostic_max||10);
+  const v=row.marks||{},c=ofCourse(v),diag=v.diagnostic_score==null?'—':ofNumber(v.diagnostic_score)+'/١٠';
   const fields=OF_FIELDS.slice(0,9).map(([k])=>'<td>'+ofPrintMark(v[k])+'</td>').join('');
-  return '<tr><td class="of-print-name">'+ofSafe(row.full_name)+'</td><td>'+ofNumber(row.serial_no)+'</td>'+
+  return '<tr><td>'+ofNumber(row.serial_no)+'</td><td class="of-print-name">'+ofSafe(row.full_name)+'</td>'+
    '<td>'+diag+'</td>'+fields+'<td>'+(c.seen===0?'—':ofNumber(c.sum)+(c.complete?'':'*'))+'</td>'+
    '<td>'+ofPrintMark(v.final_exam)+'</td><td>'+(c.total===null?'—':ofNumber(c.total))+'</td>'+
    '<td>'+(c.level||'—')+'</td><td>'+(row.a_indicator20===null?'—':ofNumber(row.a_indicator20))+'</td>'+
@@ -291,7 +295,7 @@ function ofPrintedCards(report){
  return '<div class="of-print-cards">'+(report.students||[]).map(row=>{
   const m=row.marks||{},c=ofCourse(m);
   return '<article class="of-print-card"><h3>'+ofNumber(row.serial_no)+' — '+ofSafe(row.full_name)+'</h3>'+
-  '<p>الاختبار التشخيصي: '+(m.diagnostic_score==null?'لم يرصد':ofNumber(m.diagnostic_score)+' من '+ofNumber(m.diagnostic_max||10))+'</p>'+
+  '<p>الاختبار التشخيصي: '+(m.diagnostic_score==null?'لم يرصد':ofNumber(m.diagnostic_score)+' من ١٠')+'</p>'+
   '<div class="of-print-card-grid">'+OF_FIELDS.map(([k,label,max])=>
   '<span>'+ofSafe(label)+': '+ofPrintMark(m[k])+' / '+max+'</span>').join('')+'</div>'+
   '<p>الأعمال الفصلية: '+ofNumber(c.sum)+' /٦٠'+(c.complete?'':' (غير مكتملة)')+
@@ -317,7 +321,7 @@ function ofPrintableDocument(reports,paper){
  '.of-print-card h3{margin:0;font-size:12pt}.of-print-card p{margin:2mm 0}.of-print-card-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1mm}'+
  '.of-print-card-grid span{border:1px solid #ccc;padding:2mm;font-size:8pt}'+
  'footer{display:flex;justify-content:space-between;gap:4mm;margin-top:4mm;border-top:1px solid #b99d57;padding-top:3mm;font-size:8pt}'+
- '.of-legend{font-size:8pt;margin:2mm 0;color:#495967}@media print{body{margin:0}}'+
+ '.of-legend{font-size:8pt;margin:2mm 0;color:#495967}.of-signatures{width:100%;border-collapse:collapse;margin-top:4mm;font-size:7pt;table-layout:fixed}.of-signatures th,.of-signatures td{border:1px solid #9eb5c2;padding:2mm 1mm;text-align:center}.of-signatures th{background:#f0f7fa;font-weight:normal}.of-signatures b{font-weight:bold;font-size:7pt}.of-signatures td{height:13mm}@media print{body{margin:0}}'+
  '</style></head><body><header><p>وزارة التربية والتعليم — مدرسة الحسين بن علي للتعليم الأساسي</p>'+
  '<h1>استمارة رصد درجات الرياضيات — ٢٠٢٦ / ٢٠٢٧ م</h1></header>'+
  all.map(r=>'<section class="of-sheet"><h2>الصف السادس — '+ofSafe(r.class_name)+
@@ -327,7 +331,7 @@ function ofPrintableDocument(reports,paper){
  '<span>تاريخ الطباعة: '+ofSafe(ofDate(new Date().toISOString()))+'</span></div>'+
  (portrait?ofPrintedCards(r):ofPrintedTable(r))+
  '<p class="of-legend">(*) مجموع جزئي لم تكتمل عناصره. الاختبار التشخيصي ومؤشر A± من ٢٠ خارج حساب الإجمالي. '+
- 'المستويات: أ ٩٠–١٠٠؛ ب ٨٠–٨٩؛ ج ٦٥–٧٩؛ د ٥٠–٦٤؛ هـ ٠–٤٩.</p>'+
+ 'المستويات: أ ٩٠–١٠٠؛ ب ٨٠–٨٩؛ ج ٦٥–٧٩؛ د ٥٠–٦٤؛ هـ ٠–٤٩.</p>'+ofSignatureTable()+
  '<footer><span>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>'+
  '<span>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</span></footer></section>').join('')+
  '</body></html>';
