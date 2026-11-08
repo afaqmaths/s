@@ -107,7 +107,9 @@ function cpProfilePanel(s){
  '<p class="cp-help">المسار التربوي يحدده المعلم بناء على شواهد التعلم، ولا يمثل تشخيصًا طبيًا أو حكمًا نهائيًا على الطالب.</p>'+
  '<form id="cpProfileForm"><label class="cp-field"><span>مسار المتابعة</span><select name="student_track" '+(!cpEdit()?'disabled':'')+'>'+
  CP_LEVEL.map(v=>'<option'+((p.student_track||CP_LEVEL[0])===v?' selected':'')+'>'+v+'</option>').join('')+
- '</select></label>'+cpFields(CP_PROFILE,p)+
+ '</select></label>'+cpFields(CP_PROFILE.filter(([key])=>key!=="descriptive_text"),p)+
+ '<section class="cp-descriptor-box"><h4>العبارات الوصفية — ملف مستقل داخل سجل الطالب</h4>'+
+ cpInput('الوصف التربوي الخاص بالطالب','descriptive_text',p.descriptive_text||'',5)+'</section>'+
  '<div class="cp-description-hint"><b>التوصيفات الوصفية:</b> يمكن كتابة وصف فردي وحفظه الآن. '+ 
  'التعبئة المقترحة تلقائيًا من وثيقة التوصيفات ستُفعّل بعد إرفاقها واعتماد قواعدها.</div>'+
  '<button type="button" class="cp-muted-button" disabled>تعبئة الوصف تلقائيًا — بانتظار الوثيقة</button> '+
@@ -152,7 +154,11 @@ function cpClassPanel(){
  return '<section class="cp-card"><h3>إدارة الشعبة وخطة المتابعة المهنية</h3>'+
  '<p class="cp-help">خطة عامة للشعبة لتوثيق الانضباط والعلاج والإثراء والتقويم والتأمل المهني.</p>'+
  '<form id="cpClassForm">'+cpFields(CP_CLASS,c)+
- (cpEdit()?'<button type="submit" class="primary">💾 حفظ الخطة والملاحظات العامة للشعبة</button>':'')+'</form></section>';
+ (cpEdit()?'<button type="submit" class="primary">💾 حفظ الخطة والملاحظات العامة للشعبة</button>':'')+
+ '</form><details class="cp-guide"><summary>إرشادات جاهزة لإدارة التمايز والانضباط الصفي</summary>'+
+ '<p><b>للمجيدين:</b> مسائل مفتوحة متعددة الحلول، مشروع رياضي واقعي، مهام استدلال وتفسير النتائج، مع متابعة التقدم دون إغراق في الواجبات.</p>'+
+ '<p><b>لمن يحتاج دعمًا:</b> تحديد المهارة غير المتقنة بالتشخيص، أنشطة متدرجة قصيرة، وسائل ملموسة، زميل داعم عند الحاجة، وتقويم قبلي وبعدي وتعديل الخطة.</p>'+
+ '<p><b>للانضباط:</b> قواعد واضحة، تعزيز السلوك الإيجابي، توثيق واقعي مختصر، وتنبيه تربوي متناسب مع الموقف دون وصم الطالب أو نشر بياناته.</p></details></section>';
 }
 function cpPage(){
  const r=cpState.report,s=cpStudent(),tabs=[['overview','نظرة عامة وكشف الدرجات'],['behavior','كشف الانضباط الصفي'],['student','المتابعة الفردية'],['questions','الأسئلة والأنشطة'],['class','خطة الشعبة']];
@@ -174,6 +180,7 @@ function cpPage(){
  '<label>الطالب<select id="cpStudentSelect" '+(!r?'disabled':'')+'>'+cpStudentOptions()+'</select></label>'+
  '<button type="button" id="cpRefresh">تحديث البيانات</button>'+
  '<button type="button" data-cp-print="class" '+(!r?'disabled':'')+'>🖨️ كشف الشعبة</button>'+
+ '<button type="button" data-cp-print="behavior" '+(!r?'disabled':'')+'>🖨️ سجل الانضباط</button>'+
  '<button type="button" data-cp-print="full" '+(!r?'disabled':'')+'>🖨️ السجل المصاحب كاملًا</button>'+
  '<button type="button" data-cp-print="student" '+(!s?'disabled':'')+'>🖨️ تقرير الطالب / ولي الأمر</button></section>'+
  (cpState.error?'<p class="cp-error">'+cpEsc(cpState.error)+'</p>':'')+
@@ -233,12 +240,16 @@ function cpPrint(mode){
  if(!cpState.report)return;
  const r=cpState.report,s=cpStudent();
  if(mode==='student'&&!s)return;
- const title=mode==='student'?'تقرير متابعة الطالب':mode==='full'?'السجل المصاحب الكامل':'كشف متابعة الشعبة';
- const body=mode==='student'?cpPrintStudent(s,'parent'): '<section class="cp-print-section"><h2>كشف درجات الطلاب ومسارات المتابعة</h2>'+cpPrintRoster(r)+cpSign()+'</section>'+
- (mode==='full'?cpPrintDetailedGrades(r)+cpPrintClassPlan()+
- '<section class="cp-print-section"><h2>سجل الانضباط الصفي — الإيجابيات والسلبيات</h2>'+cpBehaviorTable().replaceAll('عرض</button>','—</button>')+'</section>'+
- r.students.map(s=>cpPrintStudent(s)).join(''):'');
- const css=`@page{size:${mode==='full'?'A3':'A4'} landscape;margin:9mm}*{box-sizing:border-box}body{font:9pt Tahoma,Arial,sans-serif;color:#18384a;direction:rtl}header{text-align:center;border-bottom:2px solid #148a92;margin-bottom:5mm}h1{font-size:17pt;color:#12627a}h2{font-size:12pt;color:#116579}h3{font-size:10pt}p{line-height:1.7}table{width:100%;border-collapse:collapse;font-size:8pt;table-layout:fixed}th,td{border:1px solid #9db8c5;padding:1.7mm 1mm;text-align:right;overflow-wrap:anywhere;vertical-align:top}th{background:#e8f3f7}.cp-print-section{break-after:page}.cp-print-student{break-before:page}.cp-print-student h2{margin-top:5mm}.cp-print-student table{margin-bottom:4mm}.cp-table-scroll{overflow:visible}.cp-behavior-table .cp-name{width:18%}.cp-behavior-table td,.cp-behavior-table th{text-align:center}.cp-behavior-table td:nth-child(2){text-align:right}.of-signatures{width:100%;margin-top:5mm;table-layout:fixed;font-size:7pt}.of-signatures th,.of-signatures td{text-align:center}.of-signatures td{height:12mm}button{display:none}`;
+ const title=mode==='student'?'تقرير متابعة الطالب':mode==='full'?'السجل المصاحب الكامل':
+  mode==='behavior'?'سجل الانضباط الصفي للشعبة':'كشف متابعة الشعبة';
+ const behaviorSheet='<section class="cp-print-section"><h2>سجل الإيجابيات والسلبيات ـ ثلاث إيجابيات وخمس سلبيات</h2>'+
+  cpBehaviorTable().replaceAll('عرض</button>','—</button>')+cpSign()+'</section>';
+ const classSheet='<section class="cp-print-section"><h2>كشف درجات الطلاب ومسارات المتابعة</h2>'+cpPrintRoster(r)+cpSign()+'</section>';
+ const body=mode==='student'?cpPrintStudent(s,'parent'):
+  mode==='behavior'?behaviorSheet:classSheet+
+  (mode==='full'?cpPrintDetailedGrades(r)+cpPrintClassPlan()+behaviorSheet+
+   r.students.map(item=>cpPrintStudent(item)).join(''):'');
+ const css=`@page{size:${mode==='full'||mode==='behavior'?'A3':'A4'} landscape;margin:9mm}*{box-sizing:border-box}body{font:9pt Tahoma,Arial,sans-serif;color:#18384a;direction:rtl}header{text-align:center;border-bottom:2px solid #148a92;margin-bottom:5mm}h1{font-size:17pt;color:#12627a}h2{font-size:12pt;color:#116579}h3{font-size:10pt}p{line-height:1.7}table{width:100%;border-collapse:collapse;font-size:8pt;table-layout:fixed}th,td{border:1px solid #9db8c5;padding:1.7mm 1mm;text-align:right;overflow-wrap:anywhere;vertical-align:top}th{background:#e8f3f7}.cp-print-section{break-after:page}.cp-print-student{break-before:page}.cp-print-student h2{margin-top:5mm}.cp-print-student table{margin-bottom:4mm}.cp-table-scroll{overflow:visible}.cp-behavior-table .cp-name{width:18%}.cp-behavior-table td,.cp-behavior-table th{text-align:center}.cp-behavior-table td:nth-child(2){text-align:right}.of-signatures{width:100%;margin-top:5mm;table-layout:fixed;font-size:7pt}.of-signatures th,.of-signatures td{text-align:center}.of-signatures td{height:12mm}button{display:none}`;
  const win=window.open('','_blank');
  if(!win){alert('يرجى السماح بالنوافذ المنبثقة لطباعة التقرير.');return}
  win.document.open();win.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+
