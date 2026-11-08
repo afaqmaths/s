@@ -1,0 +1,26 @@
+/* آفاق الرياضيات — أزرار الرجوع والتنقل الآمن داخل لوحة المشرف */
+.afaq-nav-toolbar{
+ direction:rtl;display:flex;align-items:center;justify-content:space-between;
+ gap:12px;flex-wrap:wrap;max-width:1480px;margin:15px auto 5px;
+ padding:10px 14px;border:1px solid #bcd5e1;border-radius:14px;
+ background:linear-gradient(112deg,#eef8fa,#f7fbff);color:#285e72;
+ box-shadow:0 3px 12px #153d5610;font-family:Tahoma,Arial,sans-serif;
+}
+.afaq-nav-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.afaq-nav-actions button{
+ border:1px solid #b7d2df;border-radius:9px;padding:10px 17px;
+ background:#fff;color:#215b78;font:900 14px Tahoma,Arial,sans-serif;
+ cursor:pointer;min-height:40px;transition:background .15s ease;
+}
+.afaq-nav-actions #afaqNavDashboard{background:#197b88;border-color:#197b88;color:#fff}
+.afaq-nav-actions button:hover:not(:disabled){filter:brightness(.97);background:#e5f3f7}
+.afaq-nav-actions #afaqNavDashboard:hover{background:#146976}
+.afaq-nav-actions button:disabled{opacity:.48;cursor:not-allowed}
+.afaq-nav-toolbar small{font-size:11px;color:#557789;line-height:1.7}
+.afaq-nav-toolbar button:focus-visible{outline:3px solid #c88d35;outline-offset:2px}
+@media(max-width:640px){
+ .afaq-nav-toolbar{margin:10px 8px 6px;padding:9px 10px}
+ .afaq-nav-actions{width:100%}
+ .afaq-nav-actions button{flex:1 1 auto;font-size:12px;padding:10px 8px}
+ .afaq-nav-toolbar small{font-size:10px}
+}
