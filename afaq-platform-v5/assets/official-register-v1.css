@@ -68,3 +68,10 @@
 @media(max-width:900px){.of-tools{align-items:stretch}.of-tools>label{flex:1 1 220px}.of-stats{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:530px){.of-page{padding:7px}.of-panel{padding:12px 10px}.of-hero{padding:19px 11px}.of-hero h1{font-size:24px}.of-stats{grid-template-columns:repeat(2,1fr)}.of-table-scroll{max-height:65vh}.of-toolbar{width:100%}.of-toolbar button{flex:1 1 auto}}
 @media print{.of-hero,.of-term-switch,.of-tools,.of-actions,.of-footer{display:none!important}.of-table-scroll{height:auto;max-height:none;overflow:visible}.of-table{font-size:8px;min-width:0}.of-table .of-serial,.of-table .of-name{position:static}.of-number-input{border:0}.of-panel{border:0;box-shadow:none}}
+
+/* Grade sheet starts blank; A+/A− are entered afresh by the teacher per term. */
+.of-a-inputs{display:flex;gap:5px;justify-content:center;align-items:center;margin-top:7px;flex-wrap:wrap}
+.of-a-inputs label{font:850 10px Tahoma,Arial,sans-serif;color:#82641f;display:flex;gap:3px;align-items:center}
+.of-a-inputs input{width:48px;height:29px;border:1px solid #d6c491;border-radius:6px;text-align:center;background:#fffaf0;font:800 11px Tahoma,Arial,sans-serif}
+.of-a-inputs input:disabled{background:#f8f2df;color:#6c6c6c}
+.of-a-indicator b{display:block;font-size:16px}
