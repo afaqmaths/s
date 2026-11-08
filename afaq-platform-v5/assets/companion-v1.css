@@ -1,0 +1,44 @@
+/* منصة آفاق الرياضيات — السجل المصاحب الإلكتروني للمعلم ٢٠٢٦/٢٠٢٧ */
+.cp-page{max-width:1600px;margin:0 auto;padding:12px 14px 35px;direction:rtl;font-family:Tahoma,Arial,sans-serif;color:#21495d}
+.cp-head{padding:25px 22px;text-align:center;border-radius:20px;background:linear-gradient(118deg,#174b76,#1b8b91);color:white;margin:14px 0 20px}
+.cp-head h1{color:white;font-size:clamp(24px,2.5vw,37px);margin:4px 0 12px;font-weight:950}
+.cp-head p{color:#e8faff;font-size:15px;line-height:1.8}
+.cp-card{border:1px solid #cadfe7;background:#fff;border-radius:17px;padding:17px 18px;margin:15px 0;box-shadow:0 5px 18px #123c550a}
+.cp-card h3{color:#205c79;font-size:20px;margin:2px 0 14px}.cp-card h4{color:#316e82;font-size:16px;margin:20px 0 10px}
+.cp-toolbar{display:flex;gap:11px;align-items:flex-end;flex-wrap:wrap;background:#f8fbfd}
+.cp-toolbar>label{display:grid;gap:5px;min-width:175px;color:#246178;font-weight:900;font-size:13px}
+.cp-toolbar select,.cp-entry-grid select,.cp-entry-grid input,.cp-field select,.cp-entry-grid textarea,.cp-field textarea{box-sizing:border-box;width:100%;padding:9px 11px;border:1px solid #bed1df;border-radius:10px;background:#fff;color:#1b465b;font:14px Tahoma,Arial,sans-serif}
+.cp-toolbar button,.cp-tabs button,.cp-roster button,.cp-behavior-table button,.cp-card [data-cp-retract]{cursor:pointer;border:1px solid #b8d2de;background:#f1f8fb;color:#175d7a;padding:10px 12px;border-radius:10px;font:900 13px Tahoma,Arial,sans-serif}
+.cp-toolbar button:disabled{opacity:.45;cursor:not-allowed}
+.cp-tabs{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:19px 0}
+.cp-tabs button{padding:12px 16px;background:#fff}
+.cp-tabs button.active{background:#197d89;color:white;border-color:#197d89}
+.cp-help{font-size:13px;line-height:1.9;color:#637886;padding:6px 3px}
+.cp-error,.cp-message{margin:12px 0;border:1px solid #e4b4b2;border-radius:9px;background:#fff0ef;color:#963d40;padding:13px;font-size:14px}
+.cp-message{background:#edfbf3;border-color:#b5deca;color:#196449}
+.cp-table-scroll{max-width:100%;overflow:auto;border:1px solid #c6dbe5;border-radius:11px;margin:10px 0}
+.cp-table-scroll table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+.cp-table-scroll th,.cp-table-scroll td{border-left:1px solid #d9e5eb;border-bottom:1px solid #d3e0e7;padding:9px 7px;text-align:center;vertical-align:middle;min-width:56px}
+.cp-table-scroll th{background:#e5f2f7;color:#205e77;font-weight:950;white-space:normal}
+.cp-table-scroll tbody tr:nth-child(even){background:#f8fbfd}
+.cp-table-scroll tbody tr:hover{background:#eff8fc}
+.cp-roster{min-width:1250px}.cp-behavior-table{min-width:1580px}
+.cp-table-scroll .cp-name{min-width:285px;width:285px;text-align:right!important;font-size:13px;font-weight:900;background:#fff}
+.cp-table-scroll .cp-positive{background:#e9f8ee;color:#256a45}
+.cp-table-scroll .cp-negative{background:#fff1e7;color:#9b5434}
+.cp-field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:13px 0}
+.cp-field{display:flex;flex-direction:column;gap:8px;margin:12px 0;font-weight:900;color:#315e77;font-size:13px}
+.cp-field textarea{resize:vertical;line-height:1.8;min-height:95px;font-weight:400}
+.cp-field textarea[name=descriptive_text]{min-height:155px}
+.cp-field select{max-width:400px}
+.cp-field textarea:disabled,.cp-field select:disabled{background:#f3f6f9;color:#435970}
+.cp-entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;align-items:end;margin:17px 0}
+.cp-entry-grid label{display:flex;flex-direction:column;gap:7px;font:900 13px Tahoma,Arial,sans-serif;color:#285e74}
+.cp-entry-grid label.cp-wide{grid-column:1/-1}
+.cp-entry-grid textarea{min-height:65px;resize:vertical}
+.cp-entry-grid button{max-width:360px}
+.cp-description-hint{background:#fff8e9;border:1px solid #efdbae;border-radius:10px;padding:12px 14px;margin:12px 0;line-height:1.9;color:#7c612a;font-size:13px}
+.cp-muted-button{font:900 13px Tahoma,Arial,sans-serif;padding:11px 14px;border-radius:9px;background:#e9eef2;color:#83939e;border:1px solid #dae2ea;cursor:not-allowed}
+.cp-card .primary{padding:12px 16px;cursor:pointer}
+@media(max-width:850px){.cp-field-grid{grid-template-columns:1fr}.cp-toolbar>label{flex:1 1 200px}.cp-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:550px){.cp-page{padding:8px}.cp-card{padding:13px 10px}.cp-head{padding:17px 12px}.cp-entry-grid{grid-template-columns:1fr}.cp-toolbar button{flex:1 1 180px}.cp-tabs button{flex:1 1 130px;font-size:12px}}
