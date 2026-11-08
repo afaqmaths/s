@@ -504,7 +504,7 @@ attachPortal=function(){
   for(const [key] of GB_COMPONENTS){const raw=String(data.get(key)??'').trim();fields[key]=raw===''?null:Number(raw)}
   try{const result=await api('save_assessment',{student_id:student,
     expected_updated_at:auth.selectedProfile?.assessment?.updated_at||null,...fields});
-   await gbRefresh(result.profile,'حُفظت الدرجات كمسودة. لن تُنشر للطالب حتى تعتمد جميع عناصرها.')}
+   await gbRefresh(result.profile,'حُفظت الدرجات كمسودة؛ تُفعّل أسئلة العلاج والإثراء فورًا بحسب نسبة كل عنصر، وتظهر أسباب التكليف ونتائج التغذية الراجعة أدناه. أما درجات التحصيل فلا تُنشر للطالب حتى اعتمادها.')}
   catch(err){auth.error=gbErr(err.message);render()}
  });
  
