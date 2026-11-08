@@ -13,11 +13,11 @@ function studyHead(title,description){
  return '<div class="container study-area"><section class="v4-page-intro"><div><span class="v4-eyebrow">برامج آفاق التعليمية</span><h1>'+title+'</h1><p>'+description+'</p></div><div class="v4-corner-art">∑<span>★</span><small>∞</small></div></section>';
 }
 function studyStars(){
- return studyHead('بوابة الطلاب المجيدين','نحتفي بمن تتجاوز نتيجته ٦٠٪ من تقييم المنصة. تُنشر الأسماء والنسب بعد موافقة ولي الأمر واعتماد المدرسة.')+
+ return studyHead('بوابة الطلاب المجيدين','أنشطة إثرائية مخصصة لمن تجاوزت نسبته ٦٠٪ في أي عنصر تحصيلي مرصود. ظهور الطالب هنا لا يعني نشر اسمه للعموم؛ النشر يتطلب موافقة ولي الأمر واعتماد المدرسة.')+
  '<div class="panel"><h2>🏅 لوحة المجيدين المعتمدين</h2><div id="studyGallery">جارٍ تحميل البيانات المعتمدة…</div></div><div id="studyPrivate"></div></div>';
 }
 function studySupport(){
- return studyHead('بوابة الدعم والتقدم','أنشطة تأسيسية مخصصة للطلاب الذين تقل نتائجهم عن ٣٠٪، من الوحدات الأولى والثانية والثالثة.')+
+ return studyHead('بوابة الدعم والتقدم','أنشطة تأسيسية من الوحدات الثلاث الأولى لكل طالب تنخفض نسبته عن ٣٠٪ في أي سؤال قصير أو اختبار أو شفوي أو عمل تحصيلي، أو تسجل له ملاحظة علمية تدل على الضعف.')+
  '<div class="panel"><h2>🌱 معًا نحو التقدم</h2><p>برنامج تعليمي خاص يساعد على تثبيت المهارات. أسماء الطلاب ودرجاتهم وأنشطتهم الفردية لا تُعرض للزوار أو الزملاء.</p></div><div id="studyPrivate"></div></div>';
 }
 const studyBaseGeneric=genericSection;
