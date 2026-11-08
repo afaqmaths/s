@@ -41,8 +41,8 @@
 .of-table tbody tr:nth-child(even){background:#f7fbfd}
 .of-table tbody tr:hover{background:#eff9ff}
 .of-table tbody tr.of-locked{background:#f4f9f5}
-.of-table .of-serial{width:46px;font-size:14px;font-weight:950;position:sticky;right:0;background:#eaf5fa;z-index:2;border-right:2px solid #aac6d7}
-.of-table .of-name{width:195px;text-align:right;position:sticky;right:46px;z-index:2;background:#fff}
+.of-table .of-serial{width:46px;font-size:14px;font-weight:950;position:sticky;right:195px;background:#eaf5fa;z-index:2;border-inline-start:2px solid #aac6d7}
+.of-table .of-name{width:195px;text-align:right;position:sticky;right:0;z-index:2;background:#fff;border-right:2px solid #aac6d7}
 .of-table tbody tr:nth-child(even) .of-name{background:#f7fbfd}
 .of-table .of-person{display:flex;flex-direction:column;gap:5px}
 .of-table .of-person strong{font-size:12px;font-weight:950;color:#23536e;line-height:1.55}
