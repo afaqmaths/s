@@ -91,7 +91,7 @@ function fbPaperContents(){
  if(!feedbackState.report)return '<p>لم يُحمّل التقرير بعد.</p>';
  const label=feedbackState.scope==='class'?'كشف التغذية الراجعة — '+fbText(feedbackState.className):'الكشف العام — جميع الشعب';
  return '<h2>'+label+'</h2>'+fbSummaryCards(feedbackState.report.students||[])+
- '<p>معيار التمايز: علاجي عند ٥٠٪ فأقل، إثرائي عند ٧٠٪ فأكثر؛ المصدر كل عنصر تحصيلي مرصود أو ملاحظة علمية تستلزم دعمًا.</p>'+
+ '<p>معيار التمايز: علاجي عند ٥٠٪ فأقل، إثرائي عند ٨٥٪ فأكثر؛ المصدر كل عنصر تحصيلي مرصود أو ملاحظة علمية تستلزم دعمًا.</p>'+
  fbDetailedTable(feedbackState.report,feedbackState.track);
 }
 function fbPrintablePage(body,orientation){
@@ -212,7 +212,7 @@ async function fbLoadSelectedStudent(){
 }
 function fbSelectedHTML(paths){
  if(!paths?.length)return '<p>لا توجد إشارات علاجية أو إثرائية نشطة لهذا الطالب وفق درجاته المرصودة أو ملاحظات ضعف التعلم.</p>'+
- '<p>عندما تكون الدرجة ٥٠٪ أو أقل يظهر العلاج، وعندما تبلغ ٧٠٪ فأكثر يظهر الإثراء. أي درجة غير مرصودة لا تؤدي إلى تكليف تلقائي.</p>';
+ '<p>عندما تكون الدرجة ٥٠٪ أو أقل يظهر العلاج، وعندما تبلغ ٨٥٪ فأكثر يظهر الإثراء. أي درجة غير مرصودة لا تؤدي إلى تكليف تلقائي.</p>';
  return paths.map(p=>'<article class="fb-selected-track"><h4>'+
   (p.track==='remedial'?'🌱 نموذج الأسئلة العلاجية':'🌟 نموذج الأسئلة الإثرائية')+
   (p.archived?' — تدريب محفوظ سابقًا':'')+'</h4>'+
