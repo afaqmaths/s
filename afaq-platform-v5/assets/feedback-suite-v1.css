@@ -82,3 +82,24 @@
 @media(max-width:450px){.study-track-coverage{padding:10px}.study-coverage-grid article{padding:10px 3px}
 .study-coverage-grid article strong{font-size:15px}.study-coverage-grid article b{font-size:19px}}
 @media print{.study-track-coverage{break-inside:avoid;background:#fff}.study-coverage-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* تلوين الصف الدراسي حسب مرات الإثراء واحتياج العلاج */
+.fb-color-legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:13px 0 17px;padding:10px;
+ background:#fafcfe;border:1px solid #cbdfea;border-radius:11px;font:12px Tahoma,Arial,sans-serif}
+.fb-color-legend b{color:#245a73}
+.fb-color-legend .fb-key{display:inline-block;padding:6px 10px;border-radius:8px;border:1px solid #c3d1db;font-weight:900}
+.fb-key-green{background:#dcf4e2;border-color:#a5d9af!important}
+.fb-key-yellow{background:#fff3c2;border-color:#e6d28a!important}
+.fb-key-pink{background:#ffe0e9;border-color:#e9b8c6!important}
+.fb-key-blue{background:#e3f2ff;border-color:#b9d6ee!important}
+.fb-color-legend small{flex:1 1 100%;color:#526e83;line-height:1.8}
+.fb-report-table tbody tr.fb-band-green td,.study-table tbody tr.fb-band-green td{background:#dcf4e2!important}
+.fb-report-table tbody tr.fb-band-yellow td,.study-table tbody tr.fb-band-yellow td{background:#fff3c2!important}
+.fb-report-table tbody tr.fb-band-pink td,.study-table tbody tr.fb-band-pink td{background:#ffe0e9!important}
+.fb-report-table tbody tr.fb-band-blue td,.study-table tbody tr.fb-band-blue td{background:#e3f2ff!important}
+.fb-report-table tbody tr.fb-band-green:hover td,.study-table tbody tr.fb-band-green:hover td{background:#cbedce!important}
+.fb-report-table tbody tr.fb-band-yellow:hover td,.study-table tbody tr.fb-band-yellow:hover td{background:#ffecaa!important}
+.fb-report-table tbody tr.fb-band-pink:hover td,.study-table tbody tr.fb-band-pink:hover td{background:#ffd1de!important}
+.fb-report-table tbody tr.fb-band-blue:hover td,.study-table tbody tr.fb-band-blue:hover td{background:#d0e9ff!important}
+.fb-report-table .fb-band-marker,.study-table .study-band-marker{display:block;margin-top:4px;font:850 11px Tahoma,Arial,sans-serif;color:#3b6175;line-height:1.55}
+@media print{.fb-report-table tbody td,.study-table tbody td{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
