@@ -2,7 +2,7 @@
 /* السجل المصاحب لمعلم الرياضيات ٢٠٢٦/٢٠٢٧ — خاص بالحسابات المدرسية */
 const CP_CLASSES=['السادس / ٤','السادس / ٥','السادس / ٦'];
 const CP_POS=['المشاركة الإيجابية','الانضباط والالتزام','التعاون ومساعدة الزملاء'];
-const CP_NEG=['التحدث دون إذن','الخروج من المقعد دون إذن','تناول الطعام دون إذن','عدم إحضار الأدوات','عدم إنجاز المهام'];
+const CP_NEG=['التحدث دون إذن','الخروج من الصف أو المقعد دون إذن','تناول الطعام دون إذن','عدم إحضار الأدوات','عدم إنجاز المهام'];
 const CP_LEVEL=['متابعة عامة','إثراء','دعم تعليمي'];
 const CP_PROFILE=[
  ['strengths','نقاط القوة والتميز'],['learning_needs','المهارات التي تحتاج إلى تحسين'],
@@ -72,15 +72,35 @@ function cpBehaviorTable(){
  const r=cpState.report;
  return '<div class="cp-table-scroll"><table class="cp-behavior-table"><thead><tr>'+
  '<th rowspan="2">م</th><th rowspan="2" class="cp-name">اسم الطالب</th>'+
- '<th colspan="3" class="cp-positive">الإيجابيات (٣)</th><th colspan="5" class="cp-negative">السلبيات (٥)</th>'+
- '<th rowspan="2">أخرى</th><th rowspan="2">المسار</th><th rowspan="2">المتابعة</th></tr><tr>'+
- [...CP_POS,...CP_NEG].map(x=>'<th title="'+cpEsc(x)+'">'+cpEsc(x)+'</th>').join('')+'</tr></thead><tbody>'+
+ '<th colspan="3" class="cp-positive">الإيجابيات (٣)</th><th rowspan="2">أخرى</th>'+
+ '<th colspan="5" class="cp-negative">السلبيات (٥)</th><th rowspan="2">المسار</th><th rowspan="2">المتابعة</th></tr><tr>'+
+ CP_POS.map(x=>'<th title="'+cpEsc(x)+'">'+cpEsc(x)+'</th>').join('')+
+ CP_NEG.map(x=>'<th title="'+cpEsc(x)+'">'+cpEsc(x)+'</th>').join('')+'</tr></thead><tbody>'+
  (r?.students||[]).map(s=>'<tr><td>'+cpNum(s.serial_no)+'</td><td class="cp-name">'+cpEsc(s.full_name)+'</td>'+
  CP_POS.map(code=>'<td class="cp-positive">'+cpNum(cpCount(s,'إيجابي',code))+'</td>').join('')+
+ '<td>'+cpNum(cpCount(s,'أخرى','ملاحظة أخرى'))+'</td>'+
  CP_NEG.map(code=>'<td class="cp-negative">'+cpNum(cpCount(s,'سلبي',code))+'</td>').join('')+
- '<td>'+cpNum(cpCount(s,'أخرى','ملاحظة أخرى'))+'</td><td>'+cpEsc(cpProfile(s).student_track||'—')+'</td>'+
+ '<td>'+cpEsc(cpProfile(s).student_track||'—')+'</td>'+
  '<td><button type="button" data-cp-select="'+s.serial_no+'">عرض</button></td></tr>').join('')+
  '</tbody></table></div>';
+}
+function cpTargetSections(){
+ const r=cpState.report;
+ if(!r)return '';
+ const groups=[
+  ['إثراء','الطلاب المستهدفون بالإثراء','strengths','enrichment_plan'],
+  ['دعم تعليمي','الطلاب الذين يحتاجون دعمًا تعليميًا','learning_needs','support_plan']
+ ];
+ return '<section class="cp-card cp-targets"><h3>قوائم التمايز والخطط الفردية للشعبة</h3>'+
+ groups.map(([track,label,field,plan])=>{
+  const rows=r.students.filter(s=>cpProfile(s).student_track===track);
+  return '<h4>'+label+' — '+cpNum(rows.length)+'</h4>'+
+  (rows.length?'<div class="cp-table-scroll"><table><thead><tr><th>م</th><th>اسم الطالب</th><th>الشواهد / المهارات</th><th>الخطة المطبقة</th><th>الأسئلة الموثقة</th></tr></thead><tbody>'+
+   rows.map(s=>{const p=cpProfile(s);return '<tr><td>'+cpNum(s.serial_no)+'</td><td>'+cpEsc(s.full_name)+'</td>'+
+   '<td>'+cpEsc(p[field]||'لم يُدون بعد')+'</td><td>'+cpEsc(p[plan]||'لم تُكتب خطة بعد')+'</td>'+
+   '<td>'+cpNum(cpQuestions(s).length)+'</td></tr>';}).join('')+'</tbody></table></div>':
+  '<p>لم يُحدَّد طلاب في هذا المسار حتى الآن.</p>');
+ }).join('')+'</section>';
 }
 function cpRoster(){
  const r=cpState.report;
@@ -164,7 +184,7 @@ function cpPage(){
  const r=cpState.report,s=cpStudent(),tabs=[['overview','نظرة عامة وكشف الدرجات'],['behavior','كشف الانضباط الصفي'],['student','المتابعة الفردية'],['questions','الأسئلة والأنشطة'],['class','خطة الشعبة']];
  let content='';
  if(r){
-  if(cpState.tab==='overview')content='<section class="cp-card"><h3>كشف الطلاب والدرجات ومسارات التعلم</h3>'+cpRoster()+'</section>';
+  if(cpState.tab==='overview')content='<section class="cp-card"><h3>كشف الطلاب والدرجات ومسارات التعلم</h3>'+cpRoster()+'</section>'+cpTargetSections();
   else if(cpState.tab==='behavior')content='<section class="cp-card"><h3>سجل الانضباط الصفي للشعبة</h3>'+cpBehaviorTable()+'</section>';
   else if(cpState.tab==='class')content=cpClassPanel();
   else if(!s)content='<section class="cp-card">لا يوجد طالب محدد.</section>';
@@ -247,7 +267,7 @@ function cpPrint(mode){
  const classSheet='<section class="cp-print-section"><h2>كشف درجات الطلاب ومسارات المتابعة</h2>'+cpPrintRoster(r)+cpSign()+'</section>';
  const body=mode==='student'?cpPrintStudent(s,'parent'):
   mode==='behavior'?behaviorSheet:classSheet+
-  (mode==='full'?cpPrintDetailedGrades(r)+cpPrintClassPlan()+behaviorSheet+
+  (mode==='full'?cpPrintDetailedGrades(r)+cpPrintClassPlan()+cpTargetSections()+behaviorSheet+
    r.students.map(item=>cpPrintStudent(item)).join(''):'');
  const css=`@page{size:${mode==='full'||mode==='behavior'?'A3':'A4'} landscape;margin:9mm}*{box-sizing:border-box}body{font:9pt Tahoma,Arial,sans-serif;color:#18384a;direction:rtl}header{text-align:center;border-bottom:2px solid #148a92;margin-bottom:5mm}h1{font-size:17pt;color:#12627a}h2{font-size:12pt;color:#116579}h3{font-size:10pt}p{line-height:1.7}table{width:100%;border-collapse:collapse;font-size:8pt;table-layout:fixed}th,td{border:1px solid #9db8c5;padding:1.7mm 1mm;text-align:right;overflow-wrap:anywhere;vertical-align:top}th{background:#e8f3f7}.cp-print-section{break-after:page}.cp-print-student{break-before:page}.cp-print-student h2{margin-top:5mm}.cp-print-student table{margin-bottom:4mm}.cp-table-scroll{overflow:visible}.cp-behavior-table .cp-name{width:18%}.cp-behavior-table td,.cp-behavior-table th{text-align:center}.cp-behavior-table td:nth-child(2){text-align:right}.of-signatures{width:100%;margin-top:5mm;table-layout:fixed;font-size:7pt}.of-signatures th,.of-signatures td{text-align:center}.of-signatures td{height:12mm}button{display:none}`;
  const win=window.open('','_blank');
