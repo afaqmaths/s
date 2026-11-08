@@ -13,7 +13,7 @@ function studyHead(title,description){
  return '<div class="container study-area"><section class="v4-page-intro"><div><span class="v4-eyebrow">برامج آفاق التعليمية</span><h1>'+title+'</h1><p>'+description+'</p></div><div class="v4-corner-art">∑<span>★</span><small>∞</small></div></section>';
 }
 function studyStars(){
- return studyHead('بوابة الطلاب المجيدين','أنشطة إثرائية مخصصة لمن بلغت نسبته ٧٠٪ فأكثر في أي عنصر تحصيلي مرصود. ظهور الطالب هنا لا يعني نشر اسمه للعموم؛ النشر يتطلب موافقة ولي الأمر واعتماد المدرسة.')+
+ return studyHead('بوابة الطلاب المجيدين','أنشطة إثرائية مخصصة لمن بلغت نسبته ٨٥٪ فأكثر في أي عنصر تحصيلي مرصود. ظهور الطالب هنا لا يعني نشر اسمه للعموم؛ النشر يتطلب موافقة ولي الأمر واعتماد المدرسة.')+
  '<div class="panel"><h2>🏅 لوحة المجيدين المعتمدين</h2><div id="studyGallery">جارٍ تحميل البيانات المعتمدة…</div></div><div id="studyPrivate"></div></div>';
 }
 function studySupport(){
@@ -43,7 +43,7 @@ function pathHtml(p,student){
  if(!['remedial','enrichment'].includes(p.track)){
   return '<div class="panel"><h3>📘 متابعة التعلم</h3><p>'+(p.score===null?'لم تُرصد درجة تحصيلية بعد.':
    'متوسط الأداء في العناصر المرصودة: '+studyEsc(p.score)+'٪.')+
-   ' تظهر أسئلة الدعم عندما تبلغ نسبة أي عنصر ٥٠٪ أو أقل، وأسئلة الإثراء عند ٧٠٪ فأكثر.</p></div>';
+   ' تظهر أسئلة الدعم عندما تبلغ نسبة أي عنصر ٥٠٪ أو أقل، وأسئلة الإثراء عند ٨٥٪ فأكثر.</p></div>';
  }
  const rem=p.track==='remedial',title=rem?'🌱 خطة الدعم العلاجي':'🌟 خطة الإثراء',
   s=p.student||{},archived=p.archived===true;
@@ -51,7 +51,7 @@ function pathHtml(p,student){
   (r.percentage!==null?' — '+studyEsc(r.percentage)+'٪':' — ملاحظة علمية تستلزم الدعم')+'</li>').join('');
  return '<div class="panel study-path-detail" data-study-track="'+p.track+'"><h2>'+title+(archived?' — نتائج سابقة':'')+'</h2>'+
  '<p><strong>'+studyEsc(s.name)+'</strong> — '+studyEsc(s.class_name)+' — الرقم المتسلسل: '+studyEsc(s.serial_no)+'</p>'+
- '<p>تُخصص الأنشطة بحسب <b>نسبة كل عنصر تحصيلي مرصود</b>، وليس مجموع الـ١٠٠ فقط. العلاج عند ٥٠٪ فأقل، والإثراء عند ٧٠٪ فأكثر. ويمكن أن يظهر المساران للطالب إذا توافرت أسباب كل منهما.</p>'+
+ '<p>تُخصص الأنشطة بحسب <b>نسبة كل عنصر تحصيلي مرصود</b>، وليس مجموع الـ١٠٠ فقط. العلاج عند ٥٠٪ فأقل، والإثراء عند ٨٥٪ فأكثر. ويمكن أن يظهر المساران للطالب إذا توافرت أسباب كل منهما.</p>'+
  (archived?'<p class="notice">السبب التحصيلي السابق لم يعد نشطًا، لكن الإجابات والتقدم السابق محفوظان للمراجعة.</p>':'')+
  (reasons?'<div class="study-reasons"><strong>سبب ظهور هذه الخطة:</strong><ul>'+reasons+'</ul></div>':'')+
  '<div class="study-metrics study-metrics-extended">'+
