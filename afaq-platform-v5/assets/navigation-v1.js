@@ -40,13 +40,13 @@
  }
  function paint(){
   const app=document.getElementById('app');
-  if(!app||state.page!=='dashboard'||!staffLoggedIn())return;
+  if(!app||!staffLoggedIn())return;
   const toolbar=document.createElement('nav');
   toolbar.className='afaq-nav-toolbar';
   toolbar.setAttribute('aria-label','التنقل الآمن داخل لوحة المشرف');
   const previous=entries[position-1];
   const allowPrevious=!!previous&&previous.page==='dashboard';
-  const atMain=(auth.section||'overview')==='overview';
+  const atMain=state.page==='dashboard'&&(auth.section||'overview')==='overview';
   toolbar.innerHTML='<div class="afaq-nav-actions">'+
     '<button type="button" id="afaqNavBack"'+(!allowPrevious&&atMain?' disabled':'')+
       ' aria-label="الرجوع إلى القسم السابق داخل لوحة المشرف">❮ رجوع</button>'+
@@ -124,7 +124,9 @@
   // قد تكون هذه صفحة أقدم من تحميل نظام التنقل؛ لا تغيّر تسجيل الدخول.
   const raw=(location.hash||'').replace(/^#/,'');
   let page='home';try{page=decodeURIComponent(raw)||'home'}catch{}
-  if(!/^[a-z0-9_-]{1,48}$/i.test(page))page='home';
+  const fixed=['home','dashboard','learning','library','grade','quiz','competition','contact','suggestions','complaints','visitor','fun','contests','guest_trial','parent','support','exams','ai','apps','projects','flashes','games'];
+  const category=typeof sections!=='undefined'&&sections.some(s=>s[0]===page);
+  if(!/^[a-z0-9_-]{1,48}$/i.test(page)||(!fixed.includes(page)&&!category))page='home';
   const backView={page};
   entries=[backView];position=0;
   restore(backView);
