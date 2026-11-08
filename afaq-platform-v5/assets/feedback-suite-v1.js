@@ -1,0 +1,294 @@
+'use strict';
+/* آفاق الرياضيات — ربط الرصد بالتغذية الراجعة والنتائج الفردية والصفية والعامة */
+const feedback={
+ scope:'class',className:'السادس / ٤',track:'all',orientation:'landscape',
+ report:null,loadedKey:'',loadingKey:'',error:'',
+ detail:null,detailKey:'',detailLoading:'',
+ selectedKey:'',selectedLoading:'',selectedPaths:null,selectedError:''
+};
+const FB_TRACKS={remedial:'علاجي',enrichment:'إثرائي',standard:'متابعة عادية'};
+const fbText=v=>typeof studyEsc==='function'?studyEsc(v===undefined||v===null?'':v):String(v||'');
+const fbNum=v=>v===null||v===undefined?'—':new Intl.NumberFormat('ar-OM',{maximumFractionDigits:2}).format(Number(v)||0);
+const fbPct=v=>v===null||v===undefined?'—':fbNum(v)+'٪';
+const fbReasons=(reasons,track)=>((reasons||[]).filter(r=>!track||r.track===track)
+ .map(r=>r.label+(r.percentage===null||r.percentage===undefined?' (ملاحظة علمية)':(' • '+fbPct(r.percentage))))).join('، ')||'—';
+const fbProgress=(s,track)=>s.progress_by_track?.[track]||{
+ total_tasks:track==='remedial'?12:16,completed:0,first_correct:0,correct:0,
+ attempts:0,improvement_percent:0,initial_percent:0,current_percent:0
+};
+function fbStatus(s){
+ const tracks=s.tracks||[],historical=[];
+ return tracks.length?tracks.map(t=>FB_TRACKS[t]||t).join(' + '):'متابعة عادية / لم يرصد سبب خاص';
+}
+function fbGroupText(p){
+ const reason=(p.reasons||[]).map(r=>r.label+(r.percentage===null||r.percentage===undefined?' (ملاحظة علمية)':' • '+fbPct(r.percentage))).join('، ');
+ return reason||'متابعة وتوثيق نتائج تدريب سابق';
+}
+function fbSummaryCards(rows){
+ const count=rows.length,low=rows.filter(x=>x.tracks?.includes('remedial')).length,
+  high=rows.filter(x=>x.tracks?.includes('enrichment')).length,
+  both=rows.filter(x=>x.tracks?.includes('remedial')&&x.tracks?.includes('enrichment')).length,
+  started=rows.filter(x=>['remedial','enrichment'].some(t=>(x.progress_by_track?.[t]?.completed||0)>0)).length;
+ return '<div class="fb-stats">'+[
+  ['الطلاب في الكشف',count],['تكليفات علاجية',low],['تكليفات إثرائية',high],
+  ['يحتاجون مسارين',both],['بدؤوا نشاط المتابعة',started]
+ ].map(([label,n])=>'<article><strong>'+fbNum(n)+'</strong><span>'+label+'</span></article>').join('')+'</div>';
+}
+function fbRowsForReport(report,track='all'){
+ const rows=[];
+ for(const s of report?.students||[]){
+  const types=['remedial','enrichment'].filter(t=>s.tracks?.includes(t)||
+   (s.progress_by_track?.[t]?.completed||0)>0);
+  for(const type of types){
+   if(track!=='all'&&track!==type)continue;
+   rows.push({student:s,track:type,p:fbProgress(s,type),active:!!s.tracks?.includes(type)});
+  }
+  if(!types.length&&track==='all')rows.push({student:s,track:'standard',p:null,active:true});
+ }
+ return rows;
+}
+function fbDetailedTable(report,track='all'){
+ const rows=fbRowsForReport(report,track);
+ if(!rows.length)return '<div class="fb-empty">لم تُسجَّل تكليفات في النطاق المحدد حتى الآن.</div>';
+ return '<div class="fb-table-wrap"><table class="fb-report-table"><thead><tr>'+
+ '<th>م</th><th>الطالب</th><th>الشعبة</th><th>المسار</th><th>سبب التكليف</th>'+
+ '<th>الأسئلة</th><th>المنجزة</th><th>أول صحيح</th><th>آخر صحيح</th>'+
+ '<th>التحسن</th><th>المحاولات</th></tr></thead><tbody>'+
+ rows.map(x=>{
+  const s=x.student,p=x.p;
+  return '<tr><td>'+fbNum(s.serial_no)+'</td><td>'+fbText(s.name)+'</td><td>'+fbText(s.class_name)+'</td>'+
+  '<td>'+fbText(FB_TRACKS[x.track]||x.track)+(x.active?'':' (سابق)')+'</td>'+
+  '<td>'+fbText(fbReasons(s.reasons,x.track))+'</td>'+
+  '<td>'+fbNum(p?.total_tasks)+'</td><td>'+fbNum(p?.completed)+'</td>'+
+  '<td>'+fbNum(p?.first_correct)+'</td><td>'+fbNum(p?.correct)+'</td>'+
+  '<td>'+fbPct(p?.improvement_percent)+'</td><td>'+fbNum(p?.attempts)+'</td></tr>';
+ }).join('')+'</tbody></table></div>';
+}
+function fbPrintDetail(paths){
+ if(!paths?.length)return '<p>لم تُسجَّل خطة علاجية أو إثرائية لهذا الطالب حتى الآن.</p>';
+ const p=paths[0],who=p.student||{};
+ return '<h2>تقرير التغذية الراجعة الفردي</h2><p>الطالب: '+fbText(who.name)+
+ ' • الشعبة: '+fbText(who.class_name)+' • الرقم المتسلسل: '+fbNum(who.serial_no)+'</p>'+
+ paths.map(p=>{
+  const tasks=p.tasks||[];
+  return '<section class="fb-print-group"><h3>'+fbText(FB_TRACKS[p.track])+
+   (p.archived?' — سجل سابق':'')+'</h3>'+
+   '<p><b>سبب التكليف:</b> '+fbText(fbGroupText(p))+'</p>'+
+   '<p>الأسئلة: '+fbNum(p.completed)+' / '+fbNum(p.total_tasks)+
+   ' • قبل التغذية: '+fbNum(p.first_correct)+' • بعد المتابعة: '+fbNum(p.correct)+
+   ' • التحسن: '+fbPct(p.improvement_percent)+' • المحاولات: '+fbNum(p.attempts)+'</p>'+
+   '<table class="fb-report-table"><thead><tr><th>الوحدة</th><th>السؤال</th><th>الحالة</th>'+
+   '<th>الأولى</th><th>الأخيرة</th><th>المحاولات</th></tr></thead><tbody>'+
+   tasks.map(t=>'<tr><td>'+fbNum(t.unit)+'</td><td>'+fbText(t.question)+'</td>'+
+    '<td>'+(t.completed?'أجاب':'لم يجب')+'</td>'+
+    '<td>'+(t.completed?(t.first_correct?'صحيحة':'غير صحيحة'):'—')+'</td>'+
+    '<td>'+(t.completed?(t.correct?'صحيحة':'غير صحيحة'):'—')+'</td>'+
+    '<td>'+fbNum(t.attempts)+'</td></tr>').join('')+'</tbody></table></section>';
+ }).join('');
+}
+function fbPaperContents(){
+ if(feedback.scope==='student')return fbPrintDetail(feedback.detail?.paths||[]);
+ if(!feedback.report)return '<p>لم يُحمّل التقرير بعد.</p>';
+ const label=feedback.scope==='class'?'كشف التغذية الراجعة — '+fbText(feedback.className):'الكشف العام — جميع الشعب';
+ return '<h2>'+label+'</h2>'+fbSummaryCards(feedback.report.students||[])+
+ '<p>معيار التمايز: علاجي عند أقل من ٣٠٪، إثرائي عند أكثر من ٦٠٪؛ المصدر كل عنصر تحصيلي مرصود أو ملاحظة علمية تستلزم دعمًا.</p>'+
+ fbDetailedTable(feedback.report,feedback.track);
+}
+function fbPrintablePage(body,orientation){
+ return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
+ '<title>تقرير التغذية الراجعة — منصة آفاق الرياضيات</title>'+
+ '<style>@page{size:A4 '+orientation+';margin:9mm}'+
+ '*{box-sizing:border-box}body{font-family:Tahoma,Arial,sans-serif;color:#23425d;font-size:9pt;direction:rtl}'+
+ 'header{text-align:center;border-bottom:3px double #ac843f;padding-bottom:3mm}h1{font-size:18pt;color:#145378;margin:1mm}'+
+ 'h2{font-size:15pt;color:#976c2a}h3{font-size:12pt;color:#1b6683}'+
+ '.fb-stats{display:flex;flex-wrap:wrap;gap:2mm;margin:3mm 0}.fb-stats article{border:1px solid #cee0e9;padding:2mm 3mm;display:flex;gap:3mm}'+
+ '.fb-table-wrap{width:100%;overflow:visible}table{width:100%;border-collapse:collapse;font-size:7pt;table-layout:fixed}'+
+ 'th,td{padding:1.5mm 1mm;border:1px solid #adbcc8;overflow-wrap:anywhere}th{background:#eaf6ff}'+
+ 'tr{break-inside:avoid}footer{border-top:2px double #b69a54;margin-top:7mm;padding-top:4mm;display:flex;justify-content:space-between;gap:4mm}'+
+ '.fb-print-group{margin:5mm 0;page-break-inside:avoid}p{line-height:1.65}'+
+ '</style></head><body><header><p>سلطنة عُمان • وزارة التربية والتعليم</p>'+
+ '<h1>مدرسة الحسين بن علي للتعليم الأساسي</h1><p>منصة آفاق الرياضيات — نتائج الدعم والإثراء</p></header>'+
+ '<main>'+body+'</main><footer><span>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>'+
+ '<span>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</span></footer></body></html>';
+}
+function fbPrintHTML(html,orientation='portrait'){
+ const popup=window.open('','_blank');
+ if(!popup){window.alert('اسمح بفتح نافذة الطباعة في إعدادات المتصفح.');return}
+ const page=fbPrintablePage(html,orientation==='landscape'?'landscape':'portrait');
+ popup.document.open();popup.document.write(page);
+ popup.onload=()=>{popup.focus();popup.print()};
+ popup.document.close();
+}
+function afFeedbackPrintPath(path,orientation='portrait'){
+ if(!path)return;
+ fbPrintHTML(fbPrintDetail([path]),orientation);
+}
+function fbPrintLoaded(){
+ fbPrintHTML(fbPaperContents(),feedback.orientation);
+}
+function fbReportHeader(){
+ return '<section class="fb-hero"><span>التقويم المستمر والتمايز التعليمي</span>'+
+ '<h1>🌱 التغذية الراجعة والعلاج والإثراء 🌟</h1>'+
+ '<p>يرتبط التكليف بنسبة كل سؤال قصير أو اختبار قصير أو شفوي أو عمل تحصيلي فور حفظه. وتُرصد ملاحظات الضعف العلمي كذلك، مع حفظ الإجابة الأولى والمحاولات والتقدم بعد التغذية الراجعة.</p></section>';
+}
+function fbReportPage(){
+ const rows=feedback.report?.students||[];
+ return '<div class="container fb-page" dir="rtl">'+fbReportHeader()+
+ '<div class="hub-staff-nav"><button type="button" data-tab="overview">لوحة المشرف</button>'+
+ '<button type="button" data-tab="students">رصد الدرجات</button>'+
+ '<button type="button" data-tab="class_results">كشوف التحصيل</button></div>'+
+ '<section class="fb-panel"><h2>تحديد كشف نتائج الدعم والإثراء</h2>'+
+ '<div class="fb-controls"><label>نوع الكشف<select id="fbScope">'+
+ '<option value="class"'+(feedback.scope==='class'?' selected':'')+'>كشف شعبة محددة</option>'+
+ '<option value="all"'+(feedback.scope==='all'?' selected':'')+'>الكشف العام لجميع الشعب</option>'+
+ '<option value="student"'+(feedback.scope==='student'?' selected':'')+'>تقرير طالب مفصل</option></select></label>'+
+ '<label>الشعبة<select id="fbClass">'+['السادس / ٤','السادس / ٥','السادس / ٦'].map(x=>'<option'+(x===feedback.className?' selected':'')+'>'+x+'</option>').join('')+'</select></label>'+
+ (feedback.scope==='student'?'<label>الطالب<select id="fbStudent">'+
+ '<option value="">اختر الطالب...</option>'+
+ (auth.students||[]).filter(s=>s.class_name===feedback.className)
+  .map(s=>'<option value="'+fbText(s.serial_no)+'"'+(String(feedback.studentNumber||'')===String(s.serial_no)?' selected':'')+'>'+
+ fbNum(s.serial_no)+' — '+fbText(s.full_name||s.display_name)+'</option>').join('')+'</select></label>':'')+
+ '<label>نوع الأسئلة<select id="fbTrack"><option value="all"'+(feedback.track==='all'?' selected':'')+'>العلاج والإثراء معًا</option>'+
+ '<option value="remedial"'+(feedback.track==='remedial'?' selected':'')+'>العلاجي فقط</option>'+
+ '<option value="enrichment"'+(feedback.track==='enrichment'?' selected':'')+'>الإثرائي فقط</option></select></label>'+
+ '<label>اتجاه الطباعة<select id="fbOrientation"><option value="landscape"'+(feedback.orientation==='landscape'?' selected':'')+'>A4 أفقي</option>'+
+ '<option value="portrait"'+(feedback.orientation==='portrait'?' selected':'')+'>A4 عمودي</option></select></label></div>'+
+ '<div class="fb-toolbar"><button class="hub-primary" id="fbLoad">🔄 تحميل / تحديث النتائج</button>'+
+ '<button class="hub-secondary" id="fbPrint" '+(!feedback.report&&!feedback.detail?'disabled':'')+'>🖨️ طباعة أو حفظ PDF</button></div>'+
+ '<p class="fb-note">البيانات سرية للمشرف والمساعد، ولا تظهر للزائر. التقرير يعتمد آخر إجابة لكل سؤال ويعرض مقارنة بالإجابة الأولى، ولا يُغيّر درجات التحصيل الأصلية.</p></section>'+
+ (feedback.error?'<p class="fb-error">'+fbText(feedback.error)+'</p>':'')+
+ (feedback.loadingKey?'<p class="fb-loading">جارٍ قراءة النتائج من قاعدة البيانات…</p>':'')+
+ (feedback.scope==='student'&&feedback.detail?
+  '<section class="fb-panel">'+fbPrintDetail(feedback.detail.paths||[])+'</section>':
+  feedback.scope!=='student'&&feedback.report?
+   '<section class="fb-panel">'+fbSummaryCards(rows)+fbDetailedTable(feedback.report,feedback.track)+'</section>':
+   '<section class="fb-panel"><p>اختر التقرير واضغط «تحميل النتائج» لرؤية المتابعة الفعلية.</p></section>')+
+ '</div>';
+}
+async function fbLoad(force=false){
+ if(!['supervisor','supervisor_assistant'].includes(auth.user?.role)||feedback.loadingKey)return;
+ const key=feedback.scope+'|'+feedback.className+'|'+(feedback.studentNumber||'');
+ if(!force&&feedback.loadedKey===key)return;
+ feedback.loadingKey=key;feedback.error='';feedback.report=null;feedback.detail=null;
+ if(state.page==='dashboard'&&auth.section==='study_reports')render();
+ try{
+  const fields={scope:feedback.scope,class_name:feedback.className};
+  if(feedback.scope==='student'){
+   if(!feedback.studentNumber)throw Error('اختر الطالب المطلوب أولًا.');
+   fields.student_number=feedback.studentNumber;
+  }
+  const result=await studyRequest('intervention_reports',fields);
+  if(key!==feedback.scope+'|'+feedback.className+'|'+(feedback.studentNumber||''))return;
+  if(feedback.scope==='student')feedback.detail=result;
+  else feedback.report=result;
+  feedback.loadedKey=key;
+ }catch(e){feedback.error=e.message}
+ finally{feedback.loadingKey='';if(state.page==='dashboard'&&auth.section==='study_reports')render()}
+}
+async function fbLoadSelectedStudent(){
+ if(!['supervisor','supervisor_assistant'].includes(auth.user?.role)||!auth.selectedProfile||!auth.selectedStudent)return;
+ const student=(auth.students||[]).find(x=>x.student_id===auth.selectedStudent);
+ if(!student)return;
+ const signature=[auth.selectedStudent,auth.selectedProfile?.assessment?.updated_at||'',
+  (auth.selectedProfile?.notes||[]).map(x=>x.id||x.created_at).join(',')].join('|');
+ const container=document.getElementById('fbStudentSignals');
+ if(!container)return;
+ if(feedback.selectedKey===signature&&feedback.selectedPaths){
+  container.innerHTML=fbSelectedHTML(feedback.selectedPaths);fbBindSelectedPrint(container);return;
+ }
+ if(feedback.selectedLoading===signature)return;
+ feedback.selectedLoading=signature;container.innerHTML='<p>جارٍ فحص النسب ورصد الملاحظات العلمية…</p>';
+ try{
+  const result=await studyRequest('intervention_reports',{
+    scope:'student',class_name:student.class_name,student_number:student.serial_no});
+  if(auth.selectedStudent!==student.student_id)return;
+  feedback.selectedPaths=result.paths||[];feedback.selectedKey=signature;feedback.selectedError='';
+  const node=document.getElementById('fbStudentSignals');
+  if(node){node.innerHTML=fbSelectedHTML(result.paths||[]);fbBindSelectedPrint(node)}
+ }catch(e){
+  feedback.selectedError=e.message;
+  const node=document.getElementById('fbStudentSignals');if(node)node.textContent=e.message;
+ }finally{feedback.selectedLoading=''}
+}
+function fbSelectedHTML(paths){
+ if(!paths?.length)return '<p>لا توجد إشارات علاجية أو إثرائية نشطة لهذا الطالب وفق درجاته المرصودة أو ملاحظات ضعف التعلم.</p>'+
+ '<p>عندما تكون الدرجة أقل من ٣٠٪ يظهر العلاج، وعندما تتجاوز ٦٠٪ يظهر الإثراء. أي درجة غير مرصودة لا تؤدي إلى تكليف تلقائي.</p>';
+ return paths.map(p=>'<article class="fb-selected-track"><h4>'+
+  (p.track==='remedial'?'🌱 نموذج الأسئلة العلاجية':'🌟 نموذج الأسئلة الإثرائية')+
+  (p.archived?' — تدريب محفوظ سابقًا':'')+'</h4>'+
+  '<p><b>السبب:</b> '+fbText(fbGroupText(p))+'</p>'+
+  '<p>الأسئلة '+fbNum(p.total_tasks)+'، المنجز '+fbNum(p.completed)+
+  '، الصحيح قبل التغذية '+fbNum(p.first_correct)+'، الصحيح الحالي '+fbNum(p.correct)+
+  '، التحسن '+fbPct(p.improvement_percent)+'.</p>'+
+  '<details><summary>معاينة النموذج المخصص والأسئلة ونتائج الإجابات</summary>'+
+  '<div class="fb-task-preview">'+p.tasks.map(t=>'<p><b>الوحدة '+fbNum(t.unit)+':</b> '+fbText(t.question)+
+   ' — '+(t.completed?(t.correct?'أجاب إجابة صحيحة':'يحتاج إلى مراجعة'):'لم يجب بعد')+'</p>').join('')+'</div></details>'+
+ '</article>').join('')+
+ '<button class="hub-secondary" id="fbPrintSelected">🖨️ طباعة تقرير الطالب وتغذيته الراجعة</button>';
+}
+function fbBindSelectedPrint(container){
+ container.querySelector('#fbPrintSelected')?.addEventListener('click',()=>fbPrintHTML(
+  fbPrintDetail(feedback.selectedPaths||[]),'portrait'));
+}
+const fbOldStudentAdmin=studentAdmin;
+studentAdmin=function(){
+ const base=fbOldStudentAdmin();
+ if(!auth.selectedStudent||!auth.selectedProfile)return base;
+ return base+'<section class="panel fb-selected-panel"><h3>🎯 المتابعة العلاجية والإثرائية الفورية</h3>'+
+ '<p>تظهر الأسئلة الخاصة بالطالب بمجرد حفظ درجة السؤال أو الاختبار أو الشفوي التي تستوفي حدود التمايز، أو تدوين ملاحظة علمية عن الضعف. لا تؤثر هذه الأسئلة على الدرجة الأصلية.</p>'+
+ '<div id="fbStudentSignals">جارٍ تحميل خطة الطالب…</div></section>';
+};
+const fbPreviousStaffPanel=staffPanel;
+staffPanel=function(){
+ if(auth.section==='study_reports'){
+  if(!['supervisor','supervisor_assistant'].includes(auth.user?.role))
+   return '<div class="notice">نتائج التغذية الراجعة خاصة بالمشرف والمساعد.</div>';
+  return fbReportPage();
+ }
+ return fbPreviousStaffPanel();
+};
+const fbOldHubStaffNav=hubStaffNav;
+hubStaffNav=function(){
+ const prior=fbOldHubStaffNav();
+ if(prior.includes('data-tab="study_reports"'))return prior;
+ return prior.replace('</div>','<button type="button" data-tab="study_reports"'+
+ (auth.section==='study_reports'?' class="selected"':'')+'>📊 التغذية الراجعة</button></div>');
+};
+const fbOldHubDashboard=hubStaffDashboard;
+hubStaffDashboard=function(){
+ const html=fbOldHubDashboard();
+ return html.replace('<details class="hub-staff-old">',
+  '<section class="hub-staff-group"><div class="hub-heading"><h2>التمايز وقياس أثر التدخل</h2></div>'+
+  '<div class="hub-gate-grid">'+hubGate('التغذية الراجعة','list-checks',
+   'رصد أثر العلاج والإثراء ونتائج الطالب والشعبة والكشف العام','data-tab="study_reports"','green')+
+  hubGate('بوابة الدعم','lightbulb','نماذج من الوحدات الثلاث الأولى','data-route="support"','blue')+
+  hubGate('بوابة المجيدين','trophy','نماذج متقدمة من الوحدات الأربع','data-route="stars"','gold')+
+  '</div></section><details class="hub-staff-old">');
+};
+const fbOldAttach=attachPortal;
+attachPortal=function(){
+ fbOldAttach();
+ if(state.page==='dashboard'&&auth.section==='students'&&auth.selectedStudent&&auth.selectedProfile)
+  fbLoadSelectedStudent();
+ document.getElementById('fbScope')?.addEventListener('change',ev=>{
+  feedback.scope=ev.target.value;
+  feedback.report=null;feedback.detail=null;feedback.loadedKey='';
+  feedback.orientation=feedback.scope==='student'?'portrait':'landscape';
+  render();
+ });
+ document.getElementById('fbClass')?.addEventListener('change',ev=>{
+  feedback.className=ev.target.value;feedback.studentNumber='';feedback.loadedKey='';
+  feedback.report=null;feedback.detail=null;render();
+ });
+ document.getElementById('fbStudent')?.addEventListener('change',ev=>{
+  feedback.studentNumber=ev.target.value;feedback.loadedKey='';feedback.detail=null;render();
+ });
+ document.getElementById('fbTrack')?.addEventListener('change',ev=>{feedback.track=ev.target.value;render()});
+ document.getElementById('fbOrientation')?.addEventListener('change',ev=>{feedback.orientation=ev.target.value});
+ document.getElementById('fbLoad')?.addEventListener('click',()=>fbLoad(true));
+ document.getElementById('fbPrint')?.addEventListener('click',fbPrintLoaded);
+ document.getElementById('portalLogout')?.addEventListener('click',()=>{
+  feedback.report=null;feedback.detail=null;feedback.selectedPaths=null;
+  feedback.loadedKey='';feedback.selectedKey='';feedback.error='';
+ });
+};
