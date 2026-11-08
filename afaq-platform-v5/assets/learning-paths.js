@@ -99,12 +99,15 @@ function staffTable(rows,track){
  const isHonor=track==='enrichment',supervisor=auth.user.role==='supervisor';
  return coverage+'<div class="panel"><h2>'+(isHonor?'🌟 الطلاب المجيدون — التغذية الراجعة':'🌱 الطلاب ذوو الصعوبات — متابعة العلاج')+'</h2>'+
  '<p>تظهر الأسباب ومؤشرات التحسن بعد كل إجابة أو محاولة جديدة، وتظل النتائج خاصة بحساب الطالب والمشرف.</p>'+
+ (typeof fbColorLegend==='function'?fbColorLegend():'')+
  '<div class="study-table-scroll"><table class="study-table"><thead><tr>'+
  '<th>الطالب</th><th>الشعبة / م</th><th>سبب التكليف</th><th>الإنجاز</th><th>الصحيح الأول</th><th>الصحيح الحالي</th><th>التحسن</th><th>الأسئلة الفردية</th>'+
  (isHonor?'<th>النشر المعتمد</th>':'')+'</tr></thead><tbody>'+
  selected.map(s=>{
   const x=s.progress_by_track?.[track]||{},reason=(s.reasons||[]).filter(r=>r.track===track);
-  return '<tr><td>'+studyEsc(s.name)+'</td><td>'+studyEsc(s.class_name)+' / '+studyEsc(s.serial_no)+'</td>'+
+  const band=typeof fbStudentBand==='function'?fbStudentBand(s):{css:'fb-band-blue',label:'عادي',note:'متابعة عادية'};
+  return '<tr class="'+band.css+'" title="'+studyEsc(band.note)+'"><td>'+studyEsc(s.name)+
+   '<small class="study-band-marker">'+studyEsc(band.label)+' • '+studyEsc(band.note)+'</small></td><td>'+studyEsc(s.class_name)+' / '+studyEsc(s.serial_no)+'</td>'+
   '<td>'+studyEsc(reason.map(r=>r.label+(r.percentage!==null?' • '+r.percentage+'٪':'')).join('، ')||'ملاحظة أو تقييم')+'</td>'+
   '<td>'+studyEsc(x.completed||0)+' / '+studyEsc(x.total_tasks||(isHonor?16:12))+'</td>'+
   '<td>'+studyEsc(x.first_correct||0)+'</td><td>'+studyEsc(x.correct||0)+'</td>'+
