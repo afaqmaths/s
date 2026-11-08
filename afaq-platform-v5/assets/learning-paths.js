@@ -30,17 +30,40 @@ function galleryHtml(students){
 function taskHtml(t,student){
  const radio=t.options.map((v,i)=>'<label><input type="radio" name="answer" value="'+i+'"><span>'+studyEsc(v)+'</span></label>').join('');
  return '<article class="study-task"><span class="tag">الوحدة '+studyEsc(t.unit)+' • '+studyEsc(t.objective)+'</span><h3>'+studyEsc(t.question)+'</h3>'+
- (t.completed?'<p class="study-done '+(t.correct?'ok':'try')+'">'+(t.correct?'✓ إجابة صحيحة سابقًا':'راجع طريقة الحل ويمكنك المحاولة مجددًا')+(t.correct_answer?' — الإجابة: '+studyEsc(t.correct_answer):'')+'</p>':'')+
+ (t.completed?'<p class="study-done '+(t.correct?'ok':'try')+'">'+(t.correct?'✓ وصلت إلى الإجابة الصحيحة':'راجع طريقة الحل ويمكنك المحاولة مجددًا')+
+ ' • المحاولات: '+studyEsc(t.attempts||1)+' • أول إجابة: '+(t.first_correct?'صحيحة':'تحتاج إلى مراجعة')+
+ ' • آخر إجابة: '+(t.correct?'صحيحة':'تحتاج إلى مراجعة')+
+ (t.correct_answer?' — الإجابة: '+studyEsc(t.correct_answer):'')+'</p>':'')+
  (student?'<form class="study-answer" data-task="'+studyEsc(t.task_id)+'"><div class="study-options">'+radio+'</div><button class="soft" type="submit">تحقق من إجابتي</button></form>':'<p class="muted">واجب فردي مخصص لهذا الطالب.</p>')+'</article>';
 }
+
 function pathHtml(p,student){
- if(!p)return '<p class="muted">لا تتوفر خطة الطالب بعد.</p>';
- if(p.track==='ungraded')return '<div class="panel"><h3>لم تُرصد درجة المنصة بعد</h3><p>ستظهر خطة مخصصة بعد إدخال نتائج التقييم من المشرف. لا يُعد الطالب بحاجة للدعم تلقائيًا دون درجة مرصودة.</p></div>';
- if(p.track==='standard')return '<div class="panel"><h3>استمر في التعلم</h3><p>تقييمك الحالي '+studyEsc(p.score)+'٪. يمكنك الاستفادة من الألعاب والدروس المتاحة لجميع الطلاب.</p></div>';
- return '<div class="panel"><h2>'+(p.track==='remedial'?'🌱 خطة التأسيس':'🌟 خطة الإثراء')+'</h2><p>'+studyEsc(p.student?.name)+' — '+studyEsc(p.student?.class_name)+' — رقم '+studyEsc(p.student?.serial_no)+'</p>'+
- '<div class="study-metrics"><div><b>'+studyEsc(p.score)+'٪</b><small>تقييم المنصة</small></div><div><b>'+studyEsc(p.completed)+' / '+studyEsc(p.total_tasks)+'</b><small>أسئلة أُنجزت</small></div><div><b>'+studyEsc(p.correct)+'</b><small>إجابات صحيحة</small></div></div></div>'+
- '<div class="study-tasks">'+p.tasks.map(t=>taskHtml(t,student)).join('')+'</div>';
+ if(!p)return '<p class="muted">لا توجد بيانات متاحة حتى الآن.</p>';
+ const active=p.tracks||[],current=p.current_track||'standard';
+ if(!['remedial','enrichment'].includes(p.track)){
+  return '<div class="panel"><h3>📘 متابعة التعلم</h3><p>'+(p.score===null?'لم تُرصد درجة تحصيلية بعد.':
+   'متوسط الأداء في العناصر المرصودة: '+studyEsc(p.score)+'٪.')+
+   ' تظهر أسئلة الدعم عند انخفاض أي عنصر عن ٣٠٪، وأسئلة الإثراء عندما يتجاوز أي عنصر ٦٠٪.</p></div>';
+ }
+ const rem=p.track==='remedial',title=rem?'🌱 خطة الدعم العلاجي':'🌟 خطة الإثراء',
+  s=p.student||{},archived=p.archived===true;
+ const reasons=(p.reasons||[]).map(r=>'<li>'+studyEsc(r.label)+
+  (r.percentage!==null?' — '+studyEsc(r.percentage)+'٪':' — ملاحظة علمية تستلزم الدعم')+'</li>').join('');
+ return '<div class="panel study-path-detail" data-study-track="'+p.track+'"><h2>'+title+(archived?' — نتائج سابقة':'')+'</h2>'+
+ '<p><strong>'+studyEsc(s.name)+'</strong> — '+studyEsc(s.class_name)+' — الرقم المتسلسل: '+studyEsc(s.serial_no)+'</p>'+
+ '<p>تُخصص الأنشطة بحسب <b>نسبة كل عنصر تحصيلي مرصود</b>، وليس مجموع الـ١٠٠ فقط. العلاج لأقل من ٣٠٪، والإثراء لأكثر من ٦٠٪. ويمكن أن يظهر المساران للطالب إذا توافرت أسباب كل منهما.</p>'+
+ (archived?'<p class="notice">السبب التحصيلي السابق لم يعد نشطًا، لكن الإجابات والتقدم السابق محفوظان للمراجعة.</p>':'')+
+ (reasons?'<div class="study-reasons"><strong>سبب ظهور هذه الخطة:</strong><ul>'+reasons+'</ul></div>':'')+
+ '<div class="study-metrics study-metrics-extended">'+
+ '<div><b>'+studyEsc(p.completed)+' / '+studyEsc(p.total_tasks)+'</b><small>الأسئلة المجاب عنها</small></div>'+
+ '<div><b>'+studyEsc(p.first_correct)+' / '+studyEsc(p.total_tasks)+'</b><small>الصحيح قبل التغذية الراجعة</small></div>'+
+ '<div><b>'+studyEsc(p.correct)+' / '+studyEsc(p.total_tasks)+'</b><small>الصحيح بعد آخر محاولة</small></div>'+
+ '<div><b>'+studyEsc(p.improvement_percent>0?'+':'')+studyEsc(p.improvement_percent)+'٪</b><small>مؤشر التحسن</small></div>'+
+ '<div><b>'+studyEsc(p.attempts||0)+'</b><small>مجموع المحاولات</small></div>'+
+ '</div><div class="study-print-actions"><button type="button" class="soft" data-study-print="'+p.track+'">🖨️ طباعة نتيجتي التعليمية</button></div></div>'+
+ '<div class="study-tasks">'+(p.tasks||[]).map(t=>taskHtml(t,student&&!archived)).join('')+'</div>';
 }
+
 function studentForms(target){
  target.querySelectorAll('.study-answer').forEach(form=>form.addEventListener('submit',async ev=>{
   ev.preventDefault();const selected=form.querySelector('input[name="answer"]:checked');
@@ -55,19 +78,36 @@ function studentForms(target){
   }catch(err){alert(err.message)}finally{button.disabled=false}
  }));
 }
+
 function staffTable(rows,track){
- const selected=rows.filter(s=>s.track===track);
- if(!selected.length)return '<div class="panel"><p>لا توجد درجات مرصودة تضع طلابًا في هذا المسار الآن. لا تُعرض أسماء افتراضية.</p></div>';
+ const selected=(rows||[]).filter(s=>(s.tracks||[s.track]).includes(track));
+ if(!selected.length)return '<div class="panel"><p>لا يوجد طالب مكلّف بهذا المسار بعد؛ تظهر التكليفات تلقائيًا عند حفظ أي درجة تستدعي العلاج أو الإثراء.</p></div>';
  const isHonor=track==='enrichment',supervisor=auth.user.role==='supervisor';
- return '<div class="panel"><h2>'+(isHonor?'تقييمات الطلاب المجيدين':'الكشف الخاص بالدعم التعليمي')+'</h2><div class="study-table-scroll"><table class="study-table"><thead><tr><th>الطالب</th><th>الشعبة ورقم الطالب</th><th>النتيجة</th><th>الأسئلة المخصصة</th>'+(isHonor?'<th>التكريم</th>':'')+'</tr></thead><tbody>'+
- selected.map(s=>'<tr><td>'+studyEsc(s.name)+'</td><td>'+studyEsc(s.class_name)+' / '+studyEsc(s.serial_no)+'</td><td>'+studyEsc(s.score)+'٪</td>'+
- '<td><button type="button" class="soft study-view" data-class="'+studyEsc(s.class_name)+'" data-num="'+studyEsc(s.serial_no)+'">عرض الأسئلة الفردية</button></td>'+
- (isHonor?'<td>'+(s.showcase_approved?'معتمد':'غير منشور')+(supervisor?' <button type="button" class="outline study-approve" data-class="'+studyEsc(s.class_name)+'" data-num="'+studyEsc(s.serial_no)+'" data-active="'+(s.showcase_approved?'true':'false')+'">'+(s.showcase_approved?'إلغاء النشر':'اعتماد بعد الموافقة')+'</button>':'')+'</td>':'')+'</tr>').join('')+'</tbody></table></div><div id="studyDetail"></div></div>';
+ return '<div class="panel"><h2>'+(isHonor?'🌟 الطلاب المجيدون — التغذية الراجعة':'🌱 الطلاب ذوو الصعوبات — متابعة العلاج')+'</h2>'+
+ '<p>تظهر الأسباب ومؤشرات التحسن بعد كل إجابة أو محاولة جديدة، وتظل النتائج خاصة بحساب الطالب والمشرف.</p>'+
+ '<div class="study-table-scroll"><table class="study-table"><thead><tr>'+
+ '<th>الطالب</th><th>الشعبة / م</th><th>سبب التكليف</th><th>الإنجاز</th><th>الصحيح الأول</th><th>الصحيح الحالي</th><th>التحسن</th><th>الأسئلة الفردية</th>'+
+ (isHonor?'<th>النشر المعتمد</th>':'')+'</tr></thead><tbody>'+
+ selected.map(s=>{
+  const x=s.progress_by_track?.[track]||{},reason=(s.reasons||[]).filter(r=>r.track===track);
+  return '<tr><td>'+studyEsc(s.name)+'</td><td>'+studyEsc(s.class_name)+' / '+studyEsc(s.serial_no)+'</td>'+
+  '<td>'+studyEsc(reason.map(r=>r.label+(r.percentage!==null?' • '+r.percentage+'٪':'')).join('، ')||'ملاحظة أو تقييم')+'</td>'+
+  '<td>'+studyEsc(x.completed||0)+' / '+studyEsc(x.total_tasks||(isHonor?16:12))+'</td>'+
+  '<td>'+studyEsc(x.first_correct||0)+'</td><td>'+studyEsc(x.correct||0)+'</td>'+
+  '<td>'+studyEsc(x.improvement_percent>0?'+':'')+studyEsc(x.improvement_percent||0)+'٪</td>'+
+  '<td><button type="button" class="soft study-view" data-track="'+track+'" data-class="'+studyEsc(s.class_name)+
+   '" data-num="'+studyEsc(s.serial_no)+'">الأسئلة والنتائج</button></td>'+
+  (isHonor?'<td>'+(s.showcase_approved?'معتمد':'خاص غير منشور')+
+    (supervisor?' <button type="button" class="outline study-approve" data-class="'+studyEsc(s.class_name)+
+     '" data-num="'+studyEsc(s.serial_no)+'" data-active="'+(s.showcase_approved?'true':'false')+'">'+
+     (s.showcase_approved?'إلغاء النشر':'اعتماد بعد الموافقة')+'</button>':'')+'</td>':'')+'</tr>';
+ }).join('')+'</tbody></table></div><div id="studyDetail"></div></div>';
 }
+
 function attachStaff(target,track){
  target.querySelectorAll('.study-view').forEach(btn=>btn.addEventListener('click',async()=>{
   const slot=target.querySelector('#studyDetail');slot.textContent='جارٍ تحميل خطة الطالب…';
-  try{const r=await studyRequest('staff_student_path',{student_number:btn.dataset.num,class_name:btn.dataset.class});slot.innerHTML=pathHtml(r.path,false);slot.scrollIntoView({behavior:'smooth',block:'center'})}
+  try{const r=await studyRequest('staff_student_path',{student_number:btn.dataset.num,class_name:btn.dataset.class,track:btn.dataset.track});slot.innerHTML=pathHtml(r.path,false);studyBindPrinting(slot,r.path);slot.scrollIntoView({behavior:'smooth',block:'center'})}
   catch(err){slot.textContent=err.message}
  }));
  target.querySelectorAll('.study-approve').forEach(btn=>btn.addEventListener('click',async()=>{
@@ -88,8 +128,9 @@ async function loadStudyPage(page){
  if(!place||token!==studyRenderToken)return;
  if(!auth.user){place.innerHTML='<div class="panel"><h3>الدخول بالحساب المعتمد</h3><p>سجل دخولك إلى المنصة أولًا حتى تظهر لك خطة التعلم المرتبطة بتقييمك.</p><button class="primary" id="studyLogin">تسجيل الدخول</button></div>';place.querySelector('#studyLogin')?.addEventListener('click',()=>document.getElementById('authDialog')?.showModal());return}
  if(auth.user.role==='student'){
-  try{const r=await studyRequest('my_path');if(token!==studyRenderToken)return;
-   if(r.path.track===(page==='support'?'remedial':'enrichment')){place.innerHTML=pathHtml(r.path,true);studentForms(place)}
+  try{const expected=page==='support'?'remedial':'enrichment';
+   const r=await studyRequest('my_path',{track:expected});if(token!==studyRenderToken)return;
+   if(r.path.track===expected){place.innerHTML=pathHtml(r.path,true);studentForms(place);studyBindPrinting(place,r.path)}
    else place.innerHTML='<div class="panel"><p>تقييمك الحالي: '+(r.path.score==null?'لم يُرصد':studyEsc(r.path.score)+'٪')+'. هذا القسم يعرض الأنشطة بحسب حدود التقييم المعتمدة، ويمكنك زيارة بقية الدروس والألعاب.</p></div>';
   }catch(err){if(token===studyRenderToken)place.innerHTML='<div class="notice">'+studyEsc(err.message)+'</div>'}
  }else if(studyStaff()){
@@ -103,23 +144,37 @@ async function loadDashboardStudy(){
  if(studentSlot&&auth.user.role==='student'){
   try{const r=await studyRequest('my_path');if(!studentSlot.isConnected)return;
    const p=r.path;
+   const tracks=p.tracks||[],past=p.historic_tracks||[];
    studentSlot.innerHTML='<div class="panel"><h3>🎯 مساري التعليمي</h3><p>'+(
-    p.track==='remedial'?'لديك '+p.total_tasks+' سؤالًا لتقوية أساسيات الوحدات الأربع.':
-    p.track==='enrichment'?'لديك '+p.total_tasks+' سؤالًا إثرائيًا من الوحدات الأربع.':
-    p.track==='ungraded'?'ستظهر خطة مخصصة بعد رصد درجتك.':'استمر في الدروس والألعاب والتمارين العامة.')+'</p>'+
-    '<button type="button" class="primary" id="studyGo">فتح بوابة المسار</button></div>';
-   studentSlot.querySelector('#studyGo')?.addEventListener('click',()=>route(p.track==='enrichment'?'stars':'support'));
+    tracks.length?('تم تخصيص '+(tracks.includes('remedial')?'١٢ سؤالًا علاجيًا من الوحدات الثلاث الأولى':'')+
+     (tracks.length===2?'، بالإضافة إلى ':'')+
+     (tracks.includes('enrichment')?'١٦ سؤالًا إثرائيًا من الوحدات الأربع':'')+'؛ ويمكنك متابعة نتائج إجاباتك بعد التغذية الراجعة.'):
+    past.length?'يمكنك مراجعة نتائج تدريبك السابقة حتى بعد تحسن مستواك.':
+    p.score===null?'ستظهر خطة خاصة عندما تُرصد درجتك الأولى.':
+    'درجاتك المرصودة ضمن نطاق المتابعة المعتادة؛ استمر في الدروس والألعاب.')+'</p>'+
+    (tracks.includes('remedial')||past.includes('remedial')?'<button type="button" class="primary" data-study-go="support">🌱 أسئلة العلاج</button> ':'')+
+    (tracks.includes('enrichment')||past.includes('enrichment')?'<button type="button" class="soft" data-study-go="stars">🌟 أسئلة الإثراء</button>':'')+'</div>';
+   studentSlot.querySelectorAll('[data-study-go]').forEach(b=>b.addEventListener('click',()=>route(b.dataset.studyGo)));
   }catch(err){if(studentSlot.isConnected)studentSlot.textContent=err.message}
  }
  const staffSlot=document.getElementById('studyStaffDashboard');
  if(staffSlot&&studyStaff()){
   try{const r=await studyRequest('staff_overview');if(!staffSlot.isConnected)return;
-   const rows=r.students||[],low=rows.filter(x=>x.track==='remedial').length,high=rows.filter(x=>x.track==='enrichment').length;
+   const rows=r.students||[],low=rows.filter(x=>(x.tracks||[]).includes('remedial')).length,
+    high=rows.filter(x=>(x.tracks||[]).includes('enrichment')).length;
    staffSlot.innerHTML='<div class="panel"><h3>📊 مؤشرات الدعم والإثراء</h3><p>الطلاب المحتاجون للدعم: '+low+' • الطلاب المجيدون: '+high+' • من دون درجة: '+rows.filter(x=>x.score===null).length+'</p><button class="soft" data-route="support">بوابة الدعم</button> <button class="soft" data-route="stars">بوابة المجيدين</button></div>';
    staffSlot.querySelectorAll('[data-route]').forEach(b=>b.addEventListener('click',()=>route(b.dataset.route)));
   }catch(err){if(staffSlot.isConnected)staffSlot.textContent=err.message}
  }
 }
+
+function studyBindPrinting(container,path){
+ container.querySelectorAll('[data-study-print]').forEach(b=>b.addEventListener('click',()=>{
+  if(typeof afFeedbackPrintPath==='function')afFeedbackPrintPath(path,'portrait');
+  else window.print();
+ }));
+}
+
 const studyRenderOriginal=render;
 render=function(){studyRenderOriginal();if(state.page==='stars'||state.page==='support')loadStudyPage(state.page);if(state.page==='dashboard')loadDashboardStudy()};
 if(['stars','support'].includes(window.AFAQ_REQUESTED_HASH)){state.page=window.AFAQ_REQUESTED_HASH;}
