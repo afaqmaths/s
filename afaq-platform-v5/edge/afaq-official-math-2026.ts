@@ -67,10 +67,11 @@ function calculated(row:Record<string,any>|null){
   final_present,complete,total,level:total===null?null:scoreLevel(total),
   diagnostic_score:row?.diagnostic_score??null,diagnostic_max:Number(row?.diagnostic_max??10),
   remarks:row?.remarks||"",
+  a_plus_points:row?.a_plus_points??null,a_minus_points:row?.a_minus_points??null,
   status:row?.status||"not_started",revision:row?.revision||0,
   updated_at:row?.updated_at||null,approved_at:row?.approved_at||null,recorded_by:row?.recorded_by||null};
 }
-const dataColumns="student_id,academic_year,term,diagnostic_score,diagnostic_max,remarks,oral_1,oral_2,homework_1,homework_2,question_1,question_2,exam_1,exam_2,project,final_exam,status,revision,created_at,updated_at,approved_at,recorded_by";
+const dataColumns="student_id,academic_year,term,diagnostic_score,diagnostic_max,remarks,a_plus_points,a_minus_points,oral_1,oral_2,homework_1,homework_2,question_1,question_2,exam_1,exam_2,project,final_exam,status,revision,created_at,updated_at,approved_at,recorded_by";
 async function classReport(className:string,term:number){
  const r=await db.from("competition_students")
   .select("student_id,serial_no,class_name,full_name,display_name")
@@ -85,21 +86,15 @@ async function classReport(className:string,term:number){
   if(rows.error)throw rows.error;registers=rows.data||[];
  }
  const byId=new Map(registers.map(x=>[x.student_id,x]));
- let aEvents:any[]=[];
- if(ids.length){
-  const r=await db.from("afaq_student_assessments").select("student_id,a_plus_points,a_minus_points").in("student_id",ids);
-  if(r.error)throw r.error;
-  aEvents=r.data||[];
- }
- const aIndex=new Map(aEvents.map(x=>[x.student_id,x]));
  const students=roster.map(s=>{
-  const points=aIndex.get(s.student_id);
-  const plus=Number(points?.a_plus_points||0),minus=Number(points?.a_minus_points||0);
-  // مؤشر غير رسمي: سقف صافي النقاط 40 ثم يقسم على اثنين للحصول على مؤشر من 20.
-  const indicator20=Math.round(Math.min(40,Math.max(0,plus-minus))/2*100)/100;
+  const marks=calculated(byId.get(s.student_id)||null);
+  const plus=marks.a_plus_points,minus=marks.a_minus_points;
+  // Do not import previous assessments. Blank until newly entered for this term.
+  const indicator20=(plus===null&&minus===null)?null:
+   Math.round(Math.min(40,Math.max(0,Number(plus||0)-Number(minus||0)))/2*100)/100;
   return {student_id:s.student_id,serial_no:s.serial_no,class_name:s.class_name,
-   full_name:s.full_name||s.display_name,marks:calculated(byId.get(s.student_id)||null),
-   a_indicator20:indicator20,a_plus_points:plus,a_minus_points:minus};
+   full_name:s.full_name||s.display_name,marks,a_indicator20:indicator20,
+   a_plus_points:plus,a_minus_points:minus};
  });
  const timestamps=registers.map(x=>x.updated_at).filter(Boolean).sort();
  return {academic_year:YEAR,term,class_name:className,students,count:students.length,
@@ -172,6 +167,11 @@ Deno.serve(async req=>{
    patch.diagnostic_score=diag;
    patch.diagnostic_max=diagnostic_max;
    patch.remarks=remarks;
+   for(const key of ["a_plus_points","a_minus_points"]){
+    const points=parseScore(body[key],500);
+    if(points===undefined)return fail(origin,"invalid_mark:"+key,400);
+    patch[key]=points;
+   }
    for(const [key,max] of FIELDS){
     const value=parseScore(body[key],max);
     if(value===undefined)return fail(origin,"invalid_mark:"+key,400);
