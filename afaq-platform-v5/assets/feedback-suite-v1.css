@@ -64,3 +64,21 @@
 .fb-class-table th,.fb-class-table td{text-align:center;white-space:nowrap}
 .fb-class-table tbody tr:last-child{font-weight:950;background:#e5f3ec}
 @media print{.fb-class-comparison{background:none;border:0;padding:0}.fb-stats article em{font-size:9pt}}
+
+/* ملخص النسب في بوابتي الإثراء والعلاج */
+.study-track-coverage{margin:14px 0 21px;padding:18px;border:1px solid #c9e0e8;
+ border-radius:15px;background:linear-gradient(125deg,#f2f9ff,#f5fcf6);direction:rtl}
+.study-track-coverage h3{font-size:19px;color:#195977;margin:0 0 14px}
+.study-coverage-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.study-coverage-grid article{display:flex;flex-direction:column;gap:8px;align-items:center;
+ text-align:center;border:1px solid #d5e4e9;background:white;border-radius:12px;padding:14px 8px}
+.study-coverage-grid article:first-child{background:#e3f2f8;border-color:#a4d5de}
+.study-coverage-grid article span{font-weight:900;color:#4a6a7c;font-size:13px}
+.study-coverage-grid article strong{font-size:19px;color:#1d5272}
+.study-coverage-grid article b{font-size:24px;font-weight:950;color:#13816e}
+.study-track-coverage p{font:12px Tahoma,Arial,sans-serif;color:#59798b;line-height:1.8;margin:12px 0 0}
+.study-dashboard-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:820px){.study-coverage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:450px){.study-track-coverage{padding:10px}.study-coverage-grid article{padding:10px 3px}
+.study-coverage-grid article strong{font-size:15px}.study-coverage-grid article b{font-size:19px}}
+@media print{.study-track-coverage{break-inside:avoid;background:#fff}.study-coverage-grid{grid-template-columns:repeat(4,1fr)}}
