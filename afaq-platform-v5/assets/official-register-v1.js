@@ -50,17 +50,23 @@ const ofKey=()=>ofState.className+'|'+ofState.term;
 const ofRowKey=n=>ofKey()+'|'+n;
 function ofCourse(values){
  const subjects=OF_FIELDS.slice(0,9);
- let sum=0,seen=0;
- for(const [key] of subjects){
+ let sum=0,seen=0,valid=true;
+ for(const [key,,max] of subjects){
   const v=values[key];
-  if(v!==null&&v!==undefined&&v!==''){sum+=Number(v);seen++}
+  if(v===null||v===undefined||v==='')continue;
+  const n=Number(v);
+  if(!Number.isInteger(n)||n<0||n>max){valid=false;continue;}
+  sum+=n;seen++;
  }
- const total=seen===9&&values.final_exam!==null&&values.final_exam!==undefined&&values.final_exam!==''?
-  sum+Number(values.final_exam):null;
- return {sum,seen,complete:seen===9,total,level:total===null?null:ofLevel(total)};
+ const final=values.final_exam;
+ const finalValid=final!==null&&final!==undefined&&final!==''&&
+  Number.isInteger(Number(final))&&Number(final)>=0&&Number(final)<=40;
+ const complete=valid&&seen===9;
+ const total=complete&&finalValid?sum+Number(final):null;
+ return {sum,seen,complete,total,level:total===null?null:ofLevel(total)};
 }
 function ofNameCell(s){
- return '<div class="of-person"><strong>'+ofSafe(s.full_name||'—')+'</strong><small>م '+ofNumber(s.serial_no)+'</small></div>';
+ return '<div class="of-person"><strong title="'+ofSafe(s.full_name||'—')+'">'+ofSafe(s.full_name||'—')+'</strong></div>';
 }
 function ofAssessmentInput(field,max,row,serial){
  const current=row[field]??'';
@@ -97,7 +103,7 @@ function ofRow(s){
  (result.seen===0?'—':result.seen===9?ofNumber(result.sum):ofNumber(result.sum)+'*')+'</td>'+
  mark('final_exam',40)+
  '<td class="of-total" data-of-total="'+s.serial_no+'">'+(result.total===null?'—':ofNumber(result.total))+'</td>'+
- '<td data-of-level="'+s.serial_no+'" class="of-level">'+(result.level||'—')+'</td>'+
+ '<td data-of-level="'+s.serial_no+'" data-of-band="'+(result.level?result.level[0]:'')+'" class="of-level">'+(result.level||'—')+'</td>'+
  '<td class="of-a-indicator" title="مؤشر A موجب وسالب: صافي الرصيد الحالي المحدد بسقف ٤٠ ثم القسمة على اثنين. لا يدخل في المجموع.">'+
  '<b data-of-indicator="'+s.serial_no+'">'+(indicator===null?'—':ofNumber(indicator))+' / ٢٠</b>'+
  '<div class="of-a-inputs">'+aInput('a_plus_points','A+')+aInput('a_minus_points','A−')+'</div></td>'+
@@ -107,7 +113,9 @@ function ofRow(s){
 }
 function ofTable(report){
  const students=report?.students||[];
+ const cols=['name','serial','diagnostic',...Array(9).fill('mark'),'subtotal','final','total','level','indicator','remarks','actions'];
  return '<div class="of-table-scroll"><table class="of-table" dir="rtl">'+
+ '<colgroup>'+cols.map(c=>'<col class="of-col-'+c+'">').join('')+'</colgroup>'+
  '<thead><tr class="of-group-row">'+
  '<th rowspan="2">اسم الطالب</th><th rowspan="2">م</th><th rowspan="2" class="of-diagnostic-head">الاختبار التشخيصي<br><small>مؤشر تحديد المستوى</small></th>'+
  '<th colspan="2">الأعمال الشفوية</th><th colspan="2">الواجبات المنزلية</th>'+
@@ -150,7 +158,8 @@ function ofPage(){
  '<button type="button" data-of-print="both" class="of-soft">طباعة الفصلين للشعبة</button></div>'+
  '<div class="of-info"><b>تنبيه:</b> التشخيص مستقل عن المجموع، ومؤشر A+ وA− بعد المجموع من ١٠٠، ولا يحتسب ضمن الدرجة.<br>'+
  'المؤشر = صافي النقاط التراكمية الموجبة والسالبة (بحد أقصى ٤٠) ÷ ٢؛ يستخدمه المعلم للاستئناس عند رصد شفوي ٥ + ٥.<br>'+
- 'تظهر أنشطة العلاج عند ≤٥٠٪ من أي بند، والإثراء عند ≥٧٠٪. (*) يعني مجموعًا جزئيًا غير مكتمل.</div></section>'+
+ 'يظهر التقدير (أ، ب، ج، د، هـ) تلقائيًا فور اكتمال الدرجات التسع للأعمال الفصلية والاختبار النهائي من ٤٠، حتى قبل الحفظ. ولا تُحفظ المدخلات إلا بالضغط على حفظ.<br>'+
+  'تظهر أنشطة العلاج عند ≤٥٠٪ من أي بند، والإثراء عند ≥٧٠٪. (*) يعني مجموعًا جزئيًا غير مكتمل.</div></section>'+
  (ofState.error?'<p class="of-error">'+ofSafe(ofState.error)+'</p>':'')+
  (ofState.message?'<p class="of-message">'+ofSafe(ofState.message)+'</p>':'')+
  (ofState.loading?'<p class="of-loading">جارٍ جلب أسماء الطلبة ودرجاتهم المسجلة…</p>':'')+
@@ -197,7 +206,7 @@ function ofUpdateTotals(row){
  const level=row.querySelector('[data-of-level]');
  if(subtotal)subtotal.textContent=totals.seen===0?'—':ofNumber(totals.sum)+(totals.seen===9?'':'*');
  if(total)total.textContent=totals.total===null?'—':ofNumber(totals.total);
- if(level)level.textContent=totals.level||'—';
+ if(level){level.textContent=totals.level||'—';level.dataset.ofBand=totals.level?totals.level[0]:'';}
  const indicator=row.querySelector('[data-of-indicator]');
  if(indicator){
   const plus=values.a_plus_points,minus=values.a_minus_points;
@@ -303,7 +312,7 @@ function ofPrintableDocument(reports,paper){
  '.of-print-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:'+(paper==='a3-landscape'?'8':'6')+'pt}'+
  '.of-print-table th,.of-print-table td{border:1px solid #91aabb;padding:1.7mm .7mm;text-align:center;overflow-wrap:anywhere}'+
  '.of-print-table th{background:#e4f0f6}.of-print-table tr{break-inside:avoid}'+
- '.of-print-table .of-print-name{width:14%;font-weight:bold;text-align:right}'+
+ '.of-print-table .of-print-name{width:21%;font-weight:bold;text-align:right;white-space:nowrap}'+
  '.of-print-cards{display:grid;grid-template-columns:1fr;gap:4mm}.of-print-card{border:1px solid #aaa;break-inside:avoid;padding:3mm}'+
  '.of-print-card h3{margin:0;font-size:12pt}.of-print-card p{margin:2mm 0}.of-print-card-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1mm}'+
  '.of-print-card-grid span{border:1px solid #ccc;padding:2mm;font-size:8pt}'+
