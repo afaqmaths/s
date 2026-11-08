@@ -269,8 +269,8 @@ const fbOldPrintCenter=hubPrintCenter;
 hubPrintCenter=function(){
  const previous=fbOldPrintCenter();
  if(!['supervisor','supervisor_assistant'].includes(auth.user?.role))return previous;
- return previous.replace('</div></section></div>',
- '<div class="fb-toolbar"><button type="button" class="hub-secondary" data-tab="study_reports">🌱 كشوف العلاج والإثراء وتغذيتها الراجعة</button></div></div></section></div>');
+ return previous.replace('<div id="hubPrintPreviewArea"></div></section></div>',
+ '<div id="hubPrintPreviewArea"></div><div class="fb-toolbar"><button type="button" class="hub-secondary" data-tab="study_reports">🌱 كشوف العلاج والإثراء وتغذيتها الراجعة</button></div></section></div>');
 };
 const fbOldHubLoadForTab=hubLoadForTab;
 hubLoadForTab=function(id){
