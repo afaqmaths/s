@@ -52,3 +52,15 @@
 @media(max-width:1000px){.fb-stats{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:650px){.fb-page{padding:9px}.fb-hero,.fb-panel{padding:15px}.fb-stats{grid-template-columns:repeat(2,1fr)}.fb-report-table{font-size:12px}}
 @media print{.fb-hero,.fb-controls,.fb-toolbar,.fb-note,.fb-print-actions,.fb-selected-track button{display:none!important}.fb-table-wrap{overflow:visible;border:0}.fb-report-table{font-size:9px;min-width:0;table-layout:fixed}.fb-report-table th,.fb-report-table td{padding:3px}.fb-panel{break-inside:auto;box-shadow:none;border:0}}
+
+/* إحصائيات العلاج والإثراء بالعدد والنسبة داخل الكشف ولوحة المشرف */
+.fb-stats article em{display:block;font-size:15px;line-height:1.65;font-weight:950;font-style:normal;color:#176c82}
+.fb-stats article:first-child em{font-size:11px;font-weight:750;color:#5e7c90}
+.fb-stats article:nth-child(2){background:#e9f6ff;border-color:#a9d5eb}
+.fb-stats article:nth-child(3){background:#eef9ed;border-color:#b4dfb9}
+.fb-stat-footnote{font:12px Tahoma,Arial,sans-serif;color:#516e82;line-height:1.9;margin:4px 0 14px}
+.fb-class-comparison{margin:15px 0 22px;padding:13px 10px;background:#f7fbff;border:1px solid #d6e5ef;border-radius:12px}
+.fb-class-comparison h3{font-size:17px;color:#205d79;margin:3px 0 12px}
+.fb-class-table th,.fb-class-table td{text-align:center;white-space:nowrap}
+.fb-class-table tbody tr:last-child{font-weight:950;background:#e5f3ec}
+@media print{.fb-class-comparison{background:none;border:0;padding:0}.fb-stats article em{font-size:9pt}}
