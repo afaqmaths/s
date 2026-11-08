@@ -11,7 +11,7 @@ const OF_CLASSES=['السادس / ٤','السادس / ٥','السادس / ٦'];
 const ofState={
  term:1,className:'السادس / ٤',report:null,reportKey:'',
  loading:false,attemptedKey:'',error:'',message:'',
- drafts:{},busy:{},paper:'a3-landscape',totalUpdating:false
+ drafts:{},busy:{},savingAll:false,paper:'a3-landscape',totalUpdating:false
 };
 const ofRead=()=>['supervisor','supervisor_assistant','director','deputy'].includes(auth.user?.role);
 const ofEdit=()=>['supervisor','supervisor_assistant'].includes(auth.user?.role);
@@ -91,8 +91,8 @@ function ofRow(s){
  const status=locked?'معتمد':marks.status==='draft'?'مسودة':'لم يُرصد';
  const controls=!ofEdit()?'للاطلاع':locked?
  (ofAdmin()?'<button type="button" data-of-reopen="'+s.serial_no+'" class="of-soft">إعادة فتح</button>':'معتمد'):
- '<button type="button" data-of-save="'+s.serial_no+'" class="of-save">حفظ</button>'+
- (ofAdmin()&&result.total!==null?'<button type="button" data-of-approve="'+s.serial_no+'" class="of-soft">اعتماد</button>':'');
+ (ofAdmin()&&s.marks?.status==='draft'&&ofCourse(s.marks).total!==null?
+  '<button type="button" data-of-approve="'+s.serial_no+'" class="of-soft">اعتماد</button>':'');
  return '<tr data-of-serial="'+s.serial_no+'" class="'+(locked?'of-locked':'')+'">'+
  '<th class="of-serial">'+ofNumber(s.serial_no)+'</th>'+
  '<th class="of-name">'+ofNameCell(s)+'</th>'+
@@ -156,7 +156,7 @@ function ofPage(){
  '<button type="button" data-of-print="both" class="of-soft">طباعة الفصلين للشعبة</button></div>'+
  '<div class="of-info"><b>تنبيه:</b> التشخيص مستقل عن المجموع، ومؤشر A+ وA− بعد المجموع من ١٠٠، ولا يحتسب ضمن الدرجة.<br>'+
  'المؤشر = صافي النقاط التراكمية الموجبة والسالبة (بحد أقصى ٤٠) ÷ ٢؛ يستخدمه المعلم للاستئناس عند رصد شفوي ٥ + ٥.<br>'+
- 'يظهر التقدير (أ، ب، ج، د، هـ) تلقائيًا فور اكتمال الدرجات التسع للأعمال الفصلية والاختبار النهائي من ٤٠، حتى قبل الحفظ. ولا تُحفظ المدخلات إلا بالضغط على حفظ.<br>'+
+ 'يظهر التقدير (أ، ب، ج، د، هـ) تلقائيًا فور اكتمال الدرجات التسع للأعمال الفصلية والاختبار النهائي من ٤٠، حتى قبل الحفظ. وتُحفظ درجات جميع الطلاب التي تغيّرت بضغطة واحدة على زر «حفظ جميع التعديلات» أسفل الكشف.<br>'+
   'تظهر أنشطة العلاج عند ≤٥٠٪ من أي بند، والإثراء عند ≥٧٠٪. (*) يعني مجموعًا جزئيًا غير مكتمل.</div></section>'+
  (ofState.error?'<p class="of-error">'+ofSafe(ofState.error)+'</p>':'')+
  (ofState.message?'<p class="of-message">'+ofSafe(ofState.message)+'</p>':'')+
@@ -166,6 +166,12 @@ function ofPage(){
  '<p>آخر تحديث للبيانات: '+ofSafe(ofDate(r.updated_at))+
  ' • تاريخ استخراج الكشف: '+ofSafe(ofDate(r.generated_at))+'</p></div>'+
  ofStats(r)+ofTable(r)+
+ '<div class="of-save-bar" role="group" aria-label="الحفظ الجماعي لدرجات الشعبة">'+
+ '<button id="ofSaveAll" type="button" class="of-save-all" '+
+ (!ofEdit()||!ofChangedStudents().length?'disabled':'')+'>💾 حفظ جميع التعديلات للشعبة</button>'+
+ '<span id="ofPendingCount" role="status" aria-live="polite">تعديلات غير محفوظة لدى '+
+ ofNumber(ofChangedStudents().length)+' طالب</span>'+
+ '<small>زر واحد يحفظ كل درجة جرى إدخالها أو تعديلها في الشعبة دون الحاجة للحفظ أمام كل اسم.</small></div>'+
  '<div class="of-legend"><b>رموز المستويات:</b> A (أ) من ٩٠ إلى ١٠٠؛ B (ب) من ٨٠ إلى ٨٩؛ C (ج) من ٦٥ إلى ٧٩؛ D (د) من ٥٠ إلى ٦٤؛ E (هـ) من صفر إلى ٤٩.'+
  '<p>عند عدم اكتمال درجات الفصل والنهائي لا يُعرض مستوى نهائي؛ ويمكن طباعة المسودات في أي وقت.</p></div></section>':
  '<section class="of-panel"><p>اختر الشعبة والفصل لعرض كشف الطلاب المسجلين.</p></section>')+
@@ -212,6 +218,7 @@ function ofUpdateTotals(row){
   indicator.textContent=plus===''&&minus===''?'— / ٢٠':
    ofNumber(Math.min(40,Math.max(0,Number(plus||0)-Number(minus||0)))/2)+' / ٢٠';
  }
+ ofUpdateSaveIndicator();
 }
 async function ofSave(serial){
  if(!ofEdit()||ofState.busy[serial]||!ofState.report)return;
@@ -376,9 +383,10 @@ function ofBind(){
  document.querySelectorAll('[data-of-serial]').forEach(tr=>{
   tr.querySelectorAll('[data-of-field]').forEach(input=>input.addEventListener('input',()=>ofUpdateTotals(tr)));
  });
- document.querySelectorAll('[data-of-save]').forEach(b=>b.addEventListener('click',()=>ofSave(Number(b.dataset.ofSave))));
+ document.getElementById('ofSaveAll')?.addEventListener('click',ofSaveAll);
  document.querySelectorAll('[data-of-approve]').forEach(b=>b.addEventListener('click',()=>ofApproval(Number(b.dataset.ofApprove),false)));
  document.querySelectorAll('[data-of-reopen]').forEach(b=>b.addEventListener('click',()=>ofApproval(Number(b.dataset.ofReopen),true)));
+ ofUpdateSaveIndicator();
  document.getElementById('portalLogout')?.addEventListener('click',()=>{
   ofState.report=null;ofState.reportKey='';ofState.attemptedKey='';ofState.drafts={};ofState.error='';
  });
