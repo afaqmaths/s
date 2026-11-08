@@ -27,7 +27,7 @@ function ofError(err){
  const map={
  unauthorized:'انتهت جلسة تسجيل الدخول. أعد تسجيل الدخول.',
  forbidden:'الحساب غير مخوّل لهذا الإجراء.',
- grade_changed_reload:'تغيرت بيانات الطالب من جلسة أخرى. حدّث الكشف ثم أدخل تعديلك.',
+ grade_changed_reload:'تغيرت بيانات الطالب من جلسة أخرى. احتفظ بتعديلك وراجع الكشف قبل إعادة الحفظ.',
  approved_reopen_first:'الدرجات معتمدة. يلزم إعادة فتح السجل من المشرف الرئيسي قبل التعديل.',
  incomplete_official_grade:'لا يمكن اعتماد المجموع حتى تدخل درجات المكونات التسعة والنهائي.',
  invalid_diagnostic_score:'درجة التشخيص خارج مجالها.',
@@ -220,48 +220,6 @@ function ofUpdateTotals(row){
  }
  ofUpdateSaveIndicator();
 }
-async function ofSave(serial){
- if(!ofEdit()||ofState.busy[serial]||!ofState.report)return;
- const s=ofFindStudent(serial),tr=document.querySelector('[data-of-serial="'+serial+'"]');
- if(!s||!tr)return;
- const {values}=ofDraft(tr);
- const diagMax=10;
- if(values.diagnostic_score!==''&&(!Number.isFinite(Number(values.diagnostic_score))||Number(values.diagnostic_score)<0||Number(values.diagnostic_score)>10)){
-  window.alert('الاختبار التشخيصي: أدخل درجة من صفر إلى ١٠.');return;
- }
- const fields={diagnostic_max:diagMax,diagnostic_score:values.diagnostic_score||null,
-  remarks:values.remarks||''};
- for(const key of ['a_plus_points','a_minus_points']){
-  const v=values[key];
-  if(v!==''&&v!==null&&v!==undefined&&(!Number.isInteger(Number(v))||Number(v)<0||Number(v)>500)){
-   window.alert('نقاط A+ أو A− يجب أن تكون بين صفر و٥٠٠.');return;
-  }
-  fields[key]=v===''?null:v;
- }
- for(const [key,,max] of OF_FIELDS){
-  const v=values[key];
-  if(v!==''&&v!==null&&v!==undefined){
-   const n=Number(v);
-   if(!Number.isInteger(n)||n<0||n>max){window.alert('تأكد من درجة '+key+' (من ٠ إلى '+max+').');return}
-  }
-  fields[key]=v===''?null:v;
- }
- ofState.busy[serial]=true;const button=tr.querySelector('[data-of-save]');if(button)button.disabled=true;
- try{
-  const d=await ofCall('save_row',{class_name:ofState.className,term:ofState.term,
-   serial_no:serial,expected_revision:s.marks?.revision||0,...fields});
-  s.marks=d.marks;
-  delete ofState.drafts[ofRowKey(serial)];
-  ofState.message='حُفظت درجات الطالب رقم '+ofNumber(serial)+'، ويجري تفعيل مؤشرات العلاج والإثراء آليًا.';
-  ofState.report.updated_at=d.marks.updated_at;
-  ofState.reportKey=ofKey();
-  render();
- }catch(err){
-  ofState.error=ofError(err);if(button)button.disabled=false;
-  window.alert(ofState.error);
- }finally{delete ofState.busy[serial]}
-}
-
 const OF_SAVE_FIELDS=['diagnostic_score','a_plus_points','a_minus_points','remarks',...OF_FIELDS.map(([k])=>k)];
 function ofCompareValue(field,value){
  if(field==='remarks')return String(value??'').trim();
@@ -359,7 +317,10 @@ async function ofSaveAll(){
  }
 }
 async function ofApproval(serial,reopen){
- if(!ofAdmin())return;
+ if(!ofAdmin()||ofState.savingAll)return;
+ if(ofChangedStudents().length){
+  window.alert('احفظ جميع التعديلات أولًا قبل الاعتماد أو إعادة الفتح.');return;
+ }
  const s=ofFindStudent(serial);if(!s)return;
  const action=reopen?'reopen_row':'approve_row';
  if(!window.confirm(reopen?'هل تريد إعادة فتح درجات هذا الطالب للتعديل؟':'اعتماد درجات هذا الطالب النهائية وإغلاق تعديلها؟'))return;
@@ -441,7 +402,10 @@ function ofPrintableDocument(reports,paper){
  '</body></html>';
 }
 async function ofPrint(scope){
- if(!ofRead()||ofState.loading)return;
+ if(!ofRead()||ofState.loading||ofState.savingAll)return;
+ if(ofChangedStudents().length){
+  window.alert('يوجد تعديلات لم تُحفظ. اضغط «حفظ جميع التعديلات» قبل الطباعة حتى تظهر الدرجات الجديدة.');return;
+ }
  const paper=ofState.paper;
  let popup=window.open('','_blank');
  if(!popup){window.alert('اسمح بفتح نافذة الطباعة الجديدة من المتصفح.');return}
@@ -468,14 +432,24 @@ async function ofPrint(scope){
 function ofBind(){
  document.querySelectorAll('[data-of-term]').forEach(b=>b.addEventListener('click',()=>{
   const value=Number(b.dataset.ofTerm);
-  if(value===ofState.term)return;
+  if(value===ofState.term||ofState.savingAll)return;
+  if(ofChangedStudents().length){window.alert('احفظ جميع التعديلات قبل تغيير الفصل الدراسي.');return}
   ofState.term=value;ofState.report=null;ofState.reportKey='';ofState.error='';render();ofLoad();
  }));
  document.getElementById('ofClassSelect')?.addEventListener('change',e=>{
+  if(ofState.savingAll||ofChangedStudents().length){
+   e.target.value=ofState.className;
+   if(!ofState.savingAll)window.alert('احفظ جميع التعديلات قبل تغيير الشعبة.');
+   return;
+  }
   ofState.className=e.target.value;ofState.report=null;ofState.reportKey='';ofState.error='';render();ofLoad();
  });
  document.getElementById('ofPrintSize')?.addEventListener('change',e=>{ofState.paper=e.target.value});
- document.getElementById('ofRefresh')?.addEventListener('click',()=>ofLoad(true));
+ document.getElementById('ofRefresh')?.addEventListener('click',()=>{
+  if(ofState.savingAll)return;
+  if(ofChangedStudents().length){window.alert('احفظ جميع التعديلات قبل تحديث الكشف.');return}
+  ofLoad(true);
+ });
  document.querySelectorAll('[data-of-print]').forEach(b=>b.addEventListener('click',()=>ofPrint(b.dataset.ofPrint)));
  document.querySelectorAll('[data-of-serial]').forEach(tr=>{
   tr.querySelectorAll('[data-of-field]').forEach(input=>input.addEventListener('input',()=>ofUpdateTotals(tr)));
