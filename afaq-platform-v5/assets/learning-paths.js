@@ -79,11 +79,25 @@ function studentForms(target){
  }));
 }
 
+function studyTrackCoverage(rows,track){
+ const label=track==='remedial'?'الخطة العلاجية (٥٠٪ فأقل)':'الخطة الإثرائية (٨٥٪ فأكثر)';
+ const classes=['السادس / ٤','السادس / ٥','السادس / ٦'];
+ const groups=[['جميع الشعب',rows||[]],...classes.map(cls=>[cls,(rows||[]).filter(s=>s.class_name===cls)])];
+ return '<section class="study-track-coverage" aria-label="إحصائيات '+label+'"><h3>📊 العدد والنسبة — '+label+'</h3>'+
+  '<div class="study-coverage-grid">'+groups.map(([name,list])=>{
+   const count=list.filter(s=>(s.tracks||[]).includes(track)).length;
+   const pct=list.length?Math.round(count/list.length*1000)/10:0;
+   const num=n=>new Intl.NumberFormat('ar-OM',{maximumFractionDigits:1}).format(n);
+   return '<article><span>'+studyEsc(name)+'</span><strong>'+num(count)+' من '+num(list.length)+'</strong>'+
+    '<b>'+num(pct)+'٪</b></article>';
+  }).join('')+'</div><p>تُحسب النسبة من إجمالي طلاب الشعبة. وقد يُستحق العلاج والإثراء في مهارتين مختلفتين.</p></section>';
+}
 function staffTable(rows,track){
  const selected=(rows||[]).filter(s=>(s.tracks||[s.track]).includes(track));
- if(!selected.length)return '<div class="panel"><p>لا يوجد طالب مكلّف بهذا المسار بعد؛ تظهر التكليفات تلقائيًا عند حفظ أي درجة تستدعي العلاج أو الإثراء.</p></div>';
+ const coverage=studyTrackCoverage(rows,track);
+ if(!selected.length)return coverage+'<div class="panel"><p>لا يوجد طالب مكلّف بهذا المسار بعد؛ تظهر التكليفات تلقائيًا عند حفظ أي درجة تستدعي العلاج أو الإثراء.</p></div>';
  const isHonor=track==='enrichment',supervisor=auth.user.role==='supervisor';
- return '<div class="panel"><h2>'+(isHonor?'🌟 الطلاب المجيدون — التغذية الراجعة':'🌱 الطلاب ذوو الصعوبات — متابعة العلاج')+'</h2>'+
+ return coverage+'<div class="panel"><h2>'+(isHonor?'🌟 الطلاب المجيدون — التغذية الراجعة':'🌱 الطلاب ذوو الصعوبات — متابعة العلاج')+'</h2>'+
  '<p>تظهر الأسباب ومؤشرات التحسن بعد كل إجابة أو محاولة جديدة، وتظل النتائج خاصة بحساب الطالب والمشرف.</p>'+
  '<div class="study-table-scroll"><table class="study-table"><thead><tr>'+
  '<th>الطالب</th><th>الشعبة / م</th><th>سبب التكليف</th><th>الإنجاز</th><th>الصحيح الأول</th><th>الصحيح الحالي</th><th>التحسن</th><th>الأسئلة الفردية</th>'+
@@ -160,10 +174,16 @@ async function loadDashboardStudy(){
  const staffSlot=document.getElementById('studyStaffDashboard');
  if(staffSlot&&studyStaff()){
   try{const r=await studyRequest('staff_overview');if(!staffSlot.isConnected)return;
-   const rows=r.students||[],low=rows.filter(x=>(x.tracks||[]).includes('remedial')).length,
-    high=rows.filter(x=>(x.tracks||[]).includes('enrichment')).length;
-   staffSlot.innerHTML='<div class="panel"><h3>📊 مؤشرات الدعم والإثراء</h3><p>الطلاب المحتاجون للدعم: '+low+' • الطلاب المجيدون: '+high+' • من دون درجة: '+rows.filter(x=>x.score===null).length+'</p><button class="soft" data-route="support">بوابة الدعم</button> <button class="soft" data-route="stars">بوابة المجيدين</button></div>';
-   staffSlot.querySelectorAll('[data-route]').forEach(b=>b.addEventListener('click',()=>route(b.dataset.route)));
+   const rows=r.students||[];
+    const statistics=typeof fbSummaryCards==='function'?fbSummaryCards(rows):
+     '<p>عدد الطلاب: '+rows.length+' • العلاج: '+rows.filter(s=>(s.tracks||[]).includes('remedial')).length+
+     ' • الإثراء: '+rows.filter(s=>(s.tracks||[]).includes('enrichment')).length+'</p>';
+    const comparison=typeof fbClassStats==='function'?fbClassStats(rows):'';
+    staffSlot.innerHTML='<div class="panel"><h3>📊 إحصائيات الخطة الإثرائية والعلاجية — العدد والنسبة</h3>'+
+     statistics+comparison+
+     '<div class="study-dashboard-actions"><button class="soft" data-route="support">بوابة الدعم العلاجي</button> '+
+     '<button class="soft" data-route="stars">بوابة الطلاب المجيدين</button></div></div>';
+    staffSlot.querySelectorAll('[data-route]').forEach(b=>b.addEventListener('click',()=>route(b.dataset.route)));
   }catch(err){if(staffSlot.isConnected)staffSlot.textContent=err.message}
  }
 }
