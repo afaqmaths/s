@@ -110,3 +110,17 @@
  .of-table .of-name,.of-table .of-serial,.of-table thead tr.of-group-row th:first-child{position:static;box-shadow:none}
  .of-table .of-person strong{font-size:8pt;white-space:normal;text-overflow:clip}
 }
+
+/* ترتيب المسلسل قبل الاسم والتوقيعات */
+.of-table .of-serial{position:sticky;right:0;z-index:6;background:#edf5fa;box-shadow:-1px 0 3px #1f506316}
+.of-table .of-name{position:sticky;right:44px;z-index:5;box-shadow:none}
+.of-table thead tr.of-group-row th:first-child{position:sticky;right:0;z-index:9;background:#dceef5}
+.of-table thead tr.of-group-row th:nth-child(2){position:sticky;right:44px;z-index:8;background:#dceef5}
+.of-table col.of-col-diagnostic{width:70px}
+.of-diag-cell{justify-content:center}.of-diag-cell .of-number-input{width:48px}
+.of-signatures-screen{overflow-x:auto;margin-top:17px}
+.of-signatures{width:100%;border-collapse:collapse;table-layout:fixed;min-width:590px;font-size:11px;color:#2a566c}
+.of-signatures th,.of-signatures td{border:1px solid #b8cbd6;padding:8px 4px;text-align:center}
+.of-signatures th{background:#eef6fa;font-weight:normal}.of-signatures b{font-size:11px;font-weight:900}
+.of-signatures td{height:35px}
+@media print{.of-table .of-serial,.of-table .of-name,.of-table thead tr.of-group-row th:first-child,.of-table thead tr.of-group-row th:nth-child(2){position:static;box-shadow:none}}
