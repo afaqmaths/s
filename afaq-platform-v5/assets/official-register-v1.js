@@ -74,9 +74,27 @@ function ofAssessmentInput(field,max,row,serial){
  '" data-of-field="'+field+'" type="number" min="0" max="'+max+'" step="1" inputmode="numeric" '+
  'value="'+(current===''?'':ofSafe(current))+'" '+(!ofEdit()||row.status==='approved'?'disabled':'')+' placeholder="—">';
 }
+
+function ofCategory(s){
+ const d=s?.differentiation||{};
+ const high=Math.max(0,Number(d.enrichment_count)||0),low=Math.max(0,Number(d.remedial_count)||0);
+ if(low)return {css:'of-band-pink',label:'علاجي',detail:'علاج: '+ofNumber(low)+' • إثراء: '+ofNumber(high)};
+ if(high>3)return {css:'of-band-green',label:'إثراء متكرر',detail:'إثراء: '+ofNumber(high)+' مؤشرات'};
+ if(high)return {css:'of-band-yellow',label:'إثرائي',detail:'إثراء: '+ofNumber(high)+' من ٣'};
+ return {css:'of-band-blue',label:'عادي',detail:'لا توجد مؤشرات علاجية أو إثرائية نشطة'};
+}
+function ofColorLegend(){
+ return '<div class="of-color-legend" aria-label="دليل ألوان تصنيف الطلاب">'+
+ '<b>مفتاح الألوان:</b>'+
+ '<span class="of-key of-key-green">أخضر فاتح: إثراء أكثر من ٣ مؤشرات</span>'+
+ '<span class="of-key of-key-yellow">أصفر: إثراء من ١ إلى ٣ مؤشرات</span>'+
+ '<span class="of-key of-key-pink">وردي: علاجي — له الأولوية عند اجتماع المسارين</span>'+
+ '<span class="of-key of-key-blue">أزرق فاتح: متابعة عادية</span>'+
+ '<small>المؤشر هنا تقييم تحصيلي مميز مستحق للإثراء (٨٥٪ فأكثر)، ولا يُحسب التسجيل المكرر مرتين. يتحدث لون الطالب بعد الحفظ.</small></div>';
+}
 function ofRow(s){
  const marks={...s.marks,...(ofState.drafts[ofRowKey(s.serial_no)]||{})};
- const result=ofCourse(marks),locked=marks.status==='approved';
+ const result=ofCourse(marks),locked=marks.status==='approved',category=ofCategory(s);
  const mark=(key,max)=>'<td>'+ofAssessmentInput(key,max,marks,s.serial_no)+'</td>';
  const base=OF_FIELDS.slice(0,9).map(([key,,max])=>mark(key,max));
  const diag='<td><div class="of-diag-cell">'+
@@ -93,9 +111,9 @@ function ofRow(s){
  (ofAdmin()?'<button type="button" data-of-reopen="'+s.serial_no+'" class="of-soft">إعادة فتح</button>':'معتمد'):
  (ofAdmin()&&s.marks?.status==='draft'&&ofCourse(s.marks).total!==null?
   '<button type="button" data-of-approve="'+s.serial_no+'" class="of-soft">اعتماد</button>':'');
- return '<tr data-of-serial="'+s.serial_no+'" class="'+(locked?'of-locked':'')+'">'+
+ return '<tr data-of-serial="'+s.serial_no+'" class="'+(locked?'of-locked ':'')+category.css+'" title="'+ofSafe(category.detail)+'">'+
  '<th class="of-serial">'+ofNumber(s.serial_no)+'</th>'+
- '<th class="of-name">'+ofNameCell(s)+'</th>'+
+ '<th class="of-name">'+ofNameCell(s)+'<span class="of-band-label">'+ofSafe(category.label)+' • '+ofSafe(category.detail)+'</span></th>'+
  diag+base.join('')+
  '<td class="of-subtotal" data-of-subtotal="'+s.serial_no+'">'+
  (result.seen===0?'—':result.seen===9?ofNumber(result.sum):ofNumber(result.sum)+'*')+'</td>'+
@@ -165,7 +183,7 @@ function ofPage(){
  ' — الفصل الدراسي '+ofTerm(ofState.term)+'</h2>'+
  '<p>آخر تحديث للبيانات: '+ofSafe(ofDate(r.updated_at))+
  ' • تاريخ استخراج الكشف: '+ofSafe(ofDate(r.generated_at))+'</p></div>'+
- ofStats(r)+ofTable(r)+
+ ofStats(r)+ofTable(r)+ofColorLegend()+
  '<div class="of-save-bar" role="group" aria-label="الحفظ الجماعي لدرجات الشعبة">'+
  '<button id="ofSaveAll" type="button" class="of-save-all" '+
  (!ofEdit()||!ofChangedStudents().length?'disabled':'')+'>💾 حفظ جميع التعديلات للشعبة</button>'+
@@ -298,6 +316,7 @@ async function ofSaveAll(){
    const student=ofFindStudent(item.serial_no);
    if(!student)continue;
    student.marks=item.marks;
+   if(item.differentiation)student.differentiation=item.differentiation;
    delete ofState.drafts[ofRowKey(item.serial_no)];
    if(item.marks?.updated_at)ofState.report.updated_at=item.marks.updated_at;
   }
@@ -348,7 +367,7 @@ function ofPrintedTable(report){
  rows.map(row=>{
   const v=row.marks||{},c=ofCourse(v),diag=v.diagnostic_score==null?'—':ofNumber(v.diagnostic_score)+'/١٠';
   const fields=OF_FIELDS.slice(0,9).map(([k])=>'<td>'+ofPrintMark(v[k])+'</td>').join('');
-  return '<tr><td>'+ofNumber(row.serial_no)+'</td><td class="of-print-name">'+ofSafe(row.full_name)+'</td>'+
+  return '<tr class="'+ofCategory(row).css+'"><td>'+ofNumber(row.serial_no)+'</td><td class="of-print-name">'+ofSafe(row.full_name)+'</td>'+
    '<td>'+diag+'</td>'+fields+'<td>'+(c.seen===0?'—':ofNumber(c.sum)+(c.complete?'':'*'))+'</td>'+
    '<td>'+ofPrintMark(v.final_exam)+'</td><td>'+(c.total===null?'—':ofNumber(c.total))+'</td>'+
    '<td>'+(c.level||'—')+'</td><td>'+(row.a_indicator20===null?'—':ofNumber(row.a_indicator20))+'</td>'+
@@ -359,7 +378,7 @@ const ofPrintMark=v=>v===null||v===undefined?'—':ofNumber(v);
 function ofPrintedCards(report){
  return '<div class="of-print-cards">'+(report.students||[]).map(row=>{
   const m=row.marks||{},c=ofCourse(m);
-  return '<article class="of-print-card"><h3>'+ofNumber(row.serial_no)+' — '+ofSafe(row.full_name)+'</h3>'+
+  return '<article class="of-print-card '+ofCategory(row).css+'"><h3>'+ofNumber(row.serial_no)+' — '+ofSafe(row.full_name)+'</h3>'+
   '<p>الاختبار التشخيصي: '+(m.diagnostic_score==null?'لم يرصد':ofNumber(m.diagnostic_score)+' من ١٠')+'</p>'+
   '<div class="of-print-card-grid">'+OF_FIELDS.map(([k,label,max])=>
   '<span>'+ofSafe(label)+': '+ofPrintMark(m[k])+' / '+max+'</span>').join('')+'</div>'+
@@ -381,6 +400,11 @@ function ofPrintableDocument(reports,paper){
  '.of-print-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:'+(paper==='a3-landscape'?'8':'6')+'pt}'+
  '.of-print-table th,.of-print-table td{border:1px solid #91aabb;padding:1.7mm .7mm;text-align:center;overflow-wrap:anywhere}'+
  '.of-print-table th{background:#e4f0f6}.of-print-table tr{break-inside:avoid}'+
+ '.of-print-table tbody tr.of-band-green td,.of-print-card.of-band-green{background:#def5e2}'+
+ '.of-print-table tbody tr.of-band-yellow td,.of-print-card.of-band-yellow{background:#fff4c6}'+
+ '.of-print-table tbody tr.of-band-pink td,.of-print-card.of-band-pink{background:#ffe0e9}'+
+ '.of-print-table tbody tr.of-band-blue td,.of-print-card.of-band-blue{background:#e5f2ff}'+
+ '.of-print-table tbody tr td,.of-print-card{print-color-adjust:exact;-webkit-print-color-adjust:exact}'+
  '.of-print-table .of-print-name{width:21%;font-weight:bold;text-align:right;white-space:nowrap}'+
  '.of-print-cards{display:grid;grid-template-columns:1fr;gap:4mm}.of-print-card{border:1px solid #aaa;break-inside:avoid;padding:3mm}'+
  '.of-print-card h3{margin:0;font-size:12pt}.of-print-card p{margin:2mm 0}.of-print-card-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1mm}'+
@@ -396,7 +420,7 @@ function ofPrintableDocument(reports,paper){
  '<span>تاريخ الطباعة: '+ofSafe(ofDate(new Date().toISOString()))+'</span></div>'+
  (portrait?ofPrintedCards(r):ofPrintedTable(r))+
  '<p class="of-legend">(*) مجموع جزئي لم تكتمل عناصره. الاختبار التشخيصي ومؤشر A± من ٢٠ خارج حساب الإجمالي. '+
- 'المستويات: أ ٩٠–١٠٠؛ ب ٨٠–٨٩؛ ج ٦٥–٧٩؛ د ٥٠–٦٤؛ هـ ٠–٤٩.</p>'+ofSignatureTable()+
+ 'المستويات: أ ٩٠–١٠٠؛ ب ٨٠–٨٩؛ ج ٦٥–٧٩؛ د ٥٠–٦٤؛ هـ ٠–٤٩. الألوان: أخضر إثراء أكثر من ٣؛ أصفر إثراء ١–٣؛ وردي علاج؛ أزرق عادي.</p>'+ofSignatureTable()+
  '<footer><span>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>'+
  '<span>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</span></footer></section>').join('')+
  '</body></html>';
