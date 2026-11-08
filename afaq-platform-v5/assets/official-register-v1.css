@@ -140,3 +140,26 @@
 .of-table tr.of-dirty [data-of-status]{color:#a25b14;font-weight:900}
 @media(max-width:680px){.of-save-bar{padding:13px 10px}.of-save-all{width:100%;font-size:15px}.of-save-bar #ofPendingCount{width:100%;text-align:center}}
 @media print{.of-save-bar{display:none!important}}
+
+/* تصنيف الطلاب حسب عدد مرات الإثراء الفعلية — دون احتساب تكرار مؤشرات الرصد */
+.of-color-legend{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;margin:12px 0 15px;
+ background:#fbfdff;border:1px solid #d2e1e8;border-radius:12px;font:12px Tahoma,Arial,sans-serif}
+.of-color-legend>b{font-size:13px;color:#25546d}
+.of-color-legend small{flex:1 1 100%;font-size:11px;color:#5d7787;line-height:1.8}
+.of-key{border:1px solid #bed3df;border-radius:9px;padding:7px 11px;font-weight:900;color:#20475c}
+.of-key-green{background:#dcf4e2;border-color:#a5d9af}
+.of-key-yellow{background:#fff3c2;border-color:#e6d28a}
+.of-key-pink{background:#ffe0e9;border-color:#e9b8c6}
+.of-key-blue{background:#e3f2ff;border-color:#b9d6ee}
+.of-table tbody tr.of-band-green>th,.of-table tbody tr.of-band-green>td{background:#dcf4e2!important}
+.of-table tbody tr.of-band-yellow>th,.of-table tbody tr.of-band-yellow>td{background:#fff3c2!important}
+.of-table tbody tr.of-band-pink>th,.of-table tbody tr.of-band-pink>td{background:#ffe0e9!important}
+.of-table tbody tr.of-band-blue>th,.of-table tbody tr.of-band-blue>td{background:#e3f2ff!important}
+.of-table tbody tr.of-band-green:hover>th,.of-table tbody tr.of-band-green:hover>td{background:#c9edcf!important}
+.of-table tbody tr.of-band-yellow:hover>th,.of-table tbody tr.of-band-yellow:hover>td{background:#ffecaa!important}
+.of-table tbody tr.of-band-pink:hover>th,.of-table tbody tr.of-band-pink:hover>td{background:#ffd2e0!important}
+.of-table tbody tr.of-band-blue:hover>th,.of-table tbody tr.of-band-blue:hover>td{background:#d2eafb!important}
+.of-table tbody tr.of-dirty>th.of-name{outline:2px dashed #e29641;outline-offset:-2px}
+.of-table .of-band-label{display:block;font:800 10px Tahoma,Arial,sans-serif;margin:1px 0 2px;color:#33566e}
+.of-table .of-name .of-band-label{white-space:normal;overflow-wrap:anywhere}
+@media print{.of-color-legend{display:none!important}.of-table tbody tr>th,.of-table tbody tr>td{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
