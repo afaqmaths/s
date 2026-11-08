@@ -24,15 +24,48 @@ function fbGroupText(p){
  const reason=(p.reasons||[]).map(r=>r.label+(r.percentage===null||r.percentage===undefined?' (ملاحظة علمية)':' • '+fbPct(r.percentage))).join('، ');
  return reason||'متابعة وتوثيق نتائج تدريب سابق';
 }
+const FB_CLASS_NAMES=['السادس / ٤','السادس / ٥','السادس / ٦'];
+const fbRatio=(part,total)=>total?fbNum(Math.round(part/total*1000)/10)+'٪':'٠٪';
+const fbHasTrack=(student,track)=>Array.isArray(student.tracks)&&student.tracks.includes(track);
+function fbCountStats(rows){
+ const count=rows.length,remedial=rows.filter(s=>fbHasTrack(s,'remedial')).length,
+  enrichment=rows.filter(s=>fbHasTrack(s,'enrichment')).length,
+  both=rows.filter(s=>fbHasTrack(s,'remedial')&&fbHasTrack(s,'enrichment')).length;
+ return {count,remedial,enrichment,both,
+  started:rows.filter(s=>['remedial','enrichment'].some(t=>(s.progress_by_track?.[t]?.completed||0)>0)).length};
+}
 function fbSummaryCards(rows){
- const count=rows.length,low=rows.filter(x=>x.tracks?.includes('remedial')).length,
-  high=rows.filter(x=>x.tracks?.includes('enrichment')).length,
-  both=rows.filter(x=>x.tracks?.includes('remedial')&&x.tracks?.includes('enrichment')).length,
-  started=rows.filter(x=>['remedial','enrichment'].some(t=>(x.progress_by_track?.[t]?.completed||0)>0)).length;
- return '<div class="fb-stats">'+[
-  ['الطلاب في الكشف',count],['تكليفات علاجية',low],['تكليفات إثرائية',high],
-  ['يحتاجون مسارين',both],['بدؤوا نشاط المتابعة',started]
- ].map(([label,n])=>'<article><strong>'+fbNum(n)+'</strong><span>'+label+'</span></article>').join('')+'</div>';
+ const data=fbCountStats(rows);
+ const tiles=[
+  ['إجمالي الطلاب',data.count,null],
+  ['الخطة العلاجية • ≤٥٠٪',data.remedial,fbRatio(data.remedial,data.count)],
+  ['الخطة الإثرائية • ≥٨٥٪',data.enrichment,fbRatio(data.enrichment,data.count)],
+  ['مؤهلون للمسارين',data.both,fbRatio(data.both,data.count)],
+  ['بدؤوا أنشطة المتابعة',data.started,fbRatio(data.started,data.count)]
+ ];
+ return '<div class="fb-stats">'+tiles.map(([label,n,pct])=>
+  '<article><strong>'+fbNum(n)+'</strong><span>'+label+'</span>'+
+  (pct!==null?'<em>'+pct+' من إجمالي الطلاب</em>':'<em>طالبًا في النطاق المحدد</em>')+'</article>').join('')+'</div>'+
+  '<p class="fb-stat-footnote">النسبة = عدد الطلاب المؤهلين ÷ إجمالي الطلاب المسجلين × ١٠٠. الطالب الذي يستحق العلاج والإثراء في مهارتين مختلفتين يُحتسب في المسارين.</p>';
+}
+function fbClassStats(rows){
+ const all=rows||[],visible=FB_CLASS_NAMES.some(name=>all.some(s=>s.class_name===name));
+ if(!visible)return '';
+ const subsets=FB_CLASS_NAMES.map(name=>[name,all.filter(s=>s.class_name===name)])
+  .filter(([,group])=>group.length);
+ if(subsets.length<2)return '';
+ subsets.push(['إجمالي الشعب',all]);
+ return '<section class="fb-class-comparison"><h3>الإحصائيات حسب الشعبة — العدد والنسبة</h3>'+
+  '<div class="fb-table-wrap"><table class="fb-report-table fb-class-table"><thead><tr>'+
+  '<th>الشعبة</th><th>عدد الطلاب</th><th>العلاجي (≤٥٠٪)</th><th>نسبته</th>'+
+  '<th>الإثرائي (≥٨٥٪)</th><th>نسبته</th><th>المساران معًا</th></tr></thead><tbody>'+
+  subsets.map(([name,group])=>{
+   const stats=fbCountStats(group);
+   return '<tr><th>'+fbText(name)+'</th><td>'+fbNum(stats.count)+'</td>'+
+    '<td>'+fbNum(stats.remedial)+'</td><td>'+fbRatio(stats.remedial,stats.count)+'</td>'+
+    '<td>'+fbNum(stats.enrichment)+'</td><td>'+fbRatio(stats.enrichment,stats.count)+'</td>'+
+    '<td>'+fbNum(stats.both)+'</td></tr>';
+  }).join('')+'</tbody></table></div></section>';
 }
 function fbRowsForReport(report,track='all'){
  const rows=[];
@@ -91,6 +124,7 @@ function fbPaperContents(){
  if(!feedbackState.report)return '<p>لم يُحمّل التقرير بعد.</p>';
  const label=feedbackState.scope==='class'?'كشف التغذية الراجعة — '+fbText(feedbackState.className):'الكشف العام — جميع الشعب';
  return '<h2>'+label+'</h2>'+fbSummaryCards(feedbackState.report.students||[])+
+ fbClassStats(feedbackState.report.students||[])+
  '<p>معيار التمايز: علاجي عند ٥٠٪ فأقل، إثرائي عند ٨٥٪ فأكثر؛ المصدر كل عنصر تحصيلي مرصود أو ملاحظة علمية تستلزم دعمًا.</p>'+
  fbDetailedTable(feedbackState.report,feedbackState.track);
 }
@@ -101,7 +135,8 @@ function fbPrintablePage(body,orientation){
  '*{box-sizing:border-box}body{font-family:Tahoma,Arial,sans-serif;color:#23425d;font-size:9pt;direction:rtl}'+
  'header{text-align:center;border-bottom:3px double #ac843f;padding-bottom:3mm}h1{font-size:18pt;color:#145378;margin:1mm}'+
  'h2{font-size:15pt;color:#976c2a}h3{font-size:12pt;color:#1b6683}'+
- '.fb-stats{display:flex;flex-wrap:wrap;gap:2mm;margin:3mm 0}.fb-stats article{border:1px solid #cee0e9;padding:2mm 3mm;display:flex;gap:3mm}'+
+ '.fb-stats{display:flex;flex-wrap:wrap;gap:2mm;margin:3mm 0}.fb-stats article{border:1px solid #cee0e9;padding:2mm 3mm;display:flex;gap:2mm;flex-direction:column;text-align:center}'+
+ '.fb-stats article em{font-size:8pt;font-weight:bold;font-style:normal}.fb-stat-footnote{font-size:8pt;margin:2mm 0}.fb-class-comparison{margin:5mm 0}.fb-class-comparison h3{margin:3mm 0}'+
  '.fb-table-wrap{width:100%;overflow:visible}table{width:100%;border-collapse:collapse;font-size:7pt;table-layout:fixed}'+
  'th,td{padding:1.5mm 1mm;border:1px solid #adbcc8;overflow-wrap:anywhere}th{background:#eaf6ff}'+
  'tr{break-inside:avoid}footer{border-top:2px double #b69a54;margin-top:7mm;padding-top:4mm;display:flex;justify-content:space-between;gap:4mm}'+
@@ -161,7 +196,7 @@ function fbReportPage(){
  (feedbackState.scope==='student'&&feedbackState.detail?
   '<section class="fb-panel">'+fbPrintDetail(feedbackState.detail.paths||[])+'</section>':
   feedbackState.scope!=='student'&&feedbackState.report?
-   '<section class="fb-panel">'+fbSummaryCards(rows)+fbDetailedTable(feedbackState.report,feedbackState.track)+'</section>':
+   '<section class="fb-panel">'+fbSummaryCards(rows)+fbClassStats(rows)+fbDetailedTable(feedbackState.report,feedbackState.track)+'</section>':
    '<section class="fb-panel"><p>اختر التقرير واضغط «تحميل النتائج» لرؤية المتابعة الفعلية.</p></section>')+
  '</div>';
 }
