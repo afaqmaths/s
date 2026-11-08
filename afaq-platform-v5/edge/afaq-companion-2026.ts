@@ -10,7 +10,7 @@ const CLASSES=["السادس / ٤","السادس / ٥","السادس / ٦"];
 const READ=["supervisor","supervisor_assistant","director","deputy"];
 const EDIT=["supervisor","supervisor_assistant"];
 const POS=["المشاركة الإيجابية","الانضباط والالتزام","التعاون ومساعدة الزملاء"];
-const NEG=["التحدث دون إذن","الخروج من المقعد دون إذن","تناول الطعام دون إذن","عدم إحضار الأدوات","عدم إنجاز المهام"];
+const NEG=["التحدث دون إذن","الخروج من الصف أو المقعد دون إذن","تناول الطعام دون إذن","عدم إحضار الأدوات","عدم إنجاز المهام"];
 const hdr=(o:string)=>({"Content-Type":"application/json; charset=utf-8","Access-Control-Allow-Origin":ORIGINS.has(o)?o:"https://afaqmaths.github.io","Access-Control-Allow-Headers":"authorization,content-type,x-client-info","Access-Control-Allow-Methods":"POST,OPTIONS","Cache-Control":"no-store",Vary:"Origin"});
 const ok=(o:string,p:any)=>new Response(JSON.stringify({ok:true,...p}),{headers:hdr(o)});
 const fail=(o:string,message:string,status=400)=>new Response(JSON.stringify({ok:false,error:message}),{status,headers:hdr(o)});
