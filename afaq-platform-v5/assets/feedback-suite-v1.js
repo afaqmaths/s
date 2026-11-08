@@ -67,6 +67,22 @@ function fbClassStats(rows){
     '<td>'+fbNum(stats.both)+'</td></tr>';
   }).join('')+'</tbody></table></div></section>';
 }
+function fbStudentBand(student){
+ const d=student?.differentiation||{};
+ const enrich=Math.max(0,Number(d.enrichment_count)||0),remedy=Math.max(0,Number(d.remedial_count)||0);
+ if(remedy)return {css:'fb-band-pink',label:'علاجي',note:'علاج: '+fbNum(remedy)+' • إثراء: '+fbNum(enrich)};
+ if(enrich>3)return {css:'fb-band-green',label:'إثراء متكرر',note:'إثراء: '+fbNum(enrich)+' مؤشرات'};
+ if(enrich)return {css:'fb-band-yellow',label:'إثرائي',note:'إثراء: '+fbNum(enrich)+' من ٣'};
+ return {css:'fb-band-blue',label:'عادي',note:'متابعة عادية'};
+}
+function fbColorLegend(){
+ return '<div class="fb-color-legend" aria-label="دليل ألوان تصنيف الطلاب">'+
+ '<b>مفتاح الألوان:</b><span class="fb-key fb-key-green">أخضر فاتح: إثراء أكثر من ٣</span>'+
+ '<span class="fb-key fb-key-yellow">أصفر: إثراء من ١ إلى ٣</span>'+
+ '<span class="fb-key fb-key-pink">وردي: علاج</span>'+
+ '<span class="fb-key fb-key-blue">أزرق فاتح: عادي</span>'+
+ '<small>اللون الوردي له الأولوية عند اجتماع المسارين. لا تُكرر مؤشرات التقييم الواحد عند حساب مرات الإثراء.</small></div>';
+}
 function fbRowsForReport(report,track='all'){
  const rows=[];
  for(const s of report?.students||[]){
@@ -88,8 +104,9 @@ function fbDetailedTable(report,track='all'){
  '<th>الأسئلة</th><th>المنجزة</th><th>أول صحيح</th><th>آخر صحيح</th>'+
  '<th>التحسن</th><th>المحاولات</th></tr></thead><tbody>'+
  rows.map(x=>{
-  const s=x.student,p=x.p;
-  return '<tr><td>'+fbNum(s.serial_no)+'</td><td>'+fbText(s.name)+'</td><td>'+fbText(s.class_name)+'</td>'+
+  const s=x.student,p=x.p,band=fbStudentBand(s);
+  return '<tr class="'+band.css+'" title="'+fbText(band.note)+'"><td>'+fbNum(s.serial_no)+'</td><td>'+fbText(s.name)+
+   '<small class="fb-band-marker">'+fbText(band.label)+' • '+fbText(band.note)+'</small></td><td>'+fbText(s.class_name)+'</td>'+
   '<td>'+fbText(FB_TRACKS[x.track]||x.track)+(x.active?'':' (سابق)')+'</td>'+
   '<td>'+fbText(fbReasons(s.reasons,x.track))+'</td>'+
   '<td>'+fbNum(p?.total_tasks)+'</td><td>'+fbNum(p?.completed)+'</td>'+
@@ -124,7 +141,7 @@ function fbPaperContents(){
  if(!feedbackState.report)return '<p>لم يُحمّل التقرير بعد.</p>';
  const label=feedbackState.scope==='class'?'كشف التغذية الراجعة — '+fbText(feedbackState.className):'الكشف العام — جميع الشعب';
  return '<h2>'+label+'</h2>'+fbSummaryCards(feedbackState.report.students||[])+
- fbClassStats(feedbackState.report.students||[])+
+ fbClassStats(feedbackState.report.students||[])+fbColorLegend()+
  '<p>معيار التمايز: علاجي عند ٥٠٪ فأقل، إثرائي عند ٨٥٪ فأكثر؛ المصدر كل عنصر تحصيلي مرصود أو ملاحظة علمية تستلزم دعمًا.</p>'+
  fbDetailedTable(feedbackState.report,feedbackState.track);
 }
@@ -138,6 +155,11 @@ function fbPrintablePage(body,orientation){
  '.fb-stats{display:flex;flex-wrap:wrap;gap:2mm;margin:3mm 0}.fb-stats article{border:1px solid #cee0e9;padding:2mm 3mm;display:flex;gap:2mm;flex-direction:column;text-align:center}'+
  '.fb-stats article em{font-size:8pt;font-weight:bold;font-style:normal}.fb-stat-footnote{font-size:8pt;margin:2mm 0}.fb-class-comparison{margin:5mm 0}.fb-class-comparison h3{margin:3mm 0}'+
  '.fb-table-wrap{width:100%;overflow:visible}table{width:100%;border-collapse:collapse;font-size:7pt;table-layout:fixed}'+
+ '.fb-report-table tbody tr.fb-band-green td{background:#dcf4e2}.fb-report-table tbody tr.fb-band-yellow td{background:#fff3c2}'+
+ '.fb-report-table tbody tr.fb-band-pink td{background:#ffe0e9}.fb-report-table tbody tr.fb-band-blue td{background:#e3f2ff}'+
+ '.fb-report-table tbody td{print-color-adjust:exact;-webkit-print-color-adjust:exact}'+
+ '.fb-band-marker{display:block;font-size:7pt;margin-top:1mm}.fb-color-legend{display:flex;gap:2mm;flex-wrap:wrap;margin:3mm 0;font-size:8pt}'+
+ '.fb-color-legend span{padding:1mm 2mm;border:1px solid #abc}.fb-color-legend small{flex-basis:100%}'+
  'th,td{padding:1.5mm 1mm;border:1px solid #adbcc8;overflow-wrap:anywhere}th{background:#eaf6ff}'+
  'tr{break-inside:avoid}footer{border-top:2px double #b69a54;margin-top:7mm;padding-top:4mm;display:flex;justify-content:space-between;gap:4mm}'+
  '.fb-print-group{margin:5mm 0;page-break-inside:avoid}p{line-height:1.65}'+
@@ -196,7 +218,7 @@ function fbReportPage(){
  (feedbackState.scope==='student'&&feedbackState.detail?
   '<section class="fb-panel">'+fbPrintDetail(feedbackState.detail.paths||[])+'</section>':
   feedbackState.scope!=='student'&&feedbackState.report?
-   '<section class="fb-panel">'+fbSummaryCards(rows)+fbClassStats(rows)+fbDetailedTable(feedbackState.report,feedbackState.track)+'</section>':
+   '<section class="fb-panel">'+fbSummaryCards(rows)+fbClassStats(rows)+fbColorLegend()+fbDetailedTable(feedbackState.report,feedbackState.track)+'</section>':
    '<section class="fb-panel"><p>اختر التقرير واضغط «تحميل النتائج» لرؤية المتابعة الفعلية.</p></section>')+
  '</div>';
 }
