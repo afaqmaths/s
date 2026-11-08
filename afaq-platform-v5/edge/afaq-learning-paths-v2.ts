@@ -111,18 +111,14 @@ async function learningPath(studentId:string,requestedTrack=""){
  const student=await studentInfo(studentId);if(!student)return null;
  const [score,signals]=await Promise.all([scoreFor(studentId),signalsFor(studentId)]);
  const active=activeTracks(signals);
- let current=prioritize(active);
- let track=active.includes(requestedTrack)?requestedTrack:current;
- // إن زالت أسباب الدعم تبقى الإجابات السابقة محفوظة في السجل الفردي.
- let historic:string[]=[];
- if(!active.length){
-  const {data,error}=await db.from("afaq_learning_progress_summary").select("track")
-   .eq("student_id",studentId);
-  if(error)throw error;
-  historic=(data||[]).map(x=>x.track).filter(t=>["remedial","enrichment"].includes(t));
-  if(historic.includes(requestedTrack))track=requestedTrack;
-  else if(historic.length)track=historic[0];
- }
+ const current=prioritize(active);
+ // حتى لو انتقل الطالب من العلاج إلى الإثراء لا تضيع نتائج أنشطته العلاجية القديمة.
+ const {data:previousActivities,error:previousError}=await db.from("afaq_learning_progress_summary")
+  .select("track").eq("student_id",studentId);
+ if(previousError)throw previousError;
+ const historic=(previousActivities||[]).map(x=>x.track).filter(t=>["remedial","enrichment"].includes(t));
+ let track=(active.includes(requestedTrack)||historic.includes(requestedTrack))?requestedTrack:current;
+ if(track==="standard"&&historic.length)track=historic[0];
  const tasks=["remedial","enrichment"].includes(track)?await taskItems(track,studentId):[];
  const progress=await answered(studentId,tasks.map(t=>t.task_id));
  const summary=taskSummary(tasks,progress);
