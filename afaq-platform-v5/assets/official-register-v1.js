@@ -85,8 +85,8 @@ function ofRow(s){
  '<button type="button" data-of-save="'+s.serial_no+'" class="of-save">حفظ</button>'+
  (ofAdmin()&&result.total!==null?'<button type="button" data-of-approve="'+s.serial_no+'" class="of-soft">اعتماد</button>':'');
  return '<tr data-of-serial="'+s.serial_no+'" class="'+(locked?'of-locked':'')+'">'+
- '<th class="of-serial">'+ofNumber(s.serial_no)+'</th>'+
  '<th class="of-name">'+ofNameCell(s)+'</th>'+
+ '<th class="of-serial">'+ofNumber(s.serial_no)+'</th>'+
  diag+base.join('')+
  '<td class="of-subtotal" data-of-subtotal="'+s.serial_no+'">'+
  (result.seen===9?ofNumber(result.sum):ofNumber(result.sum)+'*')+'</td>'+
@@ -103,7 +103,7 @@ function ofTable(report){
  const students=report?.students||[];
  return '<div class="of-table-scroll"><table class="of-table" dir="rtl">'+
  '<thead><tr class="of-group-row">'+
- '<th rowspan="2">م</th><th rowspan="2">اسم الطالب</th><th rowspan="2" class="of-diagnostic-head">الاختبار التشخيصي<br><small>مؤشر تحديد المستوى</small></th>'+
+ '<th rowspan="2">اسم الطالب</th><th rowspan="2">م</th><th rowspan="2" class="of-diagnostic-head">الاختبار التشخيصي<br><small>مؤشر تحديد المستوى</small></th>'+
  '<th colspan="2">الأعمال الشفوية</th><th colspan="2">الواجبات المنزلية</th>'+
  '<th colspan="2">الأسئلة القصيرة</th><th colspan="2">الاختبارات القصيرة</th>'+
  '<th rowspan="2">المشروع<br>١٠</th><th rowspan="2" class="of-summary-head">مجموع<br>٦٠</th>'+
@@ -241,7 +241,7 @@ async function ofApproval(serial,reopen){
 }
 function ofPrintedTable(report){
  const rows=report.students||[];
- return '<table class="of-print-table"><thead><tr><th rowspan="2">م</th><th rowspan="2">اسم الطالب</th>'+
+ return '<table class="of-print-table"><thead><tr><th rowspan="2">اسم الطالب</th><th rowspan="2">م</th>'+
  '<th rowspan="2">تشخيصي</th><th colspan="2">الأعمال الشفوية</th><th colspan="2">الواجبات المنزلية</th>'+
  '<th colspan="2">الأسئلة القصيرة</th><th colspan="2">الاختبارات القصيرة</th>'+
  '<th rowspan="2">مشروع /١٠</th><th rowspan="2">المجموع /٦٠</th><th rowspan="2">النهائي /٤٠</th>'+
@@ -251,7 +251,7 @@ function ofPrintedTable(report){
  rows.map(row=>{
   const v=row.marks||{},c=ofCourse(v),diag=v.diagnostic_score==null?'—':ofNumber(v.diagnostic_score)+'/'+ofNumber(v.diagnostic_max||10);
   const fields=OF_FIELDS.slice(0,9).map(([k])=>'<td>'+ofPrintMark(v[k])+'</td>').join('');
-  return '<tr><td>'+ofNumber(row.serial_no)+'</td><td class="of-print-name">'+ofSafe(row.full_name)+'</td>'+
+  return '<tr><td class="of-print-name">'+ofSafe(row.full_name)+'</td><td>'+ofNumber(row.serial_no)+'</td>'+
    '<td>'+diag+'</td>'+fields+'<td>'+ofNumber(c.sum)+(c.complete?'':'*')+'</td>'+
    '<td>'+ofPrintMark(v.final_exam)+'</td><td>'+(c.total===null?'—':ofNumber(c.total))+'</td>'+
    '<td>'+(c.level||'—')+'</td><td>'+ofNumber(row.a_indicator20||0)+'</td>'+
