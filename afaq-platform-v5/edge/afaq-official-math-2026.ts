@@ -157,8 +157,8 @@ Deno.serve(async req=>{
    const expected=Number(body.expected_revision);
    if(!Number.isInteger(expected)||expected!==(prev?.revision||0))return fail(origin,"grade_changed_reload",409);
    const patch:Record<string,unknown>={};
-   const diagnostic_max=body.diagnostic_max===null||body.diagnostic_max===undefined||body.diagnostic_max===""?10:Number(digits(body.diagnostic_max));
-   if(!Number.isFinite(diagnostic_max)||diagnostic_max<=0||diagnostic_max>100)return fail(origin,"invalid_diagnostic_max",400);
+   const diagnostic_max=10;
+   if(body.diagnostic_max!==undefined&&body.diagnostic_max!==null&&Number(digits(body.diagnostic_max))!==10)return fail(origin,"invalid_diagnostic_max",400);
    const diag=body.diagnostic_score===null||body.diagnostic_score===undefined||body.diagnostic_score===""?
     null:Number(digits(body.diagnostic_score));
    if(diag!==null&&(!Number.isFinite(diag)||diag<0||diag>diagnostic_max))
