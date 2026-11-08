@@ -146,6 +146,101 @@ Deno.serve(async req=>{
    const reports=await Promise.all(CLASSES.map(c=>classReport(c,term)));
    return ok(origin,{academic_year:YEAR,term,reports,generated_at:new Date().toISOString()});
   }
+  if(action==="save_batch"){
+   if(!roleEdit(session.role))return fail(origin,"forbidden",403);
+   const cls=esc(body.class_name,40),term=getTerm(body.term);
+   if(!CLASSES.includes(cls as any)||!term)return fail(origin,"invalid_class_or_term");
+   const incoming=body.rows;
+   if(!Array.isArray(incoming)||incoming.length<1||incoming.length>100)return fail(origin,"invalid_batch_size");
+   const rosterResult=await db.from("competition_students")
+     .select("student_id,serial_no").eq("active",true).eq("class_name",cls);
+   if(rosterResult.error)throw rosterResult.error;
+   const bySerial=new Map((rosterResult.data||[]).map(s=>[s.serial_no,s.student_id]));
+   const ids=(rosterResult.data||[]).map(s=>s.student_id);
+   let existingRows:any[]=[];
+   if(ids.length){
+    const current=await db.from("afaq_official_math_grades").select(dataColumns)
+      .eq("academic_year",YEAR).eq("term",term).in("student_id",ids);
+    if(current.error)throw current.error;existingRows=current.data||[];
+   }
+   const byId=new Map(existingRows.map(s=>[s.student_id,s]));
+   const seenSerials=new Set<number>();
+   const prepared:{serial_no:number;student_id:string;expected:number;prev:any;patch:Record<string,unknown>}[]=[];
+   // Verify every row and revision before any writes.
+   for(const raw of incoming){
+    if(!raw||typeof raw!=="object")return fail(origin,"invalid_batch_row");
+    const serial=Number(digits(raw.serial_no));
+    const id=bySerial.get(serial);
+    if(!Number.isInteger(serial)||!id||seenSerials.has(serial))
+      return fail(origin,"invalid_student_or_duplicate:"+String(serial),400);
+    seenSerials.add(serial);
+    const prev=byId.get(id)||null;
+    if(prev?.status==="approved")return fail(origin,"approved_reopen_first:"+String(serial),409);
+    const expected=Number(raw.expected_revision);
+    if(!Number.isInteger(expected)||expected!==(prev?.revision||0))
+      return fail(origin,"grade_changed_reload:"+String(serial),409);
+    if(raw.diagnostic_max!==undefined&&raw.diagnostic_max!==null&&Number(digits(raw.diagnostic_max))!==10)
+      return fail(origin,"invalid_diagnostic_max:"+String(serial),400);
+    const diag=raw.diagnostic_score===null||raw.diagnostic_score===undefined||raw.diagnostic_score===""?
+      null:Number(digits(raw.diagnostic_score));
+    if(diag!==null&&(!Number.isFinite(diag)||diag<0||diag>10))
+      return fail(origin,"invalid_diagnostic_score:"+String(serial),400);
+    const patch:Record<string,unknown>={diagnostic_max:10,diagnostic_score:diag,remarks:esc(raw.remarks,500)};
+    for(const field of ["a_plus_points","a_minus_points"]){
+     const points=parseScore(raw[field],500);
+     if(points===undefined)return fail(origin,"invalid_mark:"+field+":"+String(serial),400);
+     patch[field]=points;
+    }
+    for(const [field,max] of FIELDS){
+     const points=parseScore(raw[field],max);
+     if(points===undefined)return fail(origin,"invalid_mark:"+field+":"+String(serial),400);
+     patch[field]=points;
+    }
+    prepared.push({serial_no:serial,student_id:id,expected,prev,patch});
+   }
+   const actor=session.role+":"+session.username;
+   const saved:{serial_no:number;marks:ReturnType<typeof calculated>}[]=[];
+   const failed:{serial_no:number;error:string}[]=[];
+   let next=0;
+   const worker=async()=>{
+    while(next<prepared.length){
+     const row=prepared[next++];
+     try{
+      let result:any;
+      if(row.prev){
+       const response=await db.from("afaq_official_math_grades")
+         .update({...row.patch,status:"draft",recorded_by:actor})
+         .eq("student_id",row.student_id).eq("academic_year",YEAR).eq("term",term)
+         .eq("revision",row.expected).eq("status","draft")
+         .select(dataColumns).maybeSingle();
+       if(response.error)throw response.error;
+       if(!response.data){failed.push({serial_no:row.serial_no,error:"grade_changed_reload"});continue}
+       result=response.data;
+      }else{
+       const response=await db.from("afaq_official_math_grades")
+         .insert({student_id:row.student_id,academic_year:YEAR,term,
+           ...row.patch,status:"draft",recorded_by:actor})
+         .select(dataColumns).single();
+       if(response.error){
+        if(response.error.code==="23505"){
+         failed.push({serial_no:row.serial_no,error:"grade_changed_reload"});continue;
+        }
+        throw response.error;
+       }
+       result=response.data;
+      }
+      saved.push({serial_no:row.serial_no,marks:calculated(result)});
+     }catch(err){
+      console.error("official_grade_batch_row:",row.serial_no,err instanceof Error?err.message:String(err));
+      failed.push({serial_no:row.serial_no,error:"server_error"});
+     }
+    }
+   };
+   await Promise.all(Array.from({length:Math.min(prepared.length,4)},()=>worker()));
+   saved.sort((a,b)=>a.serial_no-b.serial_no);
+   failed.sort((a,b)=>a.serial_no-b.serial_no);
+   return ok(origin,{saved,failed,total_requested:prepared.length});
+  }
   if(action==="save_row"){
    if(!roleEdit(session.role))return fail(origin,"forbidden",403);
    const cls=esc(body.class_name,40),term=getTerm(body.term);
