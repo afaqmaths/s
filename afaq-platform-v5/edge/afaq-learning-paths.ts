@@ -33,6 +33,30 @@ const classify=(score:number|null)=>score===null?"ungraded":score<=50?"remedial"
 const percent=(a:number,b:number)=>b>0?Math.round(a/b*10000)/100:0;
 const activeTracks=(flags:any[])=>["remedial","enrichment"].filter(track=>flags.some(f=>f.active&&f.track===track&&(track!=="enrichment"||Number(f.percentage)>=85)));
 const prioritize=(tracks:string[])=>tracks.includes("remedial")?"remedial":tracks.includes("enrichment")?"enrichment":"standard";
+
+// Each recorded official mark may generate two historical signal keys: count one assessment only.
+function signalIdentity(key:string){
+ const p=key.split(":");
+ if(p[0]==="official"){
+  if(p.length===3&&/^\d+$/.test(p[1]))return "official:"+p[1]+":"+p[2];
+  if(p.length===4&&/^t\d+$/.test(p[2]))return "official:"+p[2].slice(1)+":"+p[3];
+ }
+ return key;
+}
+function studentDifferentiation(flags:any[]){
+ const enriched=new Set<string>(),remedial=new Set<string>();
+ for(const f of flags){
+  if(!f.active)continue;
+  const id=signalIdentity(String(f.source_key||""));
+  if(f.track==="enrichment"&&Number(f.percentage)>=85)enriched.add(id);
+  if(f.track==="remedial")remedial.add(id);
+ }
+ const enrichment_count=enriched.size,remedial_count=remedial.size;
+ return {enrichment_count,remedial_count,
+  band:remedial_count>0?"remedial":enrichment_count>3?"enrichment_high":
+   enrichment_count>0?"enrichment_low":"standard"};
+}
+
 async function signalsFor(studentId:string){
  const {data,error}=await db.from("afaq_learning_signals").select("source_key,source_type,source_label,raw_score,maximum_score,percentage,track,active,reason_public,source_date")
   .eq("student_id",studentId).eq("active",true).order("source_date",{ascending:false}).limit(30);
@@ -139,7 +163,7 @@ async function overview(role:string,className=""){
   db.from("competition_students").select("student_id,serial_no,class_name,full_name,display_name")
    .eq("active",true).order("class_name").order("serial_no").limit(500),
   db.from("afaq_student_assessments").select(["student_id",...MARKS.map(x=>x[0])].join(",")).limit(500),
-  db.from("afaq_learning_signals").select("student_id,source_label,source_type,track,percentage,active,reason_public")
+  db.from("afaq_learning_signals").select("student_id,source_key,source_label,source_type,track,percentage,active,reason_public")
    .eq("active",true).limit(3000),
   db.from("afaq_excellence_publication").select("student_id,parent_consent_confirmed,school_approved").limit(500),
   db.from("afaq_learning_progress_summary").select("student_id,track,completed_questions,total_attempts,initially_correct,currently_correct")
@@ -154,6 +178,7 @@ async function overview(role:string,className=""){
  const progress=new Map((progressQuery.data||[]).map(x=>[x.student_id+"|"+x.track,x]));
  return students.filter(s=>!className||s.class_name===className).map(s=>{
   const indicators=flags.get(s.student_id)||[],tracks=activeTracks(indicators);
+   const differentiation=studentDifferentiation(indicators);
   const score=assessmentPercent(assessments.get(s.student_id));
   const current=prioritize(tracks),published=consent.get(s.student_id);
   const pathProgress:any={};
@@ -167,7 +192,7 @@ async function overview(role:string,className=""){
     improvement_percent:percent(latest-first,count)};
   }
   const info:any={name:s.full_name||s.display_name,class_name:s.class_name,serial_no:s.serial_no,
-   score,track:current,tracks,
+   score,track:current,tracks,differentiation,
    reasons:indicators.map(x=>({label:x.source_label,track:x.track,percentage:x.percentage,
     source_type:x.source_type,reason:x.reason_public})),
    progress_by_track:pathProgress,
