@@ -265,6 +265,19 @@ hubStaffDashboard=function(){
   hubGate('بوابة المجيدين','trophy','نماذج متقدمة من الوحدات الأربع','data-route="stars"','gold')+
   '</div></section><details class="hub-staff-old">');
 };
+const fbOldPrintCenter=hubPrintCenter;
+hubPrintCenter=function(){
+ const previous=fbOldPrintCenter();
+ if(!['supervisor','supervisor_assistant'].includes(auth.user?.role))return previous;
+ return previous.replace('</div></section></div>',
+ '<div class="fb-toolbar"><button type="button" class="hub-secondary" data-tab="study_reports">🌱 كشوف العلاج والإثراء وتغذيتها الراجعة</button></div></div></section></div>');
+};
+const fbOldHubLoadForTab=hubLoadForTab;
+hubLoadForTab=function(id){
+ fbOldHubLoadForTab(id);
+ if(id==='study_reports'&&['supervisor','supervisor_assistant'].includes(auth.user?.role)&&
+    !feedbackState.loadedKey&&!feedbackState.loadingKey)fbLoad();
+};
 const fbOldAttach=attachPortal;
 attachPortal=function(){
  fbOldAttach();
