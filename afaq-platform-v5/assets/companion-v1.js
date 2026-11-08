@@ -155,14 +155,21 @@ function cpClassPanel(){
  (cpEdit()?'<button type="submit" class="primary">💾 حفظ الخطة والملاحظات العامة للشعبة</button>':'')+'</form></section>';
 }
 function cpPage(){
- const r=cpState.report,s=cpStudent(),tabs=[
- ['overview','نظرة عامة وكشف الدرجات'],['behavior','كشف الانضباط الصفي'],['student','المتابعة الفردية'],['questions','الأسئلة والأنشطة'],['class','خطة الشعبة']
- ];
+ const r=cpState.report,s=cpStudent(),tabs=[['overview','نظرة عامة وكشف الدرجات'],['behavior','كشف الانضباط الصفي'],['student','المتابعة الفردية'],['questions','الأسئلة والأنشطة'],['class','خطة الشعبة']];
+ let content='';
+ if(r){
+  if(cpState.tab==='overview')content='<section class="cp-card"><h3>كشف الطلاب والدرجات ومسارات التعلم</h3>'+cpRoster()+'</section>';
+  else if(cpState.tab==='behavior')content='<section class="cp-card"><h3>سجل الانضباط الصفي للشعبة</h3>'+cpBehaviorTable()+'</section>';
+  else if(cpState.tab==='class')content=cpClassPanel();
+  else if(!s)content='<section class="cp-card">لا يوجد طالب محدد.</section>';
+  else if(cpState.tab==='student')content=cpProfilePanel(s)+cpEventPanel(s);
+  else if(cpState.tab==='questions')content=cpQuestionsPanel(s);
+ }
+ const classSelect=CP_CLASSES.map(c=>'<option'+(cpState.className===c?' selected':'')+'>'+c+'</option>').join('');
+ const tabButtons=tabs.map(([id,label])=>'<button data-cp-tab="'+id+'" class="'+(cpState.tab===id?'active':'')+'">'+label+'</button>').join('');
  return '<div class="container cp-page" dir="rtl">'+
- '<header class="cp-head"><h1>📚 السجل المصاحب لمعلم الرياضيات</h1>'+
- '<p>الصف السادس — العام الدراسي ٢٠٢٦ / ٢٠٢٧ • متابعة أكاديمية وسلوكية وخطط علاجية وإثرائية قابلة للتوثيق والطباعة</p></header>'+
- '<section class="cp-card cp-toolbar">'+
- '<label>الشعبة<select id="cpClass">'+CP_CLASSES.map(c=>'<option'+(cpState.className===c?' selected':'')+'>'+c+'</option>').join('')+'</select></label>'+
+ '<header class="cp-head"><h1>📚 السجل المصاحب لمعلم الرياضيات</h1><p>الصف السادس — ٢٠٢٦ / ٢٠٢٧ • متابعة أكاديمية وسلوكية وخطط علاجية وإثرائية</p></header>'+
+ '<section class="cp-card cp-toolbar"><label>الشعبة<select id="cpClass">'+classSelect+'</select></label>'+
  '<label>الفصل الدراسي<select id="cpTerm"><option value="1"'+(cpState.term===1?' selected':'')+'>الأول</option><option value="2"'+(cpState.term===2?' selected':'')+'>الثاني</option></select></label>'+
  '<label>الطالب<select id="cpStudentSelect" '+(!r?'disabled':'')+'>'+cpStudentOptions()+'</select></label>'+
  '<button type="button" id="cpRefresh">تحديث البيانات</button>'+
@@ -172,16 +179,9 @@ function cpPage(){
  (cpState.error?'<p class="cp-error">'+cpEsc(cpState.error)+'</p>':'')+
  (cpState.message?'<p class="cp-message">'+cpEsc(cpState.message)+'</p>':'')+
  (cpState.loading?'<p class="cp-card">جارٍ تحميل سجل الشعبة…</p>':'')+
- (r?'<nav class="cp-tabs">'+tabs.map(([id,label])=>'<button data-cp-tab="'+id+'" class="'+(cpState.tab===id?'active':'')+'">'+label+'</button>').join('')+'</nav>'+
- '<p class="cp-help">عدد الطلاب: '+cpNum(r.students.length)+' • الشعبة: '+cpEsc(cpState.className)+' • الفصل: '+cpTerm()+
- ' • تعتمد التقارير على البيانات المحفوظة فقط، ولا ينشر أي تقرير للعموم تلقائيًا.</p>'+
- (cpState.tab==='overview'?'<section class="cp-card"><h3>كشف الطلاب والدرجات ومسارات التعلم</h3>'+cpRoster()+'</section>':
- cpState.tab==='behavior'?'<section class="cp-card"><h3>سجل الانضباط الصفي للشعبة</h3>'+cpBehaviorTable()+'</section>'+
- (s?cpEventPanel(s):'')+ (cpState.tab==='student'&&s?cpProfilePanel(s):
- cpState.tab==='questions'&&s?cpQuestionsPanel(s):
- cpState.tab==='class'?cpClassPanel():
- !s?'<p class="cp-card">لا يوجد طالب محدد.</p>':'') ):'<section class="cp-card">اختر الشعبة والفصل لبدء المتابعة.</section>')+
- '<p class="cp-help">خصوصية السجلات: متاحة للمخولين مدرسيًا فقط. يُراجع التقرير قبل تقديمه لولي الأمر أو أي جهة، مع الاقتصار على البيانات اللازمة.</p></div>';
+ (r?'<nav class="cp-tabs">'+tabButtons+'</nav><p class="cp-help">عدد الطلاب: '+cpNum(r.students.length)+' • الشعبة: '+cpEsc(cpState.className)+' • الفصل: '+cpTerm()+
+ ' • الطباعة تستخرج البيانات المحفوظة فقط.</p>'+content:'<section class="cp-card">اختر الشعبة والفصل لبدء المتابعة.</section>')+
+ '<p class="cp-help">البيانات خاصة بالحسابات المدرسية المخوّلة، ويجب مراجعة التقرير قبل مشاركته مع ولي الأمر.</p></div>';
 }
 function cpSign(){return typeof ofSignatureTable==='function'?ofSignatureTable():''}
 function cpPrintRoster(r){
@@ -222,7 +222,7 @@ function cpPrint(mode){
  const title=mode==='student'?'تقرير متابعة الطالب':mode==='full'?'السجل المصاحب الكامل':'كشف متابعة الشعبة';
  const body=mode==='student'?cpPrintStudent(s,'parent'): '<section class="cp-print-section"><h2>كشف درجات الطلاب ومسارات المتابعة</h2>'+cpPrintRoster(r)+cpSign()+'</section>'+
  (mode==='full'?cpPrintClassPlan()+
- '<section class="cp-print-section"><h2>سجل الانضباط الصفي — الإيجابيات والسلبيات</h2>'+cpBehaviorTable().replace(/<button[^>]*>عرض</button>/g,'—')+'</section>'+
+ '<section class="cp-print-section"><h2>سجل الانضباط الصفي — الإيجابيات والسلبيات</h2>'+cpBehaviorTable().replaceAll('عرض</button>','—</button>')+'</section>'+
  r.students.map(s=>cpPrintStudent(s)).join(''):'');
  const css=`@page{size:A4 landscape;margin:9mm}*{box-sizing:border-box}body{font:9pt Tahoma,Arial,sans-serif;color:#18384a;direction:rtl}header{text-align:center;border-bottom:2px solid #148a92;margin-bottom:5mm}h1{font-size:17pt;color:#12627a}h2{font-size:12pt;color:#116579}h3{font-size:10pt}p{line-height:1.7}table{width:100%;border-collapse:collapse;font-size:8pt;table-layout:fixed}th,td{border:1px solid #9db8c5;padding:1.7mm 1mm;text-align:right;overflow-wrap:anywhere;vertical-align:top}th{background:#e8f3f7}.cp-print-section{break-after:page}.cp-print-student{break-before:page}.cp-print-student h2{margin-top:5mm}.cp-print-student table{margin-bottom:4mm}.cp-table-scroll{overflow:visible}.cp-behavior-table .cp-name{width:18%}.cp-behavior-table td,.cp-behavior-table th{text-align:center}.cp-behavior-table td:nth-child(2){text-align:right}.of-signatures{width:100%;margin-top:5mm;table-layout:fixed;font-size:7pt}.of-signatures th,.of-signatures td{text-align:center}.of-signatures td{height:12mm}button{display:none}`;
  const win=window.open('','_blank');
