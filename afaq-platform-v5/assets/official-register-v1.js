@@ -94,7 +94,7 @@ function ofRow(s){
  '<th class="of-serial">'+ofNumber(s.serial_no)+'</th>'+
  diag+base.join('')+
  '<td class="of-subtotal" data-of-subtotal="'+s.serial_no+'">'+
- (result.seen===9?ofNumber(result.sum):ofNumber(result.sum)+'*')+'</td>'+
+ (result.seen===0?'—':result.seen===9?ofNumber(result.sum):ofNumber(result.sum)+'*')+'</td>'+
  mark('final_exam',40)+
  '<td class="of-total" data-of-total="'+s.serial_no+'">'+(result.total===null?'—':ofNumber(result.total))+'</td>'+
  '<td data-of-level="'+s.serial_no+'" class="of-level">'+(result.level||'—')+'</td>'+
@@ -195,7 +195,7 @@ function ofUpdateTotals(row){
  const subtotal=row.querySelector('[data-of-subtotal]');
  const total=row.querySelector('[data-of-total]');
  const level=row.querySelector('[data-of-level]');
- if(subtotal)subtotal.textContent=ofNumber(totals.sum)+(totals.seen===9?'':'*');
+ if(subtotal)subtotal.textContent=totals.seen===0?'—':ofNumber(totals.sum)+(totals.seen===9?'':'*');
  if(total)total.textContent=totals.total===null?'—':ofNumber(totals.total);
  if(level)level.textContent=totals.level||'—';
  const indicator=row.querySelector('[data-of-indicator]');
@@ -271,7 +271,7 @@ function ofPrintedTable(report){
   const v=row.marks||{},c=ofCourse(v),diag=v.diagnostic_score==null?'—':ofNumber(v.diagnostic_score)+'/'+ofNumber(v.diagnostic_max||10);
   const fields=OF_FIELDS.slice(0,9).map(([k])=>'<td>'+ofPrintMark(v[k])+'</td>').join('');
   return '<tr><td class="of-print-name">'+ofSafe(row.full_name)+'</td><td>'+ofNumber(row.serial_no)+'</td>'+
-   '<td>'+diag+'</td>'+fields+'<td>'+ofNumber(c.sum)+(c.complete?'':'*')+'</td>'+
+   '<td>'+diag+'</td>'+fields+'<td>'+(c.seen===0?'—':ofNumber(c.sum)+(c.complete?'':'*'))+'</td>'+
    '<td>'+ofPrintMark(v.final_exam)+'</td><td>'+(c.total===null?'—':ofNumber(c.total))+'</td>'+
    '<td>'+(c.level||'—')+'</td><td>'+(row.a_indicator20===null?'—':ofNumber(row.a_indicator20))+'</td>'+
    '<td>'+ofSafe(v.remarks||'')+'</td></tr>';
