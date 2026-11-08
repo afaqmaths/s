@@ -196,6 +196,20 @@ function cpPrintRoster(r){
   '<td>'+count('أخرى')+'</td><td>'+cpQuestions(s).length+'</td></tr>';
  }).join('')+'</tbody></table>';
 }
+function cpPrintDetailedGrades(r){
+ const fields=[['oral_1','شفوي ١'],['oral_2','شفوي ٢'],['homework_1','واجب ١'],['homework_2','واجب ٢'],
+ ['question_1','سؤال ١'],['question_2','سؤال ٢'],['exam_1','اختبار ١'],['exam_2','اختبار ٢'],['project','مشروع']];
+ return '<section class="cp-print-section"><h2>تفصيل سجل درجات الرياضيات — الفصل '+cpTerm()+'</h2>'+
+ '<table class="cp-print-grades"><thead><tr><th>م</th><th>اسم الطالب</th><th>تشخيصي /١٠</th>'+
+ fields.map(([k,label])=>'<th>'+label+'</th>').join('')+
+ '<th>أعمال /٦٠</th><th>نهائي /٤٠</th><th>المجموع /١٠٠</th><th>الرمز</th></tr></thead><tbody>'+
+ r.students.map(s=>{const g=cpGrade(s),v=cpGradeTotal(g);
+ return '<tr><td>'+cpNum(s.serial_no)+'</td><td>'+cpEsc(s.full_name)+'</td><td>'+cpNum(g.diagnostic_score)+'</td>'+
+ fields.map(([k])=>'<td>'+cpNum(g[k])+'</td>').join('')+
+ '<td>'+cpNum(v.subtotal)+(v.complete?'':'*')+'</td><td>'+cpNum(g.final_exam)+'</td>'+
+ '<td>'+cpNum(v.total)+'</td><td>'+cpEsc(v.level)+'</td></tr>';}).join('')+'</tbody></table>'+
+ '<p>(*) مجموع جزئي. لا يدخل الاختبار التشخيصي في المجموع.</p></section>';
+}
 function cpPrintClassPlan(){
  const c=cpState.report?.class_notes||{};
  return '<section class="cp-print-section"><h2>خطة الشعبة ومؤشرات الأداء</h2><table><tbody>'+
@@ -203,7 +217,7 @@ function cpPrintClassPlan(){
 }
 function cpPrintStudent(s,scope='staff'){
  const p=cpProfile(s),grade=cpGradeTotal(cpGrade(s)),events=cpEvents(s),questions=cpQuestions(s);
- const fields=scope==='parent'?CP_PROFILE.filter(([k])=>!['learning_needs'].includes(k)):CP_PROFILE;
+ const fields=CP_PROFILE; // تراجع بيانات كل تقرير فردي قبل تسليمه للجهة المطلوبة
  return '<article class="cp-print-student"><h2>الطالب: '+cpEsc(s.full_name)+'</h2>'+
  '<p>الرقم: '+cpNum(s.serial_no)+' • الشعبة: '+cpEsc(s.class_name)+' • الفصل: '+cpTerm()+
  ' • التشخيصي: '+cpNum(grade.diagnostic)+'/١٠ • الإجمالي: '+cpNum(grade.total)+'/١٠٠ • التقدير: '+cpEsc(grade.level)+'</p>'+
@@ -221,10 +235,10 @@ function cpPrint(mode){
  if(mode==='student'&&!s)return;
  const title=mode==='student'?'تقرير متابعة الطالب':mode==='full'?'السجل المصاحب الكامل':'كشف متابعة الشعبة';
  const body=mode==='student'?cpPrintStudent(s,'parent'): '<section class="cp-print-section"><h2>كشف درجات الطلاب ومسارات المتابعة</h2>'+cpPrintRoster(r)+cpSign()+'</section>'+
- (mode==='full'?cpPrintClassPlan()+
+ (mode==='full'?cpPrintDetailedGrades(r)+cpPrintClassPlan()+
  '<section class="cp-print-section"><h2>سجل الانضباط الصفي — الإيجابيات والسلبيات</h2>'+cpBehaviorTable().replaceAll('عرض</button>','—</button>')+'</section>'+
  r.students.map(s=>cpPrintStudent(s)).join(''):'');
- const css=`@page{size:A4 landscape;margin:9mm}*{box-sizing:border-box}body{font:9pt Tahoma,Arial,sans-serif;color:#18384a;direction:rtl}header{text-align:center;border-bottom:2px solid #148a92;margin-bottom:5mm}h1{font-size:17pt;color:#12627a}h2{font-size:12pt;color:#116579}h3{font-size:10pt}p{line-height:1.7}table{width:100%;border-collapse:collapse;font-size:8pt;table-layout:fixed}th,td{border:1px solid #9db8c5;padding:1.7mm 1mm;text-align:right;overflow-wrap:anywhere;vertical-align:top}th{background:#e8f3f7}.cp-print-section{break-after:page}.cp-print-student{break-before:page}.cp-print-student h2{margin-top:5mm}.cp-print-student table{margin-bottom:4mm}.cp-table-scroll{overflow:visible}.cp-behavior-table .cp-name{width:18%}.cp-behavior-table td,.cp-behavior-table th{text-align:center}.cp-behavior-table td:nth-child(2){text-align:right}.of-signatures{width:100%;margin-top:5mm;table-layout:fixed;font-size:7pt}.of-signatures th,.of-signatures td{text-align:center}.of-signatures td{height:12mm}button{display:none}`;
+ const css=`@page{size:${mode==='full'?'A3':'A4'} landscape;margin:9mm}*{box-sizing:border-box}body{font:9pt Tahoma,Arial,sans-serif;color:#18384a;direction:rtl}header{text-align:center;border-bottom:2px solid #148a92;margin-bottom:5mm}h1{font-size:17pt;color:#12627a}h2{font-size:12pt;color:#116579}h3{font-size:10pt}p{line-height:1.7}table{width:100%;border-collapse:collapse;font-size:8pt;table-layout:fixed}th,td{border:1px solid #9db8c5;padding:1.7mm 1mm;text-align:right;overflow-wrap:anywhere;vertical-align:top}th{background:#e8f3f7}.cp-print-section{break-after:page}.cp-print-student{break-before:page}.cp-print-student h2{margin-top:5mm}.cp-print-student table{margin-bottom:4mm}.cp-table-scroll{overflow:visible}.cp-behavior-table .cp-name{width:18%}.cp-behavior-table td,.cp-behavior-table th{text-align:center}.cp-behavior-table td:nth-child(2){text-align:right}.of-signatures{width:100%;margin-top:5mm;table-layout:fixed;font-size:7pt}.of-signatures th,.of-signatures td{text-align:center}.of-signatures td{height:12mm}button{display:none}`;
  const win=window.open('','_blank');
  if(!win){alert('يرجى السماح بالنوافذ المنبثقة لطباعة التقرير.');return}
  win.document.open();win.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+
