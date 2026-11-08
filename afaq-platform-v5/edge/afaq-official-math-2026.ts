@@ -72,6 +72,43 @@ function calculated(row:Record<string,any>|null){
   updated_at:row?.updated_at||null,approved_at:row?.approved_at||null,recorded_by:row?.recorded_by||null};
 }
 const dataColumns="student_id,academic_year,term,diagnostic_score,diagnostic_max,remarks,a_plus_points,a_minus_points,oral_1,oral_2,homework_1,homework_2,question_1,question_2,exam_1,exam_2,project,final_exam,status,revision,created_at,updated_at,approved_at,recorded_by";
+
+// An official assessment is written into two legacy signal keys; count it once.
+function signalIdentity(key:string){
+ const p=key.split(":");
+ if(p[0]==="official"){
+  if(p.length===3&&/^\d+$/.test(p[1]))return "official:"+p[1]+":"+p[2];
+  if(p.length===4&&/^t\d+$/.test(p[2]))return "official:"+p[2].slice(1)+":"+p[3];
+ }
+ return key;
+}
+type Differentiation={enrichment_count:number;remedial_count:number;band:string};
+const emptyDifferentiation=():Differentiation=>({enrichment_count:0,remedial_count:0,band:"standard"});
+async function studentDifferentiation(studentIds:string[]):Promise<Map<string,Differentiation>>{
+ const output=new Map<string,Differentiation>();
+ if(!studentIds.length)return output;
+ const {data,error}=await db.from("afaq_learning_signals")
+  .select("student_id,source_key,track,percentage")
+  .eq("active",true).in("student_id",studentIds).in("track",["remedial","enrichment"]).limit(5000);
+ if(error)throw error;
+ const grouped=new Map<string,{enrichment:Set<string>;remedial:Set<string>}>();
+ for(const signal of data||[]){
+  const track=signal.track;
+  if(track==="enrichment"&&Number(signal.percentage)<85)continue;
+  if(!grouped.has(signal.student_id))grouped.set(signal.student_id,{enrichment:new Set(),remedial:new Set()});
+  const group=grouped.get(signal.student_id)!;
+  const key=signalIdentity(String(signal.source_key||""));
+  if(track==="remedial")group.remedial.add(key);
+  else if(track==="enrichment")group.enrichment.add(key);
+ }
+ for(const [id,group] of grouped){
+  const enrichment_count=group.enrichment.size,remedial_count=group.remedial.size;
+  output.set(id,{enrichment_count,remedial_count,
+   band:remedial_count>0?"remedial":enrichment_count>3?"enrichment_high":
+    enrichment_count>0?"enrichment_low":"standard"});
+ }
+ return output;
+}
 async function classReport(className:string,term:number){
  const r=await db.from("competition_students")
   .select("student_id,serial_no,class_name,full_name,display_name")
@@ -86,6 +123,7 @@ async function classReport(className:string,term:number){
   if(rows.error)throw rows.error;registers=rows.data||[];
  }
  const byId=new Map(registers.map(x=>[x.student_id,x]));
+ const differentiation=await studentDifferentiation(ids);
  const students=roster.map(s=>{
   const marks=calculated(byId.get(s.student_id)||null);
   const plus=marks.a_plus_points,minus=marks.a_minus_points;
@@ -94,7 +132,8 @@ async function classReport(className:string,term:number){
    Math.round(Math.min(40,Math.max(0,Number(plus||0)-Number(minus||0)))/2*100)/100;
   return {student_id:s.student_id,serial_no:s.serial_no,class_name:s.class_name,
    full_name:s.full_name||s.display_name,marks,a_indicator20:indicator20,
-   a_plus_points:plus,a_minus_points:minus};
+   a_plus_points:plus,a_minus_points:minus,
+   differentiation:differentiation.get(s.student_id)||emptyDifferentiation()};
  });
  const timestamps=registers.map(x=>x.updated_at).filter(Boolean).sort();
  return {academic_year:YEAR,term,class_name:className,students,count:students.length,
@@ -237,6 +276,11 @@ Deno.serve(async req=>{
     }
    };
    await Promise.all(Array.from({length:Math.min(prepared.length,4)},()=>worker()));
+   const differentiated=await studentDifferentiation(prepared.filter(p=>saved.some(s=>s.serial_no===p.serial_no)).map(p=>p.student_id));
+   for(const row of saved){
+    const record=prepared.find(p=>p.serial_no===row.serial_no);
+    if(record)Object.assign(row,{differentiation:differentiated.get(record.student_id)||emptyDifferentiation()});
+   }
    saved.sort((a,b)=>a.serial_no-b.serial_no);
    failed.sort((a,b)=>a.serial_no-b.serial_no);
    return ok(origin,{saved,failed,total_requested:prepared.length});
