@@ -78,7 +78,12 @@ function ofRow(s){
  'value="'+(marks.diagnostic_score??'')+'" placeholder="—" '+(!ofEdit()||locked?'disabled':'')+' aria-label="درجة التشخيص">'+
  '<small>من</small><input class="of-diag-max" data-of-field="diagnostic_max" type="number" min="1" max="100" step="1"'+
  ' value="'+ofSafe(marks.diagnostic_max??10)+'" '+(!ofEdit()||locked?'disabled':'')+' aria-label="الدرجة القصوى للتشخيص"></div></td>';
- const indicator=(s.a_indicator20??0);
+ const aPlus=marks.a_plus_points,aMinus=marks.a_minus_points;
+ const indicator=(aPlus===null||aPlus===undefined||aPlus==='' )&&
+  (aMinus===null||aMinus===undefined||aMinus==='')?null:
+  Math.min(40,Math.max(0,Number(aPlus||0)-Number(aMinus||0)))/2;
+ const aInput=(key,label)=>'<label>'+label+' <input type="number" data-of-field="'+key+'" min="0" max="500" step="1"'+
+  ' value="'+(marks[key]??'')+'" placeholder="—" '+(!ofEdit()||locked?'disabled':'')+'></label>';
  const status=locked?'معتمد':marks.status==='draft'?'مسودة':'لم يُرصد';
  const controls=!ofEdit()?'للاطلاع':locked?
  (ofAdmin()?'<button type="button" data-of-reopen="'+s.serial_no+'" class="of-soft">إعادة فتح</button>':'معتمد'):
@@ -94,7 +99,8 @@ function ofRow(s){
  '<td class="of-total" data-of-total="'+s.serial_no+'">'+(result.total===null?'—':ofNumber(result.total))+'</td>'+
  '<td data-of-level="'+s.serial_no+'" class="of-level">'+(result.level||'—')+'</td>'+
  '<td class="of-a-indicator" title="مؤشر A موجب وسالب: صافي الرصيد الحالي المحدد بسقف ٤٠ ثم القسمة على اثنين. لا يدخل في المجموع.">'+
- ofNumber(indicator)+' / ٢٠<small>A+ '+ofNumber(s.a_plus_points||0)+' | A− '+ofNumber(s.a_minus_points||0)+'</small></td>'+
+ '<b data-of-indicator="'+s.serial_no+'">'+(indicator===null?'—':ofNumber(indicator))+' / ٢٠</b>'+
+ '<div class="of-a-inputs">'+aInput('a_plus_points','A+')+aInput('a_minus_points','A−')+'</div></td>'+
  '<td class="of-remarks"><textarea data-of-field="remarks" rows="1" maxlength="500" aria-label="ملاحظات الطالب" '+
  (!ofEdit()||locked?'disabled':'')+'>'+ofSafe(marks.remarks||'')+'</textarea></td>'+
  '<td class="of-actions"><small data-of-status="'+s.serial_no+'">'+status+'</small>'+controls+'</td></tr>';
@@ -192,6 +198,12 @@ function ofUpdateTotals(row){
  if(subtotal)subtotal.textContent=ofNumber(totals.sum)+(totals.seen===9?'':'*');
  if(total)total.textContent=totals.total===null?'—':ofNumber(totals.total);
  if(level)level.textContent=totals.level||'—';
+ const indicator=row.querySelector('[data-of-indicator]');
+ if(indicator){
+  const plus=values.a_plus_points,minus=values.a_minus_points;
+  indicator.textContent=plus===''&&minus===''?'— / ٢٠':
+   ofNumber(Math.min(40,Math.max(0,Number(plus||0)-Number(minus||0)))/2)+' / ٢٠';
+ }
 }
 async function ofSave(serial){
  if(!ofEdit()||ofState.busy[serial]||!ofState.report)return;
@@ -204,6 +216,13 @@ async function ofSave(serial){
  }
  const fields={diagnostic_max:diagMax,diagnostic_score:values.diagnostic_score||null,
   remarks:values.remarks||''};
+ for(const key of ['a_plus_points','a_minus_points']){
+  const v=values[key];
+  if(v!==''&&v!==null&&v!==undefined&&(!Number.isInteger(Number(v))||Number(v)<0||Number(v)>500)){
+   window.alert('نقاط A+ أو A− يجب أن تكون بين صفر و٥٠٠.');return;
+  }
+  fields[key]=v===''?null:v;
+ }
  for(const [key,,max] of OF_FIELDS){
   const v=values[key];
   if(v!==''&&v!==null&&v!==undefined){
@@ -254,7 +273,7 @@ function ofPrintedTable(report){
   return '<tr><td class="of-print-name">'+ofSafe(row.full_name)+'</td><td>'+ofNumber(row.serial_no)+'</td>'+
    '<td>'+diag+'</td>'+fields+'<td>'+ofNumber(c.sum)+(c.complete?'':'*')+'</td>'+
    '<td>'+ofPrintMark(v.final_exam)+'</td><td>'+(c.total===null?'—':ofNumber(c.total))+'</td>'+
-   '<td>'+(c.level||'—')+'</td><td>'+ofNumber(row.a_indicator20||0)+'</td>'+
+   '<td>'+(c.level||'—')+'</td><td>'+(row.a_indicator20===null?'—':ofNumber(row.a_indicator20))+'</td>'+
    '<td>'+ofSafe(v.remarks||'')+'</td></tr>';
  }).join('')+'</tbody></table>';
 }
