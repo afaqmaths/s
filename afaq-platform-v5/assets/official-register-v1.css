@@ -124,3 +124,19 @@
 .of-signatures th{background:#eef6fa;font-weight:normal}.of-signatures b{font-size:11px;font-weight:900}
 .of-signatures td{height:35px}
 @media print{.of-table .of-serial,.of-table .of-name,.of-table thead tr.of-group-row th:first-child,.of-table thead tr.of-group-row th:nth-child(2){position:static;box-shadow:none}}
+
+/* حفظ واحد للشعبة — زر أسفل كشف الرصد بدل أزرار بكل طالب */
+.of-save-bar{margin:16px 0 8px;padding:17px 18px;display:flex;align-items:center;flex-wrap:wrap;
+ gap:12px 17px;border:2px solid #91cbc2;border-radius:15px;background:linear-gradient(100deg,#ecfaf4,#f2f9ff);
+ box-shadow:0 4px 16px #167f7311;direction:rtl}
+.of-save-all{border:0;border-radius:12px;background:#087d71;color:#fff;padding:15px 27px;
+ min-height:52px;font:950 17px Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 4px 12px #0d776b25}
+.of-save-all:hover:not(:disabled){background:#05695f;transform:translateY(-1px)}
+.of-save-all:disabled{background:#9aaeb0;color:#f4f7f8;cursor:not-allowed;box-shadow:none}
+.of-save-all:focus-visible{outline:3px solid #c58932;outline-offset:3px}
+.of-save-bar #ofPendingCount{font:900 14px Tahoma,Arial,sans-serif;color:#21617d}
+.of-save-bar small{flex:1 1 100%;color:#58768a;font:12px Tahoma,Arial,sans-serif;line-height:1.9}
+.of-table tr.of-dirty td.of-actions{background:#fff1da}
+.of-table tr.of-dirty [data-of-status]{color:#a25b14;font-weight:900}
+@media(max-width:680px){.of-save-bar{padding:13px 10px}.of-save-all{width:100%;font-size:15px}.of-save-bar #ofPendingCount{width:100%;text-align:center}}
+@media print{.of-save-bar{display:none!important}}
