@@ -29,7 +29,7 @@ const MARKS=[
  ["short_exam2_score","الاختبار القصير الثاني",10],["written_score","الأعمال الكتابية",5],
  ["homework_score","الواجب المنزلي",5],["project_score","المشروع",10]
 ];
-const classify=(score:number|null)=>score===null?"ungraded":score<30?"remedial":score>60?"enrichment":"standard";
+const classify=(score:number|null)=>score===null?"ungraded":score<=50?"remedial":score>=70?"enrichment":"standard";
 const percent=(a:number,b:number)=>b>0?Math.round(a/b*10000)/100:0;
 const activeTracks=(flags:any[])=>["remedial","enrichment"].filter(track=>flags.some(f=>f.active&&f.track===track));
 const prioritize=(tracks:string[])=>tracks.includes("remedial")?"remedial":tracks.includes("enrichment")?"enrichment":"standard";
@@ -129,7 +129,7 @@ async function learningPath(studentId:string,requestedTrack=""){
    reason:s.reason_public,date:s.source_date
   })),
   ...summary,tasks:tasks.map(t=>publicTask(t,progress[t.task_id])),
-  thresholds:{remedial_below:30,enrichment_above:60},
+  thresholds:{remedial_at_or_below:50,enrichment_at_or_above:70},
   archived:!active.includes(track)&&historic.includes(track)};
 }
 
@@ -263,7 +263,7 @@ Deno.serve(async(req:Request)=>{
    }
    const rows=await overview(u.role,type==="class"?cls:"");
    return reply(origin,{ok:true,scope:type,class_name:type==="class"?cls:null,students:rows,
-    thresholds:{remedial_below:30,enrichment_above:60}});
+    thresholds:{remedial_at_or_below:50,enrichment_at_or_above:70}});
   }
   if(action==="staff_student_path"){
    if(!staff(u.role))return fail(origin,"forbidden",403);
