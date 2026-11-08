@@ -75,3 +75,38 @@
 .of-a-inputs input{width:48px;height:29px;border:1px solid #d6c491;border-radius:6px;text-align:center;background:#fffaf0;font:800 11px Tahoma,Arial,sans-serif}
 .of-a-inputs input:disabled{background:#f8f2df;color:#6c6c6c}
 .of-a-indicator b{display:block;font-size:16px}
+
+/* Grade register layout refinement — 2026-11-08 */
+.of-table{width:max(100%,1762px);min-width:1762px;table-layout:fixed}
+.of-table col.of-col-name{width:390px}
+.of-table col.of-col-serial{width:44px}
+.of-table col.of-col-diagnostic{width:117px}
+.of-table col.of-col-mark{width:57px}
+.of-table col.of-col-subtotal,.of-table col.of-col-total{width:72px}
+.of-table col.of-col-final{width:57px}
+.of-table col.of-col-level{width:75px}
+.of-table col.of-col-indicator{width:170px}
+.of-table col.of-col-remarks{width:160px}
+.of-table col.of-col-actions{width:92px}
+.of-table th,.of-table td{padding:6px 3px}
+.of-table .of-name{width:390px;position:sticky;right:0;z-index:5;box-shadow:-2px 0 6px #1f506316}
+.of-table thead tr.of-group-row th:first-child{position:sticky;right:0;top:0;z-index:8;background:#dceef5}
+.of-table .of-serial{width:44px;position:static;right:auto;z-index:auto;background:#f0f6f9;border-inline-start:1px solid #dae4eb}
+.of-table .of-person{display:block;min-width:0}
+.of-table .of-person strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px;line-height:1.7;color:#1e516f}
+.of-table .of-person small{display:none}
+.of-number-input{width:47px;max-width:100%;height:32px;font-size:14px;padding:2px 1px;appearance:textfield;-moz-appearance:textfield}
+.of-number-input::-webkit-inner-spin-button,.of-number-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.of-diag-cell .of-number-input{width:46px}
+.of-diag-max{width:39px}
+.of-table .of-level{font-size:15px;white-space:nowrap}
+.of-table .of-level[data-of-band="A"]{color:#166241;background:#e1f5e8}
+.of-table .of-level[data-of-band="B"]{color:#1c647f;background:#e4f3fa}
+.of-table .of-level[data-of-band="C"]{color:#87641e;background:#fff5d8}
+.of-table .of-level[data-of-band="D"]{color:#a26424;background:#fff0dc}
+.of-table .of-level[data-of-band="E"]{color:#9b3737;background:#ffebea}
+@media print{
+ .of-table{width:100%;min-width:0}
+ .of-table .of-name,.of-table .of-serial,.of-table thead tr.of-group-row th:first-child{position:static;box-shadow:none}
+ .of-table .of-person strong{font-size:8pt;white-space:normal;text-overflow:clip}
+}
