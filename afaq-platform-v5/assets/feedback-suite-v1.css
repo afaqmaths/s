@@ -1,0 +1,54 @@
+/* متابعة العلاج والإثراء وأثر التغذية الراجعة — آفاق الرياضيات */
+.fb-page{max-width:1370px;margin:0 auto;padding:13px 18px 30px;direction:rtl}
+.fb-hero{border:1px solid #b8dfd9;border-radius:22px;padding:26px 31px;color:#fff;background:linear-gradient(130deg,#124d74,#158e88);margin:13px 0 22px}
+.fb-hero h1{color:#fff;font-size:clamp(24px,3vw,39px);font-weight:950;margin:9px 0 12px}
+.fb-hero>span{font-weight:900;color:#fde6a1}
+.fb-hero p{color:#eafcff;font-size:16px;line-height:1.9}
+.fb-panel{background:white;padding:22px 25px;margin:20px 0;border-radius:18px;border:1px solid #cfe0eb;box-shadow:0 5px 19px #155e8910}
+.fb-panel h2{font-size:23px;color:#18547a;margin:4px 0 16px;font-weight:950}
+.fb-panel>p{color:#526f84;font-size:15px;line-height:1.75}
+.fb-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:15px 0}
+.fb-controls label{font-weight:900;color:#205479;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.fb-controls select{width:100%;min-height:44px;border:1px solid #c5d8e7;color:#234c6e;background:#fff;border-radius:10px;padding:9px;font:15px Tahoma,Arial,sans-serif}
+.fb-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}
+.fb-toolbar button{font-size:15px}
+.fb-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0 20px}
+.fb-stats article{display:flex;flex-direction:column;text-align:center;gap:7px;border:1px solid #cbe4e8;background:#f1fbfa;padding:14px;border-radius:13px}
+.fb-stats article strong{font-size:29px;color:#168477;font-weight:950}
+.fb-stats article span{font-size:12px;font-weight:850;color:#42677c}
+.fb-note{font-size:13px!important;color:#756239!important;background:#fff8e6;border-radius:11px;padding:12px;border:1px solid #e7d8aa}
+.fb-error{color:#a53131;background:#fff1ed;padding:12px;border:1px solid #e8c2c0;border-radius:10px}
+.fb-loading,.fb-empty{padding:19px;background:#eff7fb;border:1px dashed #c5dbe9;color:#526f84;text-align:center;border-radius:12px}
+.fb-table-wrap{overflow:auto;max-width:100%;border:1px solid #c9dfeb;border-radius:11px}
+.fb-report-table{border-collapse:collapse;width:100%;min-width:980px;font-size:13px;direction:rtl;background:#fff}
+.fb-report-table thead th{position:sticky;top:0;background:#eaf4fc;color:#19527d;font-weight:950;z-index:1}
+.fb-report-table th,.fb-report-table td{border:1px solid #d7e3ea;padding:10px 8px;text-align:right;vertical-align:top}
+.fb-report-table tbody tr:nth-child(even){background:#f8fcff}
+.fb-report-table tbody tr:hover{background:#fff8e9}
+.fb-report-table td:nth-child(2){font-weight:900;min-width:160px;color:#1c526e}
+.fb-selected-panel{border:2px solid #c3e3db;border-radius:17px;background:linear-gradient(145deg,#faffff,#f5fbff);margin:17px 0;padding:17px 20px}
+.fb-selected-panel h3{color:#136c81;font-size:21px}
+.fb-selected-panel>p{line-height:1.8;color:#456b80}
+.fb-selected-track{padding:13px 16px;background:#fff;border:1px solid #cfe3e9;border-radius:12px;margin:11px 0}
+.fb-selected-track h4{color:#1e6b82;font-size:17px;margin:4px 0}
+.fb-selected-track p{font-size:14px;color:#486984;line-height:1.8}
+.fb-selected-track details{border-top:1px solid #e3edf3;padding-top:8px}
+.fb-selected-track summary{font-weight:850;color:#1a6f7c;cursor:pointer}
+.fb-task-preview{max-height:330px;overflow-y:auto;margin:9px 0;padding:8px 12px;background:#f6fafc;border-radius:9px}
+.fb-task-preview p{padding:6px 0;border-bottom:1px solid #e1eaf1}
+.fb-print-group{margin:18px 0;padding:13px;border:1px solid #d0e3ee;border-radius:11px;background:#fff}
+.fb-print-group h3{color:#9c732a;font-size:19px}
+.study-path-detail .study-reasons{background:#f3f9ff;border:1px solid #cbe4ee;border-radius:13px;padding:12px 15px;margin:11px 0}
+.study-path-detail .study-reasons strong{color:#246384}
+.study-path-detail .study-reasons ul{padding-inline-start:22px;color:#4f657e;line-height:1.8}
+.study-metrics-extended{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:14px 0}
+.study-metrics-extended>div{background:#f0f9f5;border:1px solid #c6e4d4;border-radius:12px;padding:11px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.study-metrics-extended b{color:#177660;font-size:24px}
+.study-metrics-extended small{font-size:12px;color:#557a72}
+.study-print-actions{margin-top:12px}
+.study-feedback{padding:11px;border-radius:11px;line-height:1.7;margin-top:8px;border:1px solid #c9e2d5}
+.study-feedback.ok{background:#e5f8eb;color:#196642}
+.study-feedback.try{background:#fff7e9;color:#93632a}
+@media(max-width:1000px){.fb-stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.fb-page{padding:9px}.fb-hero,.fb-panel{padding:15px}.fb-stats{grid-template-columns:repeat(2,1fr)}.fb-report-table{font-size:12px}}
+@media print{.fb-hero,.fb-controls,.fb-toolbar,.fb-note,.fb-print-actions,.fb-selected-track button{display:none!important}.fb-table-wrap{overflow:visible;border:0}.fb-report-table{font-size:9px;min-width:0;table-layout:fixed}.fb-report-table th,.fb-report-table td{padding:3px}.fb-panel{break-inside:auto;box-shadow:none;border:0}}
