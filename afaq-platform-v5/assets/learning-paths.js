@@ -74,7 +74,7 @@ function studentForms(target){
    const message=document.createElement('p');message.className='study-feedback '+(r.correct?'ok':'try');
    message.textContent=r.feedback+' الإجابة الصحيحة: '+r.correct_answer+'. '+r.explanation;
    form.appendChild(message);
-   if(r.path){const panel=target;setTimeout(()=>{if(panel.isConnected){panel.innerHTML=pathHtml(r.path,true);studentForms(panel)}},5000)}
+   if(r.path){const panel=target;setTimeout(()=>{if(panel.isConnected){panel.innerHTML=pathHtml(r.path,true);studentForms(panel);studyBindPrinting(panel,r.path)}},5000)}
   }catch(err){alert(err.message)}finally{button.disabled=false}
  }));
 }
