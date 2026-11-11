@@ -275,32 +275,56 @@ function quiz(){const q=getCurrent();if(!q)return '';
  (STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+'</div></div>';
 }
 function transition(){
- const sec=clockSec(STATE.waitingUntil),n=STATE.feedbackStage||1,f=STATE.lastFeedback,q=STATE.feedbackQuestion,name=STATE.displayName||STATE.user?.username||'المتسابق';
- let heading='🌟 تم حفظ الإجابة',msg=STATE.waitingMessage||'استعد للتحدي التالي.';
- if(f?.unanswered){heading='⏰ انتهى وقت السؤال';msg='يا '+name+'، راجع الحل الصحيح ثم واصل بثقة.'}
- else if(f?.correct){heading='🌟 إجابة صحيحة!';msg='أحسنت يا '+name+'! إجابة موفقة، استمر!'}
- else if(f){heading='💡 تعلّم من المحاولة';msg='يا '+name+'، راجع التصحيح، والسؤال التالي فرصة جديدة.'}
- let review='';
- if(q){
-  let options='';
-  if(q.question_kind!=='complex'){
-   options='<div class="contest-review-options">'+(q.options||[]).map((v,i)=>{
-    const good=f&&String(v)===String(f.correct_answer),picked=STATE.feedbackAnswer!==null&&Number(STATE.feedbackAnswer)===i;
-    const cls=good?'answer-correct':picked?'answer-wrong':'',tag=good?'✓ الإجابة الصحيحة':picked?'✕ اختيارك':'';
-    return '<div class="contest-option contest-review-option '+cls+'"><span class="option-letter">'+['أ','ب','ج','د'][i]+'</span><span class="contest-option-value">'+friendly(v)+'</span>'+(tag?'<span class="contest-answer-tag">'+tag+'</span>':'')+'</div>';
-   }).join('')+'</div>';
-  }else{
-   const a=Array.isArray(STATE.feedbackAnswer)?STATE.feedbackAnswer:[],correct=Array.isArray(f?.correct_answer)?f.correct_answer:[];
-   options='<div class="contest-review-parts">'+(q.parts||[]).map((part,i)=>'<div class="contest-review-part"><strong>('+stext(i+1)+') '+friendly(part.text)+'</strong><span>إجابتك: '+friendly(a[i]??'لم تجب')+'</span><span class="contest-right-answer">✓ الإجابة الصحيحة: '+friendly(correct[i]??'—')+'</span></div>').join('')+'</div>';
-  }
-  review='<section class="contest-feedback-question"><h3>'+friendly(q.prompt)+'</h3>'+figure(q)+options+'</section>';
+ const f=STATE.lastFeedback,q=STATE.feedbackQuestion,n=STATE.feedbackStage||1,
+  name=STATE.displayName||STATE.user?.username||'المتسابق';
+ if(!q)return '<section class="contest-playing"><p>يجري الانتقال إلى السؤال التالي… <b id="nextCountdown">'+stext(clockSec(STATE.waitingUntil))+'</b></p></section>';
+ const correct=f?.correct===true,unanswered=f?.unanswered===true;
+ const status=unanswered?'⏰ لم تُجب في الوقت المحدد':correct?'✅ إجابة صحيحة':'❌ إجابة خاطئة';
+ const encouragement=unanswered?'انتهى وقت السؤال يا '+name+'؛ راجع التصحيح ثم حاول الإجابة بسرعة في القادم.':
+  correct?'أحسنت يا '+name+'، إجابة ممتازة! استمر في تقدمك.':
+  'لم تكن إجابتك صحيحة يا '+name+'؛ تعلّم من التصحيح وركز في السؤال القادم، تستطيع أن تتحسن.';
+ let choices='';
+ if(q.question_kind!=='complex'){
+  choices='<div class="contest-review-options">'+(q.options||[]).map((v,i)=>{
+   const right=f&&String(v)===String(f.correct_answer);
+   const selected=STATE.feedbackAnswer!==null&&Number(STATE.feedbackAnswer)===i;
+   const css=right?'answer-correct':selected?'answer-wrong':'';
+   const tag=right?'✓ الاختيار الصحيح':selected?'✕ إجابتك خاطئة':'';
+   return '<div class="contest-option contest-review-option '+css+'"><span class="option-letter">'+['أ','ب','ج','د'][i]+'</span>'+
+    '<span class="contest-option-value">'+friendly(v)+'</span>'+(tag?'<b class="contest-answer-tag">'+tag+'</b>':'')+'</div>';
+  }).join('')+'</div>';
+ }else{
+  const answers=Array.isArray(STATE.feedbackAnswer)?STATE.feedbackAnswer:[],
+   solutions=Array.isArray(f?.correct_answer)?f.correct_answer:[];
+  choices='<div class="contest-review-parts">'+(q.parts||[]).map((part,i)=>{
+   const chosen=answers[i]??'',right=solutions[i]??'',matched=String(chosen).trim()===String(right).trim();
+   return '<div class="contest-review-part '+(matched?'answer-correct':'answer-wrong')+'">'+
+    '<strong>('+stext(i+1)+') '+friendly(part.text)+'</strong>'+
+    '<span>'+(matched?'✅ إجابتك صحيحة: ':'❌ إجابتك خاطئة: ')+friendly(chosen||'لم تجب')+'</span>'+
+    (!matched?'<span class="contest-right-answer">✓ التصحيح: '+friendly(right||'—')+'</span>':'')+'</div>';
+  }).join('')+'</div>';
  }
- const earned=nscore(f?.earned),max=nscore(f?.max)||1,stageValue=nscore(sttotal(n).earned),grand=totalEarned();
- const metrics=f?'<div class="contest-feedback-metrics"><div><strong>'+stext(earned)+' / '+stext(max)+'</strong><small>درجة السؤال · '+stext(sper(earned,max))+'٪</small></div><div><strong>'+stext(stageValue)+' / ١٠</strong><small>حصيلة المرحلة · '+stext(sper(stageValue,10))+'٪</small></div><div><strong>'+stext(grand)+' / ٥٠</strong><small>الحصيلة العامة · '+stext(sper(grand,50))+'٪</small></div></div>':'';
- return '<div class="contest-feedback-screen">'+raceTrack(q,true)+'<div class="contest-feedback-grid">'+review+
- '<aside class="contest-feedback-summary '+(f?.correct?'is-success':'is-review')+'"><div class="contest-feedback-title">'+image(stageEndArt(n),'شخصية المرحلة','contest-feedback-avatar')+'<div><h2>'+heading+'</h2><p>'+friendly(msg)+'</p></div></div>'+
- metrics+(f?.correct_answer!==undefined?'<p class="contest-correction">✅ الإجابة الصحيحة: '+friendly(Array.isArray(f.correct_answer)?f.correct_answer.join('، '):f.correct_answer)+'</p>':'')+(f?.explanation?'<p class="contest-explanation">💡 '+friendly(f.explanation)+'</p>':'')+
- '<div class="contest-next-box"><span>الانتقال تلقائيًا خلال</span><strong id="nextCountdown">'+stext(sec)+'</strong><span>ثوانٍ</span></div></aside></div></div>';
+ const earned=nscore(f?.earned),max=nscore(f?.max)||1,
+  stageScore=nscore(sttotal(n).earned),overall=totalEarned();
+ const metric='<div class="contest-feedback-metrics"><div><strong>'+stext(earned)+' / '+stext(max)+'</strong><small>درجة السؤال • '+stext(sper(earned,max))+'٪</small></div>'+
+  '<div><strong>'+stext(stageScore)+' / ١٠</strong><small>المرحلة • '+stext(sper(stageScore,10))+'٪</small></div>'+
+  '<div><strong>'+stext(overall)+' / ٥٠</strong><small>الإجمالي • '+stext(sper(overall,50))+'٪</small></div></div>';
+ const art=stage(n),sec=clockSec(STATE.waitingUntil);
+ return '<div class="contest-playing contest-answer-phase"><div class="contest-headline">'+
+  '<div><span>'+(STATE.mode==='official'?'🏆 محاولة رسمية':'🎯 تدريب')+'</span><h2>'+unitName(STATE.grade,STATE.section)+'</h2>'+
+  '<small>'+friendly(name)+'</small></div><div class="contest-score-badge"><strong>'+stext(overall)+' / ٥٠</strong><small>المجموع الحالي</small></div></div>'+
+  road(n)+raceTrack(q,true)+
+  '<div class="contest-game-area"><div class="contest-stage-banner"><div class="contest-character">'+
+  image(stageArt(n),art.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+stext(n)+' من ٥</span>'+
+  '<h2>'+friendly(art.title)+'</h2><p>التصحيح داخل لوحة السؤال نفسها</p></div></div>'+
+  '<div class="contest-question contest-correction-inline"><h3>'+friendly(q.prompt)+'</h3>'+figure(q)+
+  choices+'<div class="contest-answer-status '+(correct?'is-correct':'is-wrong')+'" role="status"><h3>'+status+'</h3>'+
+  '<p>'+friendly(encouragement)+'</p>'+
+  (!correct&&f?.correct_answer!==undefined?'<p class="contest-correction">✅ الإجابة الصحيحة: '+
+   friendly(Array.isArray(f.correct_answer)?f.correct_answer.join('، '):f.correct_answer)+'</p>':'')+
+  (f?.explanation?'<p class="contest-explanation">💡 '+friendly(f.explanation)+'</p>':'')+
+  metric+'<p class="contest-inline-countdown">الانتقال تلقائيًا إلى السؤال التالي خلال <strong id="nextCountdown">'+
+  stext(sec)+'</strong> ثوانٍ.</p></div></div></div></div>';
 }
 
 const certStoreKey=()=> 'afaq_training_certificate_v3_'+String(STATE.user?.username||'guest')+'_'+STATE.grade+'_'+STATE.section;
