@@ -106,14 +106,15 @@ function workVideoCell(item){
 }
 function workSettings(item){
  if(!workSuper())return '';
- return '<details class="work-settings"><summary>⚙️ إدارة '+(item.kind==='task'?'المهمة':'الورقة')+'</summary>'+
+ const name=item.kind==='task'?'المهمة':item.kind==='lesson_resource'?'مواد الدرس':'الورقة';
+ return '<details class="work-settings"><summary>⚙️ إدارة '+name+'</summary>'+
   '<form data-work-edit="'+workEsc(item.id)+'">'+
   '<label>العنوان<input name="title" maxlength="160" value="'+workEsc(item.title)+'" required></label>'+
   '<label>تعليمات إضافية<textarea name="instructions" rows="2">'+workEsc(item.instructions||'')+'</textarea></label>'+
   '<label class="work-check"><input type="checkbox" name="published" '+(item.published?'checked':'')+'> نشر المهمة والملفات للفئة المخصصة</label>'+
   '<label class="work-check"><input type="checkbox" name="answer_released" '+(item.answer_released?'checked':'')+'> السماح للطلاب بالاطلاع على نماذج الإجابة</label>'+
-  '<button type="submit" class="primary">💾 حفظ إعدادات '+(item.kind==='task'?'المهمة':'الورقة')+'</button> '+
-  '<button type="button" class="work-danger" data-work-delete-item="'+workEsc(item.id)+'">حذف '+(item.kind==='task'?'المهمة':'الورقة')+' ومرفقاتها</button>'+
+  '<button type="submit" class="primary">💾 حفظ إعدادات '+name+'</button> '+
+  '<button type="button" class="work-danger" data-work-delete-item="'+workEsc(item.id)+'">حذف '+name+' ومرفقاتها</button>'+
   '</form></details>';
 }
 function workItemName(item){
