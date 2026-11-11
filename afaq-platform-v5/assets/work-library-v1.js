@@ -72,6 +72,17 @@ gradePage=function(){
 };
 const workOldGeneric=genericSection;
 genericSection=function(page){return page==='work'?workPage():workOldGeneric(page)};
+const workOldDashboard=dashboard;
+dashboard=function(){
+ const html=workOldDashboard();
+ if(!auth.user)return html;
+ const title=workSuper()?'إدارة مهام العمل والمستندات':'مهام العمل وأوراق الدروس';
+ const text=workSuper()?'إضافة أوراق العمل، نماذج الحلول، صور السبورة والفيديوهات، وإنشاء مهام الطلاب والإدارة ونشرها أو حذفها.':
+  'عرض المهام ومواد الدروس المنشورة وفق صلاحية حسابك.';
+ return html+'<section class="container work-dashboard-shortcut"><div><h3>📚 '+title+'</h3><p>'+text+
+  '</p></div><button type="button" class="primary" data-route="work">'+
+  (workSuper()?'فتح إدارة مهام العمل':'فتح مهام العمل')+'</button></section>';
+};
 function workTabs(){
  const entries=[['worksheets','📗 أوراق عمل الصف السادس'],['student_tasks','📝 مهام الطلاب'],
  ...(workStaff()?[['management_tasks','🏫 مهام الإدارة المدرسية']]:[])];
