@@ -90,6 +90,9 @@ Deno.serve(async (req:Request)=>{
     return err(origin,"forbidden",403);
 
   if(action==="list"){
+   // Server-side student-view filtering, restricted to the authenticated principal supervisor.
+   const preview=b.preview_as_student===true&&isSupervisor(user.role);
+   const viewUser=preview?{...user,role:"student",grade:6}:user;
    const [{data:lessons,error:le},{data:all,error:ie}]=await Promise.all([
     db.from("afaq_work_lessons").select("id,unit_no,unit_name,lesson_code,lesson_title,sort_order")
       .eq("grade",6).eq("semester",1).order("sort_order").limit(200),
@@ -97,7 +100,7 @@ Deno.serve(async (req:Request)=>{
       .order("sort_order").order("created_at").limit(5000)
    ]);
    if(le||ie)throw le||ie;
-   const items=(all||[]).filter(x=>canSee(x,user));
+   const items=(all||[]).filter(x=>canSee(x,viewUser));
    const itemIds=items.map(x=>x.id);
    let documents:any[]=[],videos:any[]=[];
    if(itemIds.length){
@@ -109,11 +112,12 @@ Deno.serve(async (req:Request)=>{
     ]);
     if(dr.error||vr.error)throw dr.error||vr.error;
     const map=new Map(items.map(x=>[x.id,x]));
-    documents=(dr.data||[]).filter(x=>x.doc_role!=="answer"||canSeeDocument(map.get(x.item_id),user.role));
+    documents=(dr.data||[]).filter(x=>x.doc_role!=="answer"||canSeeDocument(map.get(x.item_id),viewUser.role));
     videos=vr.data||[];
    }
    return ok(origin,{lessons:lessons||[],items,documents,videos,
-    can_manage:isSupervisor(user.role),can_see_answers:isStaff(user.role)});
+    can_manage:isSupervisor(viewUser.role),can_see_answers:isStaff(viewUser.role),
+    preview_as_student:preview});
   }
   if(action==="save_item"){
    if(!isSupervisor(user.role))return err(origin,"forbidden",403);
@@ -215,7 +219,9 @@ Deno.serve(async (req:Request)=>{
    if(de)throw de;
    if(!doc)return err(origin,"file_not_found",404);
    const item=await getItem(doc.item_id);
-   if(!canSee(item,user)||doc.doc_role==="answer"&&!canSeeDocument(item,user.role))
+   const preview=b.preview_as_student===true&&isSupervisor(user.role);
+   const viewUser=preview?{...user,role:"student",grade:6}:user;
+   if(!canSee(item,viewUser)||doc.doc_role==="answer"&&!canSeeDocument(item,viewUser.role))
      return err(origin,"forbidden",403);
    const {data,error}=await db.storage.from(BUCKET).createSignedUrl(doc.storage_path,120);
    if(error)throw error;
