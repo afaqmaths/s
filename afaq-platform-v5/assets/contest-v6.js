@@ -138,8 +138,50 @@ function staffResults(){if(!allowedStaff()||!STATE.staffReport)return '';
  const rows=items.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+friendly(x.class_name)+' • '+friendly(x.serial_no)+'</td><td>'+friendly(x.full_name)+'</td><td>'+friendly(x.total)+'/٤٠٠</td><td>'+x.parts.map(p=>p.best??'—').join('، ')+'</td><td>'+(x.qualified?'متأهل':'لم يتأهل بعد')+'</td>'+(columns?'<td>'+friendly(x.student_id||'')+'</td>':'')+'</tr>').join('');
  return '<section class="panel staff-contest-panel"><h3>📊 نتائج نجوم آفاق الرياضيات للطلاب</h3><p>ترتيب مبدئي حسب مجموع أفضل نتائج الوحدات. التأهل يبدأ من ٣٥٠ نقطة بعد إتمام الوحدات الأربع.</p><div class="result-table-scroll"><table><thead><tr><th>م</th><th>الشعبة والرقم</th><th>الطالب</th><th>المجموع</th><th>الوحدات (١–٤)</th><th>الحالة</th>'+(columns?'<th>الرقم الأصلي</th>':'')+'</tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
-function manager(){if(!supervisor())return '';
- return '<section class="panel contest-admin"><h3>إدارة النماذج ومراجعة الأسئلة المصورة</h3><p>تظهر الرسوم الأصلية وأجزاؤها في شاشة المراجعة. لا تُفتح المحاولات الرسمية حتى اعتماد نماذجها.</p><label for="editModel">النموذج</label><select id="editModel">'+Object.entries(models).map(([k,n])=>'<option value="'+k+'" '+(k===STATE.editModel?'selected':'')+'>'+n+'</option>').join('')+'</select><button class="outline" id="loadBank">عرض بنك الأسئلة</button>'+(STATE.bank?bankView():'')+'</section>';
+
+function contestSupervisorControls(){
+ const profiles=STATE.testerStatuses||[],students=STATE.staffReport||[];
+ const accounts=[1,2].map(number=>{
+  const profile=profiles.find(x=>Number(x.number)===number);
+  const used=profile?.report?.parts?.map(p=>'الوحدة '+stext(p.section)+': '+stext(p.attempts_used)+'/٢').join(' | ')||'محاولتان في كل وحدة';
+  return '<article class="contest-tester-card"><h4>🎓 حساب المشرف التجريبي '+stext(number)+'</h4>'+
+   '<p>محاكاة تجربة الطالب الرسمية، دون إضافته إلى الطلاب أو إلى ترتيب الجوائز.</p>'+
+   '<p>'+used+'</p><button class="primary" type="button" data-tester-enter="'+number+'">الدخول بواجهة الطالب</button> '+
+   '<button class="outline" type="button" data-tester-reset="'+number+'">إعادة احتساب المحاولات</button></article>';
+ }).join('');
+ const options=students.slice().sort((a,b)=>String(a.class_name).localeCompare(String(b.class_name),'ar')||Number(a.serial_no)-Number(b.serial_no))
+  .map(x=>'<option value="'+friendly(x.class_name)+'|'+friendly(x.serial_no)+'">'+friendly(x.class_name)+' — '+stext(x.serial_no)+' — '+friendly(x.full_name)+'</option>').join('');
+ const units=[0,1,2,3,4].map(n=>'<option value="'+n+'">'+(n===0?'جميع الوحدات الأربع':unitName(6,n))+'</option>').join('');
+ return '<section class="panel contest-supervisor-console"><h3>🧑‍🎓 حسابا المشرف التجريبيان</h3>'+
+ '<p>لكل حساب محاولتان رسميتان فقط في كل وحدة؛ لا تُحتسب نتائجه ضمن نتائج الطلاب الـ٩٨.</p>'+
+ '<div class="contest-tester-grid">'+accounts+'</div>'+
+ '<h3>🔐 إعادة ضبط محاولات طالب</h3><p>يمكن إعادة المحاولات المحددة بعد تأكيد المشرف. تُحفظ نسخة من النتائج السابقة في سجل محمي.</p>'+
+ '<div class="contest-supervisor-form"><label>الطالب<select id="contestResetStudent"><option value="">اختر الطالب...</option>'+options+'</select></label>'+
+ '<label>الوحدة<select id="contestResetUnit">'+units+'</select></label>'+
+ '<button id="contestResetNow" class="outline" type="button">إعادة محاولات الطالب</button></div>'+
+ '<p id="contestResetMessage" role="status" class="contest-admin-message"></p>'+
+ '<h3>🔑 تعيين رقم سري جديد لطالب</h3>'+
+ '<p>لا تُعرض الأرقام السرية الحالية؛ يمكنك تسليم رقم جديد للطالب ليغيره بنفسه بعد دخوله.</p>'+
+ '<form id="contestStudentPinReset"><label>الطالب<select id="contestPinStudent" required><option value="">اختر الطالب...</option>'+options+'</select></label>'+
+ '<label>الرقم الجديد (٤ أرقام)<input id="contestPinNew" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" required></label>'+
+ '<label>الرقم السري الحالي للمشرف (٨ أرقام)<input id="contestSupervisorPin" type="password" inputmode="numeric" pattern="[0-9]{8}" maxlength="8" required></label>'+
+ '<button class="primary" type="submit">اعتماد الرقم الجديد للطالب</button></form>'+
+ '<p id="contestPinResetMessage" role="status" class="contest-admin-message"></p></section>';
+}
+function studentPasswordPanel(){
+ if(!student())return '';
+ return '<details class="panel contest-change-pin"><summary>🔑 تغيير رقمي السري بعد استلامه من المشرف</summary>'+
+ '<p>يمكنك اختيار رقم سري جديد من ٤ أرقام بعد التحقق من رقمك الحالي. لا يؤثر التغيير على محاولات المسابقة.</p>'+
+ '<form id="contestChangePin"><label>الرقم الحالي<input id="contestCurrentPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="current-password" required></label>'+
+ '<label>الرقم الجديد<input id="contestNewPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" required></label>'+
+ '<label>تأكيد الرقم الجديد<input id="contestConfirmPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" required></label>'+
+ '<button type="submit" class="primary">حفظ الرقم السري الجديد</button></form>'+
+ '<p id="contestPinChangeStatus" role="status"></p></details>';
+}
+function manager(){
+ if(!supervisor()||isTester())return '';
+ return contestSupervisorControls()+
+  '<section class="panel contest-admin"><h3>إدارة النماذج ومراجعة الأسئلة المصورة</h3><p>تظهر الرسوم الأصلية وأجزاؤها في شاشة المراجعة. لا تُفتح المحاولات الرسمية حتى اعتماد نماذجها.</p><label for="editModel">النموذج</label><select id="editModel">'+Object.entries(models).map(([k,n])=>'<option value="'+k+'" '+(k===STATE.editModel?'selected':'')+'">'+n+'</option>').join('')+'</select><button class="outline" id="loadBank">عرض بنك الأسئلة</button>'+(STATE.bank?bankView():'')+'</section>';
 }
 function bankView(){const all=STATE.bank.questions||[];return '<div class="contest-bank"><p>عدد الأسئلة: '+all.length+' / ٣٨</p>'+all.map(q=>'<details><summary>س '+q.ordinal+' | '+friendly(q.objective)+' — '+friendly(q.prompt).slice(0,130)+'</summary>'+
  '<form class="edit-question" data-ordinal="'+q.ordinal+'"><label>نص السؤال</label><textarea name="prompt" rows="3">'+friendly(q.prompt)+'</textarea>'+
