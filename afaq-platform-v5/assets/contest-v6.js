@@ -111,7 +111,8 @@ async function authenticate(){
  try{let r=await api('me');STATE.user=r.user;STATE.displayName=STATE.user?.role==='demo'?'متسابق الصف '+(gradeNames[Number(r.user.grade)]||''):(STATE.displayName||STATE.user?.username||'المتسابق');STATE.grade=student()||STATE.user.role==='demo'?Number(r.user.grade||6):6;
   if(student()||STATE.user.role==='demo'){if(student())STATE.mode='official';STATE.report=(await back('my_results')).report;if(student()){try{const p=(await api('profile'))?.profile?.student;STATE.displayName=p?.full_name||p?.display_name||STATE.displayName;STATE.profile=p||null}catch{}}}
   else {const values=await Promise.all([back('staff_summary'),back('staff_results'),...(supervisor()?[back('tester_status')]:[])]);STATE.summary=values[0].stats;STATE.staffReport=values[1].students;if(supervisor())STATE.testerStatuses=values[2]?.profiles||[];}
-  if(student()){try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
+  if(student()){try{await back('contest_visit')}catch(err){console.warn('Contest visit tracking unavailable',err.message)}
+    try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
  }catch(e){STATE.user=null;STATE.token='';sessionStorage.removeItem(tokenKey);}
 }
 const getCurrent=()=>STATE.mode==='official'?STATE.question:STATE.questions[STATE.index];
@@ -556,7 +557,11 @@ function result(){
 function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><a href="index.html#competition" class="primary">دخول منصة آفاق الرياضيات</a></div>'}
 function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
- root.innerHTML=!STATE.user?guest():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();root.insertAdjacentHTML('beforeend',afaqSoundButton());bind();document.getElementById('afaqSoundToggle')?.addEventListener('click',()=>{afaqAudioEnabled=!afaqAudioEnabled;localStorage.setItem('afaq_stars_sound',afaqAudioEnabled?'on':'off');if(afaqAudioEnabled){afaqAudioContextReady();afaqTune(STATE.feedbackStage||1,'start')}render()});
+ root.innerHTML=!STATE.user?guest():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
+  if(isTester()&&!document.getElementById('leaveTester'))root.insertAdjacentHTML('afterbegin',
+   '<div class="contest-tester-active"><span>🎓 تعمل الآن بصفحة الطالب التجريبي '+stext(STATE.testerProfile)+'</span>'+
+   '<button class="outline" id="leaveTester">العودة إلى دائرة الإشراف</button></div>');
+  root.insertAdjacentHTML('beforeend',afaqSoundButton());bind();document.getElementById('afaqSoundToggle')?.addEventListener('click',()=>{afaqAudioEnabled=!afaqAudioEnabled;localStorage.setItem('afaq_stars_sound',afaqAudioEnabled?'on':'off');if(afaqAudioEnabled){afaqAudioContextReady();afaqTune(STATE.feedbackStage||1,'start')}render()});
  if(STATE.waitingUntil>Date.now()){tickTransition();return}
  if(showQ&&!STATE.readyStage&&!STATE.result)tickGame();
 }
@@ -633,6 +638,40 @@ async function reloadReports(){
   STATE.summary=a.stats;STATE.staffReport=b.students;if(supervisor())STATE.testerStatuses=c?.profiles||[];
  }
 }
+async function switchTester(number){
+ if(!supervisor()||![1,2].includes(number))return;
+ STATE.testerProfile=number;
+ STATE.grade=6;STATE.section=1;STATE.mode='official';
+ STATE.displayName=number===1?'المشرف التجريبي الأول':'المشرف التجريبي الثاني';
+ resetPlay();
+ try{
+  STATE.report=(await back('my_results')).report;
+  await loadCertificates();
+  await back('contest_visit');
+ }catch(err){STATE.error=err.message}
+ render();
+}
+function leaveTester(){
+ if(!isTester())return;
+ if(STATE.attemptId&&STATE.mode==='official'&&!window.confirm('ستبقى المحاولة التجريبية قيد التقدم عند العودة. هل تريد مغادرة تجربة الطالب؟'))return;
+ STATE.testerProfile=0;STATE.displayName=STATE.user?.username||'المشرف الرئيسي';
+ STATE.mode='training';STATE.grade=6;STATE.section=1;STATE.report=null;
+ resetPlay();render();
+ reloadReports().then(render).catch(err=>{STATE.error=err.message;render()});
+}
+async function supervisorReset(payload,message){
+ if(!supervisor()||isTester())return;
+ if(!window.confirm(message+'\nسيُعاد احتساب المحاولتين من الصفر، وتُحفظ نسخة من المحاولات السابقة بسجل المراجعة. هل تؤكد الإجراء؟'))return;
+ const status=document.getElementById('contestResetMessage');
+ if(status)status.textContent='جارٍ تنفيذ إعادة الضبط...';
+ try{
+  const result=await back('reset_attempts',{...payload,confirmed:true});
+  await reloadReports();
+  render();
+  const next=document.getElementById('contestResetMessage');
+  if(next)next.textContent='تمت إعادة ضبط '+stext(result.reset_count)+' محاولة للحساب: '+friendly(result.name);
+ }catch(err){if(status)status.textContent=err.message;else{STATE.error=err.message;render()}}
+}
 async function fetchBank(){try{const el=document.getElementById('editModel');if(el)STATE.editModel=el.value;STATE.bank=await back('question_list',{grade:STATE.grade,section:STATE.section,model:STATE.editModel});STATE.error='';render()}catch(err){STATE.error=err.message;render()}}
 function bindBank(){document.querySelectorAll('.edit-question').forEach(form=>form.addEventListener('submit',async ev=>{ev.preventDefault();const data=new FormData(form),ordinal=Number(form.dataset.ordinal),payload={grade:STATE.grade,section:STATE.section,model:STATE.editModel,ordinal,prompt:data.get('prompt'),visual_svg:data.get('visual_svg'),visual_caption:data.get('visual_caption')};
  if(ordinal<=30){const count=(STATE.bank.questions||[]).find(q=>q.ordinal===ordinal)?.options.length||4;payload.options=Array.from({length:count},(_,i)=>String(data.get('opt'+i)));payload.answer_index=Number(data.get('answer_index'))}else{try{payload.parts=JSON.parse(String(data.get('parts')))}catch{alert('تحقق من صيغة JSON للأجزاء');return}}
@@ -658,6 +697,53 @@ function bind(){if(!STATE.user)return;
   if(!cert)return;resetPlay();STATE.certificateView=cert;render();
  }));
  document.getElementById('returnHome')?.addEventListener('click',async()=>{resetPlay();try{await reloadReports()}catch{}render()});
+
+ document.querySelectorAll('[data-tester-enter]').forEach(b=>b.addEventListener('click',()=>switchTester(Number(b.dataset.testerEnter))));
+ document.querySelectorAll('[data-tester-reset]').forEach(b=>b.addEventListener('click',()=>{
+  const n=Number(b.dataset.testerReset);
+  supervisorReset({target_tester:String(n),reset_section:0,reason:'إعادة محاولات المشرف التجريبية'},
+   'إعادة ضبط جميع المحاولات للحساب التجريبي رقم '+stext(n));
+ }));
+ document.getElementById('leaveTester')?.addEventListener('click',leaveTester);
+ document.getElementById('contestResetNow')?.addEventListener('click',()=>{
+  const chosen=document.getElementById('contestResetStudent')?.value||'';
+  const [cls,num]=chosen.split('|');
+  if(!cls||!/^[0-9]+$/.test(num)){window.alert('اختر طالبًا من القائمة أولًا.');return}
+  const section=Number(document.getElementById('contestResetUnit')?.value||0);
+  const item=(STATE.staffReport||[]).find(x=>x.class_name===cls&&Number(x.serial_no)===Number(num));
+  supervisorReset({target_class:cls,target_serial:Number(num),reset_section:section,
+   reason:'إعادة منح محاولتين للمسابقة بطلب المشرف'},
+   'هل تريد إعادة محاولات '+(item?.full_name||'الطالب')+' للوحدة '+(section||'جميع الوحدات')+'؟');
+ });
+ document.getElementById('contestStudentPinReset')?.addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const select=document.getElementById('contestPinStudent'),
+   [cls,num]=String(select?.value||'').split('|');
+  const newPin=document.getElementById('contestPinNew').value,
+   currentPin=document.getElementById('contestSupervisorPin').value,
+   status=document.getElementById('contestPinResetMessage');
+  if(!cls||!/^[0-9]+$/.test(num)){status.textContent='اختر الطالب أولًا.';return}
+  if(!/^[0-9]{4}$/.test(newPin)||!/^[0-9]{8}$/.test(currentPin)){status.textContent='الرمز الجديد ٤ أرقام، ورمز المشرف ٨ أرقام.';return}
+  try{
+   await api('change_password',{target_role:'student',username:num,class_name:cls,
+    current_pin:currentPin,new_pin:newPin,confirm_pin:newPin});
+   ev.target.reset();status.textContent='تم تعيين الرقم الجديد للطالب. سلّمه له بسرية ليتمكن من تغييره.';
+  }catch(err){status.textContent=err.message}
+ });
+ document.getElementById('contestChangePin')?.addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const current=document.getElementById('contestCurrentPin').value,
+   next=document.getElementById('contestNewPin').value,
+   confirmed=document.getElementById('contestConfirmPin').value,
+   status=document.getElementById('contestPinChangeStatus');
+  if(!/^[0-9]{4}$/.test(next)||next!==confirmed||next===current){
+   status.textContent='تأكد من أن الرقم الجديد ٤ أرقام ويختلف عن الحالي ويطابق التأكيد.';return
+  }
+  try{
+   await api('student_change_pin',{current_pin:current,new_pin:next,confirm_pin:confirmed});
+   ev.target.reset();status.textContent='نجح تغيير رقمك السري. استعمل الرقم الجديد في الدخول القادم.';
+  }catch(err){status.textContent=err.message}
+ });
  document.getElementById('loadBank')?.addEventListener('click',fetchBank);
  document.getElementById('editModel')?.addEventListener('change',ev=>{STATE.editModel=ev.target.value;STATE.bank=null;render()});
  if(STATE.bank)bindBank();
