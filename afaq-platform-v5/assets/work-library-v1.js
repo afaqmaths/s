@@ -87,8 +87,10 @@ dashboard=function(){
  const text=workSuper()?'إضافة أوراق العمل، نماذج الحلول، صور السبورة والفيديوهات، وإنشاء مهام الطلاب والإدارة ونشرها أو حذفها.':
   'عرض المهام ومواد الدروس المنشورة وفق صلاحية حسابك.';
  return html+'<section class="container work-dashboard-shortcut"><div><h3>📚 '+title+'</h3><p>'+text+
-  '</p></div><button type="button" class="primary" data-route="work">'+
-  (workSuper()?'فتح إدارة مهام العمل':'فتح مهام العمل')+'</button></section>';
+  '</p></div><div class="work-dashboard-buttons"><button type="button" class="primary" data-route="work">'+
+  (workSuper()?'فتح إدارة مهام العمل':'فتح مهام العمل')+'</button>'+
+  (workSuperUser()?'<button type="button" class="work-preview-button" data-work-preview-launch="student">🧑‍🎓 معاينة أوراق العمل كطالب</button>':'')+
+  '</div></section>';
 };
 function workTabs(){
  const entries=[['worksheets','📗 أوراق عمل الصف السادس'],['student_tasks','📝 مهام الطلاب'],
@@ -335,12 +337,20 @@ async function workOpenFile(docId){
  }
 }
 document.addEventListener('click',async ev=>{
- const button=ev.target.closest('[data-work-preview],[data-work-tab],[data-work-refresh],[data-work-login],[data-work-new-worksheet],'+
+ const button=ev.target.closest('[data-work-preview-launch],[data-work-preview],[data-work-tab],[data-work-refresh],[data-work-login],[data-work-new-worksheet],'+
   '[data-work-new-task],[data-work-new-resource],[data-work-delete-item],[data-work-upload],[data-work-add-youtube],'+
   '[data-work-open],[data-work-delete-file],[data-work-delete-video]');
  if(!button)return;
  ev.preventDefault();
  try{
+  if(button.dataset.workPreviewLaunch){
+   if(!workSuperUser())throw Error('forbidden');
+   workState.token=auth.token;
+   workState.previewStudent=true;workState.data=null;workState.loaded=false;
+   workState.loading=false;workState.attempted=false;workState.generation++;
+   workState.tab='worksheets';workState.status='';workState.statusError=false;
+   route('work');return;
+  }
   if(button.dataset.workPreview){
    if(!workSuperUser())throw Error('forbidden');
    const preview=button.dataset.workPreview==='student';
