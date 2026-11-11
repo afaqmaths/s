@@ -2,10 +2,11 @@
 'use strict';
 const WORK_API_URL='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-work-library';
 const WORK_STORAGE_ORIGIN='https://xcwuwflggiwkehzquugz.supabase.co';
-const workState={token:'',data:null,loaded:false,loading:false,attempted:false,tab:'worksheets',status:'',statusError:false};
+const workState={token:'',data:null,loaded:false,loading:false,attempted:false,tab:'worksheets',status:'',statusError:false,previewStudent:false,generation:0};
 const workEsc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const workSuper=()=>auth.user?.role==='supervisor';
-const workStaff=()=>['supervisor','supervisor_assistant','director','deputy'].includes(auth.user?.role);
+const workSuperUser=()=>auth.user?.role==='supervisor';
+const workSuper=()=>workSuperUser()&&!workState.previewStudent;
+const workStaff=()=>!workState.previewStudent&&['supervisor','supervisor_assistant','director','deputy'].includes(auth.user?.role);
 const workDocCount=(item,role)=>(workState.data?.documents||[]).filter(x=>x.item_id===item.id&&x.doc_role===role).length;
 const workLessons=()=>workState.data?.lessons||[];
 const workItems=()=>workState.data?.items||[];
@@ -47,15 +48,21 @@ function workSetStatus(message,isError=false){
 }
 async function workRefresh(){
  if(workState.loading||!auth.user||!auth.token)return;
+ const generation=++workState.generation,preview=workState.previewStudent,token=auth.token;
  workState.loading=true;workState.attempted=true;
- workSetStatus('جارٍ تحديث أوراق العمل والمهام...');
+ workSetStatus(preview?'جارٍ تحميل أوراق العمل كما تظهر للطالب...':'جارٍ تحديث أوراق العمل والمهام...');
  try{
-  const data=await workApi('list');
-  if(workState.token!==auth.token)return;
+  const data=await workApi('list',{preview_as_student:preview});
+  if(workState.generation!==generation||workState.token!==token||workState.previewStudent!==preview)return;
   workState.data=data;workState.loaded=true;
-  workSetStatus('تم تحديث المحتوى. المستندات تُضاف تدريجيًا لكل درس.');
- }catch(error){workSetStatus(workErrorMessage(error),true)}
- finally{workState.loading=false;if(state.page==='work')render()}
+  workSetStatus(preview?'معاينة الطالب جاهزة: تظهر الملفات المنشورة والمسموحة فقط.':'تم تحديث المحتوى. المستندات تُضاف تدريجيًا لكل درس.');
+ }catch(error){
+  if(workState.generation===generation)workSetStatus(workErrorMessage(error),true);
+ }finally{
+  if(workState.generation===generation){
+   workState.loading=false;if(state.page==='work')render();
+  }
+ }
 }
 function workInEducation(){
  return '<section class="work-learning-link">'+
@@ -186,11 +193,27 @@ function workTaskPane(audience){
    '<div class="work-empty-panel">لا توجد مهام منشورة لهذا القسم حاليًا.'+
    (workSuper()?' استخدم زر «إضافة مهمة جديدة» لبدء الإعداد.':'')+'</div>')+'</section>';
 }
+function workPreviewPanel(){
+ if(!workSuperUser())return '';
+ if(!workState.previewStudent)return '<div class="work-preview-actions">'+
+  '<div><strong>👁️ اختبر طريقة عرض أوراق العمل للطالب</strong>'+
+  '<p>شاهد المحتوى المنشور كما يظهر للطالب، دون تسجيل خروج أو تغيير حسابك.</p></div>'+
+  '<button type="button" class="work-preview-button" data-work-preview="student">🧑‍🎓 معاينة كطالب</button></div>';
+ const publicWorks=workItems().filter(i=>i.kind==='worksheet'&&i.published&&i.audience==='student');
+ const summary=workState.loaded?'أوراق العمل المنشورة حاليًا: '+workAr(publicWorks.length)+'.':'جارٍ تحميل قائمة أوراق الطالب...';
+ return '<section class="work-preview-student" role="note">'+
+  '<div class="work-preview-identity"><span class="work-preview-avatar">🧑‍🎓</span><div>'+
+  '<strong>أنت الآن تعاين أوراق العمل كما يراها طالب الصف السادس</strong>'+
+  '<p>تظهر الدروس والملفات المنشورة فقط، وتختفي أدوات المشرف والحلول المحجوبة. '+summary+'</p>'+
+  '</div></div><button type="button" class="work-preview-back" data-work-preview="supervisor">'+
+  '↩ العودة إلى وضع المشرف</button></section>';
+}
 function workPage(){
  const token=auth.token||'';
  if(workState.token!==token){
   workState.token=token;workState.data=null;workState.loaded=false;
   workState.loading=false;workState.attempted=false;workState.status='';
+  workState.previewStudent=false;workState.generation++;
  }
  if(!workStaff()&&workState.tab==='management_tasks')workState.tab='worksheets';
  if(auth.user&&!workState.attempted){
@@ -208,6 +231,7 @@ function workPage(){
  return '<div class="container work-page" dir="rtl"><div class="work-hero"><div><span>📚 التعليم والتعلّم</span>'+
    '<h1>مهام العمل وأوراق عمل الرياضيات</h1><p>الصف السادس — فهرس كتاب الطالب، مع أوراق العمل وحلولها وصور السبورة والفيديوهات.</p>'+
    '</div><button type="button" class="outline" data-route="learning">العودة إلى التعليم والتعلّم</button></div>'+
+   workPreviewPanel()+
    '<div class="work-toolbar"><button type="button" class="outline" data-work-refresh '+(!auth.user?'disabled':'')+
    '>↻ تحديث الملفات</button>'+
    (workSuper()?'<span class="work-super-note">أنت المشرف الرئيسي: الإضافة والتعديل والحذف والنشر متاحة لحسابك فقط.</span>':'')+'</div>'+
@@ -300,7 +324,7 @@ async function workOpenFile(docId){
  const tab=window.open('about:blank','_blank');
  if(tab)tab.opener=null;
  try{
-  const data=await workApi('file_url',{id:docId});
+  const data=await workApi('file_url',{id:docId,preview_as_student:workState.previewStudent});
   const url=new URL(data.url,WORK_STORAGE_ORIGIN);
   if(url.origin!==WORK_STORAGE_ORIGIN||!url.pathname.startsWith('/storage/v1/'))
    throw Error('رابط ملف غير موثوق.');
@@ -311,12 +335,22 @@ async function workOpenFile(docId){
  }
 }
 document.addEventListener('click',async ev=>{
- const button=ev.target.closest('[data-work-tab],[data-work-refresh],[data-work-login],[data-work-new-worksheet],'+
+ const button=ev.target.closest('[data-work-preview],[data-work-tab],[data-work-refresh],[data-work-login],[data-work-new-worksheet],'+
   '[data-work-new-task],[data-work-new-resource],[data-work-delete-item],[data-work-upload],[data-work-add-youtube],'+
   '[data-work-open],[data-work-delete-file],[data-work-delete-video]');
  if(!button)return;
  ev.preventDefault();
  try{
+  if(button.dataset.workPreview){
+   if(!workSuperUser())throw Error('forbidden');
+   const preview=button.dataset.workPreview==='student';
+   if(workState.previewStudent===preview)return;
+   workState.previewStudent=preview;
+   workState.data=null;workState.loaded=false;workState.loading=false;
+   workState.attempted=false;workState.tab='worksheets';workState.generation++;
+   workState.status='';workState.statusError=false;
+   render();return;
+  }
   if(button.dataset.workTab){workState.tab=button.dataset.workTab;render();return}
   if(button.hasAttribute('data-work-refresh')){await workRefresh();return}
   if(button.hasAttribute('data-work-login')){
