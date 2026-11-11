@@ -65,16 +65,18 @@ const stageInfo=[
 const models={A:'المحاولة الرسمية الأولى',B:'المحاولة الرسمية الثانية',C:'نموذج الطالب',D:'نموذج الإدارة',E:'نموذج المشرف',F:'نموذج مساعد المشرف'};
 const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',supervisor_assistant:'F'};
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
-const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',catalog:[],report:null,summary:null,staffReport:null,
+const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
  waitingUntil:0,waitingMessage:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
-const allowedStaff=()=>['supervisor','supervisor_assistant','director','deputy'].includes(STATE.user?.role);
 const supervisor=()=>STATE.user?.role==='supervisor';
+const isTester=()=>supervisor()&&Number(STATE.testerProfile)>0;
+const allowedStaff=()=>!isTester()&&['supervisor','supervisor_assistant','director','deputy'].includes(STATE.user?.role);
 const student=()=>STATE.user?.role==='student';
-const official=()=>student()&&STATE.grade===6;
-const trainingModel=()=>roleModels[STATE.user?.role]||'C';
+const player=()=>student()||isTester();
+const official=()=>player()&&STATE.grade===6;
+const trainingModel=()=>isTester()?'C':roleModels[STATE.user?.role]||'C';
 const trainingTitle=()=>models[trainingModel()]||'نموذج التدريب';
 const sampleKey=()=> 'afaq_nonofficial_parts_'+(STATE.user?.username||'demo')+'_'+STATE.grade;
 const savedSample=()=>{try{return JSON.parse(sessionStorage.getItem(sampleKey())||'{}')}catch{return {}}};
@@ -82,7 +84,7 @@ const keepSample=raw=>{if(STATE.grade===6)return;const p=savedSample();p[STATE.s
 const sampleScorePanel=()=>{if(STATE.grade===6)return '';const p=savedSample(),sum=Number(p[1]||0)+Number(p[2]||0);return '<section class="contest-progress"><h3>📈 ملخص القسمين التدريبيين</h3><div class="contest-metrics"><div><strong>'+Number(p[1]||0)+' / ٢٥</strong><small>القسم الأول</small></div><div><strong>'+Number(p[2]||0)+' / ٢٥</strong><small>القسم الثاني</small></div><div><strong>'+(sum*2)+' / ١٠٠</strong><small>المجموع بعد المضاعفة</small></div></div><p>هذه نتائج تدريبية محفوظة في جلسة المتصفح الحالية فقط؛ لا تُسجَّل كمحاولات رسمية ولا تُخلط بنتائج الطلاب.</p></section>'};
 const stage=(n)=>stageInfo[n-1]||stageInfo[0];
 const image=(src,alt,cls)=>src?'<img class="'+cls+'" src="'+src+'" alt="'+friendly(alt)+'" loading="lazy">':'';
-const entryArt=()=>window.AFAQ_ENTRY_ART?.[student()||STATE.user?.role==='demo'?'student':'staff']||'';
+const entryArt=()=>window.AFAQ_ENTRY_ART?.[player()||STATE.user?.role==='demo'?'student':'staff']||'';
 const stageArt=n=>window.AFAQ_STAGE_ART?.[n-1]||'';
 const stageEndArt=n=>window.AFAQ_STAGE_END_ART?.[n-1]||stageArt(n);
 const units=g=>g===6?4:2;
@@ -90,7 +92,7 @@ const splitSyllabus={5:[{name:'الأعداد والهندسة',topics:'الوح
 const unitName=(g,s)=>g===6?['الأعداد (١)','القياس','الهندسة','الأعداد (٢)'][s-1]:'القسم '+s+' — '+(splitSyllabus[g]?.[s-1]?.name||'النصف '+(s===1?'الأول':'الثاني'));
 const codeError={unauthorized:'انتهت الجلسة، ادخل إلى منصة آفاق أولًا.',forbidden:'هذا الإجراء غير متاح لهذا الحساب.',
  training_unavailable:'نموذج التدريب غير متاح حاليًا.',official_requires_individual_student_account:'تحتاج المحاولات الرسمية إلى حساب طالب فردي.',
- attempt_limit:'لقد استُنفدت المحاولتان الرسميتان لهذه الوحدة.',previous_section_required:'أكمل الوحدة السابقة أولًا.',
+ attempt_limit:'استنفدت المحاولتين الرسميتين للوحدة. لا يمكنك إنشاء محاولة أخرى إلا بعد إعادة الضبط من المشرف.',previous_section_required:'أكمل الوحدة السابقة أولًا.',
  weekly_locked:'لم يمض أسبوع على بداية الوحدة السابقة بعد.',official_model_not_approved:'لم تُعتمد أسئلة المنافسة الرسمية بعد، ويمكنك استخدام التدريب.',
  question_bank_incomplete:'لا تزال بعض الأسئلة قيد المراجعة.',stage_start_required:'اضغط إذن بدء المرحلة أولًا.',stage_not_ready:'المرحلة ليست جاهزة للانطلاق.',question_sequence_changed:'تم تحديث تسلسل الأسئلة؛ عد إلى بوابة الوحدة واستأنف.',invalid_parts:'بيانات السؤال المركب غير صحيحة.'};
 async function request(endpoint,action,payload={}){
@@ -100,19 +102,22 @@ async function request(endpoint,action,payload={}){
  return data;
 }
 const api=(action,payload)=>request(API,action,payload);
-const back=(action,payload)=>request(GAME,action,payload);
+const PLAYER_ACTIONS=new Set(['my_results','my_certificates','start','begin_stage','answer','skip_stage','submit',
+ 'training','training_feedback','check_training']);
+const back=(action,payload={})=>request(GAME,action,
+ isTester()&&PLAYER_ACTIONS.has(action)?{...payload,tester_profile:STATE.testerProfile}:payload);
 async function authenticate(){
  if(!STATE.token)return;
  try{let r=await api('me');STATE.user=r.user;STATE.displayName=STATE.user?.role==='demo'?'متسابق الصف '+(gradeNames[Number(r.user.grade)]||''):(STATE.displayName||STATE.user?.username||'المتسابق');STATE.grade=student()||STATE.user.role==='demo'?Number(r.user.grade||6):6;
-  if(student()||STATE.user.role==='demo'){STATE.report=(await back('my_results')).report;if(student()){try{const p=(await api('profile'))?.profile?.student;STATE.displayName=p?.full_name||p?.display_name||STATE.displayName;STATE.profile=p||null}catch{}}}
-  else {const values=await Promise.all([back('staff_summary'),back('staff_results')]);STATE.summary=values[0].stats;STATE.staffReport=values[1].students;}
+  if(student()||STATE.user.role==='demo'){if(student())STATE.mode='official';STATE.report=(await back('my_results')).report;if(student()){try{const p=(await api('profile'))?.profile?.student;STATE.displayName=p?.full_name||p?.display_name||STATE.displayName;STATE.profile=p||null}catch{}}}
+  else {const values=await Promise.all([back('staff_summary'),back('staff_results'),...(supervisor()?[back('tester_status')]:[])]);STATE.summary=values[0].stats;STATE.staffReport=values[1].students;if(supervisor())STATE.testerStatuses=values[2]?.profiles||[];}
   if(student()){try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
  }catch(e){STATE.user=null;STATE.token='';sessionStorage.removeItem(tokenKey);}
 }
 const getCurrent=()=>STATE.mode==='official'?STATE.question:STATE.questions[STATE.index];
 const currentStage=()=>STATE.readyStage||(getCurrent()?.stage||0);
 async function loadCertificates(){
- if(!student())return;
+ if(!player())return;
  const r=await back('my_certificates');
  STATE.certificates=Array.isArray(r.certificates)?r.certificates:[];
  if(r.report)STATE.report=r.report;
@@ -513,7 +518,7 @@ async function submitResponse(answer,expired=false){
    logScore(previousStage,feedback);
    if(STATE.readyStage>previousStage||STATE.result)closeStage(previousStage);
   STATE.waitingMessage='راجع الإجابة الصحيحة يا '+(STATE.displayName||STATE.user?.username||'المتسابق')+' ثم استعد للمرحلة التالية.';
-  if(STATE.result&&!STATE.result.training&&student()){try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
+  if(STATE.result&&!STATE.result.training&&player()){try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
  }catch(err){STATE.error=err.message;STATE.feedback=err.message}
  finally{STATE.busy=false;render();if(STATE.waitingUntil>Date.now())root.scrollIntoView?.({block:'start',behavior:'auto'});if(STATE.result){afaqTune(previousStage,'finish');afaqDecorate('fireworks',45)}else if(STATE.readyStage){afaqTune(previousStage,'finish');afaqDecorate('balloons',23)}else if(STATE.lastFeedback){if(STATE.lastFeedback.correct)afaqCelebrateCorrect(previousStage);else afaqTune(previousStage,'incorrect');}}
 }
