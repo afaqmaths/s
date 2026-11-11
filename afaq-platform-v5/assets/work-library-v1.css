@@ -120,3 +120,15 @@
  padding:7px 10px;border:1px dashed #adc5e9;border-radius:9px;font-weight:900;font-size:12px}
 .work-add-resource:hover{background:#dfeafb}
 @media print{.work-add-resource{display:none!important}}
+
+/* مدخل مباشر من لوحة الطالب والمشرف والإدارة */
+.work-dashboard-shortcut{display:flex;gap:17px;align-items:center;justify-content:space-between;
+ flex-wrap:wrap;direction:rtl;max-width:1320px;margin:17px auto 25px;
+ padding:19px 22px;background:linear-gradient(110deg,#edf7ff,#edf9ed);
+ border:1px solid #c5deea;border-radius:17px}
+.work-dashboard-shortcut>div{flex:1 1 250px}
+.work-dashboard-shortcut h3{font-size:20px;color:#205678;margin:0 0 7px}
+.work-dashboard-shortcut p{font-size:13px;color:#496778;line-height:1.85;margin:0}
+.work-dashboard-shortcut button{font-weight:900;flex:0 0 auto}
+@media(max-width:610px){.work-dashboard-shortcut button{width:100%}}
+@media print{.work-dashboard-shortcut{display:none!important}}
