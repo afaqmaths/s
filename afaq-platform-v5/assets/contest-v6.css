@@ -408,3 +408,52 @@
  #contestApp .afaq-cert-v4 svg{visibility:visible!important}
  #contestApp .afaq-cert-v4 svg *{visibility:visible!important}
 }
+
+/* Supervisor test profiles, student credentials and attempt control */
+.contest-supervisor-console{margin:24px 0;border:2px solid #a7dcd1!important;background:linear-gradient(155deg,#eefdf7,#fff)}
+.contest-tester-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:15px 0 25px}
+.contest-tester-card{border:1px solid #c6dfd9;border-radius:16px;background:#fff;padding:18px;box-shadow:0 6px 16px #16534c0b}
+.contest-tester-card h4{color:#155e50;font-size:18px;margin:0 0 9px}
+.contest-tester-card p{margin:7px 0 13px;line-height:1.8}
+.contest-tester-card button{margin:3px 0;max-width:100%;white-space:normal}
+.contest-supervisor-form,.contest-change-pin form,.student-pin-form,.contest-supervisor-console form{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:11px;margin:12px 0 18px}
+.contest-supervisor-form>label,.contest-change-pin form>label,.student-pin-form>label,.contest-supervisor-console form>label{
+ display:flex;flex-direction:column;gap:7px;font-weight:800}
+.contest-supervisor-console select,.contest-supervisor-console input,
+.contest-change-pin input,.student-pin-form input{width:100%;max-width:100%;min-width:0;padding:11px;
+ box-sizing:border-box;border:1px solid #bed3dc;border-radius:11px;background:#fff;color:#143854;font-size:15px}
+.contest-supervisor-console h3{font-size:20px;color:#195b68;margin:23px 0 10px}
+.contest-tester-active{display:flex;align-items:center;justify-content:space-between;gap:12px;
+ background:#f0fff7;border:2px solid #68b89c;border-radius:13px;padding:12px 16px;margin:9px 0 17px;
+ color:#156345;font-weight:900;flex-wrap:wrap}
+.contest-tester-active button{white-space:normal}
+.contest-admin-message{font-size:14px;color:#155f6d;line-height:1.7;font-weight:850;min-height:1.6em}
+.contest-detailed-students{min-width:1160px}
+.contest-detailed-students thead th{font-size:12px;background:#e2f4f7}
+.contest-detailed-students tbody td{font-size:12px;white-space:nowrap;padding:9px 7px}
+.contest-detailed-students tbody tr:nth-child(even){background:#f4faff}
+.contest-change-pin summary,.student-self-pin summary{cursor:pointer;color:#135f7c;font-size:18px;font-weight:950;line-height:2}
+.contest-answer-phase .contest-question{border:2px solid #c9dcec;border-radius:18px;background:#fff;padding:22px;max-width:100%}
+.contest-answer-phase .contest-review-options{margin-top:12px;display:grid;grid-template-columns:1fr;gap:8px}
+.contest-answer-phase .contest-review-option{pointer-events:none}
+.contest-answer-phase .contest-review-part.answer-correct{background:#dcf7e5!important;border:2px solid #3fba75!important}
+.contest-answer-phase .contest-review-part.answer-wrong{background:#ffebef!important;border:2px solid #d95e75!important}
+.contest-answer-status{border-radius:16px;padding:16px 19px;margin:17px 0 4px;
+ background:#f5f9ff;border:2px solid #bacfe6;line-height:1.9}
+.contest-answer-status.is-correct{background:#e9faef;border-color:#67be84}
+.contest-answer-status.is-wrong{background:#fff0f2;border-color:#e296a5}
+.contest-answer-status h3{font-size:clamp(22px,2.6vw,30px)!important;margin:0 0 7px!important;
+ color:#166c49!important}
+.contest-answer-status.is-wrong h3{color:#b62f48!important}
+.contest-answer-status>p{margin:7px 0;font-size:clamp(16px,1.4vw,20px);font-weight:750}
+.contest-answer-status .contest-feedback-metrics{max-width:850px}
+.contest-inline-countdown{font-weight:950;color:#1d5574}
+.contest-inline-countdown strong{font-size:25px;color:#145b7b}
+@media(max-width:680px){
+ .contest-tester-grid{grid-template-columns:1fr}
+ .contest-supervisor-form,.contest-change-pin form,.student-pin-form,.contest-supervisor-console form{grid-template-columns:1fr}
+ .contest-answer-phase .contest-question{padding:12px}
+ .contest-tester-active{flex-direction:column;align-items:stretch;text-align:center}
+}
+@media print{.contest-supervisor-console,.contest-tester-active,.contest-change-pin,.student-self-pin{display:none!important}}
