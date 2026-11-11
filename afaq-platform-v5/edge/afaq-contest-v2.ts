@@ -318,6 +318,53 @@ Deno.serve(async(req:Request)=>{
    });
    return response(origin,{ok:true,students:details});
   }
+
+  if(action==="tester_status"){
+   if(u.role!=="supervisor"||testerId)return fail(origin,"forbidden",403);
+   const profiles=await Promise.all(Object.entries(TEST_PROFILES).map(async ([n,id])=>({
+    number:Number(n),name:testerName(n),report:await report(id)})));
+   return response(origin,{ok:true,profiles});
+  }
+  if(action==="reset_attempts"){
+   if(u.role!=="supervisor"||testerId)return fail(origin,"forbidden",403);
+   if(b.confirmed!==true)return fail(origin,"reset_confirmation_required",400);
+   const resetSection=Number(b.reset_section);
+   if(!Number.isInteger(resetSection)||resetSection<0||resetSection>4)return fail(origin,"invalid_section",400);
+   const tester=tiny(b.target_tester,2);
+   let targetId="",targetName="";
+   if(tester){
+    if(!TEST_PROFILES[tester])return fail(origin,"invalid_tester",400);
+    targetId=TEST_PROFILES[tester];targetName=testerName(tester);
+   }else{
+    const className=tiny(b.target_class,40),serial=Number(b.target_serial);
+    if(!["السادس / ٤","السادس / ٥","السادس / ٦"].includes(className)||
+      !Number.isInteger(serial)||serial<1||serial>100)return fail(origin,"invalid_student",400);
+    const {data:record,error:rosterError}=await db.from("competition_students")
+      .select("student_id,full_name").eq("class_name",className).eq("serial_no",serial)
+      .eq("active",true).maybeSingle();
+    if(rosterError)throw rosterError;
+    if(!record)return fail(origin,"student_not_found",404);
+    targetId=record.student_id;targetName=record.full_name;
+   }
+   let query=db.from("afaq_v2_attempts").select("*").eq("student_id",targetId);
+   if(resetSection>0)query=query.eq("section",resetSection);
+   const {data:records,error:historyError}=await query;
+   if(historyError)throw historyError;
+   const previous=records||[];
+   if(!previous.length)return response(origin,{ok:true,reset_count:0,name:targetName,report:await report(targetId)});
+   const reason=tiny(b.reason,250)||"إعادة ضبط محاولات نجوم آفاق بطلب المشرف";
+   const {error:logError}=await db.from("afaq_v2_attempt_reset_log").insert({
+    student_id:targetId,section:resetSection,actor_username:u.username,
+    reason,archived_attempts:previous,reset_at:neutralTime()
+   });
+   if(logError)throw logError;
+   let deletion=db.from("afaq_v2_attempts").delete().eq("student_id",targetId);
+   if(resetSection>0)deletion=deletion.eq("section",resetSection);
+   const {data:deleted,error:deleteError}=await deletion.select("id");
+   if(deleteError)throw deleteError;
+   return response(origin,{ok:true,reset_count:(deleted||[]).length,name:targetName,
+    report:await report(targetId)});
+  }
   if(action==="question_list"){
    if(role!=="supervisor")return fail(origin,"forbidden",403);
    const model=tiny(b.model,1);if(!valid(g,section)||!["A","B","C","D","E","F"].includes(model))return fail(origin,"invalid_model");
