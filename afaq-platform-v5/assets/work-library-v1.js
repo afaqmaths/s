@@ -178,6 +178,7 @@ function workPage(){
   workState.token=token;workState.data=null;workState.loaded=false;
   workState.loading=false;workState.attempted=false;workState.status='';
  }
+ if(!workStaff()&&workState.tab==='management_tasks')workState.tab='worksheets';
  if(auth.user&&!workState.attempted){
   workState.attempted=true;
   Promise.resolve().then(()=>workRefresh());
@@ -202,8 +203,8 @@ function workPage(){
 function workNeedSupervisor(){if(!workSuper())throw Error('forbidden')}
 async function workDo(action,payload,success){
  await workApi(action,payload);
- workSetStatus(success||'تم حفظ التحديث بنجاح.');
  await workRefresh();
+ workSetStatus(success||'تم حفظ التحديث بنجاح.');
 }
 async function workNewWorksheet(button){
  workNeedSupervisor();
@@ -240,7 +241,10 @@ async function workUploadOne(file,itemId,role){
  const url=new URL(prepare.upload_url,WORK_STORAGE_ORIGIN);
  if(url.origin!==WORK_STORAGE_ORIGIN||!url.pathname.startsWith('/storage/v1/'))
   throw Error('عنوان رفع الملف غير موثوق.');
- const response=await fetch(url.href,{method:'PUT',headers:{'Content-Type':mime,'x-upsert':'false'},body:file});
+ const body=new FormData();
+ body.append('cacheControl','3600');
+ body.append('',file.type===mime?file:new File([file],file.name,{type:mime}),file.name);
+ const response=await fetch(url.href,{method:'PUT',headers:{'x-upsert':'false'},body});
  if(!response.ok){
   let detail='';try{detail=(await response.json())?.message||''}catch{}
   throw Error('فشل رفع الملف ('+response.status+'). '+detail);
@@ -264,7 +268,9 @@ async function workUploadFiles(button){
    }
    workSetStatus('تم رفع '+workAr(saved)+' ملفًا بنجاح.');
   }catch(error){workSetStatus('رُفع '+workAr(saved)+' ملفًا فقط. '+workErrorMessage(error),true)}
+  const message=workState.status,failed=workState.statusError;
   await workRefresh();
+  workSetStatus(message,failed);
  });
  picker.click();
 }
