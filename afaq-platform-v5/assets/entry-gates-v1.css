@@ -1,0 +1,33 @@
+/* Afaq Mathematics 2026 — distinct secure sign-in gateways */
+.afaq-entry-hub{max-width:1320px;margin:19px auto 8px;padding:0 22px;display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;direction:rtl}
+.afaq-entry-card{display:flex;min-height:125px;gap:5px;flex-direction:column;align-items:center;
+ justify-content:center;border-radius:19px;padding:15px 10px;text-align:center;border:2px solid #d4e4ee;
+ background:linear-gradient(160deg,#fff,#f2f8ff);color:#193c61;cursor:pointer;
+ box-shadow:0 6px 20px #1336550e;transition:transform .16s,border .16s,box-shadow .16s;
+ font-family:Tahoma,Arial,sans-serif}
+.afaq-entry-card:hover,.afaq-entry-card:focus-visible{transform:translateY(-3px);border-color:#5d9dca;
+ box-shadow:0 10px 21px #1e5a8b25}
+.afaq-entry-card[aria-pressed="true"]{outline:2px solid #1a7198;outline-offset:1px}
+.afaq-entry-card .entry-face{font-size:32px;line-height:1.18}
+.afaq-entry-card .entry-title{font-size:18px;font-weight:950}
+.afaq-entry-card .entry-desc{font-size:11px;line-height:1.6;color:#4f6b86}
+.afaq-entry-card.entry-student{background:linear-gradient(150deg,#eef8ff,#fff);border-color:#bddcf5}
+.afaq-entry-card.entry-supervision{background:linear-gradient(150deg,#eafaf2,#fff);border-color:#b8e1cb}
+.afaq-entry-card.entry-management{background:linear-gradient(150deg,#fff9e9,#fff);border-color:#ecdfb4}
+.afaq-entry-card.entry-guest{background:linear-gradient(150deg,#f6efff,#fff);border-color:#d9c7f2}
+.afaq-entry-modal{padding:0;max-width:100%;margin:13px 0 18px;gap:8px}
+.afaq-entry-modal .afaq-entry-card{min-height:107px;padding:10px 6px;border-radius:13px}
+.afaq-entry-modal .entry-face{font-size:26px}
+.afaq-entry-modal .entry-title{font-size:13px}
+.afaq-entry-modal .entry-desc{font-size:10px}
+#loginFields{padding:14px;background:#f7fbff;border:1px solid #d7e5f1;border-radius:13px}
+#authDialog{max-width:min(790px,96vw);width:min(790px,96vw)}
+#authDialog .dialog-inner{width:100%;max-width:100%;box-sizing:border-box;max-height:90dvh;overflow-y:auto}
+@media(max-width:760px){.afaq-entry-hub{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 13px;gap:9px}
+ .afaq-entry-card{min-height:110px}.afaq-entry-card .entry-title{font-size:15px}
+ .afaq-entry-modal{padding:0;gap:6px}.afaq-entry-modal .entry-desc{display:none}}
+@media(max-width:420px){.afaq-entry-hub{padding:0 9px;gap:7px}.afaq-entry-card{min-height:98px;padding:8px 5px}
+ .afaq-entry-card .entry-face{font-size:25px}.afaq-entry-card .entry-title{font-size:13px}
+ .afaq-entry-card .entry-desc{font-size:10px}}
+@media print{.afaq-entry-hub{display:none!important}}
