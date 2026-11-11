@@ -156,3 +156,8 @@
 @media(max-width:610px){.work-preview-actions,.work-preview-student{padding:12px;gap:12px}
 .work-preview-button,.work-preview-back{width:100%}.work-preview-identity{align-items:flex-start}}
 @media print{.work-preview-actions,.work-preview-student{display:none!important}}
+
+.work-dashboard-buttons{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.work-dashboard-buttons .primary,.work-dashboard-buttons .work-preview-button{font-size:13px;white-space:normal}
+@media(max-width:610px){.work-dashboard-buttons{width:100%;flex-direction:column}
+.work-dashboard-buttons>button{width:100%}}
