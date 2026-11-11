@@ -132,13 +132,29 @@ function road(active=0){return '<div class="stage-track">'+stageInfo.map((st,i)=
 function progress(){let r=STATE.report;if(!r)return '';
  return '<section class="contest-progress"><h3>🎖️ تقدمي في مسابقة نجوم آفاق</h3><div class="contest-metrics"><div><strong>'+friendly(r.total)+' / ٤٠٠</strong><small>مجموع أفضل نتائجي</small></div><div><strong>'+friendly(r.completed_units)+' / ٤</strong><small>الوحدات المكتملة</small></div><div><strong>'+friendly(r.attempts_remaining)+'</strong><small>المحاولات المتبقية</small></div><div><strong>'+friendly(r.points_needed)+'</strong><small>نقطة تفصلني عن التأهل</small></div></div><p>'+(r.qualified?'🏆 أكملت الوحدات الأربع وحققت ٣٥٠ نقطة فأكثر؛ أنت ضمن المتأهلين للمفاضلة على الجوائز.':'أكمل الوحدات الأربع، واجمع ٣٥٠ نقطة فأكثر للتأهل للجوائز. تُحتسب أفضل محاولتين رسميتين لكل وحدة.')+'</p></section>';
 }
-function staffResults(){if(!allowedStaff()||!STATE.staffReport)return '';
- const items=[...STATE.staffReport].sort((a,b)=>Number(b.total)-Number(a.total));
- const columns=supervisor()||STATE.user.role==='supervisor_assistant';
- const rows=items.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+friendly(x.class_name)+' • '+friendly(x.serial_no)+'</td><td>'+friendly(x.full_name)+'</td><td>'+friendly(x.total)+'/٤٠٠</td><td>'+x.parts.map(p=>p.best??'—').join('، ')+'</td><td>'+(x.qualified?'متأهل':'لم يتأهل بعد')+'</td>'+(columns?'<td>'+friendly(x.student_id||'')+'</td>':'')+'</tr>').join('');
- return '<section class="panel staff-contest-panel"><h3>📊 نتائج نجوم آفاق الرياضيات للطلاب</h3><p>ترتيب مبدئي حسب مجموع أفضل نتائج الوحدات. التأهل يبدأ من ٣٥٠ نقطة بعد إتمام الوحدات الأربع.</p><div class="result-table-scroll"><table><thead><tr><th>م</th><th>الشعبة والرقم</th><th>الطالب</th><th>المجموع</th><th>الوحدات (١–٤)</th><th>الحالة</th>'+(columns?'<th>الرقم الأصلي</th>':'')+'</tr></thead><tbody>'+rows+'</tbody></table></div></section>';
+function staffResults(){
+ if(!allowedStaff()||!STATE.staffReport)return '';
+ const items=[...STATE.staffReport].sort((a,b)=>String(a.class_name).localeCompare(String(b.class_name),'ar')||Number(a.serial_no)-Number(b.serial_no));
+ const isPrivileged=supervisor()||STATE.user.role==='supervisor_assistant';
+ const rows=items.map((x,i)=>{
+  const partInfo=(x.parts||[]).map(p=>'و'+stext(p.section)+': '+stext(p.attempts_used)+'/٢').join(' | ');
+  const stages=(x.parts||[]).map(p=>'و'+stext(p.section)+': '+stext(p.stages_completed||0)+'/٥').join(' | ');
+  const last=x.last_platform_login?new Date(x.last_platform_login).toLocaleString('ar-OM',{dateStyle:'short',timeStyle:'short'}):'—';
+  return '<tr><td>'+stext(i+1)+'</td><td>'+friendly(x.class_name)+'</td><td>'+stext(x.serial_no)+'</td>'+
+   '<td>'+friendly(x.full_name)+'</td><td>'+stext(x.platform_login_count||0)+'</td>'+
+   '<td>'+stext(x.contest_entry_count||0)+'</td><td>'+friendly(last)+'</td>'+
+   '<td>'+friendly(partInfo)+'</td><td>'+friendly(stages)+'</td><td>'+stext(x.total)+'/٤٠٠</td>'+
+   '<td>'+(x.qualified?'متأهل':'لم يتأهل بعد')+'</td>'+
+   (isPrivileged?'<td>'+friendly(x.student_id||'')+'</td>':'')+'</tr>';
+ }).join('');
+ return '<section class="panel staff-contest-panel"><h3>📊 كشف دخول الطلاب ومراحل مسابقة نجوم آفاق</h3>'+
+ '<p>يظهر الاسم والشعبة ورقم الطالب المخصص للدخول وعدد جلسات الدخول للمنصة والمسابقة ومراحل الوحدات الأربع. لا تُعرض الأرقام السرية. يبدأ عداد الدخول إلى المسابقة من تاريخ تفعيل تسجيل الزيارات.</p>'+
+ '<div class="result-table-scroll"><table class="contest-detailed-students"><thead><tr>'+
+ '<th>م</th><th>الشعبة</th><th>رقم الدخول</th><th>اسم الطالب</th><th>دخول المنصة</th>'+
+ '<th>دخول المسابقة</th><th>آخر دخول للمنصة</th><th>المحاولات للوحدات</th><th>المراحل المجتازة</th>'+
+ '<th>المجموع</th><th>الحالة</th>'+(isPrivileged?'<th>معرف الطالب الداخلي</th>':'')+
+ '</tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
-
 function contestSupervisorControls(){
  const profiles=STATE.testerStatuses||[],students=STATE.staffReport||[];
  const accounts=[1,2].map(number=>{
@@ -192,14 +208,18 @@ function bankView(){const all=STATE.bank.questions||[];return '<div class="conte
 function home(){
  const approved=STATE.catalog.some(x=>x.grade===STATE.grade&&x.section===STATE.section&&x.model==='A'&&x.published);
  const introduction=STATE.grade===6?'أربع وحدات • ٤٠٠ نقطة • التأهل من ٣٥٠ نقطة • محاولتان رسميتان لكل وحدة':'قسمان من دروس الفصل الأول • ٢٥ نقطة لكل قسم • المجموع ٥٠ ويضاعف إلى ١٠٠ • تدريب رمزي دون محاولات رسمية';
- const allowed=STATE.mode!=='official'||approved;
- const avatar=image(entryArt(),student()?'الصورة المعتمدة للطالب':'الصورة المعتمدة للمشرف والإدارة','entry-approved-avatar');
- return '<div class="contest-home"><div class="contest-welcome contest-welcome-image">'+avatar+'<div><span class="contest-label">⭐ مسابقة نجوم آفاق الرياضيات ⭐</span><h2>مرحبًا '+friendly(STATE.displayName||STATE.user?.username||'بك')+'</h2><p>'+introduction+'</p></div><button class="outline" id="logoutContest">خروج</button></div>'+ (allowedStaff()?'<div class="contest-grades">'+[5,6,7,8].map(g=>'<button class="'+(STATE.grade===g?'chosen':'')+'" data-grade="'+g+'">الصف '+gradeNames[g]+'</button>').join('')+'</div>':'')+
- unitCards()+progress()+sampleScorePanel()+certificateHistoryPanel()+
- '<h3 class="contest-title">اختر النموذج</h3><div class="contest-modes"><button class="'+(STATE.mode==='training'?'primary':'outline')+'" data-mode="training">🎯 '+trainingTitle()+'</button>'+(official()?'<button class="'+(STATE.mode==='official'?'primary':'outline')+'" data-mode="official">🏆 المحاولات الرسمية</button>':'')+'</div>'+
+ const thisUnit=STATE.report?.parts?.find(p=>p.section===STATE.section);
+ const exhausted=!!(STATE.mode==='official'&&thisUnit?.attempts_remaining===0&&
+  !(thisUnit.records||[]).some(x=>x.status==='in_progress'));
+ const allowed=STATE.mode!=='official'||(approved&&!exhausted);
+ const avatar=image(entryArt(),player()?'الصورة المعتمدة للطالب':'الصورة المعتمدة للمشرف والإدارة','entry-approved-avatar');
+ return '<div class="contest-home">'+(isTester()?'<div class="contest-tester-active"><b>🎓 وضع الطالب التجريبي رقم '+stext(STATE.testerProfile)+' — تخضع محاولاتك لقواعد الطالب نفسها.</b><button type="button" id="leaveTester" class="outline">العودة إلى دائرة الإشراف</button></div>':'')+
+ '<div class="contest-welcome contest-welcome-image">'+avatar+'<div><span class="contest-label">⭐ مسابقة نجوم آفاق الرياضيات ⭐</span><h2>مرحبًا '+friendly(STATE.displayName||STATE.user?.username||'بك')+'</h2><p>'+introduction+'</p></div><button class="outline" id="logoutContest">خروج</button></div>'+ (allowedStaff()?'<div class="contest-grades">'+[5,6,7,8].map(g=>'<button class="'+(STATE.grade===g?'chosen':'')+'" data-grade="'+g+'">الصف '+gradeNames[g]+'</button>').join('')+'</div>':'')+
+ unitCards()+progress()+sampleScorePanel()+certificateHistoryPanel()+studentPasswordPanel()+
+ '<h3 class="contest-title">اختر النموذج</h3><div class="contest-modes"><button class="'+(STATE.mode==='training'?'primary':'outline')+'" data-mode="training">🎯 تدريب غير رسمي — '+trainingTitle()+'</button>'+(official()?'<button class="'+(STATE.mode==='official'?'primary':'outline')+'" data-mode="official">🏆 المحاولات الرسمية</button>':'')+'</div>'+
  '<p class="contest-instructions">المراحل الخمس في التدريب والمحاولات الرسمية متشابهة في العرض والتوقيت والصور. بعد كل إجابة تُعرض الإجابة الصحيحة والتعزيز باسم المتسابق خلال ٥ ثوانٍ ثم تنتقل اللعبة تلقائيًا. وقبل كل مرحلة تظهر شاشة «استعد وابدأ».</p>'+road()+
  '<div class="contest-rules"><b>طريقة احتساب الدرجة:</b> ثلاث مراحل سريعة، ثم مختبر مستر بين، ثم تحدي الأستاذ سعيد. لكل مرحلة ١٠ نقاط، فيكون المجموع ٥٠ ويُضاعف إلى ١٠٠. تُحتسب أفضل نتيجة لكل وحدة.</div>'+
- (approved||STATE.mode!=='official'?'':'<div class="notice">المحاولة الرسمية لهذه الوحدة لم تعتمد بعد؛ يمكنك تجربة نموذج التدريب.</div>')+
+ (exhausted?'<div class="notice">اكتملت المحاولتان الرسميتان لهذه الوحدة؛ لن تُفتح محاولة ثالثة إلا بعد إعادة الضبط من دائرة الإشراف.</div>':approved||STATE.mode!=='official'?'':'<div class="notice">المحاولة الرسمية لهذه الوحدة لم تعتمد بعد؛ يمكنك تجربة نموذج التدريب.</div>')+
  (STATE.error?'<p class="notice" role="alert">'+friendly(STATE.error)+'</p>':'')+
  '<div class="contest-start-wrap"><button class="primary" id="prepare" '+(allowed?'':'disabled')+'>'+(STATE.mode==='official'?'الاستعداد للمحاولة الرسمية':'بدء '+trainingTitle())+'</button></div>'+staffResults()+manager()+'</div>';
 }
@@ -364,9 +384,9 @@ function certificatePortfolio(training=false){
 }
 
 function certificateHistoryPanel(){
- const training=readTrainingCertificate(),official=student()?STATE.certificates||[]:[];
+ const training=readTrainingCertificate(),official=player()?STATE.certificates||[]:[];
  const trainingAny=STATE.grade===6&&[1,2,3,4].some(n=>pastTrainingUnit(n));
- const officialAny=STATE.grade===6&&student()&&STATE.report;
+ const officialAny=STATE.grade===6&&player()&&STATE.report;
  if(!training&&!official.length&&!trainingAny&&!officialAny)return '';
  return '<section class="contest-cert-history"><h3>📜 شهاداتي ونتائجي السابقة</h3>'+
  '<p>يمكن طباعة كشف نتائج الوحدات الأربع من ٤٠٠ نقطة، أو الاطلاع على تفاصيل كل محاولة. نتائج التدريب منفصلة عن المنافسة الرسمية.</p>'+
@@ -582,7 +602,13 @@ async function finishEarly(){if(STATE.busy)return;if(!window.confirm('هل تر�
  if(STATE.mode==='official'){const r=await back('submit',{attempt_id:STATE.attemptId});STATE.result={...r,training:false,ended_at:new Date().toISOString()};STATE.report=r.report||STATE.report;try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
  else {await completeTraining();if(STATE.result){STATE.result.early_end=true;saveTrainingCertificate()}}STATE.readyStage=0;STATE.waitingUntil=0;
 }catch(err){STATE.error=err.message}finally{STATE.busy=false;render()}}
-async function reloadReports(){if(student()){STATE.report=(await back('my_results')).report}else if(allowedStaff()){const [a,b]=await Promise.all([back('staff_summary'),back('staff_results')]);STATE.summary=a.stats;STATE.staffReport=b.students}}
+async function reloadReports(){
+ if(player()){STATE.report=(await back('my_results')).report;await loadCertificates()}
+ else if(allowedStaff()){
+  const [a,b,c]=await Promise.all([back('staff_summary'),back('staff_results'),...(supervisor()?[back('tester_status')]:[Promise.resolve(null)])]);
+  STATE.summary=a.stats;STATE.staffReport=b.students;if(supervisor())STATE.testerStatuses=c?.profiles||[];
+ }
+}
 async function fetchBank(){try{const el=document.getElementById('editModel');if(el)STATE.editModel=el.value;STATE.bank=await back('question_list',{grade:STATE.grade,section:STATE.section,model:STATE.editModel});STATE.error='';render()}catch(err){STATE.error=err.message;render()}}
 function bindBank(){document.querySelectorAll('.edit-question').forEach(form=>form.addEventListener('submit',async ev=>{ev.preventDefault();const data=new FormData(form),ordinal=Number(form.dataset.ordinal),payload={grade:STATE.grade,section:STATE.section,model:STATE.editModel,ordinal,prompt:data.get('prompt'),visual_svg:data.get('visual_svg'),visual_caption:data.get('visual_caption')};
  if(ordinal<=30){const count=(STATE.bank.questions||[]).find(q=>q.ordinal===ordinal)?.options.length||4;payload.options=Array.from({length:count},(_,i)=>String(data.get('opt'+i)));payload.answer_index=Number(data.get('answer_index'))}else{try{payload.parts=JSON.parse(String(data.get('parts')))}catch{alert('تحقق من صيغة JSON للأجزاء');return}}
