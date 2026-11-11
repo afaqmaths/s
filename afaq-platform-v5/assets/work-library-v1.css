@@ -114,3 +114,9 @@
  .work-lessons-table{min-width:100%;font-size:9pt}
  .work-lessons-table td,.work-lessons-table th{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
+
+/* ملفات درس مستقلة: صورة السبورة أو فيديو حتى قبل رفع أوراق العمل */
+.work-add-resource{display:block;margin:7px 0 0;background:#eef3ff;color:#265a89;
+ padding:7px 10px;border:1px dashed #adc5e9;border-radius:9px;font-weight:900;font-size:12px}
+.work-add-resource:hover{background:#dfeafb}
+@media print{.work-add-resource{display:none!important}}
