@@ -121,6 +121,14 @@ Deno.serve(async(req:Request)=>{
   const testerId=testerProfile?TEST_PROFILES[testerProfile]:null;
   const player=testerId?{...u,role:"student",student_id:testerId,grade:6,username:testerName(testerProfile)}:u;
   const role=player.role,g=Number(b.grade??player.grade),section=Number(b.section);
+  if(action==="contest_visit"){
+   if(role!=="student"||!player.student_id)return fail(origin,"forbidden",403);
+   const {error}=await db.from("afaq_v2_contest_visits").upsert({
+     student_id:player.student_id,session_hash:u.token_hash
+   },{onConflict:"student_id,session_hash",ignoreDuplicates:true});
+   if(error)throw error;
+   return response(origin,{ok:true});
+  }
   if(action==="my_certificates"){
     if(role!=="student"||!player.student_id)return fail(origin,"forbidden",403);
     const {data:finished,error:readError}=await db.from("afaq_v2_attempts")
@@ -296,29 +304,61 @@ Deno.serve(async(req:Request)=>{
   }
   if(action==="staff_results"){
    if(!staff(role))return fail(origin,"forbidden",403);
-   const [{data:students,error:se},{data:rows,error:re}]=await Promise.all([
-      db.from("competition_students").select("student_id,serial_no,class_name,full_name,display_name").eq("active",true),
-      db.from("afaq_v2_attempts").select("student_id,section,score,status,attempt_no,started_at")]);
-   if(se||re)throw se||re;
-   const perId=new Map();
-   for(const a of rows||[]){if(!perId.has(a.student_id))perId.set(a.student_id,[]);perId.get(a.student_id).push(a)}
+   const [{data:students,error:se},{data:rows,error:re},
+      {data:visits,error:ve},{data:logins,error:le}]=await Promise.all([
+       db.from("competition_students").select("student_id,serial_no,class_name,full_name,display_name").eq("active",true),
+       db.from("afaq_v2_attempts").select("student_id,section,score,status,attempt_no,started_at,current_index,answers"),
+       db.from("afaq_v2_contest_visits").select("student_id,entered_at").limit(10000),
+       db.from("afaq_sessions").select("student_id,created_at").eq("role","student").limit(10000)
+   ]);
+   if(se||re||ve||le)throw se||re||ve||le;
+   const perId=new Map(),visitsById=new Map(),loginsById=new Map();
+   for(const a of rows||[]){
+    if(!perId.has(a.student_id))perId.set(a.student_id,[]);
+    perId.get(a.student_id).push(a);
+   }
+   for(const visit of visits||[]){
+    const item=visitsById.get(visit.student_id)||{count:0,last:null};
+    item.count++;
+    if(!item.last||visit.entered_at>item.last)item.last=visit.entered_at;
+    visitsById.set(visit.student_id,item);
+   }
+   for(const login of logins||[]){
+    if(!login.student_id)continue;
+    const item=loginsById.get(login.student_id)||{count:0,last:null};
+    item.count++;
+    if(!item.last||login.created_at>item.last)item.last=login.created_at;
+    loginsById.set(login.student_id,item);
+   }
+   const completedStages=(attempt:any)=>{
+    const total=Object.keys(attempt.answers||{}).length;
+    return [10,20,30,34,38].filter(threshold=>total>=threshold).length;
+   };
    const details=(students||[]).map(student=>{
-     const hits=perId.get(student.student_id)||[];
-     const parts=[1,2,3,4].map(section=>{
-      const unit=hits.filter((a:any)=>a.section===section);
-      const scored=unit.filter((a:any)=>["submitted","expired"].includes(a.status));
-      return {section,best:scored.length?Math.max(...scored.map((a:any)=>a.score||0)):null,
-        attempts_used:unit.length,attempts_remaining:Math.max(0,2-unit.length)};
-     });
-     const total=parts.reduce((z:number,p:any)=>z+(p.best||0),0);
-     const item:any={serial_no:student.serial_no,class_name:student.class_name,full_name:student.full_name||student.display_name,
-      total,qualified:total>=350&&parts.every(p=>p.best!==null),parts};
-     if(["supervisor","supervisor_assistant"].includes(role))item.student_id=student.student_id;
-     return item;
+    const hits=perId.get(student.student_id)||[];
+    const parts=[1,2,3,4].map(section=>{
+     const unit=hits.filter((a:any)=>a.section===section);
+     const scored=unit.filter((a:any)=>["submitted","expired"].includes(a.status));
+     return {section,best:scored.length?Math.max(...scored.map((a:any)=>a.score||0)):null,
+      attempts_used:unit.length,attempts_remaining:Math.max(0,2-unit.length),
+      stages_completed:Math.max(0,...unit.map(completedStages)),
+      attempts:unit.map((a:any)=>({number:a.attempt_no,status:a.status,
+        completed_stages:completedStages(a),answered_questions:Object.keys(a.answers||{}).length}))};
+    });
+    const total=parts.reduce((z:number,p:any)=>z+(p.best||0),0);
+    const item:any={serial_no:student.serial_no,class_name:student.class_name,
+     full_name:student.full_name||student.display_name,
+     total,qualified:total>=350&&parts.every(p=>p.best!==null),parts,
+     platform_login_count:loginsById.get(student.student_id)?.count||0,
+     last_platform_login:loginsById.get(student.student_id)?.last||null,
+     contest_entry_count:visitsById.get(student.student_id)?.count||0,
+     last_contest_entry:visitsById.get(student.student_id)?.last||null,
+     stages_completed:parts.reduce((n:number,p:any)=>n+p.stages_completed,0)};
+    if(["supervisor","supervisor_assistant"].includes(role))item.student_id=student.student_id;
+    return item;
    });
    return response(origin,{ok:true,students:details});
   }
-
   if(action==="tester_status"){
    if(u.role!=="supervisor"||testerId)return fail(origin,"forbidden",403);
    const profiles=await Promise.all(Object.entries(TEST_PROFILES).map(async ([n,id])=>({
