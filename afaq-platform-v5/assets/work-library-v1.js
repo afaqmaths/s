@@ -122,20 +122,22 @@ function workItemName(item){
   (workStaff()?'<small class="'+(item.published?'work-published':'work-draft')+'">'+
    (item.published?'منشورة':'مسودة غير منشورة')+'</small>':'')+
   (item.instructions?'<p>'+workEsc(item.instructions)+'</p>':'')+
-  '</div>'+workDocsCell(item,'worksheet')+workSettings(item);
+  '</div>'+(item.kind==='lesson_resource'?'<span class="work-empty">مواد مرتبطة بالدرس (دون ورقة عمل محددة)</span>':workDocsCell(item,'worksheet'))+workSettings(item);
 }
 function workWorksheetTable(lessons){
  return '<div class="work-table-scroller"><table class="work-lessons-table">'+
   '<thead><tr><th scope="col">اسم الدرس</th><th scope="col">ورقة العمل</th><th scope="col">نموذج الإجابة</th>'+
   '<th scope="col">ملفات أخرى / صور السبورة</th><th scope="col">الفيديو / يوتيوب</th></tr></thead><tbody>'+
   lessons.map(lesson=>{
-   const list=workItems().filter(x=>x.kind==='worksheet'&&Number(x.lesson_id)===Number(lesson.id));
+   const list=workItems().filter(x=>['worksheet','lesson_resource'].includes(x.kind)&&Number(x.lesson_id)===Number(lesson.id));
    const shown=list.length?list:[null];
    return shown.map((item,index)=>{
     const first=index===0?'<th scope="rowgroup" rowspan="'+shown.length+'" class="work-lesson-cell"><strong>'+
       workEsc(lesson.lesson_code)+' — '+workEsc(lesson.lesson_title)+'</strong>'+
       (workSuper()?'<button class="work-add-worksheet" type="button" data-work-new-worksheet="'+workEsc(lesson.id)+
-      '" data-work-lesson-title="'+workEsc(lesson.lesson_title)+'">＋ ورقة عمل</button>':'')+'</th>':'';
+      '" data-work-lesson-title="'+workEsc(lesson.lesson_title)+'">＋ ورقة عمل</button>'+
+      '<button type="button" class="work-add-resource" data-work-new-resource="'+workEsc(lesson.id)+
+      '" data-work-lesson-title="'+workEsc(lesson.lesson_title)+'">＋ صور أو فيديو للدرس</button>':'')+'</th>':'';
     return '<tr>'+first+
      '<td class="work-main-file-cell">'+workItemName(item)+'</td>'+
      '<td>'+workDocsCell(item,'answer')+'</td>'+
@@ -214,6 +216,13 @@ async function workNewWorksheet(button){
  await workDo('save_item',{kind:'worksheet',audience:'student',lesson_id:lessonId,title:title.trim(),
   published:false,answer_released:false},'أضيفت ورقة العمل بوصفها مسودة. أرفق المستندات ثم انشرها.');
 }
+async function workNewResource(button){
+ workNeedSupervisor();
+ const lessonId=Number(button.dataset.workNewResource),lessonName=button.dataset.workLessonTitle||'';
+ await workDo('save_item',{kind:'lesson_resource',audience:'student',lesson_id:lessonId,
+  title:'مواد الدرس — '+lessonName,published:false,answer_released:false},
+  'أنشئت مساحة خاصة لهذا الدرس. أضف صور السبورة أو الفيديوهات ثم انشرها.');
+}
 async function workNewTask(audience){
  workNeedSupervisor();
  const title=window.prompt('اكتب عنوان المهمة الجديدة:',audience==='management'?'مهمة إدارية جديدة':'مهمة تعليمية جديدة');
@@ -291,7 +300,7 @@ async function workOpenFile(docId){
 }
 document.addEventListener('click',async ev=>{
  const button=ev.target.closest('[data-work-tab],[data-work-refresh],[data-work-login],[data-work-new-worksheet],'+
-  '[data-work-new-task],[data-work-delete-item],[data-work-upload],[data-work-add-youtube],'+
+  '[data-work-new-task],[data-work-new-resource],[data-work-delete-item],[data-work-upload],[data-work-add-youtube],'+
   '[data-work-open],[data-work-delete-file],[data-work-delete-video]');
  if(!button)return;
  ev.preventDefault();
@@ -304,6 +313,7 @@ document.addEventListener('click',async ev=>{
    return;
   }
   if(button.dataset.workNewWorksheet){await workNewWorksheet(button);return}
+  if(button.dataset.workNewResource){await workNewResource(button);return}
   if(button.dataset.workNewTask){await workNewTask(button.dataset.workNewTask);return}
   if(button.dataset.workUpload){await workUploadFiles(button);return}
   if(button.dataset.workOpen){await workOpenFile(button.dataset.workOpen);return}
@@ -351,3 +361,6 @@ document.addEventListener('submit',async ev=>{
    'حُفظت إعدادات الورقة ونشرها بنجاح.');
  }catch(error){workSetStatus(workErrorMessage(error),true)}
 });
+
+// Respect direct links to the educational work area after legacy routes initialize.
+if(window.AFAQ_REQUESTED_HASH==='work')Promise.resolve().then(()=>route('work',false));
