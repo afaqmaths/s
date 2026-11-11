@@ -119,10 +119,10 @@ Deno.serve(async (req:Request)=>{
    if(!isSupervisor(user.role))return err(origin,"forbidden",403);
    const id=txt(b.id,50),kind=txt(b.kind,20),audience=txt(b.audience,20),
      title=txt(b.title,160),instructions=txt(b.instructions,3000);
-   if(!["worksheet","task"].includes(kind)||!["student","management"].includes(audience)||
+   if(!["worksheet","task","lesson_resource"].includes(kind)||!["student","management"].includes(audience)||
       title.length<2)return err(origin,"invalid_item");
    const lessonId=b.lesson_id==null||b.lesson_id===""?null:Number(b.lesson_id);
-   if(kind==="worksheet"&&(audience!=="student"||!lessonId||!await validLesson(lessonId)))
+   if(["worksheet","lesson_resource"].includes(kind)&&(audience!=="student"||!lessonId||!await validLesson(lessonId)))
      return err(origin,"invalid_lesson");
    if(kind==="task"&&lessonId!==null&&!await validLesson(lessonId))
      return err(origin,"invalid_lesson");
@@ -132,7 +132,7 @@ Deno.serve(async (req:Request)=>{
      published:b.published===true,answer_released:b.answer_released===true,
      updated_at:new Date().toISOString()};
    if(current){
-    // Never move a worksheet's attachments to another lesson, or change its audience.
+    // Never move a worksheet, lesson resource, or task's existing files to another scope.
     if(current.kind!==kind||current.audience!==audience||current.lesson_id!==lessonId)
       return err(origin,"item_scope_locked");
     const {error}=await db.from("afaq_work_items").update(fields).eq("id",id);
