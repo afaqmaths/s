@@ -132,3 +132,27 @@
 .work-dashboard-shortcut button{font-weight:900;flex:0 0 auto}
 @media(max-width:610px){.work-dashboard-shortcut button{width:100%}}
 @media print{.work-dashboard-shortcut{display:none!important}}
+
+/* مشهد الطالب التجريبي — معاينة مباشرة من حساب المشرف دون تعديل النتائج */
+.work-preview-actions,.work-preview-student{display:flex;align-items:center;gap:16px;
+ justify-content:space-between;flex-wrap:wrap;margin:17px 0 12px;padding:17px 20px;
+ border-radius:16px;border:1px solid #afcfdf;direction:rtl}
+.work-preview-actions{background:linear-gradient(115deg,#eaf5ff,#f4fbff)}
+.work-preview-actions>div,.work-preview-identity{flex:1 1 315px}
+.work-preview-actions strong,.work-preview-student strong{color:#175374;font-size:16px;display:block}
+.work-preview-actions p,.work-preview-student p{color:#436780;font-size:13px;
+ line-height:1.8;margin:6px 0 0}
+.work-preview-button,.work-preview-back{font:900 14px Tahoma,Arial,sans-serif;
+ border:0;border-radius:12px;padding:12px 19px;cursor:pointer;min-height:44px}
+.work-preview-button{background:#175e8a;color:#fff;box-shadow:0 5px 13px #1e65952b}
+.work-preview-button:hover{background:#10486e}
+.work-preview-student{background:linear-gradient(112deg,#e9f8f0,#f2fbff);
+ border-color:#96cdb1;border-width:2px}
+.work-preview-identity{display:flex;align-items:center;gap:12px}
+.work-preview-avatar{display:grid;place-items:center;font-size:33px;flex:0 0 61px;
+ height:61px;background:white;border-radius:16px;border:1px solid #b5ddc2}
+.work-preview-back{background:#fff;color:#1b6656;border:1px solid #8fbfaa}
+.work-preview-back:hover{background:#dff4e9}
+@media(max-width:610px){.work-preview-actions,.work-preview-student{padding:12px;gap:12px}
+.work-preview-button,.work-preview-back{width:100%}.work-preview-identity{align-items:flex-start}}
+@media print{.work-preview-actions,.work-preview-student{display:none!important}}
