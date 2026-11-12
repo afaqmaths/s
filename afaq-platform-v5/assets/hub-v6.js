@@ -58,12 +58,26 @@ function hubIcon(name,color='blue'){
  (H_ICONS[name]||H_ICONS['book-open'])+'</svg>';
  return '<div class="hub-visual hub-visual-'+color+'">'+svg+'<span class="hub-visual-glow"></span></div>';
 }
-function hubGate(title,icon,description,action,color='blue'){
- return '<button class="hub-gate" type="button" '+action+'><strong>'+hv(title)+'</strong>'+hubIcon(icon,color)+
- '<span>'+hv(description)+'</span><small>اضغط للدخول</small></button>';
+const HUB_ART={globe:'horizons','graduation-cap':'faculty',school:'faculty',
+ 'book-open':'learning','heart-handshake':'parents',smile:'games',trophy:'competition',
+ smartphone:'contact',lightbulb:'initiatives',puzzle:'minicontests'};
+function hubArtPicture(art,color,label){
+ const valid=['library','importance','horizons','environment','learning','competition',
+ 'games','minicontests','initiatives','stars','parents','faculty','suggestions','complaints','contact'];
+ if(!valid.includes(art))return '';
+ return '<div class="hub-visual hub-visual-'+color+' hub-illustration">'+
+  '<svg viewBox="0 0 160 132" role="img" aria-label="رسم توضيحي: '+hv(label)+'">'+
+  '<use href="assets/afaq-section-art.svg?v=20261112-brand1#art-'+art+'"></use></svg></div>';
+}
+function hubGate(title,icon,description,action,color='blue',art=null){
+ const illustration=hubArtPicture(art||HUB_ART[icon]||'learning',color,title);
+ return '<button class="hub-gate hub-gate-illustrated" type="button" '+action+'><strong>'+hv(title)+'</strong>'+
+  (illustration||hubIcon(icon,color))+'<span>'+hv(description)+'</span><small>اضغط للدخول</small></button>';
 }
 function hubSectionCard(title,icon,desc,route,color){
- return hubGate(title,icon,desc,'data-route="'+route+'"',color);
+ const art={learning:'learning',library:'library',fun:'games',contests:'competition',
+  support:'contact',importance:'importance',environment:'environment'}[route]||HUB_ART[icon]||'learning';
+ return hubGate(title,icon,desc,'data-route="'+route+'"',color,art);
 }
 const hubAudience=[
  ['زائر','تصفح المكتبة والتعلم والألعاب العامة، وتجربة سهلة واحدة لمسابقة النجوم.'],
@@ -78,7 +92,7 @@ function hubAbout(){
 }
 function hubHome(){
  return '<div class="container hub-home"><section class="hub-banner"><div><span>🇴🇲 منصة آفاق ماث • ٢٠٢٦ / ٢٠٢٧</span>'+
- '<h1>نافذتك إلى المعرفة والتعلّم والمرح</h1><p>مساحة منظّمة للطالب والمعلم وولي الأمر والزائر، تضم دروس الرياضيات ومكتبتها الثقافية وألعابها ومسابقاتها ودعمها التربوي.</p>'+
+ '<h1>آفاق ماث — نافذتك إلى المعرفة والتعلّم والمرح</h1><p>مساحة منظّمة للطالب والمعلم وولي الأمر والزائر، تضم دروس الرياضيات ومكتبتها الثقافية وألعابها ومسابقاتها ودعمها التربوي.</p>'+
  '<button class="hub-primary" data-route="visitor">تعرّف إلى المنصة وتصفح كزائر</button></div>'+
  '<div class="hub-math-scene"><span>π</span><span>∑</span><span>√</span><span>∞</span></div></section>'+
  '<section class="hub-main"><div class="hub-heading"><span>ابدأ من هنا</span><h2>اختر بوابة الدخول</h2><p>العنوان أولًا، وأسفله صورة واضحة تعبر عن وظيفته</p></div>'+
@@ -158,7 +172,7 @@ function hubResourceGrid(categories){
 function hubVisitor(){
  const contests=hub.catalog.filter(x=>x.published&&x.category==='contest'&&x.resource_url!=='competition.html');
  return '<div class="container hub-page"><section class="hub-page-head"><span>بوابة الزوار</span>'+
- '<h1>أهلًا بك في آفاق الرياضيات</h1>'+
+ '<h1>أهلًا بك في آفاق ماث</h1>'+
  '<p>تصفح المكتبة والدروس والمحتوى الثقافي، وتعرف إلى نظام المسابقة الرسمية، واستمتع بثلاث مسابقات مجانية منفصلة.</p>'+
  hubIcon('globe','cyan')+'</section>'+
  '<section class="hub-main"><div class="hub-heading"><h2>استكشف بوابات المنصة</h2></div>'+
