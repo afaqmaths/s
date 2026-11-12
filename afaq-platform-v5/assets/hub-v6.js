@@ -68,7 +68,7 @@ function hubArtPicture(art,color,label){
  if(!valid.includes(art))return '';
  return '<div class="hub-visual hub-visual-'+color+' hub-illustration">'+
   '<svg viewBox="0 0 160 132" role="img" aria-label="رسم توضيحي: '+hv(label)+'">'+
-  '<use href="assets/afaq-section-art.svg?v=20261112-brand1#art-'+art+'"></use></svg></div>';
+  '<use href="assets/afaq-section-art.svg?v=20261112-brand3#art-'+art+'"></use></svg></div>';
 }
 function hubGate(title,icon,description,action,color='blue',art=null){
  const illustration=hubArtPicture(art||HUB_ART[icon]||'learning',color,title);
