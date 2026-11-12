@@ -1,4 +1,4 @@
-/* منظومة أعمال المعلم — منصة آفاق الرياضيات. لا تتضمن مفاتيح أو كلمات مرور. */
+/* منظومة أعمال المعلم — منصة آفاق ماث. لا تتضمن مفاتيح أو كلمات مرور. */
 'use strict';
 const ssState={
  year:'2026/2027',term:1,tab:'motto',records:[],contacts:[],
@@ -447,7 +447,7 @@ function ssComposeMessageFromSelection(selected){
  const studentLine=name?'بشأن الطالب: '+name+' — '+(student.class_name||'')+'\n':'';
  return intro+studentLine+(detail?detail+'\n':'')+
  'نرجو الاطلاع والمتابعة بما يخدم مصلحة الطالب، مع الشكر والتقدير.\n'+
- 'الأستاذ سعيد بن جمعة بن عبدالله البريكي\nمنصة آفاق الرياضيات.';
+ 'الأستاذ سعيد بن جمعة بن عبدالله البريكي\nمنصة آفاق ماث.';
 }
 function ssContactInfoSelected(){
  const select=document.getElementById('ssRecipientType');
@@ -484,7 +484,7 @@ function ssShareMessage(){
   window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text),'_blank','noopener,noreferrer');
  }else if(channel==='email'){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)){window.alert('أدخل عنوان بريد إلكتروني صحيحًا.');return}
-  const subject='متابعة تربوية — منصة آفاق الرياضيات';
+  const subject='متابعة تربوية — منصة آفاق ماث';
   window.location.href='mailto:'+recipient+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(text);
  }else{
   window.open('https://www.instagram.com/direct/inbox/','_blank','noopener,noreferrer');
@@ -498,7 +498,7 @@ function ssClassPortraitLayout(report){
  const rows=[...(report?.students||[])].sort((a,b)=>Number(a.serial_no)-Number(b.serial_no));
  const cell=(label,v,max)=>'<span><b>'+ssEsc(label)+'</b><strong>'+gbClassScore(v)+(max?' / '+max:'')+'</strong></span>';
  return '<main class="ss-portrait-sheet" dir="rtl"><header><p>سلطنة عُمان — مدرسة الحسين بن علي للتعليم الأساسي</p>'+
- '<h1>منصة آفاق الرياضيات — كشف الدرجات التفصيلي</h1><h2>'+ssEsc(report?.class_name||'')+
+ '<h1>منصة آفاق ماث — كشف الدرجات التفصيلي</h1><h2>'+ssEsc(report?.class_name||'')+
  ' • عدد الطلاب '+gbNum(rows.length)+'</h2><p>كشف بالطباعة العمودية A4 • التوقع مقابل الحقيقي</p></header>'+
  rows.map(row=>{
   const s=row.scores||{},approved=row.assessment_status==='approved',real=row.final_status==='approved';
@@ -523,7 +523,7 @@ function ssClassPortraitLayout(report){
  '<footer><p>علامة (—) تعني عدم الرصد أو عدم الاعتماد. تُحسب الدرجة الحقيقية من ٦٠ للأعمال + ٤٠ للنهائي بعد اعتماده فقط.</p>'+
  '<div><b>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</b>'+
  '<b>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</b></div>'+
- '<small>كشف من منصة آفاق الرياضيات، لا يُغني عن سجلات المدرسة الرسمية.</small></footer></main>';
+ '<small>كشف من منصة آفاق ماث، لا يُغني عن سجلات المدرسة الرسمية.</small></footer></main>';
 }
 function ssPrintableRecord(record){
  const fields=record?.body||{},names={
@@ -544,7 +544,7 @@ function ssPrintableRecord(record){
  reflection:'تأمل المعلم',notes:'الملاحظات',classification:'التصنيف',resource_url:'رابط المورد'};
  const body=Object.entries(fields).filter(([key,v])=>v!=null&&v!==''&&(!Array.isArray(v)||v.length)&&key!=='is_sample')
  .map(([key,v])=>'<div><h3>'+ssEsc(names[key]||key)+'</h3><p>'+ssEsc(Array.isArray(v)?v.join('، '):v).replace(/\n/g,'<br>')+'</p></div>').join('');
- return '<main class="ss-print-record" dir="rtl"><header><h1>منصة آفاق الرياضيات — سجل أعمال المعلم</h1>'+
+ return '<main class="ss-print-record" dir="rtl"><header><h1>منصة آفاق ماث — سجل أعمال المعلم</h1>'+
  '<p>مدرسة الحسين بن علي للتعليم الأساسي • العام '+ssEsc(record.academic_year||ssState.year)+'</p>'+
  '<h2>'+ssEsc(record.title||'سجل')+'</h2>'+
  (record.unit?'<p>الوحدة: '+ssEsc(record.unit)+' • الدرس: '+ssEsc(record.lesson||'')+'</p>':'')+
@@ -580,7 +580,7 @@ function staffSuitePrint(source,kind='certificate',orientation='portrait',report
  '.gb-cert-praise{margin-top:2mm!important}':'')+
  (kind==='teacher'?'.ss-print-record{border:none!important;box-shadow:none!important;width:100%!important}':'')+
  '</style>';
- const html='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>آفاق الرياضيات — طباعة '+orient+
+ const html='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>آفاق ماث — طباعة '+orient+
  '</title><link rel="stylesheet" href="'+baseCss+'"><link rel="stylesheet" href="'+cssLocation+'">'+
  '<link rel="stylesheet" href="'+suiteCss+'">'+extra+'</head>'+
  '<body class="'+bodyClass+portraitClass+'"><div id="'+wrap+'">'+paper+'</div></body></html>';
