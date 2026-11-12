@@ -55,7 +55,7 @@ function afCard(item){
  return '<article class="af-audio-card" data-af-category="'+afEsc(item.category)+'" tabindex="0">'+
  '<div class="af-audio-card-head"><div class="af-audio-emblem af-audio-'+afEsc(item.category)+'">'+afPlayIcon(item.category)+'</div>'+
  '<div><small>'+afEsc(afCat(item.category)[1])+(item.featured?' • مميز':'')+'</small>'+
- '<h3>'+afEsc(item.title)+'</h3><b>'+afEsc(item.performer||'مكتبة آفاق الرياضيات')+'</b></div></div>'+
+ '<h3>'+afEsc(item.title)+'</h3><b>'+afEsc(item.performer||'مكتبة آفاق ماث')+'</b></div></div>'+
  (item.summary?'<p>'+afEsc(item.summary)+'</p>':'')+
  audioBar+youtubeBar+tts+external+
  '<div class="af-audio-card-links">'+sourceLink+download+'</div>'+
@@ -79,7 +79,7 @@ function afAudioPage(){
  return '<div class="container af-page" dir="rtl"><section class="af-hero">'+
  '<div><span class="af-audio-eyebrow">🎧 بوابة المكتبة العامة — للجميع</span>'+
  '<h1>آفاق الاستماع</h1><h2>استمع • تعلّم • استلهم</h2>'+
- '<p>استراحة معرفية وتربوية داخل منصة آفاق الرياضيات: تلاوات قرآنية، ومختارات من الحديث النبوي، وحِكَم وأناشيد وأغانٍ وطنية ومقاطع تشجع على العلم والإنجاز.</p>'+
+ '<p>استراحة معرفية وتربوية داخل منصة آفاق ماث: تلاوات قرآنية، ومختارات من الحديث النبوي، وحِكَم وأناشيد وأغانٍ وطنية ومقاطع تشجع على العلم والإنجاز.</p>'+
  '<div class="af-hero-actions"><button class="af-button-white" data-route="library">المكتبة العامة</button>'+
  '<button class="af-button-white" data-route="visitor">بوابة الزائر</button>'+
  '<span>'+afNum(count)+' مادة منشورة</span></div></div>'+
@@ -168,7 +168,7 @@ function afAdminPage(){
  '</section><section class="hub-main"><h2>رفع ملف صوتي مملوك أو مُصرح بتوزيعه</h2>'+
  '<p>يمكن للمشرف رفع ملف MP3 أو OGG أو WAV أو M4A حتى ٨ ميجابايت. بعد الرفع تُدرج روابطه في الحقول أعلاه، ويجب حفظ بيانات المادة. لا ترفع تسجيلات الفنانين أو الأناشيد المحمية دون إذن مكتوب.</p>'+
  '<form id="afUploadForm"><label>ملف الصوت من الجهاز<input type="file" name="audiofile" accept=".mp3,.ogg,.wav,.m4a,audio/mpeg,audio/ogg,audio/wav,audio/mp4" required></label>'+
- '<label class="af-permission"><input name="permission_confirmed" type="checkbox" required>أملك حقوق الملف أو لدي تصريح صريح لنشره على منصة آفاق الرياضيات.</label>'+
+ '<label class="af-permission"><input name="permission_confirmed" type="checkbox" required>أملك حقوق الملف أو لدي تصريح صريح لنشره على منصة آفاق ماث.</label>'+
  '<label>تفاصيل حق النشر / اسم صاحب الإذن<input name="copyright_note" minlength="20" maxlength="350" required placeholder="صاحب الحقوق ونوع الإذن وتاريخه إن وجد"></label>'+
  '<button type="submit" class="hub-primary">⬆ رفع الملف وربطه بالنموذج أعلاه</button></form>'+
  (afAudio.message?'<p class="af-success">'+afEsc(afAudio.message)+'</p>':'')+
