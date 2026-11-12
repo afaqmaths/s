@@ -1,5 +1,5 @@
 'use strict';
-/* آفاق الرياضيات — ربط الرصد بالتغذية الراجعة والنتائج الفردية والصفية والعامة */
+/* آفاق ماث — ربط الرصد بالتغذية الراجعة والنتائج الفردية والصفية والعامة */
 const feedbackState={
  scope:'class',className:'السادس / ٤',track:'all',orientation:'landscape',
  report:null,loadedKey:'',loadingKey:'',error:'',
@@ -147,7 +147,7 @@ function fbPaperContents(){
 }
 function fbPrintablePage(body,orientation){
  return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
- '<title>تقرير التغذية الراجعة — منصة آفاق الرياضيات</title>'+
+ '<title>تقرير التغذية الراجعة — منصة آفاق ماث</title>'+
  '<style>@page{size:A4 '+orientation+';margin:9mm}'+
  '*{box-sizing:border-box}body{font-family:Tahoma,Arial,sans-serif;color:#23425d;font-size:9pt;direction:rtl}'+
  'header{text-align:center;border-bottom:3px double #ac843f;padding-bottom:3mm}h1{font-size:18pt;color:#145378;margin:1mm}'+
@@ -164,7 +164,7 @@ function fbPrintablePage(body,orientation){
  'tr{break-inside:avoid}footer{border-top:2px double #b69a54;margin-top:7mm;padding-top:4mm;display:flex;justify-content:space-between;gap:4mm}'+
  '.fb-print-group{margin:5mm 0;page-break-inside:avoid}p{line-height:1.65}'+
  '</style></head><body><header><p>سلطنة عُمان • وزارة التربية والتعليم</p>'+
- '<h1>مدرسة الحسين بن علي للتعليم الأساسي</h1><p>منصة آفاق الرياضيات — نتائج الدعم والإثراء</p></header>'+
+ '<h1>مدرسة الحسين بن علي للتعليم الأساسي</h1><p>منصة آفاق ماث — نتائج الدعم والإثراء</p></header>'+
  '<main>'+body+'</main><footer><span>الإعداد والإشراف: الأستاذ سعيد بن جمعة بن عبدالله البريكي</span>'+
  '<span>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</span></footer></body></html>';
 }
