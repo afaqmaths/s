@@ -1,4 +1,4 @@
-/* سجل آفاق الرياضيات — شفوي ١٠ + سؤالان قصيران ١٠ + اختباران قصيران ٢٠ + كتابي ٥ + واجبات ٥ + مشروع ١٠ = ٦٠، ثم ٤٠ توقع/نهائي. */
+/* سجل آفاق ماث — شفوي ١٠ + سؤالان قصيران ١٠ + اختباران قصيران ٢٠ + كتابي ٥ + واجبات ٥ + مشروع ١٠ = ٦٠، ثم ٤٠ توقع/نهائي. */
 'use strict';
 const GB_COMPONENTS=[
  ['oral_score','الأعمال الشفوية',10],
@@ -117,7 +117,7 @@ function gbCertificate(p,mode='prediction'){
  '<div class="gb-flag"><span></span><span></span><span></span></div>'+
  '<div class="gb-cert-head"><div class="gb-icon" aria-hidden="true">🏆</div>'+
  '<div><p>سلطنة عُمان • مدرسة الحسين بن علي للتعليم الأساسي</p>'+
- '<h2>منصة آفاق الرياضيات</h2><h3>'+(final?'شهادة النتيجة الفعلية بعد الاختبار النهائي':
+ '<h2>منصة آفاق ماث</h2><h3>'+(final?'شهادة النتيجة الفعلية بعد الاختبار النهائي':
  'شهادة النتيجة المتوقعة قبل الاختبار النهائي')+'</h3></div>'+
  '<div class="gb-icon" aria-hidden="true">🥇</div></div>'+
  '<div class="gb-cert-name"><span>تتقدم المنصة بالشكر والتقدير للطالب</span>'+
@@ -152,7 +152,7 @@ function gbCertificate(p,mode='prediction'){
  '<p class="gb-cert-wish">وفقك الله وسدد خطاك، وإلى مزيد من النجاح والتميّز.</p>'+
  '<p class="gb-cert-legal">'+(final?'هذه النتيجة مبنية على الدرجة المعتمدة للاختبار النهائي.':
  'هذا تقدير استرشادي قبل الاختبار النهائي، ولا يحل محل درجته الحقيقية.')+
- ' وثيقة من منصة آفاق الرياضيات وليست بديلًا عن السجل الرسمي للمدرسة.</p>'+
+ ' وثيقة من منصة آفاق ماث وليست بديلًا عن السجل الرسمي للمدرسة.</p>'+
  '<div class="gb-cert-signatures"><div><b>الإعداد والإشراف</b>'+
  '<strong>الأستاذ سعيد بن جمعة بن عبدالله البريكي</strong></div>'+
  '<div><b>مدير المدرسة</b><strong>الأستاذ عبد الله بن علي العيسائي</strong></div></div></section>';
@@ -162,7 +162,7 @@ function gbShareText(p,mode){
  if(!a||a.status!=='approved'||(!isFinal&&a.estimated_total===null)|| 
   (isFinal&&(a.final_status!=='approved'||a.actual_total===null)))return '';
  const value=Number(isFinal?a.actual_total:a.estimated_total),name=student.full_name||student.display_name||'طالب';
- return ['منصة آفاق الرياضيات — '+(isFinal?'النتيجة الفعلية بعد الاختبار النهائي':'توقع النتيجة قبل الاختبار النهائي'),
+ return ['منصة آفاق ماث — '+(isFinal?'النتيجة الفعلية بعد الاختبار النهائي':'توقع النتيجة قبل الاختبار النهائي'),
   'الطالب: '+name,'الشعبة: '+(student.class_name||'السادس'),
   'الأعمال الشفوية: '+gbNum(a.oral_score)+'/١٠',
   'السؤالان القصيران (دروس غير داخلة في الاختبارين): '+gbNum(a.short_questions)+'/١٠',
@@ -322,7 +322,7 @@ function gbClassReportMarkup(report){
   '<div class="gb-class-flag" aria-hidden="true"><span></span><span></span><span></span></div>'+
   '<div class="gb-class-heading"><div class="gb-class-icon" aria-hidden="true">📐</div>'+
   '<div><span>سلطنة عُمان • مدرسة الحسين بن علي للتعليم الأساسي</span>'+
-  '<h2>منصة آفاق الرياضيات — كشف نتائج الشعبة</h2>'+
+  '<h2>منصة آفاق ماث — كشف نتائج الشعبة</h2>'+
   '<h3>'+classLabel+' | مقارنة المتوقع بالفعلي</h3></div>'+
   '<div class="gb-class-icon" aria-hidden="true">🏆</div></div>'+
   '<div class="gb-class-summary">'+
