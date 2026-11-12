@@ -507,7 +507,7 @@ function certificateMarkup(cert){
   '<div class="afaq-cert-flag-ribbon" aria-hidden="true"><span></span><span></span><span></span></div>'+
   '<div class="afaq-cert-top"><div class="afaq-cert-art">'+certificateTrophyArt()+'</div>'+
    '<div class="afaq-cert-brand"><span class="afaq-cert-eyebrow">'+friendly(note)+'</span>'+
-    '<strong>منصة آفاق الرياضيات</strong><span>مسابقة نجوم آفاق الرياضيات</span></div>'+
+    '<strong>منصة آفاق ماث</strong><span>مسابقة نجوم آفاق الرياضيات</span></div>'+
    '<div class="afaq-cert-art">'+certificateMedalArt()+'</div></div>'+
   '<div class="afaq-cert-heading"><h2>'+friendly(title)+'</h2>'+
    '<p>بكل فخر واعتزاز، نتقدم بالشكر والتقدير إلى المتسابق</p>'+
@@ -521,7 +521,7 @@ function certificateMarkup(cert){
    '<span>'+friendly(status)+'</span></div></div>'+
   '<p class="afaq-cert-praise">'+friendly(thanks)+'</p>'+
   '<p class="afaq-cert-thanks">وفقك الله وسدد خطاك، ونتمنى لك مزيدًا من النجاح والتقدم.</p>'+
-  '<p class="afaq-cert-fineprint">هذه وثيقة نتائج من منصة آفاق الرياضيات حسب البيانات المتاحة، وليست تصديقًا رسميًا من المدرسة أو إعلانًا نهائيًا للفائزين.</p>'+
+  '<p class="afaq-cert-fineprint">هذه وثيقة نتائج من منصة آفاق ماث حسب البيانات المتاحة، وليست تصديقًا رسميًا من المدرسة أو إعلانًا نهائيًا للفائزين.</p>'+
   '<div class="afaq-cert-footer"><div><b>الإعداد والإشراف</b><span>الأستاذ سعيد بن جمعة بن عبدالله البريكي</span></div>'+
   '<div><b>مدير المدرسة</b><span>الأستاذ عبد الله بن علي العيسائي</span></div></div></section>';
 }
