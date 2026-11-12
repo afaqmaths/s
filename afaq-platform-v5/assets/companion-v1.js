@@ -276,7 +276,7 @@ function cpPrint(mode){
  cpEsc(title)+'</title><style>'+css+'</style></head><body><header><p>وزارة التربية والتعليم — مدرسة الحسين بن علي للتعليم الأساسي</p><h1>'+
  cpEsc(title)+'</h1><p>العام ٢٠٢٦/٢٠٢٧ — '+cpEsc(r.class_name)+' — الفصل '+cpTerm()+
  ' • استخراج '+cpEsc(cpDate())+'</p></header>'+body+
- '<footer><small>هذا التقرير مستخرج من البيانات المدرسية المحفوظة في منصة آفاق الرياضيات، ويُراجع قبل تسليمه إلى أي جهة.</small></footer></body></html>');
+ '<footer><small>هذا التقرير مستخرج من البيانات المدرسية المحفوظة في منصة آفاق ماث، ويُراجع قبل تسليمه إلى أي جهة.</small></footer></body></html>');
  win.onload=()=>{win.focus();win.print()};win.document.close();
 }
 async function cpSaveForm(form,action,more={}){
