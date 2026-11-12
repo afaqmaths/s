@@ -335,7 +335,7 @@ function hubTrialPage(){
 function hubSupport(){
  const last=hub.supportTickets.slice(-8).reverse();
  return '<div class="container hub-page"><section class="hub-page-head"><span>الدعم والتواصل</span><h1>نستمع إليك ونقدّر مساهمتك</h1>'+
- '<p>إرسال اقتراح أو شكوى أو رسالة إلى مشرف آفاق الرياضيات، ثم متابعة الرد عبر رقم متابعة خاص.</p>'+
+ '<p>إرسال اقتراح أو شكوى أو رسالة إلى مشرف آفاق ماث، ثم متابعة الرد عبر رقم متابعة خاص.</p>'+
  hubIcon('smartphone','cyan')+'</section>'+
  '<div class="hub-support-grid"><section class="hub-main"><h2>إنشاء رسالة</h2>'+
  '<form id="hubSupportForm"><label>نوع الرسالة<select name="kind"><option value="suggestion">اقتراح لتطوير المنصة</option>'+
@@ -697,7 +697,7 @@ function hubPdfPrint(){
  const data=hubPaper(),orient=hub.printOrientation==='landscape'?'landscape':'portrait',pop=window.open('','_blank');
  if(!pop){window.alert('اسمح بفتح نافذة الطباعة الجديدة في المتصفح.');return}
  const page='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
- '<title>طباعة آفاق الرياضيات</title><style>@page{size:A4 '+orient+';margin:10mm}'+
+ '<title>طباعة آفاق ماث</title><style>@page{size:A4 '+orient+';margin:10mm}'+
  'body{direction:rtl;font-family:Tahoma,Arial,sans-serif;color:#1a436b}'+
  '.hub-printed-document{max-width:100%;line-height:1.65}'+
  '.hub-printed-document header{border-bottom:3px solid #bd9c5b;text-align:center}'+
