@@ -58,12 +58,13 @@ function hubIcon(name,color='blue'){
  (H_ICONS[name]||H_ICONS['book-open'])+'</svg>';
  return '<div class="hub-visual hub-visual-'+color+'">'+svg+'<span class="hub-visual-glow"></span></div>';
 }
-const HUB_ART={globe:'horizons','graduation-cap':'faculty',school:'faculty',
- 'book-open':'learning','heart-handshake':'parents',smile:'games',trophy:'competition',
+const HUB_ART={globe:'guest','graduation-cap':'supervision',school:'faculty',
+ 'book-open':'student','heart-handshake':'parents',smile:'games',trophy:'competition',
  smartphone:'contact',lightbulb:'initiatives',puzzle:'minicontests'};
 function hubArtPicture(art,color,label){
  const valid=['library','importance','horizons','environment','learning','competition',
- 'games','minicontests','initiatives','stars','parents','faculty','suggestions','complaints','contact'];
+ 'games','minicontests','initiatives','stars','parents','faculty','suggestions','complaints','contact',
+ 'student','supervision','guest'];
  if(!valid.includes(art))return '';
  return '<div class="hub-visual hub-visual-'+color+' hub-illustration">'+
   '<svg viewBox="0 0 160 132" role="img" aria-label="رسم توضيحي: '+hv(label)+'">'+
