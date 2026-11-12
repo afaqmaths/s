@@ -60,3 +60,33 @@
  .afaq-illustrated-tile:hover{transform:none!important}
 }
 @media print{.afaq-tile-emoji{display:none}.afaq-illustrated-tile{break-inside:avoid;box-shadow:none!important}}
+
+/* الفئات الخمس الفعلية في واجهة hubHome، وبوابات الدخول المصوّرة */
+.hub-gate-illustrated{position:relative;overflow:hidden;isolation:isolate;
+ min-height:294px!important;border:1px solid #d5e7f1!important;
+ background:linear-gradient(150deg,#fff,#f7fbff)!important;box-shadow:0 8px 24px #1c4a7214!important;
+ padding:17px 12px 18px!important;gap:11px!important}
+.hub-gate-illustrated::before{content:"";position:absolute;width:90px;height:90px;
+ left:-45px;bottom:-50px;border-radius:50%;background:#c4e9ee32;z-index:-1}
+.hub-gate-illustrated>strong{font-size:clamp(16px,1.45vw,21px)!important;
+ min-height:33px!important;color:#1a486f}
+.hub-gate-illustrated .hub-illustration{position:relative;width:100%!important;
+ max-width:183px!important;min-width:0!important;min-height:0!important;height:auto!important;
+ aspect-ratio:160/132;border-radius:20px!important;overflow:hidden;padding:0!important;
+ margin:0 auto 1px!important;background:transparent!important;border:0!important;
+ box-shadow:0 9px 20px #265a7714!important}
+.hub-gate-illustrated .hub-illustration>svg{display:block;width:100%!important;
+ height:100%!important;stroke-width:initial!important;transition:transform .22s ease}
+.hub-gate-illustrated:hover .hub-illustration>svg{transform:scale(1.06)}
+.hub-gate-illustrated>span{font-size:12px!important;line-height:1.75!important;
+ min-height:38px!important;color:#55748a!important}
+.hub-gate-illustrated>small{font-size:12px!important;color:#1a8d8c!important}
+.hub-gate-illustrated:hover,.hub-gate-illustrated:focus-visible{transform:translateY(-4px)!important;
+ border-color:#79c2ba!important;box-shadow:0 17px 33px #1c4a7226!important}
+@media(max-width:860px){.hub-gate-illustrated{min-height:257px!important}
+ .hub-gate-illustrated .hub-illustration{max-width:154px!important}}
+@media(max-width:560px){.hub-gate-illustrated{min-height:224px!important;padding:11px 8px!important;gap:7px!important}
+ .hub-gate-illustrated>strong{font-size:14px!important}
+ .hub-gate-illustrated>span{font-size:11px!important}
+ .hub-gate-illustrated>small{font-size:11px!important}}
+@media print{.hub-gate-illustrated{box-shadow:none!important}}
