@@ -101,7 +101,7 @@ function apPanel(){
 }
 function apCertificateData(row){
  const net=apBalance(row),hasPositive=row.plus!==null&&row.plus>row.minus&&row.plus>0;
- const title=hasPositive?'شهادة إشادة بالتفاعل والمشاركة':'إفادة متابعة التفاعل والمشاركة';
+ const title=hasPositive?'شهادة إشادة بالتفاعل والمشاركة':'شهادة متابعة التفاعل والمشاركة';
  const description=hasPositive?'تقديرًا لمشاركته الإيجابية ومساهمته في أنشطة الرياضيات، وفق نقاط التفاعل المرصودة في منصة آفاق ماث.':
   'بيان متابعة لنقاط المشاركة والتفاعل ضمن أنشطة الرياضيات، بغرض التشجيع وتطوير الأداء.';
  return {title,description,net};
