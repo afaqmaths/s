@@ -1,4 +1,4 @@
-/* منصة آفاق الرياضيات — الإصدار المتصل v2. لا تُدرج رموز السر أو مفاتيح الإدارة في هذا الملف. */
+/* منصة آفاق ماث — الإصدار المتصل v2. لا تُدرج رموز السر أو مفاتيح الإدارة في هذا الملف. */
 'use strict';
 const API_BASE='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-platform-api';
 const COMPETITION_API='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-contest-v2';
