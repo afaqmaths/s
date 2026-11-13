@@ -31,7 +31,7 @@ async function aeLoadNews(force=false){
  if(aeState.newsBusy||(!force&&aeState.newsTried))return;
  aeState.newsTried=true;aeState.newsBusy=true;
  try{aeState.news=await aeApi('news')}catch(err){aeStatus(err.message,true)}
- finally{aeState.newsBusy=false;aeRefresh()}
+ finally{aeState.newsBusy=false;if(typeof awWeather==='function')awWeather();aeRefresh()}
 }
 async function aeLoadStaff(force=false){
  if(!aeStaff()||aeState.staffBusy||(!force&&aeState.staffTried))return;
