@@ -236,7 +236,7 @@ function workPage(){
    workPreviewPanel()+
    '<div class="work-toolbar"><button type="button" class="outline" data-work-refresh '+(!auth.user?'disabled':'')+
    '>↻ تحديث الملفات</button>'+
-   (workSuper()?'<span class="work-super-note">أنت المشرف الرئيسي: الإضافة والتعديل والحذف والنشر متاحة لحسابك فقط.</span>':'')+'</div>'+
+   ''+'</div>'+
    '<p id="workLiveStatus" class="work-live-status '+(workState.statusError?'work-error':'')+'" role="status">'+
    workEsc(workState.status)+'</p>'+inside+'</div>';
 }
