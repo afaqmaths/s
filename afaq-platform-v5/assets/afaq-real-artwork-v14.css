@@ -64,7 +64,7 @@ animation:afaqBlueFlow 13s linear infinite,afaqBluePulse 5s ease-in-out infinite
 position:absolute;z-index:3;width:24%;display:flex;flex-direction:column;gap:9px;pointer-events:none
 }
 .hub-home .v10-premium-hero .afaq-lesson-gallery--right{top:24px;right:13px}
-.hub-home .v10-premium-hero .afaq-lesson-gallery--left{top:198px;left:13px}
+.hub-home .v10-premium-hero .afaq-lesson-gallery--left{top:182px;left:13px}
 .hub-home .v10-premium-hero .afaq-lesson-art{
 display:flex;direction:rtl;align-items:center;gap:7px;min-height:75px;min-width:0;padding:6px 8px;
 border:2px solid #fff8d5;border-radius:17px;background:linear-gradient(125deg,#fffdf1f5,#f7e1aceb);
@@ -188,3 +188,6 @@ flex-direction:row!important;flex-wrap:wrap!important;align-items:stretch!import
 .foot-v10-hero>.foot-v10-title{width:100%!important;padding:24px!important}
 }
 @media(prefers-reduced-motion:reduce){.hub-home .v10-premium-hero .afaq-blue-energy path{animation:none!important}}
+
+/* Text sits on the dark right-hand part of the same stadium photograph. */
+.foot-v10-promo.afaq-stadium-banner,.foot-v10-hero{direction:rtl!important}
