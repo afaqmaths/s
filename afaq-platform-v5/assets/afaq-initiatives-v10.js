@@ -5,11 +5,12 @@ const initEsc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 const initArr=x=>Array.isArray(x)?x:[];
 const initAdmin=()=>auth.user?.role==='supervisor';
 const initStaff=()=>['supervisor','supervisor_assistant','director','deputy','it_viewer'].includes(auth.user?.role);
-const initRoutes=[['mixer','خلاط الرياضيات'],['coordinate_ya','الإحداثيات ي/أ'],['workshops','المشاغل المهنية'],
+const initRoutes=[['mixer','خلاط الرياضيات'],['coordinate_ya','الإحداثيات ي/أ'],['division_key','المفتاح للقسمة'],['workshops','المشاغل المهنية'],
  ['learning','التعليم والتعلم'],['adaptive','التقويم'],['work','أوراق العمل'],['library','المكتبة'],['question_bank','بنك الأسئلة'],['contests','المسابقات']];
 const initDefaults=[
  {id:'default1',title:'خلاط الرياضيات',subtitle:'مدخلات ← عمليات ← مخرجات',description:'مبادرة تربط قواعد الرياضيات بالتجريب والتطبيق الحياتي.',icon:'mixer',accent:'gold',route:'mixer'},
  {id:'default2',title:'مبادرة ي/أ للإحداثيات',subtitle:'ي: يمين ويسار • أ: أعلى وأسفل',description:'مفتاح تذكّر للحركة الأفقية والرأسية مع الحفاظ على رمزي (س، ص).',icon:'coordinates',accent:'teal',route:'coordinate_ya'},
+ {id:'default4',title:'المفتاح للقسمة',subtitle:'الفاصلة العشرية تفتح مرحلة أجزاء العشرة',description:'القسمة المطوّلة بمراحل المنازل ثم إظهار المفتاح عند وجود باق.',icon:'division_key',accent:'gold',route:'division_key'},
  {id:'default3',title:'الوسائل التعليمية المحسوسة والرقمية',subtitle:'المحسوس ← المصوّر ← المجرّد',description:'تمثيل مفاهيم الرياضيات باليد وبالأدوات الرقمية.',icon:'teaching',accent:'violet',route:'workshops'}
 ];
 async function initFetchPublic(force=false){
@@ -38,6 +39,8 @@ function initArt(row){
    '<path d="M64 72H109V31" stroke="#1ba2a4" stroke-width="5" fill="none"/>'+
    '<circle cx="64" cy="72" r="5" fill="#32b5c3"/><circle cx="109" cy="31" r="6" fill="#e6b051"/>'+
    '<g fill="#235e7e" font-size="17" font-weight="bold"><text x="117" y="72">ي</text><text x="115" y="25">أ</text></g></svg>';
+ if(row.icon==='division_key'||row.route==='division_key')
+  return '<span class="v11-division-icon" aria-hidden="true">🔑<small>٫</small></span>';
  if(row.icon==='mixer'||row.route==='mixer')
   return '<img src="assets/afaq-mixer.svg?v=20261113-mixer1" width="102" height="109" loading="lazy" alt="خلاط الرياضيات">';
  const emojis={teaching:'🧰',mentor:'👨‍🏫',life:'📏'};
@@ -53,7 +56,7 @@ function initCard(r,brief=false){
  '<span class="v10-init-arrow">↗</span></button></article>';
 }
 function initHome(){
- const data=initPublic().slice(0,3);
+ const data=initPublic().slice(0,6);
  return '<section class="v10-init-home" aria-label="مبادرات الأستاذ سعيد البريكي"><div class="v10-init-head">'+
  '<div><span>بصمة تعليمية خاصة</span><h2>مبادرات الأستاذ سعيد البريكي</h2>'+
  '<p>أفكار ملهمة تربط الرياضيات بالتجربة والتفكير والإبداع.</p></div>'+
@@ -83,9 +86,9 @@ function initAdminPage(){
  '<label class="wide">وصف المبادرة<textarea name="description" rows="3" maxlength="1500">'+v('description')+'</textarea></label>'+
  '<label>وجهة المبادرة<select name="route"><option value="">صفحة المبادرات</option>'+
  initRoutes.map(([key,label])=>'<option value="'+key+'"'+(edit?.route===key?' selected':'')+'>'+label+'</option>').join('')+'</select></label>'+
- '<label>الرمز<select name="icon">'+['mixer','coordinates','teaching','mentor','life','sparkles'].map(x=>
+ '<label>الرمز<select name="icon">'+['mixer','coordinates','division_key','teaching','mentor','life','sparkles'].map(x=>
  '<option value="'+x+'"'+((edit?.icon||'sparkles')===x?' selected':'')+'>'+
- ({mixer:'خلاط',coordinates:'إحداثيات',teaching:'وسائل',mentor:'معلم صغير',life:'الرياضيات والحياة',sparkles:'ابتكار'})[x]+'</option>').join('')+'</select></label>'+
+ ({mixer:'خلاط',coordinates:'إحداثيات',division_key:'المفتاح للقسمة',teaching:'وسائل',mentor:'معلم صغير',life:'الرياضيات والحياة',sparkles:'ابتكار'})[x]+'</option>').join('')+'</select></label>'+
  '<label>اللون<select name="accent">'+['blue','teal','gold','violet','coral'].map(x=>
  '<option value="'+x+'"'+((edit?.accent||'blue')===x?' selected':'')+'>'+
  ({blue:'أزرق',teal:'فيروزي',gold:'ذهبي',violet:'بنفسجي',coral:'مرجاني'})[x]+'</option>').join('')+'</select></label>'+
