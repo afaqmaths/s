@@ -252,7 +252,7 @@ Deno.serve(async req=>{
     description=str(b.description,1500),icon=str(b.icon,50),
     accent=str(b.accent,20),route=str(b.route,100),
     resource_url=str(b.resource_url,600);
-   const routes=new Set(["","mixer","coordinate_ya","workshops","learning","adaptive","work","library","question_bank","contests","national_values","print_center"]);
+   const routes=new Set(["","mixer","coordinate_ya","division_key","workshops","learning","adaptive","work","library","question_bank","contests","national_values","print_center"]);
    if(title.length<3||!routes.has(route)||!["blue","teal","gold","violet","coral"].includes(accent)
    ||!goodUrl(resource_url))return fail(origin,"invalid_initiative",400);
    const payload={title,subtitle,description,icon:icon||"sparkles",accent,route,resource_url,
