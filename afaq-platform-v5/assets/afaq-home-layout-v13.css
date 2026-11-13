@@ -1,0 +1,190 @@
+/* Afaq Math v13: white Omani colour motifs, distributed real-news ribbons and aligned knowledge gates. */
+/* Keep homepage-only logo hiding from v12; inner-page header remains untouched. */
+.hub-home .v9-oman-horizon[data-national-ribbon="true"]{
+ display:block;position:relative;
+ height:clamp(72px,8.7vw,109px)!important;
+ min-height:0!important;margin:9px 3px 16px!important;
+ border:1px solid #d7e0e8!important;border-radius:17px!important;
+ background:#fff!important;overflow:hidden;
+ box-shadow:0 7px 18px rgba(21,50,86,.09)!important;
+}
+.hub-home .v9-oman-horizon[data-national-ribbon="true"]::after{
+ background:linear-gradient(90deg,#da2838,#fff,#1c895a)!important;
+ height:3px!important;opacity:.64;
+}
+.afaq-national-ribbon,.afaq-national-ribbon--horizon,.afaq-national-ribbon--card,
+.afaq-national-ribbon--detail{
+ background:#fff!important;border-color:#e0e9ed!important;
+}
+.hub-home .v9-oman-horizon[data-national-ribbon="true"]>.afaq-national-ribbon--horizon{
+ width:100%;height:100%;border-radius:16px!important;background:#fff!important;
+}
+.afaq-national-ribbon::before{
+ background:linear-gradient(106deg,transparent 22%,rgba(229,238,244,.17) 45%,
+ rgba(245,211,163,.11) 56%,transparent 82%)!important;
+}
+.afaq-national-ribbon svg{
+ filter:drop-shadow(0 2px 3px rgba(38,65,77,.22))!important;
+}
+.afaq-national-ribbon--horizon svg{
+ animation:v13NationalTop 5.8s ease-in-out infinite alternate!important;
+}
+.afaq-national-ribbon--card svg{
+ animation:v13NationalCard 11.5s ease-in-out infinite alternate!important;
+}
+.afaq-national-ribbon--detail svg{
+ animation:v13NationalCard 11.5s ease-in-out infinite alternate!important;
+}
+@keyframes v13NationalTop{
+ from{transform:translateX(-4%) translateY(2px) scale(1.045)}
+ to{transform:translateX(4%) translateY(-2px) scale(1.095)}
+}
+@keyframes v13NationalCard{
+ from{transform:translateX(4%) translateY(-3px) scale(1.08)}
+ to{transform:translateX(-4%) translateY(3px) scale(1.025)}
+}
+/* Card: artwork on the right, national phrase to its left. */
+.hub-home .afaq-national-card{
+ display:grid!important;grid-template-columns:minmax(0,50%) minmax(0,50%)!important;
+ grid-template-rows:1fr 1fr;direction:rtl!important;
+ align-items:stretch!important;gap:0!important;
+ padding:10px!important;background:#fff!important;min-height:170px!important;
+}
+.hub-home .afaq-national-card .afaq-national-ribbon--card{
+ display:block!important;grid-column:1;grid-row:1/span 2;
+ align-self:stretch!important;width:100%!important;height:100%!important;
+ min-height:130px!important;border-radius:12px!important;
+ border:1px solid #e5e8ec!important;
+}
+.hub-home .afaq-national-card>span{
+ grid-column:2;grid-row:1;align-self:end;
+ font-size:clamp(12px,1.25vw,16px)!important;
+ color:#a44342!important;padding:13px 13px 4px!important;
+ margin:0!important;text-align:right!important;
+}
+.hub-home .afaq-national-card>strong{
+ grid-column:2;grid-row:2;align-self:start;display:block;
+ padding:4px 13px 12px!important;line-height:1.9!important;
+ color:#245b81!important;font-size:clamp(12px,1.28vw,17px)!important;
+ text-align:right!important;
+}
+.hub-home .afaq-national-card .afaq-national-ribbon--card::after{
+ background:linear-gradient(90deg,#cc2437,#f3f5f6,#168655)!important;
+}
+/* Knowledge doors: five on one aligned row on wider screens. */
+.hub-home .afaq-home-sections .hub-gate-grid{
+ display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ gap:11px!important;align-items:stretch!important;
+}
+.hub-home .afaq-home-sections .hub-gate-grid>*{
+ min-width:0;height:100%;transform:none!important;
+}
+.hub-home .afaq-home-sections .hub-gate-grid>*:hover{
+ transform:translateY(-3px)!important;
+}
+.hub-home .afaq-home-sections .hub-gate{
+ height:100%;min-height:200px;max-width:none!important;
+}
+/* Four independent horizontal live-news bands, intentionally interspersed. */
+.v13-news-rail{
+ --accent:#195c90;--soft:#e8f4ff;
+ direction:rtl;display:flex;align-items:stretch;
+ border:1px solid #d1e0ec;border-radius:13px;overflow:hidden;
+ min-height:58px;margin:17px 2px 22px;
+ background:linear-gradient(105deg,#fff,#f6faff);
+ box-shadow:0 5px 15px rgba(26,64,103,.10);
+ position:relative;isolation:isolate;
+}
+.v13-news-rail--general{--accent:#1d638f;--soft:#edf5fd}
+.v13-news-rail--sport{--accent:#198a79;--soft:#e7f8f2}
+.v13-news-rail--business{--accent:#a77a36;--soft:#fff8e9}
+.v13-news-rail--science{--accent:#7d65a7;--soft:#f3eefb}
+.v13-news-title{
+ display:flex;align-items:center;justify-content:center;text-align:center;
+ flex:0 0 auto;width:clamp(130px,19vw,210px);
+ padding:11px 15px;background:var(--soft);
+ border-inline-end:3px solid var(--accent);
+ color:var(--accent);font-size:clamp(12px,1.25vw,15px);
+ font-weight:950;white-space:normal;line-height:1.55;z-index:2;
+}
+.v13-headlines-viewport{
+ flex:1 1 auto;min-width:0;overflow:hidden;display:flex;align-items:center;
+ mask-image:linear-gradient(90deg,transparent,black 5%,black 96%,transparent);
+}
+.v13-headlines-track{
+ display:flex;align-items:center;width:max-content;min-width:100%;
+ direction:rtl;animation:v13HeadlineScroll 35s linear infinite;
+ will-change:transform;white-space:nowrap;
+}
+.v13-news-rail--sport .v13-headlines-track{animation-duration:32s;animation-direction:reverse}
+.v13-news-rail--business .v13-headlines-track{animation-duration:39s}
+.v13-news-rail--science .v13-headlines-track{animation-duration:43s;animation-direction:reverse}
+.v13-headlines-set{
+ display:flex;gap:24px;align-items:center;white-space:nowrap;
+ padding-inline:18px;flex:0 0 auto;
+}
+.v13-news-rail:hover .v13-headlines-track,
+.v13-news-rail:focus-within .v13-headlines-track{animation-play-state:paused}
+.v13-headline{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;
+ font-size:clamp(12px,1.1vw,14px)}
+.v13-headline a{
+ color:#275777!important;text-decoration:none!important;
+ font-weight:850!important;line-height:1.55;
+}
+.v13-headline a:hover{text-decoration:underline!important}
+.v13-headline b{font-size:11px;font-weight:950;color:var(--accent);padding:3px 8px;
+ background:var(--soft);border-radius:20px}
+.v13-headline small{color:#78909c;font-weight:700;font-size:10px}
+.v13-headline-separator{color:var(--accent);font-size:12px;opacity:.5}
+.v13-omani-source a{color:#b34247!important}
+.v13-news-timestamp{
+ flex:0 0 auto;align-self:center;padding:7px 10px;font-size:11px;
+ color:#6c8493;white-space:nowrap;border-inline-start:1px solid #e2ebf1;
+ background:#fff;z-index:2;
+}
+@keyframes v13HeadlineScroll{
+ from{transform:translateX(0)}
+ to{transform:translateX(50%)}
+}
+/* Teacher initiative cards now come after the five knowledge doors, not before. */
+.hub-home .v10-init-home{margin-top:24px!important;margin-bottom:25px!important}
+/* Compact phones: five options remain one horizontal row, scrollable without cramped text. */
+@media(max-width:900px){
+ .hub-home .afaq-home-sections .hub-gate-grid{
+ display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;
+ scroll-snap-type:x proximity;overscroll-behavior-inline:contain;
+ padding:3px 3px 12px;gap:10px!important;
+ }
+ .hub-home .afaq-home-sections .hub-gate-grid>*{
+ flex:0 0 clamp(150px,28vw,205px);scroll-snap-align:start;
+ }
+ .hub-home .afaq-home-sections .hub-gate{min-height:178px}
+ .hub-home .v9-oman-horizon[data-national-ribbon="true"]{height:70px!important}
+ .v13-news-title{width:145px}
+ .v13-news-timestamp{display:none}
+}
+@media(max-width:560px){
+ .hub-home .afaq-national-card{
+ min-height:155px!important;grid-template-columns:45% 55%!important
+ }
+ .hub-home .afaq-national-card .afaq-national-ribbon--card{min-height:110px!important}
+ .hub-home .afaq-national-card>span,.hub-home .afaq-national-card>strong{
+ padding-right:9px!important;padding-left:8px!important;font-size:12px!important
+ }
+ .v13-news-rail{min-height:54px;margin:13px 0 18px}
+ .v13-news-title{width:105px;padding:8px 5px;font-size:11px}
+ .v13-headlines-track{animation-duration:30s}
+ .v13-headline{font-size:12px}
+ .v13-headline small{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .afaq-national-ribbon--horizon svg,
+ .afaq-national-ribbon--card svg,
+ .afaq-national-ribbon--detail svg,
+ .v13-headlines-track{animation:none!important}
+ .v13-headlines-viewport{overflow-x:auto!important;mask-image:none}
+}
+@media print{
+ .v13-news-rail{display:none!important}
+ .afaq-national-ribbon--horizon svg,.afaq-national-ribbon--card svg{animation:none!important}
+}
