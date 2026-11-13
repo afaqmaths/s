@@ -30,10 +30,10 @@ hubHome=function(){
  '<div class="v9-coordinate-forms" aria-hidden="true">'+
  '<img src="assets/afaq-v9-plane.svg?v=20261113-v9" alt="" width="310" height="280"></div>';
  html=html.replace('<div class="afaq-hero-content">',illustrations+'<div class="afaq-hero-content">');
- html=html.replace('</section><section class="hub-intro-panel">',
- '</section><div class="v9-oman-horizon" data-national-ribbon="true">'+
+ html=html.replace('<section class="hub-banner afaq-animated-hero"',
+ '<div class="v9-oman-horizon" data-national-ribbon="true">'+
  afaqNationalRibbon('horizon')+'</div>'+
- '<section class="hub-intro-panel">');
+ '<section class="hub-banner afaq-animated-hero"');
  return html.replace(/<button[^>]*>\s*الانتقال إلى آفاق ماث\s*<\/button>/g,'');
 };
 const v9OriginalNews=afaqHomeNewsTicker;
