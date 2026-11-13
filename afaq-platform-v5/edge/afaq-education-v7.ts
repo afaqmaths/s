@@ -161,7 +161,7 @@ async function getMatches(){
   const strTime=String(e.strTime||"").trim();
   let epoch=raw&&Number.isFinite(Date.parse(raw))?Date.parse(raw):null;
   // strTime in TheSportsDB is UTC. Do not invent a time if both fields are missing.
-  if(epoch===null&&/^\d{4}-\d{2}-\d{2}$/.test(dateEvent)&&/^\d\d:\d\d(?::\d\d)?$/.test(strTime)){
+  if(epoch===null&&/^\d{4}-\d{2}-\d{2}$/.test(dateEvent)&&/^\d\d:\d\d(?::\d\d)?$/.test(strTime)&&strTime!=="00:00"&&strTime!=="00:00:00"){
    const stamp=Date.parse(dateEvent+"T"+(strTime.length===5?strTime+":00":strTime)+"Z");
    if(Number.isFinite(stamp))epoch=stamp;
   }
@@ -184,7 +184,7 @@ async function getMatches(){
  }
  const score=(m:any)=>{
   const teams=(m.home+" "+m.away).toLowerCase(),league=m.league.toLowerCase();
-  if(/\boman\b|عمان|عُمان/.test(teams))return 1;
+  if(/^(oman|oman national team|عمان|عُمان|سلطنة عمان)$/.test(m.home.toLowerCase().trim())||/^(oman|oman national team|عمان|عُمان|سلطنة عمان)$/.test(m.away.toLowerCase().trim()))return 1;
   if(/real madrid|ريال مدريد/.test(teams))return 2;
   if(/champions league|دوري أبطال أوروبا/.test(league))return 3;
   if(/afc|asian cup|gulf cup|arab cup|آسيا|خليج|عرب/.test(league))return 4;
