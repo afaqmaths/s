@@ -89,6 +89,7 @@ function itStudentDetails(){
  return '<aside class="it-student-detail"><div><h2>بيانات المتابعة — رقم '+itNum(row.number)+'</h2>'+
  '<p>'+itEsc(row.name)+' • '+itEsc(row.class_name)+'</p></div>'+
  '<button type="button" data-it-close>إغلاق</button>'+
+ '<button type="button" data-it-print-student="'+itEsc(row.number)+'">🖨️ طباعة بيانات الطالب</button>'+
  '<div class="it-student-marks">'+Object.entries(map).map(([key,label])=>
  '<article><small>'+label+'</small><b>'+itNum(row.assessments?.[key])+'</b></article>').join('')+'</div>'+
  '<p>المجموع: <strong>'+itNum(row.assessment_total)+'</strong> • التفاعل A+: '+itNum(row.a_plus)+
@@ -111,7 +112,26 @@ function itPage(){
  '<strong class="it-readonly">للاطلاع فقط</strong></header>'+
  '<nav class="it-tabs">'+IT_VIEWS.map(([id,label])=>
  '<button type="button" data-it-tab="'+id+'" class="'+(itState.tab===id?'selected':'')+'">'+label+'</button>').join('')+'</nav>'+
+ '<div class="it-print-controls"><button type="button" id="itPrintRoster">🖨️ طباعة الكشف المرقم</button></div>'+
  main+itStudentDetails()+'<footer class="it-privacy">التقارير في هذه اللوحة للقراءة، ولا تحتوي على أرقام الهوية المدرسية أو رموز الطلاب السرية.</footer></div>';
+}
+function itPrint(rows,title){
+ if(!rows.length){window.alert('لا توجد بيانات للطباعة.');return}
+ const win=window.open('','_blank');if(!win){window.alert('اسمح بفتح نافذة الطباعة.');return}
+ const columns=[['number','الرقم'],['name','اسم الطالب'],['class_name','الشعبة'],
+ ['assessment','الدرجة'],['plus','A+'],['minus','A−']];
+ const markup='<table><thead><tr>'+columns.map(([key,label])=>'<th>'+label+'</th>').join('')+
+ '</tr></thead><tbody>'+rows.map(row=>'<tr>'+columns.map(([key])=>
+ '<td>'+itCell(row,key)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+ win.document.open();win.document.write('<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8">'+
+ '<title>آفاق ماث — '+itEsc(title)+'</title>'+
+ '<style>@page{size:A4 landscape;margin:11mm}body{font:12px Tahoma,Arial,sans-serif;color:#183c5c}'+
+ 'h1{text-align:center;font-size:22px}table{width:100%;border-collapse:collapse}'+
+ 'th{background:#2a668d;color:white}th,td{border:1px solid #c8d9e6;padding:7px;text-align:right}'+
+ 'tr{page-break-inside:avoid}.it-view-student{background:transparent;border:0;color:inherit;font:inherit}'+
+ '</style><h1>'+itEsc(title)+'</h1>'+markup+
+ '<p>تسلسل طلاب المنصة من ١ إلى ٩٨ — دون الأرقام المدرسية الطويلة.</p></html>');
+ win.document.close();win.onload=()=>{win.focus();win.print()};
 }
 const itOldStaffPanel=staffPanel;
 staffPanel=function(){return itOnly()?itPage():itOldStaffPanel();};
@@ -124,6 +144,11 @@ attach=function(){
  document.getElementById('itClass')?.addEventListener('change',el=>{
   itState.className=el.target.value;render();
  });
+ document.getElementById('itPrintRoster')?.addEventListener('click',()=>itPrint(itRows(),'كشف الطلاب للمتابعة'));
+ document.querySelectorAll('[data-it-print-student]').forEach(el=>el.addEventListener('click',()=>{
+   const row=auth.itOverview?.students?.find(x=>x.number===Number(el.dataset.itPrintStudent));
+   if(row)itPrint([row],'بيانات متابعة الطالب رقم '+itNum(row.number));
+ }));
  document.querySelectorAll('[data-it-open]').forEach(el=>el.addEventListener('click',()=>{
   itState.selected=Number(el.dataset.itOpen);render();
  }));
