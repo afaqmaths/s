@@ -132,50 +132,73 @@ function muscatDate(date:Date){
  return field("year")+"-"+field("month")+"-"+field("day");
 }
 async function getMatches(){
- const date=muscatDate(new Date());
+ const date=muscatDate(new Date()),prev=muscatDate(new Date(Date.now()-86400000));
  if(matchCache?.date===date&&Date.now()-matchCache.saved_at<12*60*1000)return matchCache.data;
- const ctrl=new AbortController(),timeout=setTimeout(()=>ctrl.abort(),5500);
- let data:any={date,timezone:"Asia/Muscat",source:"TheSportsDB",limited_feed:true,
-   updated_at:new Date().toISOString(),matches:[],available:false};
- try{
-  const url="https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d="+encodeURIComponent(date)+"&s=Soccer";
-  const response=await fetch(url,{signal:ctrl.signal,headers:{Accept:"application/json"}});
-  if(!response.ok)throw Error("sports_feed_unavailable");
-  const json=await response.json();
-  const events=Array.isArray(json.events)?json.events:[];
-  data.matches=events.slice(0,400).map((e:any)=>{
-   const timestamp=String(e.strTimestamp||"").trim();
-   const start=timestamp&&Number.isFinite(Date.parse(timestamp))?Date.parse(timestamp):null;
-   const localDate=start?muscatDate(new Date(start)):String(e.dateEvent||"");
-   const score1=e.intHomeScore==null?null:Number(e.intHomeScore);
-   const score2=e.intAwayScore==null?null:Number(e.intAwayScore);
-   return {id:String(e.idEvent||""),home:String(e.strHomeTeam||"").slice(0,90),
-    away:String(e.strAwayTeam||"").slice(0,90),league:String(e.strLeague||"").slice(0,90),
-    utc_start:start?new Date(start).toISOString():null,
-    original_time:start?null:String(e.strTime||"").slice(0,12),
-    home_score:Number.isFinite(score1)?score1:null,
-    away_score:Number.isFinite(score2)?score2:null,
-    status:String(e.strStatus||"").slice(0,35),local_date:localDate};
-  }).filter((x:any)=>x.home&&x.away&&x.local_date===date);
-  const matches=data.matches as any[];
-  const score=(m:any)=>{
-   const teams=(m.home+" "+m.away).toLowerCase(),league=m.league.toLowerCase();
-   if(/\\boman\\b|عمان|عُمان/.test(teams))return 1;
-   if(/real madrid|ريال مدريد/.test(teams))return 2;
-   if(/champions league|دوري أبطال أوروبا|uefa champions/.test(league))return 3;
-   if(/afc|asian cup|آسيا|gulf cup|خليج|arab cup|كأس العرب/.test(league))return 4;
-   if(/la liga|primera|spanish|الدوري الإسباني/.test(league))return 5;
-   if(/euro|uefa nations|world cup|qualif/.test(league))return 6;
-   if(/saudi|oman|qatar|uae|emirates|bahrain|kuwait|خليج/.test(league))return 7;
-   return 20;
-  };
-  matches.sort((a:any,b:any)=>score(a)-score(b)||(a.utc_start||"").localeCompare(b.utc_start||""));
-  data.matches=matches.slice(0,100).map((m:any)=>({...m,priority:score(m)}));
-  data.coverage_notice="قائمة مبنية فقط على المباريات التي يعيدها المصدر المجاني، وقد لا تشمل جميع مباريات اليوم.";
-  data.available=true;
- }catch(error){console.warn("matches_today",String(error))}
- finally{clearTimeout(timeout)}
- if(data.available){matchCache={date,saved_at:Date.now(),data}}
+ const checks=[
+  {d:date,s:"Soccer"},{d:prev,s:"Soccer"},
+  {d:date,l:"4335"},{d:prev,l:"4335"},
+  {d:date,l:"4480"},{d:prev,l:"4480"},
+  {d:date,l:"4502"},{d:date,l:"4562"}
+ ];
+ const fetchOne=async (params:{d:string,s?:string,l?:string})=>{
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),5100);
+  try{
+   const url=new URL("https://www.thesportsdb.com/api/v1/json/123/eventsday.php");
+   url.searchParams.set("d",params.d);
+   if(params.s)url.searchParams.set("s",params.s);
+   if(params.l)url.searchParams.set("l",params.l);
+   const response=await fetch(url.toString(),{signal:ctrl.signal,headers:{Accept:"application/json"}});
+   if(!response.ok)return {success:false,events:[]};
+   const json=await response.json();
+   return {success:true,events:Array.isArray(json.events)?json.events:[]};
+  }catch{return {success:false,events:[]}}
+  finally{clearTimeout(timer)}
+ };
+ const results=await Promise.all(checks.map(fetchOne));
+ const seen=new Set<string>(),matches:any[]=[];
+ const normalize=(e:any)=>{
+  const raw=String(e.strTimestamp||"").trim(),dateEvent=String(e.dateEvent||"").trim();
+  const strTime=String(e.strTime||"").trim();
+  let epoch=raw&&Number.isFinite(Date.parse(raw))?Date.parse(raw):null;
+  // strTime in TheSportsDB is UTC. Do not invent a time if both fields are missing.
+  if(epoch===null&&/^\d{4}-\d{2}-\d{2}$/.test(dateEvent)&&/^\d\d:\d\d(?::\d\d)?$/.test(strTime)){
+   const stamp=Date.parse(dateEvent+"T"+(strTime.length===5?strTime+":00":strTime)+"Z");
+   if(Number.isFinite(stamp))epoch=stamp;
+  }
+  const local=epoch!==null?muscatDate(new Date(epoch)):dateEvent;
+  if(local!==date)return null;
+  const home=String(e.strHomeTeam||"").trim().slice(0,95),away=String(e.strAwayTeam||"").trim().slice(0,95);
+  if(!home||!away)return null;
+  const id=String(e.idEvent||"").trim()||local+"-"+home+"-"+away;
+  const hs=e.intHomeScore==null?null:Number(e.intHomeScore);
+  const as=e.intAwayScore==null?null:Number(e.intAwayScore);
+  return {id,home,away,league:String(e.strLeague||"").trim().slice(0,95),
+   utc_start:epoch!==null?new Date(epoch).toISOString():null,
+   home_score:hs!==null&&Number.isFinite(hs)?hs:null,
+   away_score:as!==null&&Number.isFinite(as)?as:null,
+   status:String(e.strStatus||"").slice(0,35),local_date:local};
+ };
+ for(const result of results)for(const event of result.events){
+  const row=normalize(event);
+  if(row&&!seen.has(row.id)){seen.add(row.id);matches.push(row)}
+ }
+ const score=(m:any)=>{
+  const teams=(m.home+" "+m.away).toLowerCase(),league=m.league.toLowerCase();
+  if(/\boman\b|عمان|عُمان/.test(teams))return 1;
+  if(/real madrid|ريال مدريد/.test(teams))return 2;
+  if(/champions league|دوري أبطال أوروبا/.test(league))return 3;
+  if(/afc|asian cup|gulf cup|arab cup|آسيا|خليج|عرب/.test(league))return 4;
+  if(/la liga|primera|spanish|الدوري الإسباني/.test(league))return 5;
+  if(/euro|nations|world cup|qualif|تصفيات/.test(league))return 6;
+  if(/saudi|oman|qatar|emirates|bahrain|kuwait|خليج/.test(league))return 7;
+  return 20;
+ };
+ matches.sort((a,b)=>score(a)-score(b)||String(a.utc_start||"").localeCompare(String(b.utc_start||"")));
+ const data={date,timezone:"Asia/Muscat",source:"TheSportsDB",limited_feed:true,
+  available:results.some(x=>x.success),updated_at:new Date().toISOString(),
+  matches:matches.slice(0,120).map(m=>({...m,priority:score(m)})),
+  coverage_notice:"بيانات منتقاة من عدة تغذيات مجانية، لكنها ليست قائمة شاملة لجميع مباريات اليوم."};
+ if(data.available)matchCache={date,saved_at:Date.now(),data};
  return data;
 }
 Deno.serve(async req=>{
