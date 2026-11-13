@@ -41,10 +41,12 @@ attach=function(){
   if(image.complete)setReady();
  });
  document.querySelectorAll('.afaq-generated-football').forEach(image=>{
-  image.addEventListener('error',()=>{
+  const fallback=()=>{
    if(image.dataset.fallback&&image.src!==new URL(image.dataset.fallback,document.baseURI).href){
     image.src=image.dataset.fallback;
    }
-  });
+  };
+  image.addEventListener('error',fallback,{once:true});
+  if(image.complete&&image.naturalWidth===0)fallback();
  });
 };
