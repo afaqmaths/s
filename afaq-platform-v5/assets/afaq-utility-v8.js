@@ -1,6 +1,6 @@
 /* Afaq Math — time, calendar, search, selectable city weather */
 'use strict';
-const aw={cities:null,loading:false,month:0};
+const aw={cities:null,loading:false,month:0,message:''};
 function awDates(){
  const fmt=o=>new Intl.DateTimeFormat('ar-OM',{timeZone:'Asia/Muscat',...o}).format(new Date());
  const time=document.getElementById('awTime'),date=document.getElementById('awDate'),h=document.getElementById('awHijri');
@@ -60,7 +60,7 @@ function awSettings(){
    '</select></label>';
  }).join('')+
  '<button type="submit" class="primary" '+(auth.user?.role==='supervisor'?'':'disabled')+'>'+
- '💾 حفظ المدينتين</button></form><p id="awMessage" role="status"></p></div>';
+ '💾 حفظ المدينتين</button></form><p id="awMessage" role="status">'+aeEsc(aw.message)+'</p></div>';
 }
 const awStaff=staffPanel;staffPanel=function(){
  if(auth.section==='ae_weather'&&auth.user?.role==='supervisor')return awSettings();
@@ -79,8 +79,8 @@ const awAttach=attach;attach=function(){
   try{await aeApi('weather_city_save',{slot:1,city_code:cities[0]},true);
    await aeApi('weather_city_save',{slot:2,city_code:cities[1]},true);
    await Promise.all([awCities(true),aeLoadNews(true)]);
-   awWeather();status.textContent='تم تحديث المدينتين بنجاح.';
-  }catch(err){status.textContent=err.message}
+   awWeather();aw.message='تم تحديث المدينتين بنجاح.';render();
+  }catch(err){aw.message=err.message;render()}
  });
 };
 function awInit(){
