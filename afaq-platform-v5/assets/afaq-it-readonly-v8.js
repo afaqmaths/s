@@ -3,7 +3,7 @@
 const IT_VIEWS=[['overview','لوحة المتابعة'],['students','الطلاب ١–٩٨'],['assessment','التقويم والدرجات'],
  ['competition','المسابقات'],['enrichment','العلاج والإثراء'],['resources','الموارد والمشاغل'],
  ['news','الأخبار والتحديثات']];
-const itState={tab:'overview',className:'all',search:''};
+const itState={tab:'overview',className:'all',search:'',selected:null};
 const itEsc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const itNum=x=>x==null?'—':new Intl.NumberFormat('ar-OM',{maximumFractionDigits:2}).format(x);
 const itOnly=()=>auth.user?.role==='it_viewer';
@@ -16,7 +16,7 @@ function itRows(){
 function itCell(row,col){
  switch(col){
  case 'number':return itNum(row.number);
- case 'name':return itEsc(row.name);
+ case 'name':return '<button type="button" class="it-view-student" data-it-open="'+itEsc(row.number)+'">'+itEsc(row.name)+'</button>';
  case 'class_name':return itEsc(row.class_name);
  case 'assessment':return row.assessment_total==null?'—':itNum(row.assessment_total)+' / ١٠٠';
  case 'diagnostic':return itNum(row.diagnostic);
@@ -77,6 +77,23 @@ function itQuickLinks(){
  return '<div class="it-quick-links">'+sections.map(([route,label])=>
   '<button type="button" data-route="'+route+'">'+label+'</button>').join('')+'</div>';
 }
+function itStudentDetails(){
+ const row=auth.itOverview?.students?.find(s=>Number(s.number)===Number(itState.selected));
+ if(!row)return '';
+ const map={oral_1:'شفوي ١',oral_2:'شفوي ٢',
+ homework_1:'واجب ١',homework_2:'واجب ٢',
+ question_1:'سؤال قصير ١',question_2:'سؤال قصير ٢',
+ exam_1:'اختبار قصير ١',exam_2:'اختبار قصير ٢',
+ project:'المشروع',final_exam:'الاختبار النهائي'};
+ return '<aside class="it-student-detail"><div><h2>بيانات المتابعة — رقم '+itNum(row.number)+'</h2>'+
+ '<p>'+itEsc(row.name)+' • '+itEsc(row.class_name)+'</p></div>'+
+ '<button type="button" data-it-close>إغلاق</button>'+
+ '<div class="it-student-marks">'+Object.entries(map).map(([key,label])=>
+ '<article><small>'+label+'</small><b>'+itNum(row.assessments?.[key])+'</b></article>').join('')+'</div>'+
+ '<p>المجموع: <strong>'+itNum(row.assessment_total)+'</strong> • التفاعل A+: '+itNum(row.a_plus)+
+ ' • التفاعل A−: '+itNum(row.a_minus)+
+ ' • وحدات المسابقة المنجزة: '+itNum(row.contest_completed_units)+'</p></aside>';
+}
 function itPage(){
  const d=auth.itOverview;
  if(!d)return '<div class="container it-page"><h2>مشرف تقنية المعلومات</h2><p>جارٍ تحميل بيانات العرض...</p></div>';
@@ -93,7 +110,7 @@ function itPage(){
  '<strong class="it-readonly">للاطلاع فقط</strong></header>'+
  '<nav class="it-tabs">'+IT_VIEWS.map(([id,label])=>
  '<button type="button" data-it-tab="'+id+'" class="'+(itState.tab===id?'selected':'')+'">'+label+'</button>').join('')+'</nav>'+
- main+'<footer class="it-privacy">التقارير في هذه اللوحة للقراءة، ولا تحتوي على أرقام الهوية المدرسية أو رموز الطلاب السرية.</footer></div>';
+ main+itStudentDetails()+'<footer class="it-privacy">التقارير في هذه اللوحة للقراءة، ولا تحتوي على أرقام الهوية المدرسية أو رموز الطلاب السرية.</footer></div>';
 }
 const itOldStaffPanel=staffPanel;
 staffPanel=function(){return itOnly()?itPage():itOldStaffPanel();};
@@ -106,6 +123,12 @@ attach=function(){
  document.getElementById('itClass')?.addEventListener('change',el=>{
   itState.className=el.target.value;render();
  });
+ document.querySelectorAll('[data-it-open]').forEach(el=>el.addEventListener('click',()=>{
+  itState.selected=Number(el.dataset.itOpen);render();
+ }));
+ document.querySelectorAll('[data-it-close]').forEach(el=>el.addEventListener('click',()=>{
+  itState.selected=null;render();
+ }));
  document.getElementById('itSearch')?.addEventListener('change',el=>{
   itState.search=el.target.value;render();
  });
