@@ -51,7 +51,7 @@
     '<button type="button" id="afaqNavBack"'+(!allowPrevious&&atMain?' disabled':'')+
       ' aria-label="الرجوع إلى القسم السابق داخل لوحة المشرف">❮ رجوع</button>'+
     '<button type="button" id="afaqNavDashboard">⌂ الرئيسية — لوحة المشرف</button></div>'+
-    '<small>الرجوع لا يسجل خروجك. مفتاح Backspace يعمل خارج حقول الكتابة.</small>';
+    '';
   app.prepend(toolbar);
   toolbar.querySelector('#afaqNavBack')?.addEventListener('click',goBack);
   toolbar.querySelector('#afaqNavDashboard')?.addEventListener('click',goDashboard);
