@@ -25,7 +25,8 @@ afaqHomeShowcase=function(){
 const idOldLearning=learning;
 learning=function(){
  return idOldLearning()+'<section class="v10-teaching-initiative">'+
- '<div><b>✦ مبادرة رياضية مميزة</b><h2>ي / أ لتعلم الانسحاب في الإحداثيات</h2>'+
- '<p>ي = يمين ويسار، أ = أعلى وأسفل. جرّب الفكرة مع النقاط على المستوى الإحداثي.</p></div>'+
- '<button type="button" data-route="coordinate_ya">تجربة المبادرة</button></section>';
+ '<div><b>✦ مبادرتان رياضيتان مميزتان</b><h2>ي / أ للأشكال — والمفتاح للقسمة</h2>'+
+ '<p>انتقل من انسحاب النقاط والأضلاع والمضلعات إلى القسمة المطوّلة بخطوات المنازل ومفتاح الفاصلة العشرية.</p></div>'+
+ '<div class="v11-teaching-actions"><button type="button" data-route="coordinate_ya">📐 تجربة ي / أ للأشكال</button>'+
+ '<button type="button" data-route="division_key">🔑 المفتاح للقسمة المطوّلة</button></div></section>';
 };
