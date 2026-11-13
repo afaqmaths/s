@@ -15,7 +15,7 @@ const shapes11={
  pentagon:{label:'مضلع خماسي',offsets:[[0,0],[2,-1],[4,1],[3,3],[1,3]]},
  hexagon:{label:'مضلع سداسي',offsets:[[0,0],[2,-1],[4,0],[4,2],[2,3],[0,2]]}
 };
-const vertexNames11=['أ','ب','ج','د','هـ','و'];
+const vertexNames11=['A','B','C','D','E','F'];
 function verts11(){
  return shapes11[vi11.shape].offsets.map(([a,b],i)=>({name:vertexNames11[i],x:vi11.x+a,y:vi11.y+b}));
 }
