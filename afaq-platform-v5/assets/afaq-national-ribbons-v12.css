@@ -37,16 +37,16 @@ body:has(#app .hub-home) > header.topbar:has(.header-actions > :not([hidden])){
 @keyframes afaqNationalBreathe{from{stroke-opacity:.78}to{stroke-opacity:1}}
 @keyframes afaqNationalTwinkle{from{opacity:.25}to{opacity:.8}}
 /* First position: under the blue hero, not a landscape or any drawn flag. */
-.hub-home .v9-oman-horizon.afaq-national-horizon{
+.hub-home .v9-oman-horizon[data-national-ribbon="true"]{
  height:clamp(66px,8vw,96px)!important;min-height:0!important;margin:-13px 2px 20px!important;
  padding:0!important;border:1px solid #5d7e99!important;
  border-radius:0 0 22px 22px!important;overflow:hidden;
  background:#0b2c60!important;box-shadow:0 8px 20px rgba(10,45,94,.17)!important;
 }
-.hub-home .afaq-national-horizon>.afaq-national-ribbon--horizon{
+.hub-home .v9-oman-horizon[data-national-ribbon="true"]>.afaq-national-ribbon--horizon{
  width:100%;height:100%;border:none;border-radius:0 0 20px 20px;
 }
-.hub-home .v9-oman-horizon.afaq-national-horizon::after{
+.hub-home .v9-oman-horizon[data-national-ribbon="true"]::after{
  height:3px!important;background:linear-gradient(90deg,#d42c34,#eaf6f8,#168b57)!important;
  opacity:.8
 }
@@ -69,7 +69,7 @@ body:has(#app .hub-home) > header.topbar:has(.header-actions > :not([hidden])){
  box-shadow:0 12px 28px rgba(12,49,91,.2)
 }
 @media(max-width:720px){
- .hub-home .v9-oman-horizon.afaq-national-horizon{height:62px!important;margin:-10px 2px 16px!important}
+ .hub-home .v9-oman-horizon[data-national-ribbon="true"]{height:62px!important;margin:-10px 2px 16px!important}
  .afaq-national-card .afaq-national-ribbon--card{min-height:130px}
  .ae-national-page>.afaq-national-ribbon--detail{height:160px}
 }
