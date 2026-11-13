@@ -143,7 +143,7 @@ async function getMatches(){
   if(!response.ok)throw Error("sports_feed_unavailable");
   const json=await response.json();
   const events=Array.isArray(json.events)?json.events:[];
-  data.matches=events.slice(0,30).map((e:any)=>{
+  data.matches=events.slice(0,400).map((e:any)=>{
    const timestamp=String(e.strTimestamp||"").trim();
    const start=timestamp&&Number.isFinite(Date.parse(timestamp))?Date.parse(timestamp):null;
    const localDate=start?muscatDate(new Date(start)):String(e.dateEvent||"");
@@ -157,6 +157,21 @@ async function getMatches(){
     away_score:Number.isFinite(score2)?score2:null,
     status:String(e.strStatus||"").slice(0,35),local_date:localDate};
   }).filter((x:any)=>x.home&&x.away&&x.local_date===date);
+  const matches=data.matches as any[];
+  const score=(m:any)=>{
+   const teams=(m.home+" "+m.away).toLowerCase(),league=m.league.toLowerCase();
+   if(/\\boman\\b|عمان|عُمان/.test(teams))return 1;
+   if(/real madrid|ريال مدريد/.test(teams))return 2;
+   if(/champions league|دوري أبطال أوروبا|uefa champions/.test(league))return 3;
+   if(/afc|asian cup|آسيا|gulf cup|خليج|arab cup|كأس العرب/.test(league))return 4;
+   if(/la liga|primera|spanish|الدوري الإسباني/.test(league))return 5;
+   if(/euro|uefa nations|world cup|qualif/.test(league))return 6;
+   if(/saudi|oman|qatar|uae|emirates|bahrain|kuwait|خليج/.test(league))return 7;
+   return 20;
+  };
+  matches.sort((a:any,b:any)=>score(a)-score(b)||(a.utc_start||"").localeCompare(b.utc_start||""));
+  data.matches=matches.slice(0,100).map((m:any)=>({...m,priority:score(m)}));
+  data.coverage_notice="قائمة مبنية فقط على المباريات التي يعيدها المصدر المجاني، وقد لا تشمل جميع مباريات اليوم.";
   data.available=true;
  }catch(error){console.warn("matches_today",String(error))}
  finally{clearTimeout(timeout)}
@@ -172,6 +187,10 @@ Deno.serve(async req=>{
   const b=await req.json(),action=str(b.action,50);
   if(action==="news")return ok(origin,await getNews());
   if(action==="matches_today")return ok(origin,await getMatches());
+  if(action==="initiatives_public"){
+   const rows=await entries("afaq_teaching_initiatives_v10");
+   return ok(origin,{initiatives:rows});
+  }
   if(action==="public"){
    const [notices,workshops,settings]=await Promise.all([
     entries("afaq_site_notices_v7"),entries("afaq_professional_workshops_v7"),
@@ -198,6 +217,37 @@ Deno.serve(async req=>{
    if(error)throw error;
    newsCache=null;newsAt=0;
    return ok(origin,{selected:await savedWeatherCities()});
+  }
+  if(action==="initiatives_staff"){
+   if(!staff(s))return fail(origin,"forbidden",403);
+   const rows=await entries("afaq_teaching_initiatives_v10",true);
+   return ok(origin,{initiatives:rows});
+  }
+  if(action==="initiative_save"){
+   if(!supervisor(s))return fail(origin,"forbidden",403);
+   const title=str(b.title,140),subtitle=str(b.subtitle,220),
+    description=str(b.description,1500),icon=str(b.icon,50),
+    accent=str(b.accent,20),route=str(b.route,100),
+    resource_url=str(b.resource_url,600);
+   const routes=new Set(["","mixer","coordinate_ya","workshops","learning","adaptive","work","library","question_bank","contests","national_values","print_center"]);
+   if(title.length<3||!routes.has(route)||!["blue","teal","gold","violet","coral"].includes(accent)
+   ||!goodUrl(resource_url))return fail(origin,"invalid_initiative",400);
+   const payload={title,subtitle,description,icon:icon||"sparkles",accent,route,resource_url,
+    sort_order:Number.isInteger(Number(b.sort_order))?Math.max(0,Math.min(999,Number(b.sort_order))):0,
+    published:b.published===true,updated_at:new Date().toISOString()};
+   const id=str(b.id,48);
+   if(id&&!uuid(id))return fail(origin,"invalid_id",400);
+   const result=id?await db.from("afaq_teaching_initiatives_v10").update(payload).eq("id",id).select("id").maybeSingle():
+    await db.from("afaq_teaching_initiatives_v10").insert(payload).select("id").single();
+   if(result.error)throw result.error;
+   if(!result.data)return fail(origin,"initiative_not_found",404);
+   return ok(origin,{id:result.data.id});
+  }
+  if(action==="initiative_delete"){
+   if(!supervisor(s)||!uuid(str(b.id,48)))return fail(origin,"forbidden",403);
+   const r=await db.from("afaq_teaching_initiatives_v10").delete().eq("id",b.id);
+   if(r.error)throw r.error;
+   return ok(origin,{deleted:true});
   }
   if(action==="staff_list"){
    if(!staff(s))return fail(origin,"forbidden",403);
