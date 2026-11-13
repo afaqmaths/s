@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-label="لوحة فنية كروية بملعب ومشجعين وكرة ولاعبين">
+<defs>
+<radialGradient id="sky" cx=".5" cy=".15" r=".85"><stop stop-color="#1a7a98"/><stop offset=".6" stop-color="#143d78"/><stop offset="1" stop-color="#091e4e"/></radialGradient>
+<linearGradient id="pitch" x2="0" y2="1"><stop stop-color="#208c7d"/><stop offset="1" stop-color="#0c5a4b"/></linearGradient>
+<linearGradient id="glow" x2="0" y2="1"><stop stop-color="#fff6cb" stop-opacity=".6"/><stop offset="1" stop-color="#fff6cb" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="900" height="470" rx="24" fill="url(#sky)"/>
+<g opacity=".3" fill="#b8d8ec"><circle cx="105" cy="69" r="3"/><circle cx="155" cy="91" r="3"/><circle cx="693" cy="59" r="4"/><circle cx="748" cy="95" r="3"/><circle cx="860" cy="154" r="4"/></g>
+<g opacity=".4" stroke="#d1ebff" stroke-width="5" fill="none"><path d="M0 241q225-100 450-78T900 241"/><path d="M0 265q225-99 450-80T900 265"/></g>
+<path d="M0 340q450-109 900 0v130H0Z" fill="url(#pitch)"/>
+<ellipse cx="450" cy="404" rx="205" ry="51" fill="none" stroke="#8decdb" stroke-opacity=".75" stroke-width="4"/>
+<path d="M450 350v120M0 413h900" stroke="#80d6c7" stroke-width="3" opacity=".35"/>
+<g transform="translate(95 42)"><path d="M0 0h12v195H0zM-15 0h42v14h-42z" fill="#9be3ef"/><path d="M6 14-114 260h240Z" fill="url(#glow)"/><circle cx="6" cy="15" r="17" fill="#ffe0a8"/></g>
+<g transform="translate(785 42)"><path d="M0 0h12v195H0zM-15 0h42v14h-42z" fill="#9be3ef"/><path d="M6 14-120 260h250Z" fill="url(#glow)"/><circle cx="6" cy="15" r="17" fill="#ffe0a8"/></g>
+<g fill="#081d44" stroke-linejoin="round">
+<circle cx="335" cy="173" r="31"/><path d="M318 202q-23 19-26 65l-23 69 34 10 20-53 14 79-22 72 28 8 34-71-4-103 32 49 30-16-47-77-36-31z"/>
+<path d="M395 248l69-21 10 25-70 27z"/>
+<circle cx="590" cy="192" r="28"/><path d="M573 217q-25 20-32 65l-58 60 23 20 67-56 21 54-22 76 28 9 31-88-3-82 18-47z"/>
+</g>
+<g transform="translate(430 320)"><circle cx="0" cy="0" r="67" fill="#fff" stroke="#d8eaff" stroke-width="5"/><path d="m0-27 27 19-10 33h-33L-27-8z" fill="#1c305d"/><g fill="#213a5f"><path d="M-4-66-32-45-15-34l19-8zM42-51l-12 29 21 17 16-28zM58 33l-28-6-9 33 23 5zM-47 38l-4-34-17-11-1 38zM-8 63l-11-26-30 0 8 23z"/></g></g>
+<g font-family="Tahoma,Arial,sans-serif" font-weight="bold" fill="#fff8e5"><text x="40" y="433" font-size="31">MATCH DAY</text><text x="666" y="435" font-size="28">⚽</text></g>
+</svg>
