@@ -9,11 +9,13 @@ hubHome=function(){
  html=html.replace(/<div class="v9-maths-forms"[\s\S]*?<\/div><div class="v9-coordinate-forms"[\s\S]*?<\/div>/,art);
  html=html.replace('<section class="hub-banner afaq-animated-hero"',
   '<section class="hub-banner afaq-animated-hero v10-premium-hero"');
- html=html.replace('</section><div class="v9-oman-horizon"',
+ html=html.replace('</section><section class="hub-intro-panel">',
   '<div class="v10-teacher-signature">✦ من إعداد وإشراف الأستاذ سعيد البريكي • الرياضيات حياة وإبداع</div>'+
-  '</section><div class="v9-oman-horizon"');
+  '</section><section class="hub-intro-panel">');
  html=html.replace('<section class="hub-main afaq-home-sections">',
-  initHome()+footHomePromo()+'<section class="hub-main afaq-home-sections">');
+  footHomePromo()+'<section class="hub-main afaq-home-sections">');
+ html=html.replace('<section class="afaq-home-showcase"',
+  initHome()+'<section class="afaq-home-showcase"');
  return html;
 };
 /* The matchday illustration is featured once; omit the duplicated tiny tile. */
