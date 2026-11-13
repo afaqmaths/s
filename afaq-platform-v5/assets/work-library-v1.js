@@ -6,7 +6,7 @@ const workState={token:'',data:null,loaded:false,loading:false,attempted:false,t
 const workEsc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const workSuperUser=()=>auth.user?.role==='supervisor';
 const workSuper=()=>workSuperUser()&&!workState.previewStudent;
-const workStaff=()=>!workState.previewStudent&&['supervisor','supervisor_assistant','director','deputy'].includes(auth.user?.role);
+const workStaff=()=>!workState.previewStudent&&['supervisor','supervisor_assistant','director','deputy','it_viewer'].includes(auth.user?.role);
 const workDocCount=(item,role)=>(workState.data?.documents||[]).filter(x=>x.item_id===item.id&&x.doc_role===role).length;
 const workLessons=()=>workState.data?.lessons||[];
 const workItems=()=>workState.data?.items||[];
