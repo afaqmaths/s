@@ -20,7 +20,7 @@ async function session(req:Request){
  return data&&!data.revoked_at&&new Date(data.expires_at).getTime()>Date.now()?data:null;
 }
 const supervisor=(s:any)=>s?.role==="supervisor";
-const staff=(s:any)=>["supervisor","supervisor_assistant","director","deputy"].includes(s?.role);
+const staff=(s:any)=>["supervisor","supervisor_assistant","director","deputy","it_viewer"].includes(s?.role);
 const school=(s:any)=>!!s&&(staff(s)||s.role==="student");
 const array=(v:unknown,n=12)=>Array.isArray(v)?v.map(x=>str(x,180)).filter(Boolean).slice(0,n):[];
 async function entries(table:string,all=false){
