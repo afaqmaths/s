@@ -252,6 +252,7 @@ Deno.serve(async req=>{
    const tracks=trackMap.get(p.student_id)||new Set();
    return {number:i+1,class_name:p.class_name,name:p.full_name||p.display_name,
     assessed:!!g,term:g?.term??null,assessment_total:total,
+    assessments:g?Object.fromEntries(parts.map(k=>[k,g[k]==null?null:Number(g[k])])):null,
     a_plus:g?.a_plus_points??null,a_minus:g?.a_minus_points??null,
     diagnostic:g?.diagnostic_score??null,contest_attempts:attempt?.attempts||0,
     contest_completed_units:attempt?.completed_units.size||0,
