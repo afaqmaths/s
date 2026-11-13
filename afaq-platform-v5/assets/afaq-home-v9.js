@@ -31,8 +31,8 @@ hubHome=function(){
  '<img src="assets/afaq-v9-plane.svg?v=20261113-v9" alt="" width="310" height="280"></div>';
  html=html.replace('<div class="afaq-hero-content">',illustrations+'<div class="afaq-hero-content">');
  html=html.replace('</section><section class="hub-intro-panel">',
- '</section><div class="v9-oman-horizon" role="img" aria-label="لوحة فنية لسلطنة عُمان: الجبال والقلعة والعلم">'+
- '<img src="assets/afaq-v9-oman-horizon.svg?v=20261113-v9" width="1320" height="188" alt="تضاريس سلطنة عُمان وعلمها وقلعتها"></div>'+
+ '</section><div class="v9-oman-horizon afaq-national-horizon">'+
+ afaqNationalRibbon('horizon')+'</div>'+
  '<section class="hub-intro-panel">');
  return html.replace(/<button[^>]*>\s*الانتقال إلى آفاق ماث\s*<\/button>/g,'');
 };
