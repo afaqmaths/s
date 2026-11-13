@@ -151,25 +151,38 @@ function divStep11(step,i,selected){
  '<span>− '+num11(step.product)+' = '+num11(step.remainder)+'</span></div>':'')+
  '</article>';
 }
+function partialDivision11(result,stepIndex){
+ const shown=result.steps.slice(0,stepIndex+1);
+ const integer=shown.filter(x=>x.type==='integer').map(x=>String(x.q)).join('');
+ const whole=integer.replace(/^0+(?=\d)/,'')||'0';
+ const unlocked=shown.some(x=>x.type==='key'||x.type==='decimal'||x.type==='cycle');
+ const decimal=shown.filter(x=>x.type==='decimal').map(x=>String(x.q)).join('');
+ const completed=stepIndex===result.steps.length-1;
+ return {whole,unlocked,decimal,completed,quotient:whole+(unlocked?'.'+decimal:'')+
+ (completed&&result.stop!=='finished'?'…':'')};
+}
 function divIllustration11(result,active){
- const integer=String(result.n),dec=result.decimal,hasKey=result.keyUsed;
- const display=num11(result.whole)+(hasKey?'<span class="vd11-decimal-key" title="المفتاح = الفاصلة العشرية">🔑 ٫</span>':'')+
- '<span>'+num11(dec)+'</span>'+(result.stop==='finished'?'':'…');
- const quotient=hasKey?result.whole+'.'+dec:result.whole;
+ const integer=String(result.n),part=partialDivision11(result,vd11.step);
+ const display=num11(part.whole)+(part.unlocked?'<span class="vd11-decimal-key" title="المفتاح = الفاصلة العشرية">🔑 ٫</span>':'')+
+ '<span>'+num11(part.decimal)+'</span>'+(part.completed&&result.stop!=='finished'?'…':'');
  const highlight=active?.type==='key'?'vd11-highlight-key':'';
  return '<div class="vd11-long-division '+highlight+'">'+
- '<div class="vd11-quotient" dir="ltr"><span class="vd11-quotient-title">خارج القسمة</span>'+
+ '<div class="vd11-quotient" dir="ltr"><span class="vd11-quotient-title">خارج القسمة حتى هذه المرحلة</span>'+
  '<strong class="vd11-answer">'+display+'</strong></div>'+
  '<div class="vd11-bracket" dir="ltr"><strong>'+num11(result.d)+'</strong>'+
- '<div><span>'+num11(integer)+(hasKey?'<em>٫'+num11('0'.repeat(Math.max(1,dec.length)))+'</em>':'')+'</span></div></div>'+
+ '<div><span>'+num11(integer)+(part.unlocked?'<em>٫'+num11('0'.repeat(Math.max(1,part.decimal.length)))+'</em>':'')+'</span></div></div>'+
  '<small>المقسوم عليه • المقسوم</small>'+
- '<div class="vd11-key-indicator">'+(hasKey?'🔑 المفتاح ظهر بعد انتهاء منازل المقسوم ووجود باقٍ':'لم نحتج إلى المفتاح؛ انتهت القسمة دون باقٍ بعد الآحاد.')+'</div></div>';
+ '<div class="vd11-key-indicator">'+(part.unlocked?'🔑 ظهر المفتاح بعد اكتمال منازل المقسوم وبقاء باقي.':
+ result.keyUsed?'تابع حتى الآحاد؛ وعند بقاء باقي سيظهر المفتاح في خارج القسمة.':
+ 'لا تحتاج هذه القسمة إلى المفتاح إذا انتهت دون باقٍ.')+'</div></div>';
 }
 function divPage11(){
  let result;try{result=division11(vd11.dividend,vd11.divisor,vd11.places)}catch(e){return '<p>'+esc11(e.message)+'</p>'}
  vd11.step=Math.max(0,Math.min(result.steps.length-1,vd11.step));
  const active=result.steps[vd11.step];
- const status=result.stop==='finished'?'انتهت القسمة والباقي صفر.':
+ const complete=vd11.step===result.steps.length-1;
+ const status=!complete?'نحن في مرحلة '+ar11(vd11.step+1)+'؛ اضغط «التالي» للانتقال إلى المرحلة التالية.':
+ result.stop==='finished'?'انتهت القسمة والباقي صفر.':
  result.stop==='repeating'?'ناتج عشري دوري: تكرر الباقي، لذلك تتكرر الأرقام.':
  'توقف العرض عند '+ar11(result.precision)+' خانات عشرية والباقي لم يصبح صفرًا.';
  const list=vd11.all?result.steps.map((s,i)=>divStep11(s,i,vd11.step===i)).join(''):
@@ -186,7 +199,8 @@ function divPage11(){
  '<option value="'+n+'"'+(vd11.places===n?' selected':'')+'>'+ar11(n)+' خانات</option>').join('')+'</select></label>'+
  '<button type="button" id="vd11Calculate">ابدأ القسمة</button></div>'+
  '<div class="vd11-workspace"><div>'+divIllustration11(result,active)+
- '<div class="vd11-quotient-result"><span>الناتج:</span><strong dir="ltr">'+num11(result.quotient)+'</strong></div>'+
+ '<div class="vd11-quotient-result"><span>'+(complete?'الناتج النهائي:':'الناتج حتى الآن:')+
+ '</span><strong dir="ltr">'+num11(partialDivision11(result,vd11.step).quotient)+'</strong></div>'+
  '<p class="vd11-status">'+status+'</p></div>'+
  '<div class="vd11-stages"><div class="vd11-stages-heading"><h2>مراحل القسمة المطوّلة</h2>'+
  '<span>مرحلة '+ar11(vd11.step+1)+' من '+ar11(result.steps.length)+'</span></div>'+
