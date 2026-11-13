@@ -89,7 +89,8 @@ const hubAudience=[
 function hubAbout(){
  return '<section class="hub-intro-panel"><h2>ما هي منصة آفاق ماث؟</h2><p>مساحة تعليمية عمانية لتعلّم الرياضيات من الصف الخامس إلى الثامن، وتوسّع المعرفة بتاريخ الرياضيات وعلمائها وتطبيقاتها، وتجمع الدروس والاختبارات والألعاب والمسابقات والأنشطة المساندة.</p>'+
  '<div class="hub-audience">'+hubAudience.map(([role,desc])=>'<article><b>'+role+'</b><p>'+desc+'</p></article>').join('')+'</div>'+
- '<p class="hub-note">تُتاح الموارد العامة دون تسجيل دخول، بينما تظل بيانات الطلاب ونتائجهم الخاصة محمية برمز الدخول والصلاحيات.</p></section>';
+ '<p class="hub-note">تُتاح الموارد العامة دون تسجيل دخول، وتبقى بيانات الطلاب ونتائجهم محمية.</p>'+
+ '<button type="button" class="hub-secondary" data-route="parent">متابعة ولي الأمر</button></section>';
 }
 function hubHome(){
  const paths='<svg class="afaq-hero-lines" viewBox="0 0 1200 350" preserveAspectRatio="none" aria-hidden="true">'+
