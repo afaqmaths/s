@@ -101,7 +101,7 @@ async function fetchFeed(id:string,name:string,uri:string,source:string){
  }catch{return []}finally{clearTimeout(timer)}
 }
 async function getNews(){
- if(newsCache&&Date.now()-newsAt<12*60000)return newsCache;
+ if(newsCache&&Date.now()-newsAt<2*60000)return newsCache;
  const feeds=await Promise.all(FEEDS.map(args=>fetchFeed(...args as [string,string,string,string])));
  const stored=await savedWeatherCities();
  const weatherPlaces=stored.map(x=>[x.city_label,Number(x.lat),Number(x.lon),x.slot,x.city_code]);
