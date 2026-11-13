@@ -92,27 +92,45 @@ function hubAbout(){
  '<p class="hub-note">تُتاح الموارد العامة دون تسجيل دخول، بينما تظل بيانات الطلاب ونتائجهم الخاصة محمية برمز الدخول والصلاحيات.</p></section>';
 }
 function hubHome(){
- return '<div class="container hub-home"><section class="hub-banner"><div><span>🇴🇲 منصة آفاق ماث • ٢٠٢٦ / ٢٠٢٧</span>'+
- '<h1>آفاق ماث — نافذتك إلى المعرفة والتعلّم والمرح</h1><p>مساحة منظّمة للطالب والمعلم وولي الأمر والزائر، تضم دروس الرياضيات ومكتبتها الثقافية وألعابها ومسابقاتها ودعمها التربوي.</p>'+
- '<button class="hub-primary" data-route="visitor">تعرّف إلى المنصة وتصفح كزائر</button></div>'+
- '<div class="hub-math-scene"><span>π</span><span>∑</span><span>√</span><span>∞</span></div></section>'+
- '<section class="hub-main"><div class="hub-heading"><span>ابدأ من هنا</span><h2>اختر بوابة الدخول</h2><p>العنوان أولًا، وأسفله صورة واضحة تعبر عن وظيفته</p></div>'+
+ const paths='<svg class="afaq-hero-lines" viewBox="0 0 1200 350" preserveAspectRatio="none" aria-hidden="true">'+
+ '<path d="M-50 245 C180 135 245 335 452 205 S830 100 1250 205"/>'+
+ '<path d="M-60 265 C190 145 305 370 500 225 S880 105 1250 230"/>'+
+ '<path d="M-40 285 C180 180 335 400 565 245 S945 145 1260 250"/>'+
+ '<path d="M40 95 Q265 -30 445 130 T855 90 T1245 125"/>'+
+ '</svg>';
+ const math='<div class="afaq-math-symbols" aria-hidden="true">'+
+ '<span>π</span><span>½</span><span>∑</span><span>√</span><span>∠ 60°</span>'+
+ '<span>¾</span><span>12 × 4</span><span>△</span><span>□</span><span>⅓</span><span>x ↦ 3x</span><span>∞</span>'+
+ '<span>y = x + 2</span><span>▱</span><span>25%</span><span>6²</span></div>';
+ return '<div class="container hub-home afaq-home-v7">'+
+ '<section class="hub-banner afaq-animated-hero" aria-label="منصة آفاق ماث">'+paths+math+
+ '<div class="afaq-hero-content"><span class="afaq-hero-eyebrow">منصة تعليم الرياضيات التفاعلية • سلطنة عُمان</span>'+
+ '<h1><span>منصة آفاق ماث</span><small lang="en" dir="ltr">Afaq Math</small></h1>'+
+ '<p>نتعلّم • نكتشف • نبدع — رياضيات كامبردج من المفهوم إلى التطبيق والاستدلال</p>'+
+ '<button type="button" class="hub-primary" data-route="learning">ابدأ رحلتك في الرياضيات</button></div>'+
+ '</section>'+
+ hubAbout()+
+ (typeof afaqHomeUpdates==="function"?afaqHomeUpdates():"")+
+ (typeof afaqHomeNewsTicker==="function"?afaqHomeNewsTicker():"")+
+ '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
  '<div class="hub-gate-grid hub-gate-grid-5">'+
- hubGate('التصفح كزائر','globe','محتوى عام وتجربة واحدة مجانية','data-route="visitor"','cyan')+
- hubGate('مشرف المنصة','graduation-cap','الإدارة والتحضير والتقويم','data-hub-login="supervisor"','gold')+
- hubGate('إدارة المدرسة','school','مدير المدرسة ومساعده','data-hub-login="director"','purple')+
- hubGate('الطالب','book-open','مقرراتك ونتائجك ومسابقاتك','data-hub-login="student"','green')+
- hubGate('ولي الأمر','heart-handshake','متابعة الطالب برمز خاص','data-route="parent"','rose')+
- '</div></section><section class="hub-main"><div class="hub-heading"><span>أقسام المنصة</span>'+
- '<h2>ماذا تريد أن تستكشف؟</h2></div><div class="hub-gate-grid">'+
- hubSectionCard('التعليم والتعلّم','graduation-cap','الصفوف والمناهج والدروس والأنشطة','learning','green')+
- hubSectionCard('المكتبة العامة','book-open','تاريخ الرياضيات والعلماء والاختبارات والمراجع','library','blue')+
- hubSectionCard('المرح والتسلية','smile','كاريكاتير وألغاز ومقالات وكتب تسلية','fun','rose')+
- hubSectionCard('الألعاب والمسابقات','trophy','نجوم آفاق وتحدي جنى والفلاشات','contests','gold')+
- hubSectionCard('الدعم والتواصل','smartphone','الاقتراحات والشكاوى ومراسلة مشرف المنصة','support','cyan')+
- '</div></section>'+hubAbout()+
- '<div class="hub-counter"><span>🌐 عدد المتصفحات الزائرة المسجلة</span><strong id="hubVisitorCount">'+(hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong>'+
- '<small>عدد تقريبي للمتصفحات المختلفة، وليس عدد أشخاص فريدين موثّقًا.</small></div></div>';
+ hubGate('دخول الطالب','book-open','حساب الطالب والدروس والنتائج','data-hub-login="student"','green')+
+ hubGate('دائرة الإشراف','graduation-cap','المشرف الرئيسي والمشرف المساعد','data-hub-login="supervisor"','gold')+
+ hubGate('الإدارة المدرسية','school','مدير المدرسة ومساعده','data-hub-login="director"','purple')+
+ hubGate('التصفح كزائر','globe','المحتوى العام دون تسجيل','data-route="visitor"','cyan')+
+ hubGate('ولي الأمر','heart-handshake','متابعة تقدّم الطالب','data-route="parent"','rose')+
+ '</div></section>'+
+ '<section class="hub-main afaq-home-sections"><div class="hub-heading"><span>أبواب المعرفة</span><h2>استكشف أقسام آفاق ماث</h2></div>'+
+ '<div class="hub-gate-grid">'+
+ hubSectionCard('التعليم والتعلّم','graduation-cap','الدروس والمشاغل والتدريبات','learning','green')+
+ hubSectionCard('المكتبة العامة','book-open','تاريخ الرياضيات والمعرفة','library','blue')+
+ hubSectionCard('المرح والتسلية','smile','ألغاز وتحديات رياضية','fun','rose')+
+ hubSectionCard('الألعاب والمسابقات','trophy','نجوم آفاق والمنافسات','contests','gold')+
+ hubSectionCard('الدعم والتواصل','smartphone','الاقتراحات والرسائل','support','cyan')+
+ '</div></section>'+
+ (typeof afaqHomeShowcase==="function"?afaqHomeShowcase():"")+
+ '<div class="hub-counter"><span>🌐 المتصفحات الزائرة المسجلة</span><strong id="hubVisitorCount">'+
+ (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong></div></div>';
 }
 async function hubCall(action,payload={},token=''){
  const result=await fetch(HUB_API,{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify({action,...payload}),cache:'no-store'});
@@ -166,7 +184,7 @@ function hubCard(row){
 }
 function hubResourceGrid(categories){
  const items=hub.catalog.filter(x=>x.published&&(!categories||categories.includes(x.category)));
- if(!items.length)return '<p class="hub-empty">لا توجد موارد منشورة في هذا القسم حاليًا. يستطيع مشرف المنصة إضافة موارد جديدة.</p>';
+ if(!items.length)return '<p class="hub-empty">لا توجد مواد معروضة حاليًا.</p>';
  return '<div class="hub-resource-grid">'+items.map(hubCard).join('')+'</div>';
 }
 
@@ -252,7 +270,7 @@ function hubLibrary(){
  '<article><b>الصفوف ١–٤</b><p>مساحة لاستقبال التدريبات التأسيسية الملائمة للصفوف الأولى. لم تُنشر ملفات رسمية في هذه المجموعة بعد.</p></article>'+
  '<article><b>الصفوف ٥–٨</b><p>نماذج وتمارين تدريبية متاحة من بوابة الاختبارات الحالية.</p></article>'+
  '<article><b>الصفوف ٩–١٢</b><p>تُضاف مواد هذه الصفوف بعد مراجعة توافقها مع المناهج المعتمدة.</p></article>'+
- '<article><b>المشرف</b><p>يمكنه إضافة محتوى لكل صف من ١ إلى ١٢ ثم نشره أو إخفاؤه.</p></article></div>'+
+ '</div>'+
  '</section><section class="hub-main"><h2>خيارات إضافية</h2>'+
  '<div class="hub-inline-actions"><a class="hub-secondary" href="exams.html">اختبارات قابلة للطباعة والتنزيل بصيغة Word</a>'+
  '<button class="hub-secondary" data-route="learning">الوحدات والدروس</button></div></section></div>';
