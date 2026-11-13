@@ -1,0 +1,127 @@
+/* Time, live news, notice tickers, workshops, calendar and weather settings */
+.aw-utility{display:grid;grid-template-columns:50px minmax(175px,1.05fr) minmax(260px,1.15fr) minmax(195px,.8fr);
+ align-items:center;gap:12px;padding:9px 23px;background:linear-gradient(95deg,#f5faff,#e1efff);
+ border-bottom:1px solid #ccdfee;box-shadow:0 3px 13px #1855840e;color:#215071;position:relative;z-index:10}
+.aw-utility>button{border:0;border-radius:50%;width:45px;height:45px;background:#15528e;
+ color:white;font-size:29px;font-weight:850;cursor:pointer}
+.aw-search{position:relative;display:flex;align-items:center;gap:5px;background:#fff;border:1px solid #bad0e8;
+ border-radius:14px;padding:4px 9px;min-width:0;height:43px}
+.aw-search>button{border:0;background:transparent;color:#1e6092;font-size:27px;line-height:1;cursor:pointer}
+.aw-search input{border:0;background:transparent;padding:6px;width:100%;outline:0;min-width:0;font-size:13px}
+.aw-search-results{position:absolute;top:100%;inset-inline-start:0;width:100%;min-width:230px;z-index:30;
+ background:white;border:1px solid #b4cfdf;border-radius:10px;padding:8px;box-shadow:0 12px 25px #24547829}
+.aw-search-results[hidden]{display:none}
+.aw-search-results button{display:block;width:100%;text-align:right;border:0;background:#f3f9ff;
+ padding:9px;margin-bottom:4px;border-radius:8px;color:#255a83;cursor:pointer}
+.aw-search-results button:hover{background:#deefff}
+.aw-datetime{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:center;text-align:center;font-size:12px}
+.aw-datetime>span{font-weight:900;color:#244a7f;white-space:nowrap}
+.aw-datetime>button{border:0;background:transparent;color:#235783;font-weight:800;font-size:12px;cursor:pointer}
+.aw-datetime>small{color:#607997;font-size:11px;width:100%;white-space:nowrap}
+.aw-weather{display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:center}
+.aw-weather>span{border-radius:30px;background:#cbe9fa;padding:7px 10px;font-size:12px;white-space:nowrap;color:#285875}
+.aw-weather b{font-weight:900}
+.aw-calendar-dialog{max-width:min(460px,94vw);width:100%;padding:19px;border-radius:18px;border:1px solid #a8c8db;
+ box-shadow:0 25px 70px #102f5a50;color:#245270;background:white}
+.aw-calendar-dialog::backdrop{background:#132b5e75}
+.aw-close{float:left;border:0;border-radius:9px;padding:6px 12px;background:#eef2f6;font-size:23px;cursor:pointer}
+.aw-calendar-top{display:flex;justify-content:space-around;align-items:center;margin:11px 0 16px}
+.aw-calendar-top h2{font-size:20px;color:#1d5685;margin:0}
+.aw-calendar-top button{border:1px solid #b9d0e8;border-radius:9px;background:#f0f8ff;padding:8px 13px;cursor:pointer}
+.aw-calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;text-align:center}
+.aw-calendar-days>*{padding:8px 2px;border-radius:8px;font-size:12px;background:#f4f9ff}
+.aw-calendar-days strong{background:#dcecff;color:#285b8a;font-size:11px}
+.aw-calendar-days .today{background:#1c859e!important;color:white;font-weight:900}
+.aw-calendar-dialog p{font-size:11px;text-align:center;color:#6b7d8d}
+.ae-notice-bar,.ae-news-bar{display:flex;align-items:center;gap:12px;margin:12px 0;border:1px solid #c6d8ec;
+ border-radius:15px;min-height:59px;overflow:hidden;background:#f1f7ff;color:#174a71}
+.ae-notice-bar{background:linear-gradient(115deg,#f6ebff,#f5fbff);border-color:#d8c3ee}
+.ae-notice-bar>strong{background:#e2d0ff;display:flex;align-items:center;gap:8px;justify-content:center;
+ padding:18px 12px;min-width:156px;color:#5e3ca4;white-space:nowrap;font-size:13px}
+.ae-notice-track{overflow:hidden;flex:1;min-width:0;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ae-notice-motion{width:max-content;white-space:nowrap;display:flex;gap:16px;align-items:center;
+ animation:aeNoticeFloat 26s linear infinite;font-size:13px;font-weight:750}
+.ae-notice-bar:hover .ae-notice-motion{animation-play-state:paused}
+.ae-notice-item{white-space:nowrap}
+.ae-notice-item a{color:#4d438c;font-weight:900}
+.ae-separator{font-size:11px;color:#997ec6}
+@keyframes aeNoticeFloat{0%{transform:translateX(-15%)}100%{transform:translateX(70%)}}
+.ae-news-bar{background:linear-gradient(90deg,#edf8ff,#eef5fd)}
+.ae-news-title{background:#184e8b;color:white;border:0;height:100%;min-height:59px;padding:12px 15px;
+ font-weight:900;white-space:nowrap;font-size:13px;cursor:pointer}
+.ae-news-channels{display:flex;gap:13px;flex:1;align-items:center;white-space:nowrap;overflow:auto;
+ scrollbar-width:thin;min-width:0;padding:7px 0}
+.ae-news-channels>span{border-left:1px solid #b8d3eb;padding-left:11px;font-size:12px;display:inline-block}
+.ae-news-channels small{font-size:11px;color:#5583a0;font-weight:800}
+.ae-news-channels a{color:#24557f;text-decoration:none;font-weight:850}
+.ae-news-channels a:hover{text-decoration:underline}
+.ae-news-weather{display:flex;gap:7px;align-items:center;white-space:nowrap}
+.ae-weather-item{background:#dbeefa;border-radius:19px;padding:7px;font-size:11px}
+.ae-news-more{border:0;background:#dbefff;color:#27648b;padding:11px;font-size:12px;font-weight:900;white-space:nowrap;cursor:pointer}
+.ae-news-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}
+.ae-news-tabs button{padding:11px 15px;border:1px solid #c3d7ea;border-radius:12px;background:white;
+ color:#285f8f;font-weight:900;cursor:pointer}
+.ae-news-tabs button.active{color:white;background:#226b9c}
+.ae-article-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ae-story-card{padding:19px;border:1px solid #cfdfec;border-radius:14px;background:white;box-shadow:0 6px 18px #26548111}
+.ae-story-card h2{font-size:18px;line-height:1.7}.ae-story-card h2 a{color:#254e7f}
+.ae-story-card p{color:#778ca0;font-size:12px}
+.ae-source{font-size:11px;color:#268a85;font-weight:900}
+.ae-news-credit{color:#698497;font-size:11px;line-height:1.8}
+.ae-weather-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.ae-weather-grid article{padding:14px;background:#e8f4ff;border:1px solid #bed9ec;border-radius:13px;display:grid;text-align:center;gap:5px}
+.ae-weather-grid b{font-size:26px;color:#215c88}.ae-weather-grid small{color:#527489}
+.ae-learning-tools{max-width:1320px;margin:22px auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.ae-tool-preview{display:grid;grid-template-columns:55px 1fr;align-items:center;gap:12px;
+ background:linear-gradient(130deg,#f5fbff,#effaf5);border:1px solid #cee1ee;padding:16px;border-radius:18px}
+.ae-tool-icon{font-size:37px;grid-row:span 2}
+.ae-tool-preview h2{font-size:17px!important;color:#255d83;margin:0 0 6px}
+.ae-tool-preview p{font-size:12px;color:#577487;margin:0;line-height:1.8}
+.ae-tool-preview button{grid-column:span 2;font-size:12px;font-weight:900}
+.ae-workshop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ae-workshop-card{display:flex;gap:14px;background:white;border:1px solid #c8ddeb;border-radius:16px;padding:18px;box-shadow:0 8px 19px #23578112}
+.ae-workshop-card>div:nth-child(2){flex:1}
+.ae-workshop-icon{font-size:41px;line-height:1.3}
+.ae-workshop-card small{color:#287c84;font-size:12px;font-weight:900}
+.ae-workshop-card h2{font-size:21px!important;margin:5px 0 10px;color:#225d8e}
+.ae-workshop-card p{font-size:13px;line-height:1.9;color:#537386}
+.ae-workshop-card details{background:#f5faff;border:1px solid #d6e6f0;border-radius:10px;padding:10px}
+.ae-workshop-card summary{font-size:13px;font-weight:850;color:#2b698c;cursor:pointer}
+.ae-workshop-card li{line-height:1.9;font-size:12px}
+.ae-workshop-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+.ae-workshop-actions button,.ae-workshop-actions a,.ae-secondary{background:#e5f5ff;color:#245a8b;
+ padding:10px;border:1px solid #bed8eb;border-radius:10px;font-weight:900;font-size:12px;cursor:pointer}
+.ae-admin-shortcuts{display:flex;gap:8px;flex-wrap:wrap;margin:14px}
+.ae-admin-shortcuts button,.aw-shortcut button{padding:12px 16px;border-radius:11px;
+ border:1px solid #b8d6e5;color:#205b80;background:#e6f6ff;font-weight:900;cursor:pointer}
+.ae-admin-actions{padding:14px;background:#e9f8f1;border:1px solid #c4e2d0;border-radius:13px}
+.ae-switch{display:flex;align-items:center;gap:8px;font-weight:900;color:#176f5c}
+.ae-admin-form,.aw-admin form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:14px;padding:17px;background:#f7fcff;border:1px solid #d0e0ee;border-radius:14px;margin:14px 0}
+.ae-admin-form label,.aw-admin form label{display:grid;gap:6px;font-size:13px;color:#275e83;font-weight:900}
+.ae-admin-form input:not([type=checkbox]),.ae-admin-form textarea,.aw-admin select{
+ width:100%;padding:10px;border:1px solid #c0d9e8;border-radius:9px;background:white}
+.ae-admin-form button,.aw-admin form button{grid-column:span 2}
+.ae-admin-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ae-admin-list article{background:white;border:1px solid #d0e0e9;border-radius:11px;padding:15px;line-height:1.8}
+.ae-admin-list article strong{color:#235c81}
+.ae-admin-list article p{font-size:12px;color:#597b8b}
+.ae-admin-list article button{margin:4px;background:#eef8ff;border:1px solid #bcd9e8;padding:8px 13px;border-radius:9px;cursor:pointer}
+.ae-error{color:#ac2d46!important}
+@media(max-width:1150px){.aw-utility{grid-template-columns:45px minmax(145px,1fr) minmax(200px,1.4fr)}
+ .aw-weather{grid-column:span 3}.ae-learning-tools{grid-template-columns:1fr 1fr}}
+@media(max-width:780px){.aw-utility{display:flex;flex-wrap:wrap;gap:8px;padding:8px 10px}
+ .aw-utility>button{width:38px;height:38px}
+ .aw-search{flex:1 1 155px}
+ .aw-datetime{flex:1 1 100%;order:3}
+ .aw-weather{flex:1 1 100%;order:4}
+ .ae-notice-bar,.ae-news-bar{flex-wrap:wrap;gap:4px;min-height:50px}
+ .ae-notice-bar>strong,.ae-news-title{min-height:40px;padding:9px;font-size:12px}
+ .ae-news-channels{flex:1 1 70%;overflow:auto}
+ .ae-news-weather{width:100%;justify-content:center;padding:4px}
+ .ae-learning-tools,.ae-workshop-grid,.ae-article-grid,.ae-admin-form,.aw-admin form,.ae-admin-list{grid-template-columns:1fr}
+ .ae-admin-form button,.aw-admin form button{grid-column:1}}
+@media(max-width:440px){.ae-workshop-card{padding:12px;gap:8px}.ae-workshop-icon{font-size:28px}
+ .ae-weather-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.ae-notice-motion{animation:none!important}}
+@media print{.aw-utility,.ae-news-bar,.ae-notice-bar,.ae-admin-shortcuts{display:none!important}}
