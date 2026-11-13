@@ -237,16 +237,21 @@ function afaqPrintCenter(inStaff){
     ['national_values','القيم الوطنية'],['science_news','العلوم والثقافة']]],
   ['assessment','📝 التقويم والخطط',[
     ['adaptive','الأسئلة القصيرة والشفوية والواجبات'],['learning','الخطة العلاجية والإثرائية'],
-    ['dashboard','سجل الرصد والتقارير'],['dashboard','كشوف الشعب']]],
+    ['dashboard','سجل الرصد والتقارير','official_register'],['dashboard','كشوف الشعب','class_results']]],
   ['certificates','🏅 الشهادات',[
-    ['dashboard','الشهادات التعليمية'],['dashboard','شهادات التفاعل A+ وA−'],
+    ['dashboard','الشهادات التعليمية','students'],['dashboard','شهادات التفاعل A+ وA−','a_awards'],
     ['contests','شهادات المسابقات']]]];
  return '<div class="container afaq-print-hub" dir="rtl"><section class="ae-section-hero">'+
  '<span>مركز الطباعة</span><h1>مركز الطباعة والتوثيق</h1>'+
  '<p>اختَر القسم الرئيسي، ثم المستند أو النموذج الفرعي لعرضه أو طباعته. الطباعة الرسمية والدرجات تتطلب حسابًا مخولًا.</p></section>'+
  '<div class="afaq-print-categories">'+groups.map(([id,title,items])=>
   '<section class="afaq-print-group"><h2>'+title+'</h2>'+
-  '<div>'+items.map(([route,label])=>'<button type="button" data-route="'+route+'">'+aeEsc(label)+'</button>').join('')+
+  '<div>'+items.map(([route,label,tab])=>{
+   const staffTab=tab&&aeCanRead()&&auth.user?.role!=='it_viewer';
+   const attr=staffTab?'data-tab="'+tab+'"':(tab&&auth.user?.role==='it_viewer')?
+    'data-route="dashboard"':tab&&!auth.user?'data-ae-login="student"':'data-route="'+route+'"';
+   return '<button type="button" '+attr+'>'+aeEsc(label)+'</button>';
+  }).join('')+
   '</div></section>').join('')+'</div>'+
  (inStaff?'<p>بعد اختيار القسم، استخدم أزرار الطباعة الخاصة بالمستند؛ كما يمكن تصدير السجلات النصية إلى Word من المصادر الإضافية.</p>':
  '<p>للحصول على كشوف الدرجات والشهادات المعتمدة، سجل دخولك ثم افتح مركز الطباعة من حسابك.</p>')+
