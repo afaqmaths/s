@@ -123,7 +123,7 @@ function division11(n,d,limit=8){
     text:'نضيف صفرًا إلى يمين الباقي '+before+' فيصبح '+part+'. في منزلة '+place+
       ' نكتب '+q+'، ثم نطرح '+product+' فيبقى '+rem+'.'});
   }
-  if(rem&&!cycle&&decimal.length>=limit)stop='truncated';
+  if(rem&&cycle<0&&decimal.length>=limit)stop='truncated';
   else if(!rem)stop='finished';
   if(cycle>=0)steps.push({type:'cycle',remainder:rem,
    text:'تكرر الباقي '+rem+' كما حدث سابقًا؛ لذلك تتكرر الأرقام العشرية ولا تنتهي القسمة. لا يجوز اعتبار الباقي صفرًا.'});
