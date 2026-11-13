@@ -113,12 +113,11 @@ function hubHome(){
  (typeof afaqHomeUpdates==="function"?afaqHomeUpdates():"")+
  (typeof afaqHomeNewsTicker==="function"?afaqHomeNewsTicker():"")+
  '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
- '<div class="hub-gate-grid hub-gate-grid-5">'+
+ '<div class="hub-gate-grid hub-gate-grid-4">'+
  hubGate('دخول الطالب','book-open','حساب الطالب والدروس والنتائج','data-hub-login="student"','green')+
- hubGate('دائرة الإشراف','graduation-cap','المشرف الرئيسي والمشرف المساعد','data-hub-login="supervisor"','gold')+
  hubGate('الإدارة المدرسية','school','مدير المدرسة ومساعده','data-hub-login="director"','purple')+
- hubGate('التصفح كزائر','globe','المحتوى العام دون تسجيل','data-route="visitor"','cyan')+
- hubGate('ولي الأمر','heart-handshake','متابعة تقدّم الطالب','data-route="parent"','rose')+
+ hubGate('التصفح كضيف','globe','استكشف المحتوى العام دون حساب','data-route="visitor"','cyan')+
+ hubGate('دخول المشرفين','graduation-cap','المشرف الرئيسي والمساعد وتقنية المعلومات','data-hub-login="supervisor"','gold')+
  '</div></section>'+
  '<section class="hub-main afaq-home-sections"><div class="hub-heading"><span>أبواب المعرفة</span><h2>استكشف أقسام آفاق ماث</h2></div>'+
  '<div class="hub-gate-grid">'+
@@ -788,9 +787,13 @@ attach=function(){
 function hubSetLogin(role){
  const select=document.getElementById('loginRole');
  if(!select)return;
+ if(typeof selectEntryGate==='function'){
+  const group=['supervisor','supervisor_assistant','it_viewer'].includes(role)?'supervision':
+   ['director','deputy'].includes(role)?'management':'student';
+  selectEntryGate(group);
+ }else document.getElementById('authDialog')?.showModal();
  select.value=role;
  if(typeof loginUi==='function')loginUi();
- document.getElementById('authDialog')?.showModal();
 }
 function hubSelectWork(tab){
  if(!canEdit())return;
