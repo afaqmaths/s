@@ -19,6 +19,7 @@ function itCell(row,col){
  case 'name':return '<button type="button" class="it-view-student" data-it-open="'+itEsc(row.number)+'">'+itEsc(row.name)+'</button>';
  case 'class_name':return itEsc(row.class_name);
  case 'assessment':return row.assessment_total==null?'—':itNum(row.assessment_total)+' / ١٠٠';
+ case 'records':return itNum(row.records);
  case 'diagnostic':return itNum(row.diagnostic);
  case 'plus':return itNum(row.a_plus);
  case 'minus':return itNum(row.a_minus);
@@ -99,8 +100,8 @@ function itPage(){
  if(!d)return '<div class="container it-page"><h2>مشرف تقنية المعلومات</h2><p>جارٍ تحميل بيانات العرض...</p></div>';
  let main=itState.tab==='overview'?itCards(d)+
   '<h3>الانتقال إلى أقسام المنصة</h3>'+itQuickLinks()+
-  '<h3>إحصائيات الشعب</h3>'+itTable((d.summary?.classes||[]).map((r,i)=>({number:i+1,name:r.class_name,class_name:r.class_name,assessment_total:r.records})),
-   [['number','م'],['name','الشعبة'],['assessment','سجلات التقويم']]):
+  '<h3>إحصائيات الشعب</h3>'+itTable((d.summary?.classes||[]).map((r,i)=>({number:i+1,name:r.class_name,class_name:r.class_name,records:r.records})),
+   [['number','م'],['name','الشعبة'],['records','سجلات التقويم']]):
  itState.tab==='resources'?itModules():
  itState.tab==='news'?'<div class="it-quick-links"><button data-route="science_news">📰 الأخبار والثقافة والعلوم</button>'+
  '<button data-route="workshops">🎓 المشاغل المهنية</button></div>':itFilteredTable();
