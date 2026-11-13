@@ -8,9 +8,10 @@ const footEsc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 const footNum=x=>new Intl.NumberFormat('ar-OM',{maximumFractionDigits:2}).format(Number(x)||0);
 const footT=m=>(String(m.home||'')+' '+String(m.away||'')).toLowerCase();
 const footL=m=>String(m.league||'').toLowerCase();
+const footNationalOman=m=>[m.home,m.away].some(x=>/^(oman|oman national team|عمان|عُمان|سلطنة عمان)$/i.test(String(x||'').trim()));
 function footPriority(m){
  if(Number.isInteger(Number(m.priority)))return Number(m.priority);
- if(/oman|عمان|عُمان/.test(footT(m)))return 1;
+ if(footNationalOman(m))return 1;
  if(/real madrid|ريال مدريد/.test(footT(m)))return 2;
  if(/champions league|دوري أبطال أوروبا/.test(footL(m)))return 3;
  if(/afc|gulf|arab|asian|خليج|عرب|آسيا/.test(footL(m)))return 4;
@@ -24,7 +25,7 @@ function footAll(){
   footPriority(a)-footPriority(b)||String(a.utc_start||'').localeCompare(String(b.utc_start||''))):[];
 }
 function footIs(m,filter){
- if(filter==='oman')return /oman|عمان|عُمان/.test(footT(m));
+ if(filter==='oman')return footNationalOman(m);
  if(filter==='madrid')return /real madrid|ريال مدريد/.test(footT(m));
  if(filter==='champions')return /champions league|دوري الأبطال/.test(footL(m));
  if(filter==='laliga')return /la liga|primera|spanish/.test(footL(m));
