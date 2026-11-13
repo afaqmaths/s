@@ -83,9 +83,9 @@ genericSection=function(page){return page==='matches_today'?footPage():footOldGe
 function footHomePromo(){
  return '<section class="foot-v10-promo" aria-label="ملصق مباريات اليوم">'+
  '<img src="assets/afaq-football-stadium-v10.svg?v=20261113-v10" alt="ملعب كرة قدم ليلي مضاء" width="900" height="470" loading="lazy">'+
- '<div><span>⚽ كُرة القدم والرياضة</span><h2>مباريات اليوم بملصق جميل</h2>'+
+ '<div><span>⚽ كُرة القدم والرياضة</span><h2>مباريات اليوم</h2>'+
  '<p>المنتخب العُماني • ريال مدريد • دوري أبطال أوروبا • الدوري الإسباني • البطولات الخليجية</p>'+
- '<button type="button" data-route="matches_today">مباريات اليوم وملصق A4</button></div></section>';
+ '<button type="button" data-route="matches_today">تحميل أو طباعة</button></div></section>';
 }
 /* A4 sports artwork generated from real returned events — not screenshots or fake schedules. */
 function footPosterSVG(){
