@@ -140,3 +140,8 @@
  .vi11-interactive,.vd11-workspace{grid-template-columns:1fr 1fr}
  .vi11-results,.vd11-stage{break-inside:avoid}
 }
+
+.v11-teaching-actions{display:flex;flex-wrap:wrap;gap:9px}
+.v11-teaching-actions button{background:linear-gradient(120deg,#194879,#1b8298);color:white;
+ border:0;border-radius:10px;padding:12px 15px;font-size:13px;font-weight:900;cursor:pointer}
+.v11-teaching-actions button:last-child{background:linear-gradient(115deg,#c6984d,#f0ce88);color:#594320}
