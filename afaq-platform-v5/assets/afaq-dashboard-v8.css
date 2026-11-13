@@ -190,3 +190,20 @@
  .afaq-home-module,.afaq-national-card,.afaq-science-card{transition:none!important}}
 @media print{.afaq-home-showcase{break-inside:avoid}.afaq-mixer-numbers button,.ae-mixer-details{display:none!important}
  .it-tabs,.it-filter{display:none!important}.it-page .it-roster th{print-color-adjust:exact}}
+
+/* IT supervisor: secure student details and global sequence 1–98 */
+.it-view-student{font:850 12px Tahoma,Arial,sans-serif;color:#245b8c;
+ background:transparent;border:0;padding:4px 0;cursor:pointer;text-align:right}
+.it-view-student:hover{text-decoration:underline}
+.it-student-detail{margin:15px 0;padding:18px;border-radius:16px;background:#f4faff;
+ border:1px solid #bcd8e8;display:flex;align-items:center;flex-wrap:wrap;gap:14px}
+.it-student-detail>div:first-child{flex:1 1 220px}
+.it-student-detail h2{font-size:19px;color:#225b8c;margin:0 0 5px}
+.it-student-detail p{font-size:13px;line-height:1.8;color:#476f85;margin:4px 0}
+.it-student-detail>button{background:#e2f1fc;border:1px solid #b2d0e4;border-radius:9px;padding:8px 13px}
+.it-student-marks{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;flex:1 1 100%}
+.it-student-marks article{padding:11px 5px;background:white;border:1px solid #d1e1ec;
+ border-radius:9px;display:grid;gap:5px;text-align:center}
+.it-student-marks small{font-size:11px;color:#658296}.it-student-marks b{font-size:19px;color:#256b8b}
+@media(max-width:760px){.it-student-marks{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media print{.it-student-detail>button{display:none!important}}
