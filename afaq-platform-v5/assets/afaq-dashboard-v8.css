@@ -213,3 +213,9 @@
  border-radius:10px;border:1px solid #8cbcca;background:#e4f5f5;color:#226478;
  padding:9px 15px;font-weight:900;cursor:pointer}
 @media print{.it-print-controls{display:none!important}}
+
+/* No duplicated section menu above the main blue banner. */
+#menuBtn[hidden],#mobileNav[hidden]{display:none!important}
+header.topbar{gap:14px;justify-content:space-between}
+header.topbar .header-actions{margin-inline-start:auto}
+@media(max-width:700px){header.topbar{padding:8px 12px!important}}
