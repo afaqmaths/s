@@ -68,6 +68,21 @@ const FEEDS=[
  ["technology","التكنولوجيا","https://feeds.bbci.co.uk/news/technology/rss.xml","BBC Technology"],
  ["culture","الثقافة","https://www.bbc.com/culture/feed.rss","BBC Culture"]
 ];
+const WEATHER_CITIES=[
+ ["muscat","مسقط",23.614,58.593],["sohar","صحار",24.35,56.73],
+ ["salalah","صلالة",17.019,54.089],["nizwa","نزوى",22.933,57.533],
+ ["sur","صور",22.566,59.528],["ibri","عبري",23.225,56.516],
+ ["buraimi","البريمي",24.252,55.794],["rustaq","الرستاق",23.39,57.425],
+ ["khasab","خصب",26.179,56.247],["seeb","السيب",23.67,58.19],
+ ["barka","بركاء",23.707,57.889],["dubai","دبي",25.204,55.271],
+ ["doha","الدوحة",25.286,51.533],["riyadh","الرياض",24.713,46.675]
+] as const;
+async function savedWeatherCities(){
+ const {data,error}=await db.from("afaq_weather_cities_v7")
+  .select("slot,city_code,city_label,lat,lon").order("slot").limit(2);
+ if(error)throw error;
+ return data||[];
+}
 let newsCache:any=null,newsAt=0;
 async function fetchFeed(id:string,name:string,uri:string,source:string){
  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),4300);
@@ -88,8 +103,9 @@ async function fetchFeed(id:string,name:string,uri:string,source:string){
 async function getNews(){
  if(newsCache&&Date.now()-newsAt<12*60000)return newsCache;
  const feeds=await Promise.all(FEEDS.map(args=>fetchFeed(...args as [string,string,string,string])));
- const weatherPlaces=[["مسقط",23.614,58.593],["صحار",24.35,56.73]];
- const weather=await Promise.all(weatherPlaces.map(async([city,lat,lon])=>{
+ const stored=await savedWeatherCities();
+ const weatherPlaces=stored.map(x=>[x.city_label,Number(x.lat),Number(x.lon),x.slot,x.city_code]);
+ const weather=await Promise.all(weatherPlaces.map(async([city,lat,lon,slot,code])=>{
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),4100);
   try{
    const u="https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+
@@ -97,11 +113,12 @@ async function getNews(){
    const response=await fetch(u,{signal:controller.signal});if(!response.ok)return null;
    const x=await response.json();const c=x?.current;
    if(!Number.isFinite(c?.temperature_2m))return null;
-   return {city,temperature:c.temperature_2m,weather_code:c.weather_code,
+   return {city,slot,code,temperature:c.temperature_2m,weather_code:c.weather_code,
     wind_speed:c.wind_speed_10m,observed_at:c.time,source:"Open-Meteo"};
   }catch{return null}finally{clearTimeout(timer)}
  }));
- const d={items:feeds.flat(),weather:weather.filter(Boolean),updated_at:new Date().toISOString(),
+ const d={items:feeds.flat(),weather:weather.filter(Boolean),selected_cities:stored,
+   updated_at:new Date().toISOString(),
    national:{label:"وكالة الأنباء العُمانية",url:"https://omannews.gov.om"}};
  if(d.items.length||d.weather.length){newsCache=d;newsAt=Date.now()}return d;
 }
@@ -124,6 +141,22 @@ Deno.serve(async req=>{
   }
   const s=await session(req);
   if(!s)return fail(origin,"unauthorized",401);
+  if(action==="weather_cities"){
+   return ok(origin,{selected:await savedWeatherCities(),
+    cities:WEATHER_CITIES.map(([code,label])=>({code,label}))});
+  }
+  if(action==="weather_city_save"){
+   if(!supervisor(s))return fail(origin,"forbidden",403);
+   const slot=Number(b.slot),code=str(b.city_code,40);
+   const match=WEATHER_CITIES.find(x=>x[0]===code);
+   if(![1,2].includes(slot)||!match)return fail(origin,"invalid_city",400);
+   const {error}=await db.from("afaq_weather_cities_v7").upsert({
+    slot,city_code:match[0],city_label:match[1],lat:match[2],lon:match[3],
+    updated_at:new Date().toISOString()});
+   if(error)throw error;
+   newsCache=null;newsAt=0;
+   return ok(origin,{selected:await savedWeatherCities()});
+  }
   if(action==="staff_list"){
    if(!staff(s))return fail(origin,"forbidden",403);
    const [notices,workshops,settings]=await Promise.all([
