@@ -1,0 +1,69 @@
+/* Afaq Math football — vivid stadium cards and printable poster */
+.foot-v10-promo{display:grid;grid-template-columns:47% 53%;direction:ltr;min-height:255px;
+ margin:25px 0 27px;overflow:hidden;border-radius:23px;
+ background:linear-gradient(120deg,#082251,#153c73);border:1px solid #51799a;
+ box-shadow:0 15px 33px #143a7141}
+.foot-v10-promo>img{width:100%;height:100%;min-height:250px;object-fit:cover;display:block}
+.foot-v10-promo>div{direction:rtl;display:flex;flex-direction:column;justify-content:center;
+ align-items:flex-start;gap:10px;padding:24px 27px;color:#fff}
+.foot-v10-promo>div>span{font-size:13px;color:#f8dbac;font-weight:900}
+.foot-v10-promo h2{color:#fff!important;font-size:clamp(24px,2.8vw,38px)!important;margin:0}
+.foot-v10-promo p{font-size:13px;line-height:1.9;color:#e2f6ff;margin:0}
+.foot-v10-promo button{background:linear-gradient(100deg,#f1c776,#f8deaf);
+ border:0;border-radius:11px;padding:12px 17px;margin-top:7px;
+ color:#254363;font-weight:950;font-size:13px;cursor:pointer}
+.foot-v10-page{direction:rtl}
+.foot-v10-hero{display:grid;grid-template-columns:52% 48%;direction:ltr;
+ background:linear-gradient(105deg,#071c48,#144879);border-radius:23px;
+ border:1px solid #507d9f;overflow:hidden;min-height:350px;margin:19px 0;
+ box-shadow:0 16px 32px #102d6351}
+.foot-v10-hero img{height:100%;min-height:340px;width:100%;display:block;object-fit:cover}
+.foot-v10-title{align-self:center;direction:rtl;padding:24px;color:white}
+.foot-v10-title>span{font-size:13px;color:#f9d7a2;font-weight:950;letter-spacing:.04em}
+.foot-v10-title h1{color:#fff!important;font-size:clamp(29px,3.7vw,52px);margin:10px 0}
+.foot-v10-title p{color:#e0f5ff;font-size:13px}
+.foot-v10-favorites{display:grid;gap:9px;margin-top:16px}
+.foot-v10-favorite{border:1px solid #ffffff3d;border-radius:11px;background:#dceeff17;
+ padding:11px;display:grid;gap:6px}
+.foot-v10-favorite span{font-size:12px;color:#ffe3b5;font-weight:900}
+.foot-v10-favorite b{font-size:13px;color:#fff;line-height:1.65}
+.foot-v10-actions,.foot-v10-filters{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}
+.foot-v10-actions button{padding:11px 15px;cursor:pointer;border-radius:11px;
+ border:1px solid #d8b77b;background:linear-gradient(125deg,#fff1d0,#f1cb8c);
+ color:#604820;font-size:13px;font-weight:950;box-shadow:0 4px 11px #d4ac6533}
+.foot-v10-actions button:hover{filter:brightness(1.06)}
+.foot-v10-filters button{padding:10px 12px;cursor:pointer;border-radius:10px;
+ background:#f5faff;border:1px solid #c8dce9;color:#275d87;
+ font-size:12px;font-weight:900}
+.foot-v10-filters button.selected{color:#fff;background:#24658e;border-color:#24658e}
+.foot-v10-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.foot-v10-game{background:#fff;border:1px solid #cbdde8;border-radius:17px;padding:16px;
+ box-shadow:0 7px 17px #1f49761c}
+.foot-v10-game.featured{border-color:#d5b272;background:linear-gradient(125deg,#fffaf1,#fff)}
+.foot-v10-game>header{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;
+ padding-bottom:12px;border-bottom:1px solid #e1eaf0}
+.foot-v10-game header span{font-size:12px;color:#29678b;font-weight:950}
+.foot-v10-game header small{font-size:11px;color:#a97d39;font-weight:900}
+.foot-v10-clubs{display:grid;grid-template-columns:1fr 68px 1fr;gap:8px;
+ align-items:center;text-align:center;padding:19px 1px}
+.foot-v10-clubs strong{color:#244d76;font-size:clamp(13px,1.4vw,18px);line-height:1.75}
+.foot-v10-clubs>span{font-size:22px;color:#bb8b3d;font-weight:950}
+.foot-v10-game>footer{border-top:1px solid #e1eaf0;padding-top:10px;
+ display:flex;gap:9px;justify-content:space-between;flex-wrap:wrap;font-size:12px;color:#5b7b8f}
+.foot-v10-empty{padding:35px 19px;border:1px dashed #bad3e5;border-radius:16px;
+ background:#f5faff;text-align:center}
+.foot-v10-empty>span{font-size:53px}
+.foot-v10-empty h2{font-size:19px;color:#27608a}
+.foot-v10-empty p{font-size:13px;line-height:1.85;color:#668094}
+.foot-v10-credits{font-size:12px;color:#657f90;line-height:1.9;margin:20px 0 9px}
+.foot-v10-source{color:#24658c}
+@media(max-width:760px){
+ .foot-v10-promo,.foot-v10-hero{grid-template-columns:1fr}
+ .foot-v10-promo img,.foot-v10-hero img{height:215px;min-height:215px}
+ .foot-v10-promo>div,.foot-v10-title{padding:19px}
+ .foot-v10-grid{grid-template-columns:1fr}
+}
+@media(max-width:420px){.foot-v10-clubs{grid-template-columns:1fr 48px 1fr}
+ .foot-v10-clubs strong{font-size:12px}.foot-v10-actions button{flex:1 1 44%}}
+@media print{.foot-v10-actions,.foot-v10-filters{display:none!important}
+ .foot-v10-game{break-inside:avoid}}
