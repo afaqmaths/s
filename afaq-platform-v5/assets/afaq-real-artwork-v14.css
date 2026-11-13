@@ -1,0 +1,58 @@
+/* Original approved artwork: image visible only once the binary is available. */
+.hub-home .v10-premium-hero{position:relative;overflow:hidden}
+.hub-home .v10-premium-hero .afaq-generated-hero{
+ display:block;position:absolute;inset:0;z-index:3;
+ width:100%;height:100%;object-fit:cover;object-position:center;
+ opacity:0;pointer-events:none;transition:opacity .3s ease;
+ background:transparent
+}
+.hub-home .v10-premium-hero.afaq-artwork-ready{
+ background:#d4a14f!important;aspect-ratio:1672/941;
+ min-height:initial!important;padding:0!important;max-height:none!important;
+ border-color:#e2bf75!important
+}
+.hub-home .v10-premium-hero.afaq-artwork-ready .afaq-generated-hero{
+ opacity:1;pointer-events:none
+}
+.hub-home .v10-premium-hero.afaq-artwork-ready .v10-hero-art,
+.hub-home .v10-premium-hero.afaq-artwork-ready .afaq-hero-lines,
+.hub-home .v10-premium-hero.afaq-artwork-ready .afaq-math-symbols,
+.hub-home .v10-premium-hero.afaq-artwork-ready .afaq-hero-content,
+.hub-home .v10-premium-hero.afaq-artwork-ready .v10-teacher-signature{
+ display:none!important
+}
+.hub-home .v10-premium-hero .afaq-generated-hero-action{
+ display:none;position:absolute;z-index:6;left:50%;bottom:2.4%;
+ transform:translateX(-50%);
+ border:2px solid #f7db99;border-radius:25px;
+ color:#fff;background:linear-gradient(100deg,#173f82,#185eaa);
+ padding:10px 22px;box-shadow:0 7px 18px #0a245baa;
+ font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap
+}
+.hub-home .v10-premium-hero.afaq-artwork-ready .afaq-generated-hero-action{
+ display:block
+}
+.hub-home .v10-premium-hero .afaq-generated-hero-action:hover{filter:brightness(1.15)}
+.foot-v10-promo>.afaq-generated-football,
+.foot-v10-hero>.afaq-generated-football{
+ width:100%;height:100%;object-fit:cover;object-position:53% center;
+ border:0;display:block
+}
+.foot-v10-promo>.afaq-generated-football{min-height:270px}
+.foot-v10-hero>.afaq-generated-football{min-height:340px}
+@media(max-width:800px){
+ .hub-home .v10-premium-hero.afaq-artwork-ready{min-height:unset!important}
+ .hub-home .v10-premium-hero.afaq-artwork-ready .afaq-generated-hero{
+ object-fit:contain;background:#e1b46d;
+ }
+ .hub-home .v10-premium-hero .afaq-generated-hero-action{
+ bottom:1.3%;padding:7px 12px;font-size:10px
+ }
+ .foot-v10-promo>.afaq-generated-football,
+ .foot-v10-hero>.afaq-generated-football{
+ min-height:220px;height:230px;object-position:center center
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .v10-premium-hero .afaq-generated-hero{transition:none!important}
+}
