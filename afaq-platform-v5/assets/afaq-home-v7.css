@@ -1,0 +1,74 @@
+/* Afaq Math 7 — welcoming animated hero, moving wave lines and Cambridge Grade 6 glyphs */
+.afaq-home-v7{max-width:1370px}
+.afaq-animated-hero{position:relative!important;isolation:isolate;display:flex!important;align-items:center;
+justify-content:center;min-height:322px;overflow:hidden;border-radius:24px!important;text-align:center;
+padding:35px 20px!important;background:
+ radial-gradient(circle at 26% 15%,#0085b950,transparent 31%),
+ radial-gradient(circle at 78% 82%,#00ebd122,transparent 30%),
+ linear-gradient(115deg,#071d4f 5%,#07528f 51%,#0b316b 96%)!important;
+border:1px solid #2a90d9!important;box-shadow:0 14px 35px #0b327d35!important}
+.afaq-animated-hero::before,.afaq-animated-hero::after{content:"";position:absolute;pointer-events:none;border-radius:50%;
+border:1px solid #a2f2ff25;opacity:.5;animation:afaqOrbit 24s ease-in-out infinite alternate;z-index:-1}
+.afaq-animated-hero::before{width:490px;height:490px;top:-390px;left:-70px}
+.afaq-animated-hero::after{width:620px;height:620px;bottom:-530px;right:-120px;animation-delay:-9s}
+.afaq-hero-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;opacity:.9;pointer-events:none}
+.afaq-hero-lines path{fill:none;stroke:#2ce0e3;stroke-width:2;stroke-linecap:round;filter:drop-shadow(0 0 7px #13eaff);
+stroke-dasharray:150 90 180 130;animation:afaqWave 20s linear infinite,afaqWaveBlink 9s ease-in-out infinite}
+.afaq-hero-lines path:nth-child(2){stroke:#79b7ff;animation-duration:27s,12s;animation-delay:-5s,-2s}
+.afaq-hero-lines path:nth-child(3){stroke:#e3ae62;animation-duration:34s,14s;animation-delay:-8s,-7s}
+.afaq-hero-lines path:nth-child(4){stroke:#5af5fc;stroke-width:1;animation-duration:42s,19s;opacity:.45}
+.afaq-math-symbols{position:absolute;inset:0;z-index:0;pointer-events:none}
+.afaq-math-symbols span{position:absolute;display:block;color:#d4f8ff;font-family:'Times New Roman',Georgia,serif;
+font-size:clamp(16px,2.35vw,37px);font-weight:bold;opacity:0;white-space:nowrap;animation:afaqGlyph 17s ease-in-out infinite;
+text-shadow:0 0 15px #4ae0ff66}
+.afaq-math-symbols span:nth-child(1){right:5%;top:13%;animation-delay:-2s}
+.afaq-math-symbols span:nth-child(2){right:17%;top:69%;animation-delay:-9s}
+.afaq-math-symbols span:nth-child(3){left:7%;top:12%;animation-delay:-5s}
+.afaq-math-symbols span:nth-child(4){left:16%;bottom:13%;animation-delay:-11s}
+.afaq-math-symbols span:nth-child(5){right:7%;bottom:29%;font-size:24px;animation-delay:-8s}
+.afaq-math-symbols span:nth-child(6){left:8%;bottom:39%;animation-delay:-13s}
+.afaq-math-symbols span:nth-child(7){right:23%;top:13%;font-size:18px;animation-delay:-4s}
+.afaq-math-symbols span:nth-child(8){left:32%;top:12%;animation-delay:-16s}
+.afaq-math-symbols span:nth-child(9){right:32%;bottom:13%;animation-delay:-7s}
+.afaq-math-symbols span:nth-child(10){right:41%;top:6%;font-size:20px;animation-delay:-14s}
+.afaq-math-symbols span:nth-child(11){left:26%;bottom:12%;font-size:20px;animation-delay:-3s}
+.afaq-math-symbols span:nth-child(12){left:3%;top:43%;animation-delay:-6s}
+.afaq-math-symbols span:nth-child(13){left:16%;top:28%;font-size:17px;animation-delay:-15s}
+.afaq-math-symbols span:nth-child(14){right:13%;top:41%;font-size:28px;animation-delay:-10s}
+.afaq-math-symbols span:nth-child(15){left:38%;bottom:7%;font-size:19px;animation-delay:-12s}
+.afaq-math-symbols span:nth-child(16){right:3%;top:6%;animation-delay:-1s}
+.afaq-hero-content{position:relative;z-index:2;max-width:740px;margin:auto;display:grid;justify-items:center;gap:8px}
+.afaq-hero-eyebrow{font-weight:850;color:#b7fff8!important;font-size:clamp(12px,1.3vw,16px)}
+.afaq-animated-hero .afaq-hero-content h1{font-size:clamp(34px,5.2vw,72px)!important;color:#fff!important;
+line-height:1.16;display:flex;flex-direction:column;gap:4px;margin:5px 0!important;
+text-shadow:0 0 19px #33dfff60,0 4px 14px #001c4d}
+.afaq-animated-hero .afaq-hero-content h1 span{display:block;animation:afaqTitle 9s ease-in-out infinite}
+.afaq-animated-hero .afaq-hero-content h1 small{font-size:clamp(26px,3.1vw,44px);
+font-weight:750;letter-spacing:.09em;color:#e5faff}
+.afaq-hero-content p{color:#e9f5ff!important;font-size:clamp(13px,1.5vw,19px)!important;line-height:1.7;
+margin:6px 0!important}
+.afaq-hero-content button{border-radius:30px!important;padding:13px 30px!important;
+background:linear-gradient(95deg,#12aeb1,#1a7cc6)!important;border:1px solid #73e1e6!important;
+color:#fff!important;font-weight:950;box-shadow:0 6px 20px #0af2df28}
+.afaq-home-v7>.hub-intro-panel{order:initial;margin:19px 0!important;border-radius:18px!important;
+border:1px solid #b9d6ec!important;background:linear-gradient(115deg,#f6fbff,#e9f5ff)!important;
+padding:21px 26px!important}
+.afaq-home-v7>.hub-intro-panel h2{font-size:clamp(21px,2.5vw,30px)!important;color:#215680}
+.afaq-home-v7>.hub-intro-panel p{font-size:14px;line-height:1.95}
+.afaq-home-v7>.hub-main{margin:20px 0;border-radius:19px}
+.afaq-home-access .hub-gate-grid{gap:12px}
+.afaq-home-access .hub-gate{min-height:245px!important}
+@keyframes afaqWave{to{stroke-dashoffset:-700}}
+@keyframes afaqWaveBlink{0%,100%{opacity:.18}40%,70%{opacity:.82}}
+@keyframes afaqGlyph{0%,100%{opacity:0;transform:translateY(10px) scale(.93)}
+26%,72%{opacity:.38;transform:translateY(0) scale(1)}}
+@keyframes afaqTitle{0%,100%{text-shadow:0 0 13px #26b7f655,0 3px 13px #001a49}50%{
+ text-shadow:0 0 25px #49ffffa6,0 3px 16px #001a49}}
+@keyframes afaqOrbit{to{transform:translate(38px,-12px) scale(1.07)}}
+@media(max-width:650px){.afaq-animated-hero{min-height:288px!important;padding:25px 12px!important}
+.afaq-hero-content{max-width:96%}.afaq-math-symbols span{opacity:.12}
+.afaq-hero-content button{padding:10px 16px!important;font-size:12px}
+.afaq-home-v7>.hub-intro-panel{padding:16px!important}
+.afaq-animated-hero .afaq-hero-content h1{font-size:clamp(29px,7vw,45px)!important}}
+@media(prefers-reduced-motion:reduce){.afaq-animated-hero *, .afaq-animated-hero::before,.afaq-animated-hero::after{
+animation:none!important;transition:none!important}.afaq-math-symbols span{opacity:.18!important}}
