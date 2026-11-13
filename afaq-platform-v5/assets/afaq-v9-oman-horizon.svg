@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 188" role="img" aria-labelledby="title">
+<title id="title">أفق عُماني فني مع العلم والقلعة وتضاريس الجبال عند الشروق</title>
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1f68a9"/><stop offset=".55" stop-color="#93cce4"/><stop offset="1" stop-color="#fff2d0"/></linearGradient>
+<linearGradient id="sun" x1="0" x2="1"><stop stop-color="#ffd98d"/><stop offset="1" stop-color="#fff8ce"/></linearGradient>
+<linearGradient id="mount" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7b94a5"/><stop offset="1" stop-color="#344e72"/></linearGradient>
+</defs>
+<rect width="1320" height="188" fill="url(#sky)"/>
+<circle cx="1090" cy="43" r="51" fill="url(#sun)" opacity=".62"/>
+<circle cx="1090" cy="43" r="82" fill="#ffe9a2" opacity=".18"/>
+<path d="M0 101 70 42 119 83 180 28 245 95 312 40 381 99 452 24 515 85 569 46 635 100 699 35 772 100 838 51 895 93 967 27 1038 100 1101 63 1157 112 1220 40 1320 106v82H0Z" fill="#afcad6" opacity=".82"/>
+<path d="M0 134 78 90 160 127 242 82 330 131 413 88 493 127 574 76 643 130 736 92 824 135 904 89 993 136 1080 94 1165 131 1224 93 1320 134v54H0Z" fill="url(#mount)" opacity=".74"/>
+<path d="M0 158Q180 138 320 155T645 149T960 155T1320 156V188H0Z" fill="#ba936d"/>
+<path d="M0 176q260-25 502-6t430 2q180-18 388 5v11H0Z" fill="#ecc48c"/>
+<g opacity=".96">
+<path d="M480 111h155v49H480z" fill="#d8bc92" stroke="#9d7953" stroke-width="2"/>
+<path d="M463 104h43v56h-43zM610 102h42v58h-42z" fill="#bfa27b" stroke="#8c6543" stroke-width="2"/>
+<path d="M480 110v-11h20v11h13V99h20v11h14V99h20v11h68" fill="none" stroke="#efd7ad" stroke-width="8"/>
+<path d="M465 102V90h12v12h9V90h13v12h8m104 0V90h12v12h9V90h13v12h8" fill="none" stroke="#e4cda5" stroke-width="5"/>
+<path d="M539 160v-28a17 17 0 0 1 34 0v28Z" fill="#625144"/>
+<path d="M498 124h13v16h-13zM597 124h13v16h-13z" fill="#806b52"/>
+</g>
+<g>
+<path d="M346 167V27" stroke="#55473d" stroke-width="5" stroke-linecap="round"/>
+<path d="M349 28h112v65H349z" fill="#fff" stroke="#f7e9d5" stroke-width="1"/>
+<path d="M349 49h112v22H349z" fill="#e22f36"/>
+<path d="M349 71h112v22H349z" fill="#228a55"/>
+<path d="M349 28h30v65h-30z" fill="#e22f36"/>
+<g stroke="#fff" stroke-width="2" fill="none"><path d="m357 41 14 17m0-17-14 17m3-18 6 22"/></g>
+</g>
+<g fill="none" stroke="#63503c" stroke-linecap="round">
+<path d="M826 169q-6-28-4-73" stroke-width="7"/>
+<path d="M822 105q-25-27-51-12 19 8 43 17m8-4q-6-36 10-53 11 26-3 50m0 3q34-27 58-12-29 18-57 18" stroke="#3e895d" stroke-width="12"/>
+<path d="M944 172q-6-24-4-61" stroke-width="5"/>
+<path d="M941 115q-17-20-38-10 17 7 35 15m3-7q-5-28 9-39 9 19-2 36m0 7q24-22 43-10-23 15-42 14" stroke="#4c9c6d" stroke-width="10"/>
+</g>
+<path d="M56 177q108-25 203-6M1001 178q145-24 257-4" fill="none" stroke="#ffe3b0" stroke-width="5" opacity=".6"/>
+</svg>

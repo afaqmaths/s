@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 310" role="img" aria-labelledby="title">
+<title id="title">المستوى الإحداثي وشرح الانسحاب بالمتجه</title>
+<defs><pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" fill="none" stroke="#ddf6ff" stroke-opacity=".38" stroke-width="1"/></pattern><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#ffdc8e"/></marker></defs>
+<rect x="28" y="14" width="285" height="276" rx="19" fill="#1a74a9" fill-opacity=".32" stroke="#a6e9ff" stroke-opacity=".38"/>
+<rect x="36" y="24" width="269" height="249" fill="url(#grid)"/>
+<g stroke="#dbf8ff" stroke-width="2.3" stroke-linecap="round"><path d="M64 221H303" marker-end="url(#arrow)"/><path d="M114 267V26" marker-end="url(#arrow)"/></g>
+<g fill="#efffff" font-size="13"><text x="302" y="239">x</text><text x="98" y="32">y</text><text x="100" y="238">0</text></g>
+<path d="M139 196L190 196L165 145Z" fill="#79d8ff" fill-opacity=".45" stroke="#a9f5ff" stroke-width="3"/>
+<path d="M187 127L238 127L213 76Z" fill="#ffdda0" fill-opacity=".55" stroke="#fff0c3" stroke-width="3"/>
+<path d="M165 145L213 76" stroke="#ffe7a8" stroke-width="4" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<circle cx="165" cy="145" r="5" fill="#8bffff"/><circle cx="213" cy="76" r="5" fill="#ffcb78"/>
+<g font-family="Tahoma,Arial,sans-serif" font-size="16" font-weight="bold" fill="white"><text x="143" y="132">A</text><text x="222" y="69">A′</text><text x="178" y="116" fill="#ffeba8">+٢، +٣</text><text x="180" y="300">الانسحاب</text></g>
+</svg>

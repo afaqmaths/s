@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 370" role="img" aria-labelledby="t">
+<title id="t">مجسمات رياضية: مكعب ومتوازي مستطيلات وهرم وأسطوانة ومخروط</title>
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b4eeff"/><stop offset="1" stop-color="#5597ea"/></linearGradient>
+<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffedb5"/><stop offset="1" stop-color="#d59b42"/></linearGradient></defs>
+<g fill="none" stroke="#e6fdff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.7">
+<path d="M44 77 105 43 163 76 102 111Z" fill="#aee8fe"/><path d="M44 77v82l58 38v-86Z" fill="#378abf"/><path d="M102 111v86l61-36V76Z" fill="url(#b)"/>
+<path d="M199 99 253 77 314 109 260 135Z" fill="#ffe5a1"/><path d="M199 99v91l61 33v-88Z" fill="#ca9850"/><path d="M260 135v88l54-32v-82Z" fill="url(#g)"/>
+<path d="M42 282 103 219 168 283Z" fill="#e5bd6f"/><path d="M103 219 168 283 105 317Z" fill="#b88134"/><path d="M42 282 105 317 168 283" fill="none" stroke="#fff3c6"/>
+<path d="M204 264v53c0 15 95 15 95 0v-53" fill="#3ca8b7"/><ellipse cx="251.5" cy="264" rx="47.5" ry="16" fill="#b9fff5"/>
+<path d="M213 336q38-99 74 0Z" fill="#70bde2"/><ellipse cx="250" cy="336" rx="37" ry="12" fill="#b9eaff"/>
+</g>
+<g fill="#fff7d4" font-size="17" font-family="Tahoma,Arial,sans-serif" text-anchor="middle">
+<text x="102" y="32">مكعب</text><text x="255" y="68">متوازي مستطيلات</text><text x="103" y="354">هرم</text><text x="252" y="240">أسطوانة</text>
+</g></svg>

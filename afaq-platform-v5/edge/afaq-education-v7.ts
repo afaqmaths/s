@@ -122,6 +122,47 @@ async function getNews(){
    national:{label:"وكالة الأنباء العُمانية",url:"https://omannews.gov.om"}};
  if(d.items.length||d.weather.length){newsCache=d;newsAt=Date.now()}return d;
 }
+
+/* Daily football matches, in Asia/Muscat timezone, from a public sports provider.
+   Free tier may provide a subset; never manufacture fixtures, scores or times. */
+let matchCache:any=null;
+function muscatDate(date:Date){
+ const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Muscat",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(date);
+ const field=(type:string)=>parts.find(x=>x.type===type)?.value||"";
+ return field("year")+"-"+field("month")+"-"+field("day");
+}
+async function getMatches(){
+ const date=muscatDate(new Date());
+ if(matchCache?.date===date&&Date.now()-matchCache.saved_at<12*60*1000)return matchCache.data;
+ const ctrl=new AbortController(),timeout=setTimeout(()=>ctrl.abort(),5500);
+ let data:any={date,timezone:"Asia/Muscat",source:"TheSportsDB",limited_feed:true,
+   updated_at:new Date().toISOString(),matches:[],available:false};
+ try{
+  const url="https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d="+encodeURIComponent(date)+"&s=Soccer";
+  const response=await fetch(url,{signal:ctrl.signal,headers:{Accept:"application/json"}});
+  if(!response.ok)throw Error("sports_feed_unavailable");
+  const json=await response.json();
+  const events=Array.isArray(json.events)?json.events:[];
+  data.matches=events.slice(0,30).map((e:any)=>{
+   const timestamp=String(e.strTimestamp||"").trim();
+   const start=timestamp&&Number.isFinite(Date.parse(timestamp))?Date.parse(timestamp):null;
+   const localDate=start?muscatDate(new Date(start)):String(e.dateEvent||"");
+   const score1=e.intHomeScore==null?null:Number(e.intHomeScore);
+   const score2=e.intAwayScore==null?null:Number(e.intAwayScore);
+   return {id:String(e.idEvent||""),home:String(e.strHomeTeam||"").slice(0,90),
+    away:String(e.strAwayTeam||"").slice(0,90),league:String(e.strLeague||"").slice(0,90),
+    utc_start:start?new Date(start).toISOString():null,
+    original_time:start?null:String(e.strTime||"").slice(0,12),
+    home_score:Number.isFinite(score1)?score1:null,
+    away_score:Number.isFinite(score2)?score2:null,
+    status:String(e.strStatus||"").slice(0,35),local_date:localDate};
+  }).filter((x:any)=>x.home&&x.away&&x.local_date===date);
+  data.available=true;
+ }catch(error){console.warn("matches_today",String(error))}
+ finally{clearTimeout(timeout)}
+ if(data.available){matchCache={date,saved_at:Date.now(),data}}
+ return data;
+}
 Deno.serve(async req=>{
  const origin=req.headers.get("Origin")||"";
  if(req.method==="OPTIONS")return new Response("ok",{headers:H(origin)});
@@ -130,6 +171,7 @@ Deno.serve(async req=>{
  try{
   const b=await req.json(),action=str(b.action,50);
   if(action==="news")return ok(origin,await getNews());
+  if(action==="matches_today")return ok(origin,await getMatches());
   if(action==="public"){
    const [notices,workshops,settings]=await Promise.all([
     entries("afaq_site_notices_v7"),entries("afaq_professional_workshops_v7"),

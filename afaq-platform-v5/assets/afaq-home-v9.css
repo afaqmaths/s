@@ -1,0 +1,169 @@
+/* Afaq Math v9 — larger light blue/gold horizon, animated Cambridge geometries, live news, matches, interactive lessons */
+.afaq-home-v7 .afaq-animated-hero{
+ min-height:520px!important;padding:45px 24px 70px!important;
+ background:
+ radial-gradient(circle at 98% 2%,rgba(255,220,147,.60) 0%,rgba(255,204,122,.27) 18%,transparent 49%),
+ radial-gradient(circle at 4% 100%,rgba(255,230,165,.40) 0%,transparent 42%),
+ radial-gradient(circle at 50% 45%,#167ac533 0%,transparent 55%),
+ linear-gradient(115deg,#103979 2%,#176ca6 48%,#367faf 73%,#3f87ba 100%)!important;
+ box-shadow:0 16px 35px #21497430!important;
+ border-color:#9edee8!important;
+}
+.afaq-animated-hero::before{border-color:#ffeab059!important}
+.afaq-animated-hero::after{border-color:#e7f1fe55!important}
+.afaq-animated-hero .afaq-hero-lines path:first-child{animation-duration:14s,7s!important}
+.afaq-animated-hero .afaq-hero-lines path:nth-child(2){animation-duration:18s,9s!important}
+.afaq-animated-hero .afaq-hero-lines path:nth-child(3){animation-duration:23s,11s!important}
+.afaq-animated-hero .afaq-hero-lines path:nth-child(4){animation-duration:26s,12s!important}
+.afaq-animated-hero .afaq-math-symbols span{animation-duration:13s!important}
+.afaq-animated-hero .afaq-hero-content{position:relative;z-index:4;width:57%;max-width:730px;gap:12px;
+ text-shadow:0 4px 17px #11325ba0}
+.afaq-animated-hero .afaq-hero-content h1{font-size:clamp(39px,5vw,78px)!important;line-height:1.19!important}
+.afaq-animated-hero .afaq-hero-content p{font-size:clamp(14px,1.6vw,21px)!important}
+.afaq-animated-hero .afaq-hero-eyebrow{color:#ffedc1!important}
+.v9-maths-forms,.v9-coordinate-forms{position:absolute;z-index:2;top:57px;
+ pointer-events:none;width:clamp(195px,25vw,350px);height:340px;display:grid;place-items:center;
+ animation:v9Float 8.5s ease-in-out infinite alternate}
+.v9-maths-forms{left:0%;transform:translateX(-8%);animation-delay:-3s}
+.v9-coordinate-forms{right:0%;transform:translateX(8%);animation-duration:11s}
+.v9-maths-forms img,.v9-coordinate-forms img{display:block;width:100%;height:100%;object-fit:contain;
+ filter:drop-shadow(0 6px 20px #06265e90)}
+@keyframes v9Float{from{translate:0 0;opacity:.78}to{translate:0 -17px;opacity:1}}
+.v9-oman-horizon{position:relative;margin:-18px 1px 19px;height:164px;overflow:hidden;
+ border-radius:0 0 22px 22px;border:1px solid #b0d7eb;box-shadow:0 9px 21px #1a477f21;
+ background:linear-gradient(180deg,#65a1c9,#f4d49d);isolation:isolate}
+.v9-oman-horizon img{width:100%;height:100%;display:block;object-fit:fill;object-position:center}
+.v9-oman-horizon::after{content:"";position:absolute;bottom:0;left:0;right:0;
+ height:7px;background:linear-gradient(90deg,#bceff1,#f5d79b,#bceff1)}
+.v9-news-container{display:flex;align-items:center;gap:0;direction:rtl;
+ border:1px solid #b0cddd;border-radius:17px;overflow:hidden;background:#edf7fd;
+ margin:14px 0 18px;min-height:66px;box-shadow:0 6px 21px #1e5a7e13}
+.v9-news-brand{flex:0 0 auto;display:grid;place-content:center;gap:3px;align-self:stretch;
+ background:linear-gradient(125deg,#174e8d,#187e9c);color:#fff;padding:9px 17px;
+ font-size:15px;font-weight:900;white-space:nowrap}
+.v9-news-brand small{font-size:10px;font-weight:600;color:#dcf7ff}
+.v9-news-window{flex:1;min-width:120px;overflow:hidden;position:relative;
+ mask-image:linear-gradient(to left,transparent,black 8%,black 92%,transparent)}
+.v9-news-motion{width:max-content;display:flex;align-items:center;gap:24px;
+ white-space:nowrap;animation:v9Ticker 36s linear infinite;will-change:transform;
+ padding:12px 15px;font-size:13px;direction:rtl}
+.v9-news-container:hover .v9-news-motion,
+.v9-news-container:focus-within .v9-news-motion{animation-play-state:paused}
+@keyframes v9Ticker{from{transform:translateX(0)}to{transform:translateX(48%)}}
+.v9-news-item{display:flex;align-items:center;gap:10px}
+.v9-news-item strong{color:#1f5d89;font-weight:950}
+.v9-news-item a{font-weight:800;color:#24566f;text-decoration:none}
+.v9-news-item a:hover{text-decoration:underline}
+.v9-news-divider{font-size:14px;color:#b99a50}
+.v9-news-matches,.v9-news-more{flex:0 0 auto;min-height:57px;border:0;
+ background:linear-gradient(125deg,#219b78,#137a6a);color:#fff;
+ font:900 13px Tahoma,Arial,sans-serif;padding:10px 17px;cursor:pointer}
+.v9-news-more{background:#ddebf5;color:#245d85;font-size:12px}
+.v9-news-matches:hover{background:#12614d}
+.v9-news-update{font-size:11px;color:#5f7c96;white-space:nowrap;padding:0 9px}
+.afaq-home-sections .hub-gate-illustrated{min-height:220px!important;padding:10px 8px!important;gap:7px!important}
+.afaq-home-sections .hub-gate-illustrated .hub-illustration{max-width:114px!important}
+.afaq-home-sections .hub-gate-illustrated>strong{font-size:16px!important}
+.afaq-home-sections .hub-gate-illustrated>span{font-size:11px!important;line-height:1.55!important;min-height:20px!important}
+.afaq-home-sections .hub-gate-illustrated>small{display:none!important}
+.afaq-home-showcase .afaq-home-module{min-height:91px}
+.afaq-home-showcase .afaq-home-module-icon{font-size:clamp(24px,2.5vw,32px)!important}
+.afaq-home-showcase .afaq-home-module strong{font-size:12px!important}
+.v9-match-shortcut{background:linear-gradient(135deg,#f1fff4,#d7f9e1)!important;border-color:#9bd8ae!important}
+.aw-utility{min-height:72px;gap:12px!important}
+.aw-utility .aw-datetime{gap:10px}
+.aw-utility .aw-datetime>span{font-size:17px!important}
+.aw-utility .aw-datetime>button{font-size:15px!important}
+.aw-utility .aw-datetime>small{font-size:13px!important}
+.aw-utility .aw-weather>span{font-size:14px!important;padding:8px 12px!important}
+.aw-utility .aw-search input{font-size:14px!important}
+.v9-match-header{margin:22px 0;padding:27px;background:linear-gradient(115deg,#1c4d8f,#168e83);
+ color:white;border-radius:19px}
+.v9-match-header span{color:#fce8af;font-weight:950;font-size:14px}
+.v9-match-header h1{font-size:clamp(29px,3vw,42px);color:white;margin:7px 0}
+.v9-match-header p{color:#e6f9ff;margin:0;font-size:14px}
+.v9-match-actions{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0}
+.v9-match-actions button{background:#e2f3ff;color:#255986;border:1px solid #bcdce9;
+ border-radius:10px;padding:10px 17px;font-weight:900;cursor:pointer}
+.v9-matches-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.v9-match-card{padding:17px;background:#fff;border:1px solid #c8dfeb;border-radius:15px;
+ box-shadow:0 8px 18px #24567d10}
+.v9-match-league{font-size:12px;color:#2a7885;font-weight:900;margin-bottom:12px}
+.v9-match-teams{display:grid;grid-template-columns:1fr 100px 1fr;gap:5px;align-items:center;
+ text-align:center}
+.v9-match-teams strong{font-size:15px;color:#1d517e;line-height:1.7}
+.v9-match-versus{color:#b68132;font-size:20px;font-weight:950}
+.v9-match-card p{font-size:12px;color:#607c91;margin-top:13px}
+.v9-match-notice{border:1px dashed #bcd3e5;background:#f4faff;padding:23px;
+ border-radius:13px;text-align:center;color:#45758c}
+.v9-match-source{font-size:12px;line-height:1.9;color:#637b8a;margin:20px 0 8px}
+.v9-lesson-lab{background:linear-gradient(135deg,#f2faff,#f8fcff);border:1px solid #bdd8e9;
+ border-radius:22px;margin:20px 0 35px;padding:22px;direction:rtl}
+.v9-lesson-heading span{font-size:13px;color:#228080;font-weight:900}
+.v9-lesson-heading h2{font-size:clamp(22px,2.4vw,29px);color:#1e588c;margin:8px 0}
+.v9-lesson-heading p{color:#5d7890;line-height:1.8;font-size:14px}
+.v9-lesson-select{display:grid;gap:7px;font-size:13px;color:#215782;font-weight:900;max-width:610px;margin:18px 0}
+.v9-lesson-select select{padding:12px;border:1px solid #acd0e3;background:white;border-radius:11px;font:900 14px Tahoma,Arial,sans-serif}
+.v9-lesson-process{display:grid;grid-template-columns:1fr .85fr 1fr;gap:12px;align-items:stretch;
+ direction:rtl}
+.v9-lesson-process>div{display:grid;align-content:center;justify-items:center;gap:11px;
+ background:white;border:1px solid #c5e0ed;border-radius:16px;min-height:142px;
+ padding:14px 12px;text-align:center}
+.v9-lesson-process>div small{font-size:12px;color:#25758e;font-weight:900}
+.v9-lesson-op{background:#e6eafa!important;border-color:#9db4db!important}
+.v9-lesson-op>strong{color:#364c9b;font-size:21px;line-height:1.5}
+#v9Output{font-size:clamp(20px,2.7vw,32px);color:#1b8979;overflow-wrap:anywhere}
+.v9-lesson-inputs{display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:center}
+.v9-lesson-inputs label{display:grid;gap:5px;min-width:77px;flex:1 1 80px}
+.v9-lesson-inputs label span{font-size:11px;color:#537086}
+.v9-lesson-inputs input{width:100%;max-width:110px;padding:9px 6px;border:1px solid #bbd5e7;
+ border-radius:9px;text-align:center;font-size:16px;font-weight:900;color:#245c85}
+.v9-lesson-inputs .v9-hidden{display:none}
+.v9-lesson-explanation{margin-top:17px;display:flex;flex-wrap:wrap;align-items:center;
+ justify-content:center;gap:18px;padding:16px;background:#f3fbfc;border:1px solid #d3e8e9;
+ border-radius:14px}
+.v9-lesson-explanation p{font-size:15px;color:#3e6e88;font-weight:750;flex:1 1 250px;line-height:1.8}
+.v9-graph{width:min(100%,255px);height:auto;background:white;border-radius:10px;border:1px solid #d5e9f0}
+#v9Plot:empty{display:none}
+#v9TryLesson{margin-top:12px;background:#1b8294;color:#fff;padding:11px 18px;
+ border:0;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer}
+.v9-lab-foot{font-size:11px;color:#8293a0;margin:13px 0 0}
+@media(max-width:1060px){
+ .afaq-home-v7 .afaq-animated-hero{min-height:460px!important}
+ .v9-maths-forms,.v9-coordinate-forms{width:230px;top:80px}
+ .afaq-animated-hero .afaq-hero-content{width:60%}
+ .v9-news-update{display:none}
+ .v9-news-brand{font-size:13px;padding:8px}
+}
+@media(max-width:700px){
+ .afaq-home-v7 .afaq-animated-hero{min-height:430px!important;padding:30px 13px 52px!important}
+ .afaq-animated-hero .afaq-hero-content{width:93%;max-width:none}
+ .afaq-animated-hero .afaq-hero-content h1{font-size:clamp(30px,8vw,52px)!important}
+ .v9-maths-forms,.v9-coordinate-forms{width:165px;height:185px;top:auto;bottom:0;opacity:.5!important}
+ .v9-oman-horizon{height:105px;margin-top:-14px}
+ .v9-news-container{flex-wrap:wrap}
+ .v9-news-brand{min-height:48px;padding:7px 11px}
+ .v9-news-window{flex:1 1 calc(100% - 135px)}
+ .v9-news-matches,.v9-news-more{min-height:39px;flex:1 1 44%;font-size:12px}
+ .aw-utility .aw-datetime>span{font-size:16px!important}
+ .v9-matches-grid{grid-template-columns:1fr}
+ .v9-lesson-process{grid-template-columns:1fr}
+ .v9-lesson-process>div{min-height:90px}
+ .v9-lesson-lab{padding:14px}
+}
+@media(max-width:430px){
+ .v9-maths-forms,.v9-coordinate-forms{width:130px;height:160px}
+ .v9-oman-horizon{height:85px}
+ .v9-news-brand small{display:none}
+ .v9-news-brand{font-size:12px}
+ .v9-news-motion{font-size:12px}
+ .v9-match-teams{grid-template-columns:1fr 65px 1fr}
+ .v9-match-teams strong{font-size:12px}
+ .afaq-home-sections .hub-gate-illustrated .hub-illustration{max-width:90px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .v9-maths-forms,.v9-coordinate-forms,.v9-news-motion{animation:none!important}
+ .v9-news-window{overflow:auto}
+}
+@media print{.v9-news-container,.v9-news-matches,.v9-news-more{display:none!important}
+ .v9-match-card,.v9-lesson-lab{break-inside:avoid}}
