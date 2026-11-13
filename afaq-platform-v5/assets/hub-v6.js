@@ -90,7 +90,7 @@ function hubAbout(){
  return '<section class="hub-intro-panel"><h2>ما هي منصة آفاق ماث؟</h2><p>مساحة تعليمية عمانية لتعلّم الرياضيات من الصف الخامس إلى الثامن، وتوسّع المعرفة بتاريخ الرياضيات وعلمائها وتطبيقاتها، وتجمع الدروس والاختبارات والألعاب والمسابقات والأنشطة المساندة.</p>'+
  '<div class="hub-audience">'+hubAudience.map(([role,desc])=>'<article><b>'+role+'</b><p>'+desc+'</p></article>').join('')+'</div>'+
  '<p class="hub-note">تُتاح الموارد العامة دون تسجيل دخول، وتبقى بيانات الطلاب ونتائجهم محمية.</p>'+
- '<button type="button" class="hub-secondary" data-route="parent">متابعة ولي الأمر</button></section>';
+ '</section>';
 }
 function hubHome(){
  const paths='<svg class="afaq-hero-lines" viewBox="0 0 1200 350" preserveAspectRatio="none" aria-hidden="true">'+
@@ -112,7 +112,8 @@ function hubHome(){
  '</section>'+
  hubAbout()+
  (typeof afaqHomeUpdates==="function"?afaqHomeUpdates():"")+
- (typeof afaqHomeNewsTicker==="function"?afaqHomeNewsTicker():"")+
+ /* Four category news ribbons are inserted between homepage sections by the layout layer. */
+ ''+
  '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
  '<div class="hub-gate-grid hub-gate-grid-4">'+
  hubGate('دخول الطالب','book-open','حساب الطالب والدروس والنتائج','data-hub-login="student"','green')+
