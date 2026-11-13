@@ -1,0 +1,84 @@
+/* National-colour decorative motif. It is deliberately NOT an official flag: no false crest. */
+/* On the homepage only, remove the redundant brand above the blue hero.
+   Preserve the same topbar brand on dashboard and all interior pages. */
+body:has(#app .hub-home) > header.topbar .brand{display:none!important}
+body:has(#app .hub-home) > header.topbar{
+ min-height:0!important;padding-block:0!important;border-bottom:0!important;
+ box-shadow:none!important;background:transparent!important;
+}
+body:has(#app .hub-home) > header.topbar:has(.header-actions > :not([hidden])){
+ padding-block:6px!important;
+}
+/* Both former flag-image positions use the same scalable abstract red, white and green motif. */
+.afaq-national-ribbon{position:relative;overflow:hidden;isolation:isolate;
+ background:radial-gradient(ellipse at 83% 15%,rgba(239,197,128,.24),transparent 38%),
+ linear-gradient(115deg,#091f4b 3%,#103c72 52%,#0a2857 100%);
+ border:1px solid #426b8d;border-radius:inherit}
+.afaq-national-ribbon::before{content:"";pointer-events:none;position:absolute;inset:0;
+ background:linear-gradient(108deg,transparent 17%,rgba(255,255,255,.08) 44%,
+ rgba(244,214,157,.1) 56%,transparent 83%);
+ background-size:220% 100%;animation:afaqNationalShimmer 10s ease-in-out infinite alternate;z-index:2}
+.afaq-national-ribbon svg{position:absolute;left:-5%;top:0;width:110%;height:100%;display:block;
+ animation:afaqNationalFloat 11s ease-in-out infinite alternate;
+ filter:drop-shadow(0 5px 4px rgba(0,10,36,.28))}
+.afaq-national-wave{filter:drop-shadow(0 3px 5px rgba(0,10,36,.38));
+ stroke-opacity:.97;animation:afaqNationalBreathe 7.5s ease-in-out infinite alternate}
+.afaq-national-wave--red{animation-delay:-2.6s}
+.afaq-national-wave--green{animation-delay:-4.9s}
+.afaq-national-glints{animation:afaqNationalTwinkle 5.6s ease-in-out infinite alternate}
+@keyframes afaqNationalFloat{
+ from{transform:translate(-1.8%,6px) scale(1.025)}
+ to{transform:translate(1.8%,-6px) scale(1.065)}
+}
+@keyframes afaqNationalShimmer{
+ from{background-position:100% 0;opacity:.3}
+ to{background-position:0 0;opacity:.88}
+}
+@keyframes afaqNationalBreathe{from{stroke-opacity:.78}to{stroke-opacity:1}}
+@keyframes afaqNationalTwinkle{from{opacity:.25}to{opacity:.8}}
+/* First position: under the blue hero, not a landscape or any drawn flag. */
+.hub-home .v9-oman-horizon.afaq-national-horizon{
+ height:clamp(66px,8vw,96px)!important;min-height:0!important;margin:-13px 2px 20px!important;
+ padding:0!important;border:1px solid #5d7e99!important;
+ border-radius:0 0 22px 22px!important;overflow:hidden;
+ background:#0b2c60!important;box-shadow:0 8px 20px rgba(10,45,94,.17)!important;
+}
+.hub-home .afaq-national-horizon>.afaq-national-ribbon--horizon{
+ width:100%;height:100%;border:none;border-radius:0 0 20px 20px;
+}
+.hub-home .v9-oman-horizon.afaq-national-horizon::after{
+ height:3px!important;background:linear-gradient(90deg,#d42c34,#eaf6f8,#168b57)!important;
+ opacity:.8
+}
+/* Second position: national value card, retained as a working button. */
+.afaq-national-card .afaq-national-ribbon--card{
+ display:block;flex:1 1 auto;min-height:150px;height:72%;width:100%;
+ border:0;border-radius:0;overflow:hidden
+}
+.afaq-national-card .afaq-national-ribbon--card::after{
+ content:"";position:absolute;inset:auto 0 0;height:4px;z-index:2;
+ background:linear-gradient(90deg,#d32836,#fff,#168d56);opacity:.92;
+}
+.afaq-national-card>span{padding-top:11px!important}
+.afaq-national-card>strong{padding-bottom:14px!important}
+.afaq-national-card:focus-visible{outline:3px solid #e0b66d;outline-offset:3px}
+/* The national-values interior page shares the corrected decoration. */
+.ae-national-page>.afaq-national-ribbon--detail{
+ width:min(100%,900px);height:clamp(155px,24vw,250px);
+ display:block;margin:16px auto;border-radius:18px;
+ box-shadow:0 12px 28px rgba(12,49,91,.2)
+}
+@media(max-width:720px){
+ .hub-home .v9-oman-horizon.afaq-national-horizon{height:62px!important;margin:-10px 2px 16px!important}
+ .afaq-national-card .afaq-national-ribbon--card{min-height:130px}
+ .ae-national-page>.afaq-national-ribbon--detail{height:160px}
+}
+@media(prefers-reduced-motion:reduce){
+ .afaq-national-ribbon::before,.afaq-national-ribbon svg,
+ .afaq-national-wave,.afaq-national-glints{animation:none!important}
+}
+@media print{
+ .afaq-national-ribbon{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .afaq-national-ribbon::before,.afaq-national-ribbon svg,.afaq-national-wave,
+ .afaq-national-glints{animation:none!important}
+}
