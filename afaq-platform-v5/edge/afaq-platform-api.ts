@@ -59,7 +59,7 @@ async function verify(role,username,grade,pin){
    serial_no:data.serial_no,class_name:data.class_name,grade:6};
  }
 
- if(!["supervisor_assistant","director","deputy","demo"].includes(role))return null;
+ if(!["supervisor_assistant","director","deputy","demo","it_viewer"].includes(role))return null;
  const q=db.from("afaq_accounts").select("role,username,grade,pin_salt,pin_hash,pin_iterations,active").eq("role",role).eq("username",username).eq("active",true);
  if(role==="demo"){if(![5,7,8].includes(grade)||!["1000","2000"].includes(username))return null;q.eq("grade",grade)}else q.is("grade",null);
  const {data,error}=await q.maybeSingle();if(error)throw error;return data&&await good(pin,data)?{role,username,grade:data.grade,student_id:null}:null
@@ -161,7 +161,7 @@ Deno.serve(async req=>{
  if(action==="public_content"){const{data,error}=await db.from("afaq_content").select("id,kind,grade,unit,title,body,resource_url,published,updated_at").eq("published",true).order("updated_at",{ascending:false}).limit(200);if(error)throw error;return answer(origin,{ok:true,items:data||[]})}
  if(action==="login"){
  const role=clean(b.role,30),username=clean(b.username,100),grade=g(b.grade)?+b.grade:null,pin=arabicDigits(b.pin);
- if(!/^\d{4,12}$/.test(pin))return bad(origin,"invalid_credentials",401);
+ if(role==="it_viewer"?!/^MATHS0[1-3]$/.test(pin):!/^\d{4,12}$/.test(pin))return bad(origin,"invalid_credentials",401);
  const fp=await sha(role+":"+username+":"+(req.headers.get("cf-connecting-ip")||req.headers.get("x-forwarded-for")||"unknown"));
  const{data:ff}=await db.from("afaq_auth_failures").select("attempts,locked_until").eq("fingerprint",fp).maybeSingle();
  if(ff?.locked_until&&new Date(ff.locked_until)>new Date())return bad(origin,"temporarily_locked",423);
@@ -200,6 +200,76 @@ Deno.serve(async req=>{
    .is("revoked_at",null);
   if(revokeError)throw revokeError;
   return answer(origin,{ok:true,message:"pin_updated"});
+ }
+ if(action==="it_overview"){
+  // Read-only reporting endpoint: *never* return school numbers/student_id,
+  // raw records, audit notes, credentials, token hashes, or unapproved private data.
+  if(role!=="it_viewer")return bad(origin,"forbidden",403);
+  const [ro,grades,contests,tracks,works,library,workshops,notices]=await Promise.all([
+   db.from("competition_students").select("student_id,class_name,full_name,display_name,serial_no").eq("active",true).limit(300),
+   db.from("afaq_official_math_grades")
+      .select("student_id,term,academic_year,oral_1,oral_2,homework_1,homework_2,question_1,question_2,exam_1,exam_2,project,final_exam,diagnostic_score,a_plus_points,a_minus_points,status")
+      .eq("academic_year","2026/2027").limit(800),
+   db.from("afaq_v2_attempts").select("student_id,section,score,status").limit(10000),
+   db.from("afaq_learning_signals").select("student_id,track,active").eq("active",true).limit(12000),
+   db.from("afaq_work_items").select("kind,audience,title,published").order("created_at",{ascending:false}).limit(500),
+   db.from("afaq_public_items").select("category,title,published").order("created_at",{ascending:false}).limit(500),
+   db.from("afaq_professional_workshops_v7").select("title,duration_minutes,published").limit(100),
+   db.from("afaq_site_notices_v7").select("title,published").limit(100)
+  ]);
+  const all=[ro,grades,contests,tracks,works,library,workshops,notices];
+  const badQuery=all.find(x=>x.error);if(badQuery)throw badQuery.error;
+  const gradeMap=new Map();
+  for(const g of grades.data||[]){
+   const old=gradeMap.get(g.student_id);
+   if(!old||Number(g.term)>=Number(old.term))gradeMap.set(g.student_id,g);
+  }
+  const contestMap=new Map();
+  for(const c of contests.data||[]){
+   const x=contestMap.get(c.student_id)||{attempts:0,completed_units:new Set(),best:0};
+   x.attempts++;
+   if(["submitted","expired"].includes(c.status)){
+    x.completed_units.add(Number(c.section));
+    x.best+=Number(c.score||0);
+   }
+   contestMap.set(c.student_id,x);
+  }
+  const trackMap=new Map();
+  for(const t of tracks.data||[]){
+   const current=trackMap.get(t.student_id)||new Set();
+   current.add(t.track);trackMap.set(t.student_id,current);
+  }
+  const classOrder=new Map(classNames.map((name,i)=>[name,i]));
+  const roster=[...(ro.data||[])].sort((x,y)=>
+   (classOrder.get(x.class_name)??99)-(classOrder.get(y.class_name)??99)||
+    Number(x.serial_no)-Number(y.serial_no));
+  const parts=["oral_1","oral_2","homework_1","homework_2","question_1","question_2",
+    "exam_1","exam_2","project","final_exam"];
+  const students=roster.map((p,i)=>{
+   const g=gradeMap.get(p.student_id),attempt=contestMap.get(p.student_id);
+   const vals=g?parts.map(x=>g[x]):[];
+   const total=vals.length===parts.length&&vals.every(v=>v!=null)?vals.reduce((sum,v)=>sum+Number(v),0):null;
+   const tracks=trackMap.get(p.student_id)||new Set();
+   return {number:i+1,class_name:p.class_name,name:p.full_name||p.display_name,
+    assessed:!!g,term:g?.term??null,assessment_total:total,
+    a_plus:g?.a_plus_points??null,a_minus:g?.a_minus_points??null,
+    diagnostic:g?.diagnostic_score??null,contest_attempts:attempt?.attempts||0,
+    contest_completed_units:attempt?.completed_units.size||0,
+    remedial:tracks.has("remedial"),enrichment:tracks.has("enrichment")};
+  });
+  return answer(origin,{ok:true,read_only:true,numbering:"global_1_to_98",
+   students,summary:{students:students.length,classes:classNames.map(class_name=>({
+     class_name,count:students.filter(x=>x.class_name===class_name).length,
+     records:students.filter(x=>x.class_name===class_name&&x.assessed).length})),
+     contest_attempts:(contests.data||[]).length,work_items:(works.data||[]).length,
+     library_items:(library.data||[]).length,workshops:(workshops.data||[]).length,
+     published_notices:(notices.data||[]).filter(x=>x.published).length},
+   modules:{
+    works:(works.data||[]).map(x=>({kind:x.kind,audience:x.audience,title:x.title,published:x.published})),
+    library:(library.data||[]).map(x=>({category:x.category,title:x.title,published:x.published})),
+    workshops:(workshops.data||[]).map(x=>({title:x.title,duration_minutes:x.duration_minutes,published:x.published})),
+    notices:(notices.data||[]).map(x=>({title:x.title,published:x.published}))
+   }});
  }
  if(action==="profile"){if(role==="student")return answer(origin,{ok:true,profile:await profile(ss.student_id)});if(role==="demo")return answer(origin,{ok:true,profile:{student:{display_name:ss.username==="1000"?"الحساب التجريبي الأول":"الحساب التجريبي الثاني",class_name:"الصف "+ss.grade},scores:null,notes:[],competition:null,demo:true}});if(!edit(role))return bad(origin,"forbidden",403);const id=await resolveStudentId(b.student_id,b.class_name);if(!id)return bad(origin,"student_not_found",404);return answer(origin,{ok:true,profile:await profile(id,true)})}
  if(action==="dashboard"){
