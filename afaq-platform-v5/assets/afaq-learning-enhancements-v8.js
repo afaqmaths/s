@@ -55,6 +55,26 @@ function afaqMixerInteractive(compact=true){
 function aeMixerPage(){
  return '<div class="container ae-mixer-page" dir="rtl">'+afaqMixerInteractive(false)+'</div>';
 }
+/* Abstract national-colour ribbons: no coat of arms or approximated flag emblem. */
+function afaqNationalRibbon(mode='card'){
+ const design=mode==='horizon'?'horizon':mode==='detail'?'detail':'card';
+ return '<div class="afaq-national-ribbon afaq-national-ribbon--'+design+'" role="img" '+
+  'aria-label="زخرفة فنية متحركة باللون الأحمر والأبيض والأخضر مستوحاة من ألوان سلطنة عُمان">'+
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 210" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
+  '<defs><linearGradient id="afRibbonWarm" x1="0" y1="0" x2="1" y2="0">'+
+  '<stop stop-color="#e85d58"/><stop offset=".49" stop-color="#d52232"/><stop offset="1" stop-color="#f16c59"/></linearGradient>'+
+  '<linearGradient id="afRibbonWhite" x1="0" y1="0" x2="1" y2="0">'+
+  '<stop stop-color="#e5f7ff"/><stop offset=".55" stop-color="#fff"/><stop offset="1" stop-color="#d5eaf2"/></linearGradient>'+
+  '<linearGradient id="afRibbonGreen" x1="0" y1="0" x2="1" y2="0">'+
+  '<stop stop-color="#55b88e"/><stop offset=".53" stop-color="#168653"/><stop offset="1" stop-color="#58c59d"/></linearGradient></defs>'+
+  '<g class="afaq-national-waves" fill="none" stroke-linecap="round">'+
+  '<path class="afaq-national-wave afaq-national-wave--white" d="M-100 78 C80 5 207 161 384 87 S682 25 839 85 S1080 135 1300 52" stroke="url(#afRibbonWhite)" stroke-width="18"/>'+
+  '<path class="afaq-national-wave afaq-national-wave--red" d="M-100 113 C92 40 221 199 395 116 S687 57 849 116 S1096 176 1300 87" stroke="url(#afRibbonWarm)" stroke-width="22"/>'+
+  '<path class="afaq-national-wave afaq-national-wave--green" d="M-100 151 C95 81 225 236 399 156 S693 91 855 159 S1094 218 1300 123" stroke="url(#afRibbonGreen)" stroke-width="19"/>'+
+  '</g><g class="afaq-national-glints" fill="#ffe6b0" opacity=".65">'+
+  '<circle cx="175" cy="31" r="3"/><circle cx="1038" cy="62" r="4"/><circle cx="668" cy="182" r="3"/></g>'+
+  '</svg></div>';
+}
 function afaqHomeShowcase(){
  const cards=[
   ['learning','📖','التعليم والتعلّم'],['library','📚','المكتبة الرقمية'],
@@ -66,8 +86,8 @@ function afaqHomeShowcase(){
  ];
  return '<section class="afaq-home-showcase" aria-label="أدوات آفاق ماث">'+
  '<div class="afaq-home-side"><button type="button" class="afaq-national-card" data-route="national_values">'+
-  '<img loading="lazy" src="assets/afaq-national-value.svg?v=20261113-national1" width="510" height="225" alt="علم سلطنة عمان وقلعتها العريقة وجبالها">'+
-  '<span>🇴🇲 قيمة وطنية</span><strong>الانتماء للوطن مسؤولية ووفاء</strong></button>'+
+  afaqNationalRibbon('card')+
+  '<span>✦ قيمة وطنية</span><strong>الانتماء للوطن مسؤولية ووفاء</strong></button>'+
   '<button type="button" class="afaq-science-card" data-route="science_news">'+
   '<span>🔬 الأخبار الثقافية والعلمية</span><strong>مستجدات العلم والتكنولوجيا</strong>'+
   '<small>أخبار موثقة من مصادرها الأصلية</small></button></div>'+
@@ -82,7 +102,7 @@ function afaqHomeShowcase(){
 function aeNationalPage(){return '<div class="container ae-national-page" dir="rtl">'+
  '<section class="ae-section-hero"><h1>🇴🇲 قيمة وطنية — الانتماء للوطن مسؤولية ووفاء</h1>'+
  '<p>من قيمنا الاعتزاز بالهوية العُمانية، وحفظ منجزات الوطن، والعمل بإتقان لخدمة المجتمع.</p></section>'+
- '<img src="assets/afaq-national-value.svg?v=20261113-national1" alt="لوحة عُمانية للعلم والقلعة والجبال">'+
+ afaqNationalRibbon('detail')+
  '<article class="ae-info-card"><h2>الرياضيات وخدمة الوطن</h2>'+
  '<p>نستخدم الرياضيات في التخطيط للمشاريع والبناء وقياس المساحات والمياه والطاقة وفهم الإحصاءات الوطنية، ونربط التعلم بالإبداع والوفاء لمسؤولياتنا.</p></article></div>';}
 function aeSelectChoices(choices,key,disabled=false,selected=null){
