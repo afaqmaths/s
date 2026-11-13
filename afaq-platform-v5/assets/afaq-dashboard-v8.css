@@ -207,3 +207,9 @@
 .it-student-marks small{font-size:11px;color:#658296}.it-student-marks b{font-size:19px;color:#256b8b}
 @media(max-width:760px){.it-student-marks{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media print{.it-student-detail>button{display:none!important}}
+
+.it-print-controls{display:flex;justify-content:flex-end;margin:12px 0}
+.it-print-controls button,.it-student-detail>[data-it-print-student]{
+ border-radius:10px;border:1px solid #8cbcca;background:#e4f5f5;color:#226478;
+ padding:9px 15px;font-weight:900;cursor:pointer}
+@media print{.it-print-controls{display:none!important}}
