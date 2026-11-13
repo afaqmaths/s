@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="250" viewBox="0 0 560 250" role="img" aria-label="قيمة وطنية عُمانية: العلم والقلعة والجبال">
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#cae7ff"/><stop offset=".7" stop-color="#e4f6ff"/><stop offset="1" stop-color="#fff1d6"/></linearGradient>
+<linearGradient id="sand" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f3dba6"/><stop offset="1" stop-color="#be8b60"/></linearGradient>
+<linearGradient id="tower" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dec29e"/><stop offset="1" stop-color="#9f744e"/></linearGradient>
+</defs>
+<rect width="560" height="250" rx="20" fill="url(#sky)"/>
+<circle cx="411" cy="57" r="34" fill="#ffe3a4" opacity=".87"/>
+<path d="M0 156l79-69 64 63 71-73 75 71 77-74 58 65 56-44 80 60v95H0z" fill="#b0c0cf"/>
+<path d="M0 178l64-36 52 28 69-45 77 41 85-26 65 45 70-43 78 40v68H0z" fill="#aab1b0"/>
+<path d="M0 199c113-20 200 19 284-5 75-24 191 8 276-3v59H0z" fill="#c4a27f"/>
+<path d="M0 226c93-19 201 11 307-6 84-14 153-7 253 3v27H0z" fill="url(#sand)"/>
+<path d="M204 131h132v82H204z" fill="url(#tower)" stroke="#986a43" stroke-width="3"/>
+<path d="M186 143h42v74h-42zM315 145h41v72h-41z" fill="#ccb08e" stroke="#9c7047" stroke-width="3"/>
+<path d="M218 129v-13h21v13h13v-13h21v13h12v-13h21v13h28v12H218z" fill="#dfc39d"/>
+<path d="M190 140v-14h12v14h7v-14h12v14zM317 142v-13h12v13h7v-13h12v13z" fill="#b08e65"/>
+<path d="M259 215v-42a18 18 0 0 1 36 0v42z" fill="#654a3c"/>
+<path d="M237 162v15h12v-15zM309 161v15h12v-15z" fill="#634837"/>
+<path d="M140 207V66" stroke="#53423a" stroke-width="7" stroke-linecap="round"/>
+<path d="M146 66h139v76H146z" fill="#fff" stroke="#c7c7c7" stroke-width="1"/>
+<path d="M146 66h139v26H146z" fill="#fff"/>
+<path d="M146 92h139v25H146z" fill="#e32131"/>
+<path d="M146 117h139v25H146z" fill="#18844b"/>
+<path d="M146 66h38v76h-38z" fill="#e32131"/>
+<g stroke="white" stroke-width="2.5" fill="none"><path d="M151 78l24 24m-3-27-16 28m6-22 3-13m-5 20 15 13"/></g>
+<path d="M378 210c0-33 0-72 7-124" stroke="#795036" stroke-width="8" stroke-linecap="round"/>
+<path d="M387 97c-18-18-37-20-60-19 20-14 41-16 63-4-12-22-16-31-14-52 21 16 29 33 20 56 22-18 43-19 69-11-20 13-42 19-65 17 20 6 39 19 47 37-28 0-46-7-59-24z" fill="#448f65"/>
+<path d="M488 224c-2-21-5-37-3-67" stroke="#664c3b" stroke-width="6"/>
+<path d="M486 160c-14-14-24-13-40-14 14-10 29-11 42-5-7-11-8-20-8-32 14 11 18 22 14 35 16-9 29-9 44-5-13 11-27 13-40 13 13 7 25 13 30 26-18-1-30-6-42-18z" fill="#56a775"/>
+<path d="M10 229q75-23 151 1M325 227q113-25 205 1" stroke="#f9e4bd" stroke-width="5" opacity=".6" fill="none"/>
+</svg>
