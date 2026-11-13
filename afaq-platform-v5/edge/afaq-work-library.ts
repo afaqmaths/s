@@ -28,7 +28,7 @@ const headers=(origin:string)=>({
 const ok=(origin:string,data:any)=>new Response(JSON.stringify({ok:true,...data}),{headers:headers(origin)});
 const err=(origin:string,error:string,status=400)=>new Response(JSON.stringify({ok:false,error}),{status,headers:headers(origin)});
 const isSupervisor=(role:string)=>role==="supervisor";
-const isStaff=(role:string)=>["supervisor","supervisor_assistant","director","deputy"].includes(role);
+const isStaff=(role:string)=>["supervisor","supervisor_assistant","director","deputy","it_viewer"].includes(role);
 const uuid=(v:string)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 async function sha(value:string){
  const raw=new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(value)));
@@ -45,7 +45,7 @@ async function session(req:Request){
 function canSee(item:any,user:any){
  if(!item)return false;
  if(["supervisor","supervisor_assistant"].includes(user.role))return true;
- if(user.role==="director"||user.role==="deputy")return item.published===true;
+ if(user.role==="director"||user.role==="deputy"||user.role==="it_viewer")return item.published===true;
  return user.role==="student"&&Number(user.grade)===6&&item.published===true&&item.audience==="student";
 }
 function canSeeDocument(item:any,role:string){
