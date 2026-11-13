@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 570 540" role="img" aria-label="مستوى إحداثي كبير وتحويل انسحاب نقطة">
+<defs><pattern id="grid" width="33" height="33" patternUnits="userSpaceOnUse"><path d="M33 0H0V33" fill="none" stroke="#8dc5ff" stroke-width="1.5" opacity=".54"/></pattern>
+<linearGradient id="panel" x2="1" y2="1"><stop stop-color="#164e92" stop-opacity=".91"/><stop offset="1" stop-color="#0a2b65" stop-opacity=".95"/></linearGradient>
+<marker id="end" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#ffd386"/></marker>
+<filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="13" flood-color="#001b46" flood-opacity=".4"/></filter></defs>
+<rect x="19" y="19" width="532" height="500" rx="33" fill="url(#panel)" stroke="#77baf7" stroke-opacity=".73" stroke-width="3" filter="url(#shadow)"/>
+<rect x="48" y="51" width="462" height="425" rx="16" fill="url(#grid)" opacity=".98"/>
+<path d="M55 356H507M164 465V61" fill="none" stroke="#ecfcff" stroke-width="4.5" stroke-linecap="round"/>
+<path d="m508 356-16-9v18zM164 60l-9 17h18z" fill="#f7e6b0"/>
+<g fill="#effaff" font-size="23" font-family="Arial, sans-serif" font-weight="bold"><text x="489" y="385">x</text><text x="140" y="76">y</text><text x="135" y="384">0</text></g>
+<g stroke="#82e8ff" stroke-width="4" stroke-linejoin="round" fill="#35bde4" fill-opacity=".23">
+<path d="M197 323 295 323 230 256Z"/>
+</g>
+<g stroke="#ffe1a5" stroke-width="4" stroke-linejoin="round" fill="#ffd28d" fill-opacity=".24">
+<path d="M296 223 394 223 329 156Z"/>
+</g>
+<path d="M230 256 329 156" stroke="#ffdfa0" stroke-dasharray="12 8" stroke-width="6" marker-end="url(#end)" fill="none"/>
+<g font-family="Tahoma,Arial,sans-serif" font-weight="bold"><text x="198" y="233" fill="#a1f5ff" font-size="26">A (س،ص)</text><text x="327" y="141" fill="#ffe7b0" font-size="26">A′</text>
+<text x="291" y="285" fill="#ffdda4" font-size="24">ي ← ٣</text><text x="407" y="206" fill="#f0f7ff" font-size="23">أ ↑ ٣</text>
+<text x="88" y="495" font-size="25" fill="#f2f9ff">الإحداثيات والتحويلات</text></g>
+<g fill="#ecf9ff"><circle cx="230" cy="256" r="7"/><circle cx="329" cy="156" r="7"/></g></svg>
