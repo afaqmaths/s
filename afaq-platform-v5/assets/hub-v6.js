@@ -130,8 +130,8 @@ function hubHome(){
  hubSectionCard('الدعم والتواصل','smartphone','الاقتراحات والرسائل','support','cyan')+
  '</div></section>'+
  (typeof afaqHomeShowcase==="function"?afaqHomeShowcase():"")+
- '<div class="hub-counter"><span>🌐 المتصفحات الزائرة المسجلة</span><strong id="hubVisitorCount">'+
- (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong></div></div>';
+ '<div class="hub-counter"><span>🌐 عدّاد المتصفحات التراكمي</span><strong id="hubVisitorCount">'+
+ (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong><small>٦٬٥٠٠ رصيد افتتاحي + المتصفحات المسجلة</small></div></div>';
 }
 async function hubCall(action,payload={},token=''){
  const result=await fetch(HUB_API,{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify({action,...payload}),cache:'no-store'});
@@ -209,8 +209,8 @@ function hubVisitor(){
  '<p class="hub-empty">لم تُنشر مسابقات مجانية في الوقت الحالي.</p>')+
  '<div class="hub-inline-actions"><button class="hub-secondary" data-route="contests">عرض جميع تفاصيل المسابقات</button></div></section>'+
  hubCompetitionGuide()+
- '<div class="hub-counter"><span>المتصفحات الزائرة المسجلة</span><strong>'+hn(hub.visitorCount||0)+'</strong>'+
- '<small>إحصاء تقريبي حسب معرّف المتصفح، لا يجمع أسماء الزوار.</small></div></div>';
+ '<div class="hub-counter"><span>عدّاد المتصفحات التراكمي</span><strong>'+hn(hub.visitorCount||0)+'</strong>'+
+ '<small>يشمل رصيدًا افتتاحيًا قدره ٦٬٥٠٠، إضافة إلى المتصفحات المسجلة فعليًا.</small></div></div>';
 }
 
 const HUB_PRIZES=[100,75,50,40,30,20,10,5,5,5];
@@ -508,7 +508,7 @@ function hubStaffDashboard(){
  hubStaffNav()+
  '<section class="hub-main hub-staff-stats"><h2>إحصاءات البوابة</h2>'+
  (hub.stats?'<div class="hub-stats-grid">'+
- [['زوار المتصفحات',hub.stats.visitors],['تجارب الزوار المكتملة',hub.stats.trial_finished],
+ [['عدّاد الزيارات التراكمي (مع الرصيد الافتتاحي)',hub.stats.visitors],['تجارب الزوار المكتملة',hub.stats.trial_finished],
  ['حسابات تحدي جنى',hub.stats.jana_accounts],['نتائج تحدي جنى',hub.stats.jana_scores],
  ['رسائل بانتظار الرد',hub.stats.unanswered]].map(([k,v])=>'<article><b>'+hn(v)+'</b><small>'+k+'</small></article>').join('')+
  '</div>':'<p>تُحمّل إحصاءات الزيارات والمسابقات والرسائل عند فتح لوحة المشرف.</p>')+
