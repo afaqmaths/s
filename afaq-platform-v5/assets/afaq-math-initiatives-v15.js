@@ -297,7 +297,7 @@ attach=function(){
  if(iaPrivatePages.has(state.page)&&iaState.page===state.page&&iaState.html)iaInputs();
 };
 if(typeof location!=='undefined'){
- const deep=(location.hash||'').slice(1);
+ const deep=(typeof window!=='undefined'&&window.AFAQ_REQUESTED_HASH)||((location.hash||'').slice(1));
  if(iaPrivatePages.has(deep)||deep==='initiative_permissions'){
   state.page=deep;render();
  }
