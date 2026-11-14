@@ -39,8 +39,12 @@ function afCard(item){
  const audioBar=ready?'<div class="af-audio-player"><button type="button" class="af-action-play" data-af-play-audio="'+item.id+'">▶ تشغيل الصوت عند الطلب</button>'+
  '<small>لن يبدأ تحميل الملف قبل الضغط على زر التشغيل.</small></div>':'';
  // لا ننشئ iframe يوتيوب قبل طلب تشغيل الفيديو.
+ const videoAction=item.category==='motivation'&&item.title.includes('مقطع قصير (٣٥ ثانية)')?
+  '▶ تشغيل المقطع القصير (٣٥ ثانية)':
+  item.category==='motivation'&&item.title.includes('الإصدار الصوتي الرسمي')?
+  '🎧 استمع إلى الإصدار الصوتي عبر يوتيوب':'▶ مشاهدة واستماع داخل البوابة';
  const youtubeBar=item.media_type==='youtube'&&video?
-  '<button type="button" class="af-action-play" data-af-video="'+item.id+'">▶ مشاهدة واستماع داخل البوابة</button>':'';
+  '<button type="button" class="af-action-play" data-af-video="'+item.id+'">'+videoAction+'</button>':'';
  const tts=item.media_type==='spoken'&&item.spoken_text?
  '<div class="af-audio-tts"><blockquote>'+afEsc(item.spoken_text)+'</blockquote>'+
  '<button type="button" class="af-action-play" data-af-speak="'+item.id+'">🔊 استمع بصوت قراءة عربية آلية</button>'+
@@ -82,6 +86,7 @@ function afAudioPage(){
  '<p>استراحة معرفية وتربوية داخل منصة آفاق ماث: تلاوات قرآنية، ومختارات من الحديث النبوي، وحِكَم وأناشيد وأغانٍ وطنية ومقاطع تشجع على العلم والإنجاز.</p>'+
  '<div class="af-hero-actions"><button class="af-button-white" data-route="library">المكتبة العامة</button>'+
  '<button class="af-button-white" data-route="visitor">بوابة الزائر</button>'+
+ '<button class="af-button-white af-success-quick" type="button" data-af-quick-cat="motivation">🏆 مقاطع النجاح والتحفيز</button>'+
  '<span>'+afNum(count)+' مادة منشورة</span></div></div>'+
  '<div class="af-hero-art" role="img" aria-label="سماعات حديثة وموجات صوتية"><span>🎧</span><i>♪</i><i>♫</i><i>★</i></div></section>'+
 '<section class="af-catalog-panel"><div class="af-heading"><h2>اختر قسم الاستماع</h2>'+
@@ -311,9 +316,17 @@ function afOpenVideo(button){
   box.replaceWith(again);
  });
  box.append(frame,close);button.replaceWith(box);
- frame.src='https://www.youtube-nocookie.com/embed/'+id+'?rel=0&autoplay=1';
+ const officialShort=item.category==='motivation'&&item.performer==='علاء الخالدي'&&
+  item.title.includes('مقطع قصير (٣٥ ثانية)')&&id==='P-DykSei0xY';
+ // Use YouTube's official time-limited player. No extraction, audio ripping or rehosting.
+ frame.src='https://www.youtube-nocookie.com/embed/'+id+
+  '?rel=0&autoplay=1'+(officialShort?'&start=0&end=35':'');
 }
 function afBind(){
+ document.querySelectorAll('[data-af-quick-cat]').forEach(b=>b.addEventListener('click',()=>{
+  afAudio.selected=b.dataset.afQuickCat;afAudio.search='';afAudio.visibleCount=9;
+  afAudio.playingVideo=null;window.speechSynthesis?.cancel();render();
+ }));
  document.querySelectorAll('[data-af-cat]').forEach(b=>b.addEventListener('click',()=>{
   afAudio.selected=b.dataset.afCat;afAudio.visibleCount=6;afAudio.playingVideo=null;
   window.speechSynthesis?.cancel();render();
