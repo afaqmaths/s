@@ -243,3 +243,39 @@ border:2px dashed #ccb17a!important;border-radius:17px!important;text-align:cent
 .ia-mixer-preview>button,.ia-learning-private button{cursor:pointer;background:linear-gradient(110deg,#174678,#267bb0);
 color:#fff;border:1px solid #b9a36f;border-radius:11px;padding:10px 17px;font-weight:900}
 .ia-learning-private{border:2px solid #c5d9ea!important;background:linear-gradient(125deg,#fff9ee,#ecf8ff)!important}
+
+
+/* Supervisor-only initiative visibility controls */
+.ia-visibility-box{
+ margin-top:18px;padding:18px 16px;border:1px solid rgba(252,216,142,.8);
+ border-radius:15px;background:linear-gradient(125deg,rgba(6,30,65,.56),rgba(19,91,126,.38));
+ text-align:right;direction:rtl;box-shadow:inset 0 1px 0 #ffffff25;
+}
+.ia-visibility-box h2{color:#ffe4a9!important;font-size:clamp(17px,2vw,23px);margin:0 0 10px}
+.ia-visibility-box p{color:#eef5ff!important;line-height:1.85;margin:7px 0}
+.ia-visibility-box p strong{color:#fff1c5;font-weight:950}
+.ia-visibility-actions{display:flex;align-items:stretch;flex-wrap:wrap;gap:9px;margin-top:15px}
+.ia-visibility-actions button{
+ border:1px solid #c9dfed;border-radius:10px;padding:11px 14px;
+ background:#fff9eb;color:#1a4b73;font-weight:950;font-size:12px;
+ cursor:pointer;max-width:100%;line-height:1.5;
+}
+.ia-visibility-actions button[data-ia-visibility="public_today"]{
+ background:#dff8e7;color:#155939;border-color:#8ed1a9;
+}
+.ia-visibility-actions button[data-ia-visibility="public"]{
+ background:#e7f6ff;color:#19587d;border-color:#a8d4e8;
+}
+.ia-visibility-actions button[data-ia-visibility="hidden"]{
+ background:#ffedea;color:#963b3b;border-color:#eac0b9;
+}
+.ia-visibility-actions button:hover,
+.ia-visibility-actions button:focus-visible{
+ box-shadow:0 4px 15px #061e3e5c;transform:translateY(-1px);
+ outline:2px solid #ffd78b;outline-offset:1px
+}
+@media(max-width:600px){
+ .ia-visibility-box{padding:13px 11px}
+ .ia-visibility-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+ .ia-visibility-actions button{width:100%;font-size:13px}
+}
