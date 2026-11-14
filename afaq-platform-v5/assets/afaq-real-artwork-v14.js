@@ -60,7 +60,7 @@ hubHome=function(){
  /* Move (not duplicate) the real clickable national-values card from the footer showcase. */
  const cardMatch=html.match(/<button type="button" class="afaq-national-card"[\s\S]*?<\/button>/);
  if(cardMatch) html=html.replace(cardMatch[0],'');
- const national=cardMatch?'<div class="afaq-hero-national">'+cardMatch[0].replace('✦ قيمة وطنية','🇴🇲 قيمتي في وطني')+'</div>':'';
+ const national=cardMatch?'<div class="afaq-hero-national">'+cardMatch[0].replace('✦ قيمة وطنية','🇴🇲 قيمي و اعتزازي بوطنيتي')+'</div>':'';
  /* Place the preserved-size value card to the LEFT of the moving flag-colour
     strip, in a shared top row OUTSIDE and ABOVE the blue mathematics panel. */
  const topRibbon='<div class="v9-oman-horizon" data-national-ribbon="true">';
