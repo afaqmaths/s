@@ -415,3 +415,27 @@ attach=function(){
  document.querySelector('[data-ia-visibility-refresh]')?.addEventListener('click',()=>iaRefreshVisibility(true));
 };
 if(typeof window!=='undefined'&&auth.user?.role==='supervisor')iaRefreshVisibility();
+
+
+/* A clear first-login entry, with no disclosure of student passwords or classmates' records. */
+const iaHomeBeforeFirstEntry=hubHome;
+hubHome=function(){
+ const html=iaHomeBeforeFirstEntry();
+ const card='<section class="ia-first-login-guide" aria-label="الدخول الأول للطالب">'+
+ '<div class="ia-first-login-icon" aria-hidden="true">🎓</div>'+
+ '<div><h2>الدخول الأول للطالب — الصف السادس</h2>'+
+ '<p>اختر شعبتك، وأدخل رقمك المسجل في الشعبة والرقم السري الأولي الذي تسلمته بصورة خاصة. ستظهر بيانات حسابك أنت فقط، ويمكنك التعلم مباشرة. لتفعيل مسابقة نجوم آفاق، غيّر رقمك السري بنفسك من صفحة حسابي.</p>'+
+ '<small>حرصًا على خصوصية الطلبة، لا تُنشر كشوف الأسماء أو الأرقام السرية على الصفحة العامة.</small></div>'+
+ '<button type="button" data-afaq-student-first-login>الدخول إلى حساب الطالب</button></section>';
+ return html.replace('<div class="hub-counter">',card+'<div class="hub-counter">');
+};
+const iaFirstLoginAttachBase=attach;
+attach=function(){
+ iaFirstLoginAttachBase();
+ document.querySelectorAll('[data-afaq-student-first-login]').forEach(btn=>btn.addEventListener('click',()=>{
+  const account=document.getElementById('accountBtn');
+  if(account)account.click();
+  const field=document.getElementById('loginRole');
+  if(field){field.value='student';field.dispatchEvent(new Event('change',{bubbles:true}));}
+ }));
+};
