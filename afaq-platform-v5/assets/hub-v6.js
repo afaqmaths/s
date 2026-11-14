@@ -130,8 +130,8 @@ function hubHome(){
  hubSectionCard('الدعم والتواصل','smartphone','الاقتراحات والرسائل','support','cyan')+
  '</div></section>'+
  (typeof afaqHomeShowcase==="function"?afaqHomeShowcase():"")+
- '<div class="hub-counter"><span>🌐 عدّاد المتصفحات التراكمي</span><strong id="hubVisitorCount">'+
- (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong><small>٦٬٥٠٠ رصيد افتتاحي + المتصفحات المسجلة</small></div></div>';
+ '<div class="hub-counter"><span>🌐 عدّاد الزيارات التراكمي التقديري</span><strong id="hubVisitorCount">'+
+ (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong></div></div>';
 }
 async function hubCall(action,payload={},token=''){
  const result=await fetch(HUB_API,{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify({action,...payload}),cache:'no-store'});
@@ -209,8 +209,8 @@ function hubVisitor(){
  '<p class="hub-empty">لم تُنشر مسابقات مجانية في الوقت الحالي.</p>')+
  '<div class="hub-inline-actions"><button class="hub-secondary" data-route="contests">عرض جميع تفاصيل المسابقات</button></div></section>'+
  hubCompetitionGuide()+
- '<div class="hub-counter"><span>عدّاد المتصفحات التراكمي</span><strong>'+hn(hub.visitorCount||0)+'</strong>'+
- '<small>يشمل رصيدًا افتتاحيًا قدره ٦٬٥٠٠، إضافة إلى المتصفحات المسجلة فعليًا.</small></div></div>';
+ '<div class="hub-counter"><span>عدّاد الزيارات التراكمي التقديري</span><strong>'+hn(hub.visitorCount||0)+'</strong>'+
+ '</div></div>';
 }
 
 const HUB_PRIZES=[100,75,50,40,30,20,10,5,5,5];
