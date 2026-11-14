@@ -3,45 +3,60 @@
    lesson illustrations and relocated national-value card. No added adjacent hero image. */
 'use strict';
 
-const afaqIllustratedLessons = [
-  ['numbers','الأعداد والعمليات','جمع • طرح • ضرب','right'],
-  ['divide','القسمة والمضاعفات','قسمة • عوامل','right'],
-  ['fractions','الكسور والعشريات','كسور • تقريب','right'],
-  ['primes','الأعداد الأولية','فردي • زوجي','right'],
-  ['algebra','الأنماط والجبر','متتاليات • معادلات','right'],
-  ['percent','النسب والتناسب','نسب مئوية','right'],
-  ['data','البيانات والاحتمال','جداول • مخططات','right'],
-  ['solid','الأشكال والمجسمات','أوجه • أحرف • رؤوس','left'],
-  ['nets','الشبكات والمقاطع','شبكات المجسمات','left'],
-  ['angles','المثلثات والزوايا','زوايا • مضلعات','left'],
-  ['coords','الإحداثيات والانسحاب','شبكات • إحداثيات','left'],
-  ['area','المحيط والمساحة والحجم','قياس الأشكال','left'],
-  ['clock','القياس والزمن','طول • كتلة • وقت','left']
-];
-const afaqSymbolArt = {
- numbers:'<text x="32" y="25" text-anchor="middle" font-size="20" font-weight="900" fill="#2368a3">7 + 5</text><text x="32" y="50" text-anchor="middle" font-size="21" font-weight="900" fill="#cf8c2c">= 12</text>',
- divide:'<text x="32" y="42" text-anchor="middle" font-size="25" font-weight="900" fill="#176fa1">24 ÷ 4</text>',
- fractions:'<path d="M12 32H52" stroke="#1e79ac" stroke-width="3"/><text x="32" y="27" text-anchor="middle" font-size="23" font-weight="900" fill="#1e79ac">3</text><text x="32" y="58" text-anchor="middle" font-size="23" font-weight="900" fill="#c18022">4</text>',
- primes:'<circle cx="30" cy="31" r="25" fill="#def1fc" stroke="#3585ba" stroke-width="3"/><text x="30" y="42" text-anchor="middle" font-size="30" font-weight="900" fill="#296e9f">7</text>',
- algebra:'<text x="31" y="43" text-anchor="middle" font-size="29" font-weight="900" fill="#397eb0">x²</text>',
- percent:'<text x="32" y="43" text-anchor="middle" font-size="27" font-weight="900" fill="#b97926">%</text>',
- data:'<path d="M10 52V13M10 52H55" fill="none" stroke="#4c7893" stroke-width="3"/><rect x="17" y="29" width="9" height="23" rx="2" fill="#39b9a0"/><rect x="30" y="18" width="9" height="34" rx="2" fill="#e9a345"/><rect x="43" y="35" width="9" height="17" rx="2" fill="#618cda"/>',
- solid:'<path d="M13 20L35 9L54 20L32 32Z M13 20V46L32 57V32M32 32L54 20V47L32 57" stroke="#2677ab" stroke-width="2.4" stroke-linejoin="round" fill="#90d5e9"/><path d="M13 20L32 32L54 20" fill="none" stroke="#fff" stroke-width="2"/>',
- nets:'<g fill="#a7e1e4" stroke="#2989a2" stroke-width="2"><rect x="22" y="10" width="19" height="19"/><rect x="22" y="30" width="19" height="19"/><rect x="2" y="30" width="19" height="19"/><rect x="42" y="30" width="19" height="19"/><rect x="22" y="50" width="19" height="12"/></g>',
- angles:'<path d="M7 54L32 10L58 54Z" fill="#ffdda2" stroke="#cc8a38" stroke-width="3"/><path d="M21 54A15 15 0 0 1 13 40" fill="none" stroke="#2089a5" stroke-width="3"/>',
- coords:'<path d="M10 54V6M7 48H57" stroke="#547e99" stroke-width="3"/><path d="M14 46L29 29L43 36L56 14" fill="none" stroke="#e08048" stroke-width="4"/><circle cx="29" cy="29" r="4" fill="#eb8c36"/>',
- area:'<rect x="8" y="16" width="45" height="36" rx="2" fill="#a8e5b3" stroke="#319c65" stroke-width="3"/><path d="M23 16V52M38 16V52M8 34H53" stroke="#fff" stroke-width="2.5"/>',
- clock:'<circle cx="32" cy="32" r="25" fill="#ecf8ff" stroke="#3178ac" stroke-width="3"/><path d="M32 14V32L46 40" fill="none" stroke="#bf862e" stroke-width="4" stroke-linecap="round"/>'
+/* Two balanced working navigation columns for Afaq Math. Each item points to an existing page. */
+const afaqHomeColumns={
+ right:{
+  title:'التعليم والتعلّم',
+  caption:'استكشف المعرفة الرياضية',
+  items:[
+   ['📘','دروس الرياضيات','الأعداد والعمليات • القياس • الهندسة • البيانات','learning'],
+   ['🎓','التعليم والتعلّم','الصفوف ٥–٨ • شرح وأنشطة • علاج وإثراء','learning'],
+   ['📚','مكتبة آفاق ماث','تاريخ الرياضيات • العلماء • الكتب • الفيديو','library'],
+   ['📝','أوراق العمل والمهام','واجبات • تدريبات • نماذج إجابة','work'],
+   ['🧠','بنك الأسئلة','فهم • تطبيق • استدلال • تدريبات','question_bank'],
+   ['🎯','التقويم والاختبارات','تشخيصي • اختبارات • تغذية راجعة','adaptive'],
+   ['💡','مبادرات الأستاذ سعيد','خلاط الرياضيات • ي/أ • المفتاح للقسمة','teaching_initiatives']
+  ]
+ },
+ left:{
+  title:'المرح والمسابقات',
+  caption:'تعلّم باللعب والمنافسة',
+  items:[
+   ['🎭','المرح والتسلية','ألغاز رياضية • كاريكاتير • قصص','fun'],
+   ['🎮','الألعاب التفاعلية','ألعاب الأعداد والقياس والهندسة','games'],
+   ['🧩','الألعاب والمسابقات','تحديات وأنشطة ومسابقات متنوعة','contests'],
+   ['🏆','مسابقة نجوم آفاق الرياضيات','بوابة المسابقة والمراحل والجوائز',null,'competition.html'],
+   ['⚽','مباريات اليوم','المباريات والمواعيد بتوقيت عُمان','matches_today'],
+   ['💬','الدعم والتواصل','اقتراحات • استفسارات • متابعة الرسائل','support']
+  ]
+ }
 };
-function afaqLessonIcon(kind) {
- return '<svg viewBox="0 0 64 64" width="58" height="58" focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">'+(afaqSymbolArt[kind]||afaqSymbolArt.numbers)+'</svg>';
+function afaqContactSymbol(kind){
+ if(kind==='whatsapp')return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M21 11.6a8.9 8.9 0 0 1-13.5 7.7L3 21l1.6-4.5A8.9 8.9 0 1 1 21 11.6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.2 7.5c-.5.4-.8 1.1-.7 1.9.1 1.9 2.9 5.2 5.4 6.3 1.4.6 2.2.4 2.8-.2l.9-1.2-2.9-1.3-.9 1c-1.4-.5-2.8-1.9-3.5-3.3l1-1-1.4-2.8-.7.6Z" fill="currentColor"/></svg>';
+ return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><rect x="3.1" y="3.1" width="17.8" height="17.8" rx="5.1" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.6" cy="6.6" r="1.2" fill="currentColor"/></svg>';
 }
-function afaqLessonGallery(side) {
- return '<div class="afaq-lesson-gallery afaq-lesson-gallery--'+side+'" aria-label="موضوعات ودروس الرياضيات">'+
- afaqIllustratedLessons.filter(row=>row[3]===side).map(row=>
- '<div class="afaq-lesson-art"><span class="afaq-lesson-glyph">'+afaqLessonIcon(row[0])+'</span>'+
- '<span class="afaq-lesson-writing"><strong>'+row[1]+'</strong><small>'+row[2]+'</small></span></div>').join('')+
+function afaqContactLinks(){
+ return '<div class="afaq-column-contact" aria-label="التواصل المباشر">'+
+ '<span class="afaq-contact-title">التواصل المباشر</span>'+
+ '<a class="afaq-contact-link afaq-contact-whatsapp" href="https://wa.me/96897414000" target="_blank" rel="noopener noreferrer" aria-label="التواصل عبر واتساب على 0096897414000">'+afaqContactSymbol('whatsapp')+'<span><strong>واتساب</strong><small dir="ltr">0096897414000</small></span></a>'+
+ '<a class="afaq-contact-link afaq-contact-instagram" href="https://www.instagram.com/afaq.om/" target="_blank" rel="noopener noreferrer" aria-label="متابعة حساب إنستغرام AFAQ.OM">'+afaqContactSymbol('instagram')+'<span><strong>إنستغرام</strong><small dir="ltr">AFAQ.OM</small></span></a>'+
  '</div>';
+}
+function afaqPortalButton(item){
+ const [icon,title,description,route,href]=item;
+ const link=!!href,tag=link?'a':'button';
+ const attr=link?'href="'+href+'"':'type="button" data-route="'+route+'"';
+ return '<'+tag+' class="afaq-nav-row" '+attr+' aria-label="'+title+'">'+
+ '<span class="afaq-nav-icon" aria-hidden="true">'+icon+'</span>'+
+ '<span class="afaq-nav-copy"><strong>'+title+'</strong><small>'+description+'</small></span>'+
+ '<span class="afaq-nav-arrow" aria-hidden="true">↗</span></'+tag+'>';
+}
+function afaqLessonGallery(side){
+ const column=afaqHomeColumns[side];
+ return '<nav class="afaq-navigation-column afaq-navigation-column--'+side+'" aria-label="'+column.title+'">'+
+ '<header class="afaq-nav-heading"><strong>'+column.title+'</strong><span>'+column.caption+'</span></header>'+
+ '<div class="afaq-nav-items">'+column.items.map(afaqPortalButton).join('')+'</div>'+
+ (side==='left'?afaqContactLinks():'')+'</nav>';
 }
 function afaqElectricBlueLines(){
  return '<svg class="afaq-blue-energy" viewBox="0 0 600 440" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+
