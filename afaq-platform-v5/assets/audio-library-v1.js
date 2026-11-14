@@ -6,6 +6,8 @@ const afAudio={
  selected:'all',search:'',visibleCount:6,playingVideo:null,edit:null,uploaded:null,
  busy:false,warning:'',message:''
 };
+// Direct link to the success section, without changing the user's current filter otherwise.
+if(typeof location!=='undefined'&&new URLSearchParams(location.search).get('audio_category')==='motivation')afAudio.selected='motivation';
 const AF_CATS=[
  ['all','جميع الملفات','headphones','blue'],
  ['quran','القرآن الكريم','book-open','green'],
