@@ -53,6 +53,9 @@ function scoreTiles(s){return `<div class="scoregrid"><div class="scorebox"><b d
 function competitionView(p){
  const r=auth.contestReport;
  const head='<div class="panel afaq-progress-panel"><h3>🏆 مسابقة نجوم آفاق الرياضيات — تقدمي</h3>';
+ if(auth.user?.role==='student'&&!auth.user.pin_changed)return head+
+ '<p style="color:#8c4e1a;font-weight:850">🔒 يجب تغيير الرقم السري الأولي بنفسك لتفعيل دخول مسابقة نجوم آفاق الرياضيات. جميع الدروس والمكتبة والأنشطة الأخرى متاحة لك.</p>'+
+ '<p>انتقل إلى نموذج «تغيير الرقم السري الخاص بي» في هذه الصفحة، ثم احفظ رقمًا جديدًا من أربعة أرقام.</p></div>';
  if(!r){
   return head+'<p>لا توجد نتائج رسمية بعد؛ تستطيع التدرب دون احتساب أي محاولة.</p><a class="primary" href="competition.html">الدخول إلى بوابة المسابقة المستقلة</a></div>';
  }
@@ -80,8 +83,8 @@ function competitionView(p){
  return newer+legacy;
 }
 function studentPinPanel(){
- return '<details class="panel student-self-pin"><summary>🔑 تغيير الرقم السري الخاص بي</summary>'+
- '<p>بعد استلام الرقم من المشرف يمكنك تعيين رقم جديد من ٤ أرقام. لا يمكن عرض الرقم السري القديم.</p>'+
+ return '<details class="panel student-self-pin"'+(auth.user?.pin_changed?'':' open')+'><summary>🔑 تغيير الرقم السري الخاص بي '+(auth.user?.pin_changed?'✓ مكتمل':'— مطلوب لدخول المسابقة')+'</summary>'+
+ '<p>إذا كان لديك الرقم السري الأولي لحسابك، فادخل به إلى المنصة، ثم غيّره هنا بنفسك إلى رقم جديد من ٤ أرقام. لا يمكن عرض الرقم السري القديم أو استرجاعه من الخادم.</p>'+
  '<form id="portalStudentPinForm" class="student-pin-form">'+
  '<label>رقمك السري الحالي<input type="password" autocomplete="current-password" id="portalPinCurrent" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required></label>'+
  '<label>الرقم الجديد<input type="password" autocomplete="new-password" id="portalPinNext" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required></label>'+
@@ -89,7 +92,10 @@ function studentPinPanel(){
  '<button type="submit" class="primary">حفظ الرقم الجديد</button></form>'+
  '<p id="portalPinStatus" role="status" class="muted"></p></details>';
 }
-function personalPanel(p){if(!p)return `<div class="panel">لم تُحمَّل بيانات الحساب. ${infoMessage()}</div>`;return `<div class="dashboard-banner"><div><h2>أهلًا ${e(p.student?.full_name||p.student?.display_name||'بك')}</h2><p>${e(p.student?.class_name||'حساب تجريبي')} ${p.student?.serial_no?'• رقمك في الشعبة: '+e(p.student.serial_no):''} ${p.demo?'— حساب رمزي للعرض والتدريب؛ لا تُعتمد منه نتائج فردية':''}</p></div><button class="outline" id="portalLogout">تسجيل الخروج</button></div>${p.demo?`<div class="notice">الحسابان ١٠٠٠ و٢٠٠٠ مخصصان للتجربة للصفوف الخامس والسابع والثامن؛ لا يشكلان سجلًا فرديًا لطالب بعينه.</div>`:scoreTiles(scoreView(p))}${competitionView(p)}${p.demo?'':studentPinPanel()}<div id="studyStudentDashboard"></div><div class="panel"><h3>الملاحظات التربوية المنشورة لك</h3>${p.notes?.length?p.notes.map(n=>`<p><span class="tag">${e(n.category)}</span> ${e(n.note)} <small>${e((n.created_at||'').slice(0,10))}</small></p>`).join(''):'<p class="muted">لا توجد ملاحظات منشورة حتى الآن.</p>'}</div><div class="toolbar"><button class="primary" data-route="learning">الدروس والأنشطة</button><a class="outline" href="competition.html">مسابقة نجوم آفاق</a><button class="soft" data-route="library">مكتبة الرياضيات</button></div>`}
+function personalPanel(p){if(!p)return `<div class="panel">لم تُحمَّل بيانات الحساب. ${infoMessage()}</div>`;return `<div class="dashboard-banner"><div><h2>أهلًا ${e(p.student?.full_name||p.student?.display_name||'بك')}</h2><p>${e(p.student?.class_name||'حساب تجريبي')} ${p.student?.serial_no?'• رقمك في الشعبة: '+e(p.student.serial_no):''} ${p.demo?'— حساب رمزي للعرض والتدريب؛ لا تُعتمد منه نتائج فردية':''}</p></div><button class="outline" id="portalLogout">تسجيل الخروج</button></div>${p.demo?`<div class="notice">الحسابان ١٠٠٠ و٢٠٠٠ مخصصان للتجربة للصفوف الخامس والسابع والثامن؛ لا يشكلان سجلًا فرديًا لطالب بعينه.</div>`:
+'<div class="panel afaq-student-identity"><h3>📋 بطاقة بيانات حسابي — تظهر لصاحب الحساب فقط</h3>'+
+'<p>الاسم: <strong>'+e(p.student?.full_name||p.student?.display_name||'')+'</strong> • الشعبة: <strong>'+e(p.student?.class_name||'')+'</strong> • رقمي في الشعبة: <strong>'+e(p.student?.serial_no||'')+'</strong></p>'+
+'<p>حالة الرقم السري: <strong>'+(auth.user?.pin_changed?'تم تغيير الرقم السري ✓':'الرقم الأولي لم يُغيَّر بعد')+'</strong>. لا تعرض المنصة كلمات مرور الطلاب ولا بيانات زملائهم.</p></div>'+scoreTiles(scoreView(p))}${competitionView(p)}${p.demo?'':studentPinPanel()}<div id="studyStudentDashboard"></div><div class="panel"><h3>الملاحظات التربوية المنشورة لك</h3>${p.notes?.length?p.notes.map(n=>`<p><span class="tag">${e(n.category)}</span> ${e(n.note)} <small>${e((n.created_at||'').slice(0,10))}</small></p>`).join(''):'<p class="muted">لا توجد ملاحظات منشورة حتى الآن.</p>'}</div><div class="toolbar"><button class="primary" data-route="learning">الدروس والأنشطة</button>${auth.user?.role==='student'&&!auth.user?.pin_changed?'<span class="outline" aria-label="المسابقة مغلقة حتى تغيير الرقم السري">🔒 مسابقة نجوم آفاق — غيّر الرقم السري أولًا</span>':'<a class="outline" href="competition.html">مسابقة نجوم آفاق</a>'}<button class="soft" data-route="library">مكتبة الرياضيات</button></div>`}
 const staffMenu=[['overview','الملخص العام'],['students','الطلاب والدرجات'],['content','الموارد والاختبارات'],['messages','المراسلات'],['security','الحسابات والصلاحيات']];
 function staffPanel(){const role=auth.user.role,sections=staffMenu.filter(([key])=>isAdmin()||key==='overview'||key==='content'||canEdit()&&key==='students');return `<div class="dashboard-banner"><div><h2>${e(roleLabel[role])}</h2><p>لوحة حقيقية متصلة بقاعدة البيانات — الصلاحيات تُتحقق منها على الخادم</p></div><button class="outline" id="portalLogout">خروج آمن</button></div><div class="chips">${sections.map(([k,label])=>`<button class="chip ${auth.section===k?'sel':''}" data-tab="${k}">${label}</button>`).join('')}</div>${auth.error||auth.message?infoMessage():''}${auth.section==='overview'?staffOverview():auth.section==='students'&&canEdit()?studentAdmin():auth.section==='content'?contentAdmin():auth.section==='messages'&&isAdmin()?messagesAdmin():auth.section==='security'&&isAdmin()?securityAdmin():'<div class="notice">هذا القسم غير متاح لحسابك.</div>'}`}
 function staffContestView(){
@@ -125,7 +131,8 @@ function attachPortal(){document.getElementById('showLogin')?.addEventListener('
  if(!/^\d{4}$/.test(next)||next!==confirm||next===current){status.textContent='اختر رقمًا جديدًا من ٤ أرقام، وتأكد من تطابق التأكيد.';return}
  try{
   await api('student_change_pin',{current_pin:current,new_pin:next,confirm_pin:confirm});
-  ev.target.reset();status.textContent='تم تغيير الرقم السري بنجاح. استخدم الرقم الجديد في المرة القادمة.';
+  ev.target.reset();auth.user.pin_changed=true;auth.message='تم تغيير رقمك السري بنجاح؛ أصبح دخول مسابقة نجوم آفاق الرياضيات متاحًا لك بالرقم الجديد.';auth.contestReport=null;
+  render();
  }catch(err){status.textContent=err.message}
 });
 document.getElementById('portalLogout')?.addEventListener('click',async()=>{try{await api('logout')}catch{}auth.token='';auth.user=null;auth.profile=null;auth.section='overview';sessionStorage.removeItem('afaq_access_token_v2');document.getElementById('accountBtn').textContent='دخول المنصة';route('home')});document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{auth.section=b.dataset.tab;auth.message='';render()}));document.getElementById('rosterFilter')?.addEventListener('input',event=>{const query=event.target.value.trim().replace(/[٠-٩۰-۹]/g,c=>String(Math.max('٠١٢٣٤٥٦٧٨٩'.indexOf(c),'۰۱۲۳۴۵۶۷۸۹'.indexOf(c))));document.querySelectorAll('[data-roster-row]').forEach(row=>{const text=(row.getAttribute('data-roster-row')||'').replace(/[٠-٩۰-۹]/g,c=>String(Math.max('٠١٢٣٤٥٦٧٨٩'.indexOf(c),'۰۱۲۳۴۵۶۷۸۹'.indexOf(c))));row.hidden=!text.includes(query)})});
