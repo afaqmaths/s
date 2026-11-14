@@ -60,7 +60,7 @@ function amiMultiplesPage(){
  '<div class="ami-three-facts"><article><strong>المضاعف الصفري (م٠)</strong><b>ن × ٠ = ٠</b><small>الصفر مضاعف لكل عدد.</small></article>'+
  '<article><strong>المضاعف الأول الموجب (م١)</strong><b>ن × ١ = ن</b><small>يساوي العدد نفسه، وليس ن × ن.</small></article>'+
  '<article><strong>المضاعف الثاني (م٢)</strong><b>ن × ٢ = ٢ن</b><small>ضعف العدد.</small></article></div>'+
- '<p class="ami-accuracy"><strong>تنبيه مهم:</strong> نضرب العدد في <strong>١</strong> لنحصل على المضاعف الأول الموجب، وليس في نفسه. والحديث عن «المضاعفات الموجبة» يفترض أن العدد المدخل أكبر من الصفر.</p>'+
+ '<p class="ami-accuracy"><strong>تنبيه مهم:</strong> نضرب العدد في <strong>١</strong> لنحصل على المضاعف الأول الموجب، وليس في نفسه. والحديث عن «المضاعفات الموجبة» يفترض أن العدد المدخل أكبر من الصفر. <strong>الفرق عن العوامل:</strong> العامل يقسم العدد من دون باقٍ، بينما المضاعف ينتج من ضرب العدد في عدد صحيح غير سالب.</p>'+
  '</section>'+
  '<section class="ami-lab"><h2>حاسبة المضاعفات التفاعلية</h2>'+
  '<p>اختر العدد، ثم أدخل رتبة المضاعف (٠ للمضاعف الصفري، ١ للأول الموجب، ٢ للثاني، وهكذا).</p>'+
@@ -228,3 +228,12 @@ attach=function(){
   amiDownloadSVG(plain?0:amiState.sieveStage,plain);
  }));
 };
+
+/* Restore direct links to the activities after the existing router initializes. */
+if(typeof window!=='undefined'&&typeof location!=='undefined'){
+ const requested=decodeURIComponent((location.hash||'').slice(1));
+ if(['afaq_multiples','afaq_prime_sieve'].includes(requested)){
+  state.page=requested;
+  render();
+ }
+}
