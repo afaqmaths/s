@@ -3,9 +3,10 @@
 'use strict';
 const IA_API='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-initiative-access';
 const IA_PASS_KEY='afaq_initiative_view_pass_v1';
+const IA_PASS_EXPIRY_KEY=IA_PASS_KEY+'_expires';
 const iaPrivatePages=new Set(['teaching_initiatives','initiatives','afaq_multiples','afaq_prime_sieve','mixer','coordinate_ya','division_key']);
 const iaState={
- pass:sessionStorage.getItem(IA_PASS_KEY)||'',loading:false,blocked:false,lastPage:'',lastBearer:'',page:'',html:'',error:'',
+ pass:sessionStorage.getItem(IA_PASS_KEY)||'',expiresAt:sessionStorage.getItem(IA_PASS_EXPIRY_KEY)||'',loading:false,blocked:false,lastPage:'',lastBearer:'',page:'',html:'',error:'',
  requestMsg:'',codeMsg:'',codeError:'',adminBusy:false,adminRows:null,adminMsg:'',issued:null,
  params:{number:6,index:3,sieveStage:0,answer:'',answerChecked:false}
 };
@@ -105,6 +106,23 @@ initHome=function(){return iaPreview()};
 function iaClearView(){
  iaState.page='';iaState.html='';iaState.error='';iaState.blocked=false;
 }
+let iaExpiryTimer=null;
+function iaExpirePassIfNeeded(){
+ if(!iaState.pass||!iaState.expiresAt||Date.parse(iaState.expiresAt)>Date.now())return false;
+ iaState.pass='';iaState.expiresAt='';sessionStorage.removeItem(IA_PASS_KEY);
+ sessionStorage.removeItem(IA_PASS_EXPIRY_KEY);iaClearView();
+ return true;
+}
+function iaSchedulePassExpiry(){
+ if(iaExpiryTimer!==null)window.clearTimeout(iaExpiryTimer);
+ if(!iaState.pass||!iaState.expiresAt)return;
+ const remaining=Date.parse(iaState.expiresAt)-Date.now();
+ if(remaining<=0){iaExpirePassIfNeeded();return;}
+ iaExpiryTimer=window.setTimeout(()=>{
+  iaExpirePassIfNeeded();
+  if(iaPrivatePages.has(state.page))render();
+ },Math.min(remaining+25,2147483640));
+}
 async function iaLoadProtected(page){
  if(iaState.loading)return;
  iaState.loading=true;iaState.error='';iaState.lastBearer=iaBearer();iaState.lastPage=page;
@@ -115,7 +133,10 @@ async function iaLoadProtected(page){
   iaState.blocked=false;iaState.error='';
  }catch(err){
   iaState.error=err.message;
-  if(err.reason==='permission_required'){iaState.pass='';sessionStorage.removeItem(IA_PASS_KEY)}
+  if(err.reason==='permission_required'){
+   iaState.pass='';iaState.expiresAt='';sessionStorage.removeItem(IA_PASS_KEY);
+   sessionStorage.removeItem(IA_PASS_EXPIRY_KEY);
+  }
   iaState.page='';iaState.html='';iaState.blocked=true;
  }finally{
   iaState.loading=false;
@@ -126,6 +147,7 @@ const iaOriginalGeneric=genericSection;
 genericSection=function(page){
  if(page==='initiative_permissions')return iaSupervisorView();
  if(!iaPrivatePages.has(page))return iaOriginalGeneric(page);
+ iaExpirePassIfNeeded();
  if(iaState.page===page&&iaState.html){
   let html=iaState.html;
   if(auth.user?.role==='supervisor'&&page==='teaching_initiatives'){
@@ -235,7 +257,9 @@ attach=function(){
   iaState.loading=true;
   try{
    const res=await iaFetch('redeem',{code});
-   iaState.pass=res.token;sessionStorage.setItem(IA_PASS_KEY,res.token);
+   iaState.pass=res.token;iaState.expiresAt=res.expires_at;
+   sessionStorage.setItem(IA_PASS_KEY,res.token);sessionStorage.setItem(IA_PASS_EXPIRY_KEY,res.expires_at);
+   iaSchedulePassExpiry();
    iaState.codeError='';iaState.codeMsg='تمت الموافقة. يمكن الآن مشاهدة المبادرات خلال مدة الجلسة.';
    iaClearView();
   }catch(e){iaState.codeError=e.message}
@@ -310,3 +334,5 @@ if(typeof learning==='function'){
   );
  };
 }
+
+if(typeof window!=='undefined')iaSchedulePassExpiry();
