@@ -191,3 +191,82 @@ flex-direction:row!important;flex-wrap:wrap!important;align-items:stretch!import
 
 /* Text sits on the dark right-hand part of the same stadium photograph. */
 .foot-v10-promo.afaq-stadium-banner,.foot-v10-hero{direction:rtl!important}
+
+/* November 14: national values belong beside the animated Omani-colours strip,
+   not inside the central blue mathematics panel. RTL: ribbon right, card left. */
+.hub-home .afaq-national-top-row{
+ --national-row-height:155px;
+ display:grid!important;direction:rtl!important;
+ grid-template-columns:minmax(0,1fr) 260px!important;
+ gap:13px!important;align-items:stretch!important;
+ width:100%;margin:14px 0 19px!important;padding:0!important;
+ position:relative;z-index:3;min-width:0
+}
+.hub-home .afaq-national-top-row .v9-oman-horizon[data-national-ribbon="true"]{
+ display:block!important;position:relative!important;
+ width:100%!important;height:var(--national-row-height)!important;
+ min-height:var(--national-row-height)!important;max-height:var(--national-row-height)!important;
+ margin:0!important;padding:0!important;
+ border-radius:18px!important;overflow:hidden!important;
+ background:#fff!important;box-shadow:0 7px 19px #244f6a21!important;
+ grid-column:1;grid-row:1;min-width:0
+}
+.hub-home .afaq-national-top-row .v9-oman-horizon[data-national-ribbon="true"]>.afaq-national-ribbon--horizon{
+ width:100%!important;height:100%!important;min-height:0!important;
+ border-radius:18px!important;overflow:hidden!important
+}
+.hub-home .afaq-national-top-row .afaq-national-ribbon--horizon svg{
+ display:block!important;animation:v13NationalTop 5.8s ease-in-out infinite alternate!important;
+ width:110%!important;height:100%!important
+}
+.hub-home .afaq-national-top-row .afaq-hero-national{
+ display:block!important;position:relative!important;top:auto!important;bottom:auto!important;
+ right:auto!important;left:auto!important;z-index:4!important;
+ width:260px!important;min-width:0!important;max-width:260px!important;
+ height:var(--national-row-height)!important;max-height:var(--national-row-height)!important;
+ margin:0!important;padding:0!important;grid-column:2;grid-row:1;direction:rtl!important
+}
+.hub-home .afaq-national-top-row .afaq-hero-national>.afaq-national-card{
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;gap:5px!important;text-align:center!important;
+ width:100%!important;max-width:100%!important;min-height:0!important;
+ height:100%!important;padding:9px 8px!important;margin:0!important;
+ background:#fffdf8!important;border:2px solid #e8d4ab!important;border-radius:18px!important;
+ box-shadow:0 7px 19px #674a2755!important
+}
+.hub-home .afaq-national-top-row .afaq-hero-national .afaq-national-ribbon--card{
+ display:block!important;flex:0 0 68px!important;
+ width:100%!important;height:68px!important;min-height:0!important;
+ margin:0!important;grid-column:auto!important;grid-row:auto!important;
+ border-radius:12px!important;overflow:hidden!important
+}
+.hub-home .afaq-national-top-row .afaq-hero-national>.afaq-national-card>span{
+ display:block!important;font-size:13px!important;font-weight:950!important;line-height:1.5!important;
+ margin:0!important;padding:0!important;text-align:center!important;color:#ab393d!important;
+ grid-column:auto!important;grid-row:auto!important;align-self:auto!important
+}
+.hub-home .afaq-national-top-row .afaq-hero-national>.afaq-national-card>strong{
+ display:block!important;font-size:12px!important;font-weight:900!important;line-height:1.5!important;
+ margin:0!important;padding:0!important;text-align:center!important;color:#184d74!important;
+ grid-column:auto!important;grid-row:auto!important;align-self:auto!important
+}
+@media(max-width:820px){
+ .hub-home .afaq-national-top-row{grid-template-columns:minmax(0,1fr) minmax(170px,31%)!important}
+ .hub-home .afaq-national-top-row .afaq-hero-national{width:100%!important;max-width:none!important}
+}
+@media(max-width:540px){
+ .hub-home .afaq-national-top-row{
+  --national-row-height:132px;
+  grid-template-columns:minmax(0,1fr) 140px!important;gap:8px!important;
+  margin:10px 0 14px!important
+ }
+ .hub-home .afaq-national-top-row .afaq-hero-national>.afaq-national-card{gap:3px!important;padding:5px!important}
+ .hub-home .afaq-national-top-row .afaq-hero-national .afaq-national-ribbon--card{
+  flex-basis:56px!important;height:56px!important
+ }
+ .hub-home .afaq-national-top-row .afaq-hero-national>.afaq-national-card>span{font-size:11px!important}
+ .hub-home .afaq-national-top-row .afaq-hero-national>.afaq-national-card>strong{font-size:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .afaq-national-top-row .afaq-national-ribbon--horizon svg{animation:none!important}
+}
