@@ -150,7 +150,18 @@ async function iaLoadProtected(page){
 }
 const iaOriginalGeneric=genericSection;
 genericSection=function(page){
- if(page==='initiative_permissions')return iaSupervisorView();
+ if(page==='initiative_permissions'){
+  if(auth.user?.role==='supervisor'&&iaState.visibility==='loading'&&!iaState.policyLoading){
+   iaState.policyLoading=true;
+   Promise.resolve().then(async()=>{
+    try{const s=await iaFetch('visibility_status',{},true);
+     iaState.visibility=s.mode;iaState.publicUntil=s.public_until||null;iaScheduleVisibilityExpiry();
+    }catch(e){iaState.adminMsg=e.message;iaState.visibility='permission'}
+    finally{iaState.policyLoading=false;if(state.page==='initiative_permissions')render()}
+   });
+  }
+  return iaSupervisorView();
+ }
  if(!iaPrivatePages.has(page))return iaOriginalGeneric(page);
  iaExpirePassIfNeeded();
  if(iaState.page===page&&iaState.html){
