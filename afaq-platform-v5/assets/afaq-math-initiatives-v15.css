@@ -279,3 +279,31 @@ color:#fff;border:1px solid #b9a36f;border-radius:11px;padding:10px 17px;font-we
  .ia-visibility-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
  .ia-visibility-actions button{width:100%;font-size:13px}
 }
+
+
+/* Safe student first-entry callout */
+.ia-first-login-guide{
+ display:flex;direction:rtl;gap:15px;align-items:center;flex-wrap:wrap;
+ margin:20px 0;padding:19px 21px;background:linear-gradient(120deg,#f2f9ff,#fff6dc);
+ border:2px solid #d5bf88;border-radius:19px;box-shadow:0 8px 21px #34597b23;
+ color:#244d70;box-sizing:border-box;
+}
+.ia-first-login-guide>div:nth-child(2){flex:1 1 340px;min-width:0}
+.ia-first-login-icon{font-size:44px;flex:0 0 auto}
+.ia-first-login-guide h2{color:#173f76!important;font-size:clamp(20px,2.1vw,25px);margin:0 0 7px}
+.ia-first-login-guide p{font-size:14px;line-height:1.85;color:#405e79;margin:0 0 4px}
+.ia-first-login-guide small{color:#847251;font-size:12px;line-height:1.7}
+.ia-first-login-guide button{
+ border:1px solid #d7b374;background:linear-gradient(110deg,#11467b,#1978a8);
+ border-radius:12px;padding:13px 17px;font-weight:950;color:white;font-size:13px;
+ cursor:pointer;flex:0 0 auto
+}
+.ia-first-login-guide button:hover,.ia-first-login-guide button:focus-visible{
+ outline:3px solid #e5ad4f;outline-offset:2px
+}
+.afaq-student-identity{border-right:5px solid #ba963f!important;background:#f5faff!important}
+.afaq-student-identity h3{color:#164d80!important}
+@media(max-width:650px){
+ .ia-first-login-guide{padding:15px;gap:10px}
+ .ia-first-login-guide button{width:100%}
+}
