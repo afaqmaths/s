@@ -277,3 +277,36 @@ if(typeof location!=='undefined'){
   state.page=deep;render();
  }
 }
+
+
+/* Public teasers must not reproduce the hands-on initiatives before permission. */
+function iaReplaceBalancedDiv(html,opening,replacement){
+ const start=html.indexOf(opening);
+ if(start<0)return html;
+ const tags=/<\/?div\b[^>]*>/gi;tags.lastIndex=start;
+ let depth=0,match;
+ while((match=tags.exec(html))){
+  depth+=/^<\s*\/div/i.test(match[0])?-1:1;
+  if(depth===0)return html.slice(0,start)+replacement+html.slice(tags.lastIndex);
+ }
+ return html;
+}
+if(typeof afaqHomeShowcase==='function'){
+ const iaShowcaseBefore=afaqHomeShowcase;
+ afaqHomeShowcase=function(){
+  return iaReplaceBalancedDiv(
+   iaShowcaseBefore(),
+   '<div class="afaq-home-mixer">',
+   '<div class="afaq-home-mixer ia-mixer-preview"><span aria-hidden="true">🔐</span><strong>خلاط الرياضيات من مبادرات الأستاذ سعيد</strong><p>النشاط متاح بعد موافقة المشرف الرئيسي.</p><button type="button" data-route="teaching_initiatives">طلب تصريح مشاهدة</button></div>'
+  );
+ };
+}
+if(typeof learning==='function'){
+ const iaLearningBefore=learning;
+ learning=function(){
+  return iaLearningBefore().replace(
+   /<section class="v10-teaching-initiative">[\s\S]*?<\/section>/,
+   '<section class="v10-teaching-initiative ia-learning-private"><div><b>🔐 مبادرات الأستاذ سعيد</b><h2>مبادرات وأنشطة رياضية بإذن خاص</h2><p>اطلب الإذن من المشرف الرئيسي للاطلاع على المبادرات التعليمية واستخدامها في التعلم.</p></div><div class="v11-teaching-actions"><button type="button" data-route="teaching_initiatives">طلب الإذن والدخول</button></div></section>'
+  );
+ };
+}
