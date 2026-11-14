@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://afaqmaths.github.io/s/afaq-platform-v5/</loc><lastmod>2026-11-13</lastmod></url>
-  <url><loc>https://afaqmaths.github.io/s/afaq-platform-v5/about.html</loc><lastmod>2026-11-13</lastmod></url>
-  <url><loc>https://afaqmaths.github.io/s/afaq-platform-v5/competition.html</loc><lastmod>2026-11-13</lastmod></url>
+  <!-- Public, canonical HTML pages of Afaq Maths / AFAQMATHS. Restricted app views are excluded. -->
+  <url>
+    <loc>https://afaqmaths.github.io/s/afaq-platform-v5/</loc>
+    <lastmod>2026-11-14</lastmod>
+  </url>
+  <url>
+    <loc>https://afaqmaths.github.io/s/afaq-platform-v5/about.html</loc>
+    <lastmod>2026-11-14</lastmod>
+  </url>
+  <url>
+    <loc>https://afaqmaths.github.io/s/afaq-platform-v5/competition.html</loc>
+    <lastmod>2026-11-14</lastmod>
+  </url>
 </urlset>
