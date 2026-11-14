@@ -5,7 +5,7 @@ const IA_API='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-initiat
 const IA_PASS_KEY='afaq_initiative_view_pass_v1';
 const iaPrivatePages=new Set(['teaching_initiatives','initiatives','afaq_multiples','afaq_prime_sieve','mixer','coordinate_ya','division_key']);
 const iaState={
- pass:sessionStorage.getItem(IA_PASS_KEY)||'',loading:false,page:'',html:'',error:'',
+ pass:sessionStorage.getItem(IA_PASS_KEY)||'',loading:false,blocked:false,lastPage:'',lastBearer:'',page:'',html:'',error:'',
  requestMsg:'',codeMsg:'',codeError:'',adminBusy:false,adminRows:null,adminMsg:'',issued:null,
  params:{number:6,index:3,sieveStage:0,answer:'',answerChecked:false}
 };
@@ -13,6 +13,7 @@ const iaEscape=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;',
 const iaArabic=n=>new Intl.NumberFormat('ar-OM',{useGrouping:false}).format(n);
 function iaBearer(forAdmin=false){
  if(forAdmin)return auth.token||'';
+ if(auth.user?.role==='supervisor'&&auth.token)return auth.token;
  return iaState.pass||auth.token||'';
 }
 async function iaFetch(action,payload={},admin=false){
@@ -102,20 +103,20 @@ function iaPreview(){
 }
 initHome=function(){return iaPreview()};
 function iaClearView(){
- iaState.page='';iaState.html='';iaState.error='';
+ iaState.page='';iaState.html='';iaState.error='';iaState.blocked=false;
 }
 async function iaLoadProtected(page){
  if(iaState.loading)return;
- iaState.loading=true;iaState.error='';
+ iaState.loading=true;iaState.error='';iaState.lastBearer=iaBearer();iaState.lastPage=page;
  try{
   const response=await iaFetch('view',{page,params:iaState.params});
   iaState.page=page;
   iaState.html=response.legacy?iaOriginalGeneric(page):response.html;
-  iaState.error='';
+  iaState.blocked=false;iaState.error='';
  }catch(err){
   iaState.error=err.message;
   if(err.reason==='permission_required'){iaState.pass='';sessionStorage.removeItem(IA_PASS_KEY)}
-  iaState.page='';iaState.html='';
+  iaState.page='';iaState.html='';iaState.blocked=true;
  }finally{
   iaState.loading=false;
   if(state.page===page)render();
@@ -132,7 +133,8 @@ genericSection=function(page){
   }
   return html;
  }
- if(!iaState.loading)Promise.resolve().then(()=>iaLoadProtected(page));
+ if(!iaState.loading&&(!iaState.blocked||iaState.lastBearer!==iaBearer()||iaState.lastPage!==page))
+  Promise.resolve().then(()=>iaLoadProtected(page));
  return iaGateView(page);
 };
 async function iaLoadAdmin(){
