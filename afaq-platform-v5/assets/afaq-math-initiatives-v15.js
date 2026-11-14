@@ -7,7 +7,7 @@ const IA_PASS_EXPIRY_KEY=IA_PASS_KEY+'_expires';
 const iaPrivatePages=new Set(['teaching_initiatives','initiatives','afaq_multiples','afaq_prime_sieve','mixer','coordinate_ya','division_key']);
 const iaState={
  pass:sessionStorage.getItem(IA_PASS_KEY)||'',expiresAt:sessionStorage.getItem(IA_PASS_EXPIRY_KEY)||'',loading:false,blocked:false,lastPage:'',lastBearer:'',page:'',html:'',error:'',
- requestMsg:'',codeMsg:'',codeError:'',adminBusy:false,adminRows:null,adminMsg:'',issued:null,
+ requestMsg:'',codeMsg:'',codeError:'',adminBusy:false,adminRows:null,adminMsg:'',issued:null,visibility:'loading',publicUntil:null,
  params:{number:6,index:3,sieveStage:0,answer:'',answerChecked:false}
 };
 const iaEscape=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -26,7 +26,7 @@ async function iaFetch(action,payload={},admin=false){
  if(!response.ok||!result.ok){
   const errors={
    permission_required:'يلزم الحصول على إذن من المشرف قبل الاطلاع على المبادرات.',
-   permission_denied:'لم يتم اعتماد هذا الطلب من المشرف.',
+   permission_denied:'لم يتم اعتماد هذا الطلب من المشرف.',initiative_hidden:'هذه المبادرات مخفية حاليًا بقرار من المشرف الرئيسي.',
    supervisor_only:'هذه العملية متاحة للمشرف الرئيسي فقط.',
    invalid_code:'الرمز غير صحيح، أو انتهت صلاحيته، أو استُخدم من قبل.',
    code_used:'استُخدم هذا الرمز سابقًا، ويجب طلب رمز جديد.',
@@ -129,11 +129,15 @@ async function iaLoadProtected(page){
  iaState.loading=true;iaState.error='';iaState.lastBearer=iaBearer();iaState.lastPage=page;
  try{
   const response=await iaFetch('view',{page,params:iaState.params});
+  iaState.visibility=response.visibility||'permission';iaState.publicUntil=response.public_until||null;
+  iaScheduleVisibilityExpiry();
   iaState.page=page;
   iaState.html=response.legacy?iaOriginalGeneric(page):response.html;
   iaState.blocked=false;iaState.error='';
  }catch(err){
   iaState.error=err.message;
+  if(err.reason==='permission_required')iaState.visibility='permission';
+  if(err.reason==='initiative_hidden')iaState.visibility='hidden';
   if(err.reason==='permission_required'){
    iaState.pass='';iaState.expiresAt='';sessionStorage.removeItem(IA_PASS_KEY);
    sessionStorage.removeItem(IA_PASS_EXPIRY_KEY);
@@ -337,3 +341,77 @@ if(typeof learning==='function'){
 }
 
 if(typeof window!=='undefined')iaSchedulePassExpiry();
+
+
+/* Daily open viewing and supervisor-controlled public / permission / hidden modes. */
+let iaVisibilityTimer=null;
+function iaScheduleVisibilityExpiry(){
+ if(iaVisibilityTimer!==null)window.clearTimeout(iaVisibilityTimer);
+ if(iaState.visibility!=='public'||!iaState.publicUntil)return;
+ const ms=Date.parse(iaState.publicUntil)-Date.now();
+ if(!Number.isFinite(ms)||ms<=0){
+   iaState.visibility='permission';iaClearView();if(iaPrivatePages.has(state.page))render();return;
+ }
+ iaVisibilityTimer=window.setTimeout(()=>{
+  iaState.visibility='loading';iaClearView();
+  if(iaPrivatePages.has(state.page))render();
+ },Math.min(ms+50,2147480000));
+}
+const iaPermissionGateOriginal=iaGateView;
+iaGateView=function(page){
+ if(iaState.visibility==='loading')return '<div class="container ia-page" dir="rtl"><div class="ia-gate ia-loading"><h2>جارٍ التحقق من حالة عرض مبادرات الأستاذ سعيد ...</h2><p>يمكن عرض المبادرات للجميع أو بإذن خاص حسب قرار المشرف.</p></div></div>';
+ if(iaState.visibility==='hidden'&&auth.user?.role!=='supervisor')
+  return '<div class="container ia-page" dir="rtl"><section class="ia-gate"><div class="ia-shield">🔒</div><h1>مبادرات الأستاذ سعيد غير متاحة حاليًا</h1><p>اختار المشرف الرئيسي إخفاء هذا القسم. ويمكنه إظهاره للجميع أو إتاحته بإذن في أي وقت.</p></section></div>';
+ return iaPermissionGateOriginal(page);
+};
+const iaVisibilityAdminOriginal=iaSupervisorView;
+iaSupervisorView=function(){
+ const html=iaVisibilityAdminOriginal();
+ if(auth.user?.role!=='supervisor')return html;
+ const mode=iaState.visibility;
+ const expiry=iaState.publicUntil&&mode==='public'?new Date(iaState.publicUntil).toLocaleString('ar-OM',{timeZone:'Asia/Muscat'}):null;
+ const status=mode==='public'?'متاحة للجميع دون رمز'+(expiry?' حتى '+expiry:''):
+   mode==='hidden'?'مخفية عن جميع الزوار':'تتطلب موافقة ورمز دخول';
+ const policy='<div class="ia-visibility-box" dir="rtl"><h2>صلاحيات عرض المبادرات</h2>'+
+ '<p role="status">الحالة الحالية: <strong>'+iaEscape(status)+'</strong></p>'+
+ '<p>ملاحظة: وضع «متاحة اليوم» يعيد العرض إلى «بإذن» تلقائيًا عند منتصف الليل بتوقيت عُمان.</p>'+
+ '<div class="ia-visibility-actions">'+
+ '<button type="button" data-ia-visibility="public_today">إظهار للجميع حتى نهاية اليوم</button>'+
+ '<button type="button" data-ia-visibility="public">إظهار للجميع دون موعد انتهاء</button>'+
+ '<button type="button" data-ia-visibility="permission">إظهار بإذن ورمز مؤقت</button>'+
+ '<button type="button" data-ia-visibility="hidden">إخفاء المبادرات</button>'+
+ '<button type="button" data-ia-visibility-refresh>تحديث الحالة</button></div></div>';
+ return html.replace('</section>',policy+'</section>');
+};
+function iaTodayMidnightInOman(){
+ const om=new Date(Date.now()+4*60*60*1000);
+ return new Date(Date.UTC(om.getUTCFullYear(),om.getUTCMonth(),om.getUTCDate(),20,0,0)).toISOString();
+}
+async function iaRefreshVisibility(showResult=false){
+ try{const info=await iaFetch('visibility_status');iaState.visibility=info.mode;
+  iaState.publicUntil=info.public_until||null;iaScheduleVisibilityExpiry();
+  if(showResult)iaState.adminMsg='تم تحديث حالة عرض المبادرات';
+ }catch(e){if(showResult)iaState.adminMsg=e.message}
+ if(state.page==='initiative_permissions'&&showResult)render();
+}
+const iaVisibilityAttachBase=attach;
+attach=function(){
+ iaVisibilityAttachBase();
+ document.querySelectorAll('[data-ia-visibility]').forEach(btn=>btn.addEventListener('click',async()=>{
+  if(iaState.adminBusy)return;
+  const requested=btn.dataset.iaVisibility;
+  if(requested==='hidden'&&!window.confirm('هل تريد إخفاء المبادرات عن الزوار الآن؟'))return;
+  iaState.adminBusy=true;iaState.adminMsg='جارٍ تغيير صلاحية عرض المبادرات ...';
+  const mode=requested==='public_today'?'public':requested;
+  const public_until=requested==='public_today'?iaTodayMidnightInOman():null;
+  try{
+   const info=await iaFetch('set_visibility',{mode,public_until},true);
+   iaState.visibility=info.mode;iaState.publicUntil=info.public_until||null;
+   iaState.adminMsg='تم اعتماد صلاحية العرض على الخادم';
+   iaClearView();iaScheduleVisibilityExpiry();
+  }catch(e){iaState.adminMsg=e.message}
+  finally{iaState.adminBusy=false;render()}
+ }));
+ document.querySelector('[data-ia-visibility-refresh]')?.addEventListener('click',()=>iaRefreshVisibility(true));
+};
+if(typeof window!=='undefined'&&auth.user?.role==='supervisor')iaRefreshVisibility();
