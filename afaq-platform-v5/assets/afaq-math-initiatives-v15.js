@@ -1,239 +1,277 @@
-/* AFAQ MATH | Grade 6 mathematics teacher initiatives
- * Zeroth & positive multiples; the Eratosthenes prime sieve (1..100).
- * No changes to student grades or personal data. */
+/* AFAQ MATH — protected initiatives; request, supervisor approval and single-use temporary code.
+   Educational lesson HTML is no longer embedded in this publicly downloadable file. */
 'use strict';
-const amiPrimes=[2,3,5,7];
-const amiState={number:6,index:3,sieveStage:0,answer:'',answerChecked:false,notice:''};
-const amiAr=n=>new Intl.NumberFormat('ar-OM',{useGrouping:false}).format(n);
-const amiMathNum=n=>Number.isFinite(Number(n))?Number(n):NaN;
-function amiFirstDivisor(n){
- for(const p of amiPrimes){if(n>p&&n%p===0)return p}
- return null;
-}
-function amiIsPrime(n){return n>1&&amiFirstDivisor(n)===null}
-function amiStepItems(stage){
- const p=amiPrimes[Math.max(0,stage-1)];
- return stage>0?Array.from({length:100},(_,i)=>i+1).filter(n=>n>p&&n%p===0&&amiFirstDivisor(n)===p):[];
-}
-function amiInitiativeCard(route,emoji,title,summary){
- return '<article class="ami-feature-card">'+
- '<button type="button" data-route="'+route+'" aria-label="فتح '+title+'">'+
- '<span class="ami-feature-art" aria-hidden="true">'+emoji+'</span>'+
- '<span><strong>'+title+'</strong><small>'+summary+'</small></span>'+
- '<span class="ami-feature-arrow" aria-hidden="true">↗</span></button></article>';
-}
-const amiFeatures=[
- ['afaq_multiples','✖️','المضاعفات: من الصفر إلى ما بعده','اكتشف المضاعف الصفري والمضاعفات الموجبة، واحسب أي مضاعف'],
- ['afaq_prime_sieve','🔎','غربال الأعداد الأولية','احذف مضاعفات ٢ ثم ٣ ثم ٥ ثم ٧ في جدول من ١ إلى ١٠٠']
-];
-function amiFeaturesGrid(brief=false){
- return '<section class="ami-feature-section" aria-label="مبادرتان رياضيتان تفاعليتان">'+
- (!brief?'<div class="ami-feature-heading"><span>مبادرات تفاعلية للصف السادس</span><h2>المضاعفات والأعداد الأولية</h2>'+
- '<p>أنشطة استكشافية مستقلة لإثراء ما ورد في الدرس، مع تطبيق عملي وتصحيح ذاتي.</p></div>':'')+
- '<div class="ami-feature-grid">'+amiFeatures.map(x=>amiInitiativeCard(...x)).join('')+'</div></section>';
-}
-/* Add cards even when a supervisor has customized the other initiatives. */
-const amiOldInitHome=initHome;
-initHome=function(){
- const h=amiOldInitHome();
- return h.replace('<div class="v10-init-grid">',amiFeaturesGrid(true)+'<div class="v10-init-grid">');
+const IA_API='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-initiative-access';
+const IA_PASS_KEY='afaq_initiative_view_pass_v1';
+const iaPrivatePages=new Set(['teaching_initiatives','initiatives','afaq_multiples','afaq_prime_sieve','mixer','coordinate_ya','division_key']);
+const iaState={
+ pass:sessionStorage.getItem(IA_PASS_KEY)||'',loading:false,page:'',html:'',error:'',
+ requestMsg:'',codeMsg:'',codeError:'',adminBusy:false,adminRows:null,adminMsg:'',issued:null,
+ params:{number:6,index:3,sieveStage:0,answer:'',answerChecked:false}
 };
-const amiOldInitPage=initPage;
-initPage=function(){
- const h=amiOldInitPage();
- return h.replace('<div class="v10-init-grid v10-init-grid-large">',amiFeaturesGrid(false)+'<div class="v10-init-grid v10-init-grid-large">');
-};
-function amiPageStart(tag,title,desc){
- return '<div class="container ami-page" dir="rtl"><header class="ami-page-head">'+
- '<span>مبادرات الأستاذ سعيد البريكي • الصف السادس</span><h1>'+title+'</h1><p>'+desc+'</p>'+
- '<button type="button" data-route="teaching_initiatives">العودة إلى المبادرات</button></header>'+tag;
+const iaEscape=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const iaArabic=n=>new Intl.NumberFormat('ar-OM',{useGrouping:false}).format(n);
+function iaBearer(forAdmin=false){
+ if(forAdmin)return auth.token||'';
+ return iaState.pass||auth.token||'';
 }
-function amiMultiplesPage(){
- const n=amiState.number,k=amiState.index,value=n*k;
- const calculations=Array.from({length:11},(_,i)=>
- '<div class="ami-multiple-chip'+(i===k?' selected':'')+'"><span>م'+amiAr(i)+'</span><b>'+
- amiAr(n*i)+'</b><small>'+amiAr(n)+' × '+amiAr(i)+'</small></div>').join('');
- return amiPageStart(
- '<section class="ami-info"><h2>ما المقصود برتبة المضاعف؟</h2>'+
- '<p>إذا كان <strong>ن</strong> عددًا طبيعيًا موجبًا، فإن مضاعفاته تبدأ بالصفر، ثم العدد نفسه، ثم ضعفه، ثم ثلاثة أمثاله، وهكذا. نحصل على المضاعف ذي الرتبة <strong>ك</strong> بضرب العدد في ك.</p>'+
- '<div class="ami-formula" dir="ltr">M<sub>k</sub>(n) = n × k &nbsp; (k = 0, 1, 2, 3, ...)</div>'+
- '<div class="ami-three-facts"><article><strong>المضاعف الصفري (م٠)</strong><b>ن × ٠ = ٠</b><small>الصفر مضاعف لكل عدد.</small></article>'+
- '<article><strong>المضاعف الأول الموجب (م١)</strong><b>ن × ١ = ن</b><small>يساوي العدد نفسه، وليس ن × ن.</small></article>'+
- '<article><strong>المضاعف الثاني (م٢)</strong><b>ن × ٢ = ٢ن</b><small>ضعف العدد.</small></article></div>'+
- '<p class="ami-accuracy"><strong>تنبيه مهم:</strong> نضرب العدد في <strong>١</strong> لنحصل على المضاعف الأول الموجب، وليس في نفسه. والحديث عن «المضاعفات الموجبة» يفترض أن العدد المدخل أكبر من الصفر. <strong>الفرق عن العوامل:</strong> العامل يقسم العدد من دون باقٍ، بينما المضاعف ينتج من ضرب العدد في عدد صحيح غير سالب.</p>'+
- '</section>'+
- '<section class="ami-lab"><h2>حاسبة المضاعفات التفاعلية</h2>'+
- '<p>اختر العدد، ثم أدخل رتبة المضاعف (٠ للمضاعف الصفري، ١ للأول الموجب، ٢ للثاني، وهكذا).</p>'+
- '<form id="amiMultipleForm" class="ami-inputs">'+
- '<label>العدد الطبيعي<input name="number" id="amiMultipleNumber" type="number" required min="1" max="9999" step="1" inputmode="numeric" value="'+n+'"></label>'+
- '<label>رتبة المضاعف<input name="index" id="amiMultipleIndex" type="number" required min="0" max="100" step="1" inputmode="numeric" value="'+k+'"></label>'+
- '<button type="submit">احسب المضاعف</button></form>'+
- '<div class="ami-quick-steps" aria-label="رتب سريعة">'+[0,1,2,3,5,10].map(i=>
- '<button type="button" data-ami-ordinal="'+i+'"'+(k===i?' class="current"':'')+'>م'+amiAr(i)+'</button>').join('')+'</div>'+
- '<p class="ami-validation" id="amiValidation" role="status" aria-live="polite">'+amiState.notice+'</p>'+
- '<div class="ami-result"><span>المضاعف '+(k===0?'الصفري':k===1?'الأول الموجب':k===2?'الثاني':('ذو الرتبة '+amiAr(k)))+' للعدد '+amiAr(n)+'</span>'+
- '<strong>'+amiAr(value)+'</strong><p dir="ltr">'+amiAr(n)+' × '+amiAr(k)+' = '+amiAr(value)+'</p></div>'+
- '<h3>لوحة المضاعفات الأولى من ٠ إلى ١٠</h3><div class="ami-multiple-strip">'+calculations+'</div>'+
- '<p class="ami-note">إذا كانت الرتبة أكبر من ١٠، سيظهر ناتجها في الحاسبة حتى إن لم تكن ضمن لوحة المضاعفات الأولى.</p></section>'+
- '</div>',
- 'مبادرة المضاعفات الصفرية والموجبة',
- 'منهجية منظمة تربط جدول الضرب برتبة المضاعف، وتُظهر المضاعف الصفري الذي لا يُبرز دائمًا في الأمثلة المدرسية.'
- );
+async function iaFetch(action,payload={},admin=false){
+ const bearer=iaBearer(admin);
+ const response=await fetch(IA_API,{method:'POST',headers:{
+  'Content-Type':'application/json',...(bearer?{'Authorization':'Bearer '+bearer}:{})
+ },body:JSON.stringify({action,...payload}),cache:'no-store'});
+ let result;try{result=await response.json()}catch{throw Error('تعذر قراءة استجابة خادم الأذونات')}
+ if(!response.ok||!result.ok){
+  const errors={
+   permission_required:'يلزم الحصول على إذن من المشرف قبل الاطلاع على المبادرات.',
+   permission_denied:'لم يتم اعتماد هذا الطلب من المشرف.',
+   supervisor_only:'هذه العملية متاحة للمشرف الرئيسي فقط.',
+   invalid_code:'الرمز غير صحيح، أو انتهت صلاحيته، أو استُخدم من قبل.',
+   code_used:'استُخدم هذا الرمز سابقًا، ويجب طلب رمز جديد.',
+   request_limit:'لقد بلغت الحد المسموح من طلبات الإذن لهذا اليوم.',
+   invalid_request:'أدخل الاسم وسبب طلب الاطلاع بصورة واضحة.',
+   server_error:'تعذر إكمال العملية على الخادم. حاول مرة أخرى.'
+  };
+  const err=new Error(errors[result.error]||'تعذر إكمال العملية: '+(result.error||response.status));
+  err.reason=result.error||'unknown';throw err;
+ }
+ return result;
 }
-function amiSieveGrid(stage,staticGrid=false){
- return '<div class="ami-hundred-grid" role="grid" aria-label="'+(staticGrid?'الجدول الأصلي للأعداد من ١ إلى ١٠٠':'جدول الغربال بعد '+amiAr(stage)+' مراحل')+'">'+
- Array.from({length:100},(_,i)=>{
-  const n=i+1,p=amiFirstDivisor(n),removed=stage>0&&p!==null&&amiPrimes.slice(0,stage).includes(p);
-  const visiblePrime=stage===4&&amiIsPrime(n);
-  const isBasePrime=amiPrimes.slice(0,stage).includes(n);
-  const cls=staticGrid?'':n===1?' ami-unit':removed?' ami-removed ami-by-'+p:
-  visiblePrime?' ami-prime':isBasePrime?' ami-known-prime':'';
-  const label=n===1?'الواحد ليس أوليًا':removed?'حذف لأنه مضاعف للعدد '+p:
-   visiblePrime?'عدد أولي':'العدد '+n;
-  return '<div role="gridcell" class="ami-hundred-cell'+cls+'" title="'+label+'" aria-label="'+label+
-  '"><span>'+amiAr(n)+'</span></div>';
- }).join('')+'</div>';
+function iaGateView(page){
+ const label=page==='afaq_multiples'?'مبادرة المضاعفات الصفرية والموجبة':
+ page==='afaq_prime_sieve'?'مبادرة غربال الأعداد الأولية':'مبادرات الأستاذ سعيد البريكي';
+ return '<div class="container ia-page" dir="rtl"><section class="ia-gate">'+
+ '<div class="ia-shield">🔐</div><span class="ia-eyebrow">محتوى تعليمي محمي بإذن المشرف</span>'+
+ '<h1>'+iaEscape(label)+'</h1>'+
+ '<p>هذه المبادرات من إعداد الأستاذ سعيد بن جمعة بن عبدالله البريكي. يلزم تقديم طلب إذن أو استخدام رمز مشاهدة مؤقت يمنحه المشرف الرئيسي. الرمز صالح للاستعمال مرة واحدة، وتستمر جلسة المشاهدة مدة محدودة.</p>'+
+ (iaState.loading?'<p class="ia-loading" role="status">جارٍ التحقق من إذن الدخول ...</p>':'')+
+ '<div class="ia-forms">'+
+ '<form id="iaRequestForm" class="ia-form"><h2>طلب إذن من الأستاذ سعيد</h2>'+
+ '<label>الاسم<input name="name" maxlength="100" minlength="2" required placeholder="اسم طالب الإذن"></label>'+
+ '<label>وسيلة التواصل (اختيارية)<input name="contact" maxlength="150" placeholder="هاتف أو بريد لاستلام الرد"></label>'+
+ '<label>سبب الاطلاع<textarea name="purpose" rows="3" maxlength="500" minlength="5" required placeholder="مثل: الاستخدام التعليمي في الصف"></textarea></label>'+
+ '<button type="submit"'+(iaState.loading?' disabled':'')+'>إرسال طلب الإذن</button>'+
+ '<p class="ia-form-msg" role="status">'+iaEscape(iaState.requestMsg)+'</p></form>'+
+ '<form id="iaCodeForm" class="ia-form"><h2>لدي رمز دخول مؤقت</h2>'+
+ '<label>الرمز الصادر من المشرف<input name="code" required minlength="12" maxlength="22" autocomplete="one-time-code" dir="ltr" placeholder="AF-XXXX-XXXX-XXXX"></label>'+
+ '<button type="submit"'+(iaState.loading?' disabled':'')+'>التحقق والدخول</button>'+
+ '<p class="ia-form-msg" role="status">'+iaEscape(iaState.codeMsg||iaState.codeError||iaState.error)+'</p>'+
+ '<p class="ia-help">تصل الموافقة من المشرف خارج المنصة؛ لا يصدر هذا النموذج رمزًا تلقائيًا. يمكنك التواصل عبر <a href="https://wa.me/96897414000" target="_blank" rel="noopener noreferrer">واتساب الأستاذ سعيد</a>.</p>'+
+ '</form></div>'+
+ '<div class="ia-credit">© إعداد وإشراف الأستاذ سعيد بن جمعة بن عبدالله البريكي — آفاق ماث. يُمنع النسخ وإعادة النشر أو إعادة النسبة دون موافقة صاحب العمل.</div>'+
+ '<button type="button" class="ia-manage-link" data-route="initiative_permissions">إدارة الأذونات — حساب المشرف الرئيسي</button>'+
+ '</section></div>';
 }
-function amiSieveStepExplanation(){
- const stage=amiState.sieveStage;
- if(stage===0)return 'هذه هي الأعداد من ١ إلى ١٠٠. العدد ١ ليس أوليًا؛ لأنه يملك عاملًا موجبًا واحدًا فقط.';
- if(stage===4)return 'اكتمل الغربال! لم تُحذف الأعداد ٢ و٣ و٥ و٧ نفسها. كل عدد متبقٍ أكبر من ١ هو عدد أولي.';
- const p=amiPrimes[stage-1],deleted=amiStepItems(stage);
- return 'حُذفت الآن '+amiAr(deleted.length)+' أعداد جديدة من مضاعفات '+amiAr(p)+
- '، مع الإبقاء على العدد '+amiAr(p)+' نفسه لأنه أولي. بقيت الأعداد التي لم تُحذف في المراحل السابقة.';
+function iaSupervisorView(){
+ const admin=auth.user?.role==='supervisor';
+ const rows=iaState.adminRows||[];
+ const issued=iaState.issued;
+ return '<div class="container ia-admin" dir="rtl"><section class="ia-admin-header">'+
+ '<h1>إدارة أذونات مبادرات الأستاذ سعيد</h1>'+
+ '<p>الموافقات والرموز تصدر فقط من الحساب المعتمد للمشرف الرئيسي. لا يظهر رمز الدخول إلا عند إصداره، ويُستخدم مرة واحدة خلال ١٥ دقيقة.</p>'+
+ (admin?'<button type="button" id="iaAdminRefresh">تحديث طلبات الإذن</button>':'<button type="button" id="iaAdminLogin">تسجيل الدخول بصفة المشرف الرئيسي</button>')+
+ '<button type="button" data-route="teaching_initiatives">العودة إلى مبادرات الأستاذ سعيد</button></section>'+
+ (!admin?'<p class="ia-warning">يجب أولًا تسجيل الدخول من بوابة المشرف الرئيسي. لا تكفي صلاحيات الطالب أو الزائر أو الإدارة المدرسية أو مساعد المشرف لإصدار الرموز.</p>':
+ '<section class="ia-admin-requests">'+
+ (issued?'<div class="ia-issued" role="status"><strong>رمز جديد — أرسله لصاحب الطلب بصورة خاصة:</strong>'+
+ '<p dir="ltr">'+iaEscape(issued.code)+'</p><small>تنتهي صلاحيته '+iaEscape(new Date(issued.expires_at).toLocaleString('ar-OM',{timeZone:'Asia/Muscat'}))+'</small>'+
+ '<button type="button" id="iaCopyCode">نسخ الرمز</button></div>':'')+
+ '<p class="ia-admin-status" role="status">'+iaEscape(iaState.adminMsg)+'</p>'+
+ (iaState.adminBusy?'<p>جارٍ تحميل الطلبات ...</p>':'')+
+ (rows.length?'<div class="ia-request-list">'+rows.map(r=>
+ '<article class="ia-request-row"><div><span class="ia-status ia-status-'+iaEscape(r.status)+'">'+
+ (r.status==='pending'?'قيد المراجعة':r.status==='approved'?'تمت الموافقة':'مرفوض')+'</span>'+
+ '<strong>'+iaEscape(r.requester_name)+'</strong><small>'+iaEscape(r.requester_contact||'لا توجد وسيلة تواصل مضافة')+'</small>'+
+ '<time>'+iaEscape(new Date(r.requested_at).toLocaleString('ar-OM',{timeZone:'Asia/Muscat'}))+'</time></div>'+
+ '<p>'+iaEscape(r.purpose)+'</p><div class="ia-actions">'+
+ (r.status!=='rejected'?'<button type="button" data-ia-approve="'+iaEscape(r.id)+'">'+
+ (r.status==='approved'?'إصدار رمز جديد':'الموافقة وإصدار رمز')+'</button>':'')+
+ (r.status!=='rejected'?'<button type="button" data-ia-reject="'+iaEscape(r.id)+'">رفض / سحب الإذن</button>':'')+
+ '</div></article>').join('')+'</div>':
+ '<p class="ia-empty">لا توجد طلبات معروضة. اضغط «تحديث طلبات الإذن» للتحقق من الطلبات الجديدة.</p>')+
+ '</section>')+'</div>';
 }
-function amiSievePage(){
- const stage=amiState.sieveStage;
- const primeCount=Array.from({length:100},(_,i)=>i+1).filter(amiIsPrime).length;
- const answer=amiState.answer.trim();
- const checked=amiState.answerChecked,correct=Number(answer)===primeCount;
- const answerMessage=!checked?'':correct?
- 'أحسنت! إجابتك صحيحة: يوجد '+amiAr(primeCount)+' عددًا أوليًا من ١ إلى ١٠٠.':
- 'لم تتطابق الإجابة. احسب الأعداد الباقية بعد حذف المضاعفات، مع استبعاد العدد ١، وحاول مجددًا.';
- const current=amiPrimes[stage]??null;
- const color=[2,3,5,7];
- return amiPageStart(
- '<section class="ami-info"><h2>متى يكون العدد أوليًا؟</h2>'+
- '<p>العدد الأولي عدد طبيعي أكبر من <strong>١</strong> وله <strong>عاملان موجبان فقط</strong>: العدد ١ والعدد نفسه. العدد <strong>١ ليس أوليًا</strong>؛ لأنه له عامل موجب واحد، والعدد <strong>٢ هو العدد الأولي الزوجي الوحيد</strong>؛ لأن أي عدد زوجي آخر يقبل القسمة على ٢.</p>'+
- '<p>نستخدم <strong>غربال إراتوستينس</strong>: نحتفظ بالعدد الأولي ٢ ونحذف مضاعفاته الأكبر منه، ثم نفعل الأمر نفسه مع ٣ و٥ و٧. وبما أن الجذر التربيعي لـ١٠٠ يساوي ١٠، فلا نحتاج إلى تجربة عدد أولي بعد ٧ لفحص الأعداد حتى ١٠٠.</p>'+
- '</section>'+
- '<section class="ami-lab"><h2>جدول الغربال التفاعلي — ١٠ × ١٠</h2>'+
- '<p>نفّذ أوامر الغربال بالترتيب. تتغير ألوان الخلايا بحسب العدد الذي أدى إلى حذفها، وتبقى الأعداد الأولية ظاهرة.</p>'+
- '<div class="ami-sieve-actions"><button type="button" data-ami-reset>ابدأ من جديد</button>'+
- '<button type="button" data-ami-back'+(stage===0?' disabled':'')+'>الخطوة السابقة</button>'+
- amiPrimes.map((p,i)=>'<button type="button" class="ami-step-button ami-step-'+p+
- (stage>i?' completed':'')+'" data-ami-step="'+(i+1)+'"'+(stage!==i?' disabled':'')+'>'+
- (stage>i?'✓ ':'')+'احذف مضاعفات '+amiAr(p)+'</button>').join('')+
- '</div>'+
- '<div class="ami-sieve-progress" role="status" aria-live="polite"><strong>المرحلة '+amiAr(stage)+' من ٤</strong><span>'+
- amiSieveStepExplanation()+'</span></div>'+
- '<div class="ami-sieve-pair">'+
- '<figure class="ami-sieve-figure"><figcaption>الجدول الأصلي — قبل الحذف</figcaption>'+
- '<div class="ami-grid-scroll">'+amiSieveGrid(0,true)+'</div>'+
- '<button type="button" class="ami-export" data-ami-export="initial">تنزيل صورة الجدول الأصلي SVG</button></figure>'+
- '<figure class="ami-sieve-figure"><figcaption>الغربال بعد الخطوة '+amiAr(stage)+'</figcaption>'+
- '<div class="ami-grid-scroll">'+amiSieveGrid(stage)+'</div>'+
- '<button type="button" class="ami-export" data-ami-export="current">تنزيل صورة الغربال الحالي SVG</button></figure>'+
- '</div>'+
- '<div class="ami-legend">'+
- '<span><i class="ami-dot ami-by-2"></i>مضاعفات ٢</span><span><i class="ami-dot ami-by-3"></i>مضاعفات ٣</span>'+
- '<span><i class="ami-dot ami-by-5"></i>مضاعفات ٥</span><span><i class="ami-dot ami-by-7"></i>مضاعفات ٧</span>'+
- '<span><i class="ami-dot ami-prime"></i>الأعداد الأولية</span><span><i class="ami-dot ami-unit"></i>العدد ١ مستبعد</span></div>'+
- '<p class="ami-note">إذا حُذف عدد في خطوة سابقة فلا يُعاد تلوينه في الخطوة اللاحقة. العدد ٢ و٣ و٥ و٧ لا يُحذف كلٌّ منها عند اختيار مضاعفاته.</p>'+
- '</section>'+
- '<section class="ami-lab ami-question"><h2>سؤال استدلالي للطالب</h2>'+
- '<p>كم عدد الأعداد الأولية التي حصلت عليها في التجربة للأعداد المحصورة من <strong>١ إلى ١٠٠</strong>؟</p>'+
- '<form id="amiPrimeAnswer" class="ami-answer-form">'+
- '<label>عدد الأعداد الأولية<input type="number" name="answer" min="0" max="100" step="1" required value="'+(answer||'')+'" placeholder="اكتب العدد هنا"'+(stage<4?' disabled':'')+'></label>'+
- '<button type="submit"'+(stage<4?' disabled':'')+'>تحقق من إجابتي</button></form>'+
- (stage<4?'<p class="ami-note">أكمل مراحل الغربال الأربع أولًا لتفعيل السؤال.</p>':'')+
- (checked?'<p role="status" class="ami-answer-feedback '+(correct?'ami-correct':'ami-tryagain')+'">'+answerMessage+'</p>':'')+
- '</section>'+
- '</div>',
- 'مبادرة غربال الأعداد الأولية',
- 'تجربة بصرية استقصائية لاكتشاف الأعداد الأولية من ١ إلى ١٠٠ بطريقة الحذف المنظّم، وتفسير سبب استبعاد العدد ١.'
- );
+function iaPreview(){
+ return '<section class="v10-init-home ia-init-teaser" aria-label="مبادرات الأستاذ سعيد البريكي">'+
+ '<div class="v10-init-head"><div><span>بصمة تعليمية خاصة</span>'+
+ '<h2>مبادرات الأستاذ سعيد البريكي</h2>'+
+ '<p>أنشطة رياضية مبتكرة تُعرض بإذن المشرف الرئيسي، مع توثيق مصدرها وحقوق إعدادها.</p></div>'+
+ '<button type="button" data-route="teaching_initiatives">طلب إذن أو دخول برمز مؤقت</button></div>'+
+ '<div class="ia-preview-art"><span>🔐</span><strong>المضاعفات • الأعداد الأولية • المبادرات الرياضية</strong>'+
+ '<button type="button" data-route="teaching_initiatives">استكشف المبادرات بتصريح مشاهدة</button></div></section>';
 }
-function amiSieveSVG(stage,plain){
- const colors={2:'#fbe0df',3:'#fce7c5',5:'#dfe8ff',7:'#eadbfa'};
- const stroke={2:'#b83c42',3:'#a86b19',5:'#4461bc',7:'#8752ae'};
- const cells=Array.from({length:100},(_,i)=>{
-  const n=i+1,c=i%10,r=Math.floor(i/10),x=36+c*69,y=115+r*64;
-  const p=amiFirstDivisor(n),removed=!plain&&p!==null&&amiPrimes.slice(0,stage).includes(p);
-  const prime=!plain&&stage===4&&amiIsPrime(n);
-  const unit=!plain&&n===1;
-  const fill=removed?colors[p]:prime?'#bdf2d2':unit?'#e4e7eb':'#fffaf0';
-  const line=removed?'<path d="M'+(x+9)+' '+(y+49)+'L'+(x+49)+' '+(y+8)+'" stroke="'+stroke[p]+'" stroke-width="3.5"/>':'';
-  return '<rect x="'+x+'" y="'+y+'" width="58" height="55" rx="8" fill="'+fill+'" stroke="#c4d7e5" stroke-width="1.5"/>'+
-  '<text x="'+(x+29)+'" y="'+(y+36)+'" font-family="Arial,Tahoma,sans-serif" font-size="26" text-anchor="middle" fill="#203f5c">'+n+'</text>'+line;
- }).join('');
- const subtitle=plain?'1 to 100 (before elimination)':'Completed steps: '+stage+' / 4';
- return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 800" width="760" height="800">'+
- '<rect width="760" height="800" fill="#f7f9ff"/>'+
- '<rect x="22" y="22" width="716" height="68" rx="15" fill="#173d75"/>'+
- '<text x="380" y="52" font-family="Arial,Tahoma,sans-serif" font-size="25" text-anchor="middle" fill="#ffffff">AFAQ MATH — PRIME SIEVE</text>'+
- '<text x="380" y="78" font-family="Arial,Tahoma,sans-serif" font-size="16" text-anchor="middle" fill="#f5db9a">'+subtitle+'</text>'+
- cells+'</svg>';
+initHome=function(){return iaPreview()};
+function iaClearView(){
+ iaState.page='';iaState.html='';iaState.error='';
 }
-function amiDownloadSVG(stage,plain){
- const svg=amiSieveSVG(stage,plain),blob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
- const url=URL.createObjectURL(blob),a=document.createElement('a');
- a.href=url;a.download=plain?'afaq-primes-1-to-100-original.svg':'afaq-prime-sieve-stage-'+stage+'.svg';
- document.body.appendChild(a);a.click();a.remove();
- window.setTimeout(()=>URL.revokeObjectURL(url),1200);
+async function iaLoadProtected(page){
+ if(iaState.loading)return;
+ iaState.loading=true;iaState.error='';
+ try{
+  const response=await iaFetch('view',{page,params:iaState.params});
+  iaState.page=page;
+  iaState.html=response.legacy?iaOriginalGeneric(page):response.html;
+  iaState.error='';
+ }catch(err){
+  iaState.error=err.message;
+  if(err.reason==='permission_required'){iaState.pass='';sessionStorage.removeItem(IA_PASS_KEY)}
+  iaState.page='';iaState.html='';
+ }finally{
+  iaState.loading=false;
+  if(state.page===page)render();
+ }
 }
-const amiBaseGeneric=genericSection;
+const iaOriginalGeneric=genericSection;
 genericSection=function(page){
- if(page==='afaq_multiples')return amiMultiplesPage();
- if(page==='afaq_prime_sieve')return amiSievePage();
- return amiBaseGeneric(page);
-};
-const amiBaseAttach=attach;
-attach=function(){
- amiBaseAttach();
- document.getElementById('amiMultipleForm')?.addEventListener('submit',event=>{
-  event.preventDefault();
-  const f=event.currentTarget,n=Number(f.elements.number.value),k=Number(f.elements.index.value);
-  if(!Number.isInteger(n)||n<1||n>9999||!Number.isInteger(k)||k<0||k>100){
-   const e=document.getElementById('amiValidation');if(e)e.textContent='أدخل عددًا صحيحًا من ١ إلى ٩٩٩٩، ورتبة صحيحة من ٠ إلى ١٠٠.';
-   return;
+ if(page==='initiative_permissions')return iaSupervisorView();
+ if(!iaPrivatePages.has(page))return iaOriginalGeneric(page);
+ if(iaState.page===page&&iaState.html){
+  let html=iaState.html;
+  if(auth.user?.role==='supervisor'&&page==='teaching_initiatives'){
+   html='<div class="ia-owner-actions"><button type="button" data-route="initiative_permissions">إدارة أذونات المبادرات</button></div>'+html;
   }
-  amiState.number=n;amiState.index=k;amiState.notice='';render();
- });
+  return html;
+ }
+ if(!iaState.loading)Promise.resolve().then(()=>iaLoadProtected(page));
+ return iaGateView(page);
+};
+async function iaLoadAdmin(){
+ if(iaState.adminBusy)return;
+ iaState.adminBusy=true;iaState.adminMsg='';
+ try{const response=await iaFetch('admin_list',{},true);iaState.adminRows=response.requests;}
+ catch(err){iaState.adminMsg=err.message;}
+ finally{iaState.adminBusy=false;if(state.page==='initiative_permissions')render();}
+}
+function iaInputs(result){
+ const current=iaState.params;
+ const ints=['number','index'];
+ const NumberEl=k=>document.getElementById(k);
+ if(NumberEl('amiMultipleForm')){
+  document.getElementById('amiMultipleForm').addEventListener('submit',event=>{
+   event.preventDefault();const form=event.currentTarget;
+   const n=Number(form.elements.number.value),k=Number(form.elements.index.value);
+   if(!Number.isInteger(n)||n<1||n>9999||!Number.isInteger(k)||k<0||k>100){
+    const msg=document.getElementById('amiValidation');if(msg)msg.textContent='أدخل عددًا من ١ إلى ٩٩٩٩ ورتبة من ٠ إلى ١٠٠.';
+    return;
+   }
+   current.number=n;current.index=k;iaClearView();render();
+  });
+ }
  document.querySelectorAll('[data-ami-ordinal]').forEach(button=>button.addEventListener('click',()=>{
   const raw=Number(document.getElementById('amiMultipleNumber')?.value);
-  const k=Number(button.dataset.amiOrdinal);
-  if(Number.isInteger(raw)&&raw>=1&&raw<=9999)amiState.number=raw;
-  amiState.index=k;amiState.notice='';render();
+  if(Number.isInteger(raw)&&raw>=1&&raw<=9999)current.number=raw;
+  current.index=Number(button.dataset.amiOrdinal);iaClearView();render();
  }));
  document.querySelector('[data-ami-reset]')?.addEventListener('click',()=>{
-  amiState.sieveStage=0;amiState.answer='';amiState.answerChecked=false;render();
+  current.sieveStage=0;current.answer='';current.answerChecked=false;iaClearView();render();
  });
  document.querySelector('[data-ami-back]')?.addEventListener('click',()=>{
-  amiState.sieveStage=Math.max(0,amiState.sieveStage-1);
-  amiState.answer='';amiState.answerChecked=false;render();
+  current.sieveStage=Math.max(0,current.sieveStage-1);
+  current.answer='';current.answerChecked=false;iaClearView();render();
  });
- document.querySelectorAll('[data-ami-step]').forEach(button=>button.addEventListener('click',()=>{
-  const next=Number(button.dataset.amiStep);
-  if(next!==amiState.sieveStage+1)return;
-  amiState.sieveStage=next;amiState.answer='';amiState.answerChecked=false;render();
+ document.querySelectorAll('[data-ami-step]').forEach(btn=>btn.addEventListener('click',()=>{
+  const step=Number(btn.dataset.amiStep);
+  if(step!==current.sieveStage+1)return;
+  current.sieveStage=step;current.answer='';current.answerChecked=false;iaClearView();render();
  }));
  document.getElementById('amiPrimeAnswer')?.addEventListener('submit',event=>{
-  event.preventDefault();if(amiState.sieveStage!==4)return;
-  amiState.answer=event.currentTarget.elements.answer.value.trim();
-  amiState.answerChecked=true;render();
+  event.preventDefault();
+  if(current.sieveStage!==4)return;
+  current.answer=event.currentTarget.elements.answer.value.trim().replace(/[^0-9]/g,'').slice(0,3);
+  current.answerChecked=true;iaClearView();render();
  });
- document.querySelectorAll('[data-ami-export]').forEach(button=>button.addEventListener('click',()=>{
-  const plain=button.dataset.amiExport==='initial';
-  amiDownloadSVG(plain?0:amiState.sieveStage,plain);
+ document.querySelectorAll('[data-ami-export]').forEach(btn=>btn.addEventListener('click',()=>{
+  const plain=btn.dataset.amiExport==='initial';
+  iaDownloadSieve(plain?0:current.sieveStage,plain);
  }));
+}
+function iaNumberPrime(n){
+ if(n<2)return false;
+ for(let x=2;x*x<=n;x++)if(n%x===0)return false;
+ return true;
+}
+function iaSieveColor(n,stage){
+ if(n===1)return stage?'#e4e7eb':'#fffaf0';
+ for(const [i,p] of [2,3,5,7].entries()){
+  if(i<stage&&n>p&&n%p===0)return {2:'#fbe0df',3:'#fce7c5',5:'#dfe8ff',7:'#eadbfa'}[p];
+ }
+ return stage===4&&iaNumberPrime(n)?'#bdf2d2':'#fffaf0';
+}
+function iaDownloadSieve(stage,plain){
+ const cells=Array.from({length:100},(_,i)=>{
+  const n=i+1,c=i%10,r=Math.floor(i/10),x=36+c*69,y=115+r*64;
+  return '<rect x="'+x+'" y="'+y+'" width="58" height="55" rx="8" fill="'+iaSieveColor(n,plain?0:stage)+'" stroke="#c4d7e5"/>'+
+  '<text x="'+(x+29)+'" y="'+(y+35)+'" text-anchor="middle" font-family="Tahoma,Arial" font-size="25" fill="#21415d">'+n+'</text>';
+ }).join('');
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 800">'+
+ '<rect width="760" height="800" fill="#f7f9ff"/><rect x="22" y="22" width="716" height="68" rx="15" fill="#173d75"/>'+
+ '<text x="380" y="55" text-anchor="middle" font-size="24" font-family="Tahoma,Arial" fill="white">AFAQ MATH - PRIME SIEVE</text>'+
+ '<text x="380" y="77" text-anchor="middle" font-size="15" font-family="Tahoma,Arial" fill="#ffdfa2">© سعيد جمعة عبدالله البريكي — المرحلة '+(plain?0:stage)+'</text>'+
+ cells+'</svg>';
+ const obj=new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(obj),a=document.createElement('a');
+ a.href=url;a.download=plain?'afaq-original-1-100.svg':'afaq-prime-sieve-'+stage+'.svg';
+ document.body.appendChild(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(url),1200);
+}
+const iaAttachBase=attach;
+attach=function(){
+ iaAttachBase();
+ document.getElementById('iaRequestForm')?.addEventListener('submit',async event=>{
+  event.preventDefault();if(iaState.loading)return;
+  const f=event.currentTarget;
+  const vals={name:f.elements.name.value.trim(),contact:f.elements.contact.value.trim(),purpose:f.elements.purpose.value.trim()};
+  iaState.loading=true;
+  try{
+   const res=await iaFetch('request',vals);
+   iaState.requestMsg='تم تسجيل طلب الإذن برقم '+res.id+'؛ راجع المشرف الرئيسي لمتابعة الموافقة واستلام الرمز.';
+   f.reset();
+  }catch(e){iaState.requestMsg=e.message}
+  finally{iaState.loading=false;render()}
+ });
+ document.getElementById('iaCodeForm')?.addEventListener('submit',async event=>{
+  event.preventDefault();if(iaState.loading)return;
+  const code=event.currentTarget.elements.code.value.trim();
+  iaState.loading=true;
+  try{
+   const res=await iaFetch('redeem',{code});
+   iaState.pass=res.token;sessionStorage.setItem(IA_PASS_KEY,res.token);
+   iaState.codeError='';iaState.codeMsg='تمت الموافقة. يمكن الآن مشاهدة المبادرات خلال مدة الجلسة.';
+   iaClearView();
+  }catch(e){iaState.codeError=e.message}
+  finally{iaState.loading=false;render()}
+ });
+ document.getElementById('iaAdminLogin')?.addEventListener('click',()=>{
+  if(typeof selectEntryGate==='function')selectEntryGate('supervision');
+  else document.getElementById('accountBtn')?.click();
+ });
+ document.getElementById('iaAdminRefresh')?.addEventListener('click',iaLoadAdmin);
+ document.querySelectorAll('[data-ia-approve]').forEach(button=>button.addEventListener('click',async()=>{
+  iaState.adminBusy=true;iaState.issued=null;
+  try{
+   const res=await iaFetch('approve',{id:button.dataset.iaApprove},true);
+   iaState.issued={code:res.code,expires_at:res.expires_at};
+   iaState.adminMsg='تم إصدار رمز مؤقت. شاركه مع صاحب الطلب برسالة خاصة.';
+   const list=await iaFetch('admin_list',{},true);iaState.adminRows=list.requests;
+  }catch(e){iaState.adminMsg=e.message}
+  finally{iaState.adminBusy=false;render()}
+ }));
+ document.querySelectorAll('[data-ia-reject]').forEach(button=>button.addEventListener('click',async()=>{
+  if(!window.confirm('هل تريد رفض هذا الطلب وسحب أي إذن مشاهدة مرتبط به؟'))return;
+  iaState.adminBusy=true;
+  try{
+   await iaFetch('reject',{id:button.dataset.iaReject},true);
+   const list=await iaFetch('admin_list',{},true);iaState.adminRows=list.requests;
+   iaState.adminMsg='تم رفض الطلب وإبطال الجلسات المرتبطة به.';
+  }catch(e){iaState.adminMsg=e.message}
+  finally{iaState.adminBusy=false;render()}
+ }));
+ document.getElementById('iaCopyCode')?.addEventListener('click',()=>{
+  if(iaState.issued?.code)navigator.clipboard?.writeText(iaState.issued.code);
+ });
+ if(iaPrivatePages.has(state.page)&&iaState.page===state.page&&iaState.html)iaInputs();
 };
-
-/* Restore direct links to the activities after the existing router initializes. */
-if(typeof window!=='undefined'&&typeof location!=='undefined'){
- const requested=decodeURIComponent((location.hash||'').slice(1));
- if(['afaq_multiples','afaq_prime_sieve'].includes(requested)){
-  state.page=requested;
-  render();
+if(typeof location!=='undefined'){
+ const deep=(location.hash||'').slice(1);
+ if(iaPrivatePages.has(deep)||deep==='initiative_permissions'){
+  state.page=deep;render();
  }
 }
