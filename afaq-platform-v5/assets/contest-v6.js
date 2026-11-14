@@ -91,7 +91,7 @@ const units=g=>g===6?4:2;
 const splitSyllabus={5:[{name:'الأعداد والهندسة',topics:'الوحدتان ١أ الأعداد و١ب الهندسة'},{name:'القياس والأعداد',topics:'الوحدتان ١ج القياس و٢أ الأعداد'}],7:[{name:'الأعداد والجبر والأعداد العشرية والقياس',topics:'الوحدات ١–٤'},{name:'الزوايا والكسور والمساحة والنسب المئوية',topics:'الوحدات ٥–٨'}],8:[{name:'الأعداد والقوى والشبكات والزوايا والكسور',topics:'الوحدات ١–٤'},{name:'الجبر والمساحة والحجم والاحتمالات والنسب المئوية',topics:'الوحدات ٥–٨'}]};
 const unitName=(g,s)=>g===6?['الأعداد (١)','القياس','الهندسة','الأعداد (٢)'][s-1]:'القسم '+s+' — '+(splitSyllabus[g]?.[s-1]?.name||'النصف '+(s===1?'الأول':'الثاني'));
 const codeError={unauthorized:'انتهت الجلسة، ادخل إلى منصة آفاق أولًا.',forbidden:'هذا الإجراء غير متاح لهذا الحساب.',
- training_unavailable:'نموذج التدريب غير متاح حاليًا.',official_requires_individual_student_account:'تحتاج المحاولات الرسمية إلى حساب طالب فردي.',
+ training_unavailable:'نموذج التدريب غير متاح حاليًا.',official_requires_individual_student_account:'تحتاج المحاولات الرسمية إلى حساب طالب فردي.',password_change_required:'🔒 غيّر رقمك السري بنفسك في حسابك بالمنصة، ثم عد إلى المسابقة.',
  attempt_limit:'استنفدت المحاولتين الرسميتين للوحدة. لا يمكنك إنشاء محاولة أخرى إلا بعد إعادة الضبط من المشرف.',previous_section_required:'أكمل الوحدة السابقة أولًا.',
  weekly_locked:'لم يمض أسبوع على بداية الوحدة السابقة بعد.',official_model_not_approved:'لم تُعتمد أسئلة المنافسة الرسمية بعد، ويمكنك استخدام التدريب.',
  question_bank_incomplete:'لا تزال بعض الأسئلة قيد المراجعة.',stage_start_required:'اضغط إذن بدء المرحلة أولًا.',stage_not_ready:'المرحلة ليست جاهزة للانطلاق.',question_sequence_changed:'تم تحديث تسلسل الأسئلة؛ عد إلى بوابة الوحدة واستأنف.',invalid_parts:'بيانات السؤال المركب غير صحيحة.'};
@@ -554,10 +554,15 @@ function result(){
  (r.training&&r.details?'<details class="contest-review"><summary>مراجعة الأسئلة والإجابات</summary>'+r.details.map((x,i)=>'<p>السؤال '+stext(i+1)+' : '+stext(x.earned)+' / '+stext(x.max)+' نقطة — '+friendly(x.explanation||'')+'</p>').join('')+'</details>':'')+
  '<button class="outline" id="returnHome">العودة إلى الوحدات والنتائج</button></div>';
 }
+function passwordChangeLock(){return '<div class="contest-lock" dir="rtl"><div class="contest-icon">🔐</div>'+
+ '<h2>دخول مسابقة نجوم آفاق مغلق مؤقتًا لحسابك</h2>'+
+ '<p>يجب أن تغيّر الرقم السري الأولي بنفسك من لوحة حسابك في منصة آفاق ماث؛ ثم تعود إلى المسابقة باستخدام الرقم الجديد. تبقى الدروس وبقية الأنشطة متاحة لك.</p>'+
+ '<a class="primary" href="index.html#dashboard">🔑 الانتقال إلى حسابي لتغيير الرقم السري</a> '+
+ '<a class="outline" href="index.html">العودة إلى المنصة</a></div>';}
 function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><div class="contest-guest-links"><a href="index.html#competition" class="primary">🔐 الدخول بالحساب المعتمد</a> <a href="index.html#home" class="outline">📚 التصفح كضيف دون تسجيل دخول</a></div></div>'}
 function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
- root.innerHTML=!STATE.user?guest():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
+ root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
   if(isTester()&&!document.getElementById('leaveTester'))root.insertAdjacentHTML('afterbegin',
    '<div class="contest-tester-active"><span>🎓 تعمل الآن بصفحة الطالب التجريبي '+stext(STATE.testerProfile)+'</span>'+
    '<button class="outline" id="leaveTester">العودة إلى دائرة الإشراف</button></div>');
