@@ -84,7 +84,8 @@ function iaSupervisorView(){
  '<article class="ia-request-row"><div><span class="ia-status ia-status-'+iaEscape(r.status)+'">'+
  (r.status==='pending'?'قيد المراجعة':r.status==='approved'?'تمت الموافقة':'مرفوض')+'</span>'+
  '<strong>'+iaEscape(r.requester_name)+'</strong><small>'+iaEscape(r.requester_contact||'لا توجد وسيلة تواصل مضافة')+'</small>'+
- '<time>'+iaEscape(new Date(r.requested_at).toLocaleString('ar-OM',{timeZone:'Asia/Muscat'}))+'</time></div>'+
+ '<time>'+iaEscape(new Date(r.requested_at).toLocaleString('ar-OM',{timeZone:'Asia/Muscat'}))+'</time>'+ 
+ (r.last_code_used_at?'<small class="ia-used-at">وقت استخدام آخر رمز: '+iaEscape(new Date(r.last_code_used_at).toLocaleString('ar-OM',{timeZone:'Asia/Muscat'}))+'</small>':'')+'</div>'+
  '<p>'+iaEscape(r.purpose)+'</p><div class="ia-actions">'+
  (r.status!=='rejected'?'<button type="button" data-ia-approve="'+iaEscape(r.id)+'">'+
  (r.status==='approved'?'إصدار رمز جديد':'الموافقة وإصدار رمز')+'</button>':'')+
