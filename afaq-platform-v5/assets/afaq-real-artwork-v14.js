@@ -69,13 +69,16 @@ hubHome=function(){
   html=html.replace(topRibbon,'<div class="afaq-national-top-row" aria-label="القيم الوطنية وألوان العلم العماني">'+topRibbon);
   html=html.replace(heroStart,national+'</div>'+heroStart);
  }
+ const signatureMatch=html.match(/<div class="v10-teacher-signature">[\s\S]*?<\/div>/);
+ const signature=signatureMatch?signatureMatch[0]:'';
+ if(signatureMatch)html=html.replace(signatureMatch[0],'');
  const insert=afaqLessonGallery('left')+afaqLessonGallery('right');
  html=html.replace('<div class="afaq-hero-content">',insert+'<div class="afaq-hero-content">'+afaqElectricBlueLines()+'<div class="afaq-center-inner">');
  html=html.replace('نتعلّم • نكتشف • نبدع — رياضيات كامبردج من المفهوم إلى التطبيق والاستدلال',
    'نتعلّم • نكتشف • نبدع — رياضيات كامبردج من الفهم إلى التطبيق والاستدلال');
  html=html.replace('<button type="button" class="hub-primary" data-route="learning">ابدأ رحلتك في الرياضيات</button></div>',
    '<p class="afaq-blue-explainer">للصفوف الخامس والسادس والسابع والثامن • دروس وأنشطة واختبارات ومسابقات تفاعلية</p>'+
-   '<button type="button" class="hub-primary" data-route="learning">ابدأ رحلتك في الرياضيات</button></div></div>');
+   '<button type="button" class="hub-primary" data-route="learning">ابدأ رحلتك في الرياضيات</button></div>'+signature+'</div>');
  return html;
 };
 /* One image-backed stadium banner; no split image next to a blue information box. */
