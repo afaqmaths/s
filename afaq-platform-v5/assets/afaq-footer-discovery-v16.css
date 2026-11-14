@@ -1,0 +1,92 @@
+/* Four working discovery choices next to the existing science-news card and protected mixer. */
+.afaq-home-showcase .afaq-home-side{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:repeat(5,minmax(0,1fr))!important;
+ gap:10px!important;align-items:stretch!important;min-height:0!important
+}
+.afaq-home-showcase .afaq-science-card{
+ position:relative;min-width:0!important;min-height:92px!important;height:auto!important;
+ padding:11px 13px!important;gap:4px!important;
+ border:2px solid #b7d4e4!important;border-radius:17px!important;
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ justify-content:center!important;background:linear-gradient(115deg,#eaf5ff,#f8edff)!important;
+ text-align:right!important
+}
+.afaq-home-showcase .afaq-science-card>span{font-size:clamp(12px,1.12vw,16px)!important;line-height:1.4!important;color:#27598e}
+.afaq-home-showcase .afaq-science-card strong{font-size:clamp(12px,1.12vw,16px)!important;line-height:1.4!important;color:#29437b}
+.afaq-home-showcase .afaq-science-card small{font-size:clamp(10px,.85vw,12px)!important;line-height:1.55!important}
+.afaq-home-showcase .afaq-footer-topic{
+ position:relative;direction:rtl!important;min-width:0!important;min-height:92px!important;
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex-direction:row!important;gap:9px!important;
+ margin:0!important;padding:11px 9px!important;border-radius:17px!important;
+ border:2px solid #c5d9eb!important;background:linear-gradient(120deg,#eff8ff,#dcefff)!important;
+ box-shadow:0 5px 15px #24578119!important;
+ text-align:right!important;text-decoration:none!important;
+ cursor:pointer!important;transition:transform .17s ease,box-shadow .17s ease!important;
+ box-sizing:border-box!important
+}
+.afaq-home-showcase .afaq-footer-topic:hover,
+.afaq-home-showcase .afaq-footer-topic:focus-visible{
+ transform:translateY(-2px)!important;box-shadow:0 10px 23px #24578131!important;
+ outline:2px solid #2d82b5!important;outline-offset:1px!important
+}
+.afaq-home-showcase .afaq-footer-topic--audio{background:linear-gradient(130deg,#eef4ff,#f8eaff)!important;border-color:#cbbfed!important}
+.afaq-home-showcase .afaq-footer-topic--youtube{background:linear-gradient(130deg,#fff9f6,#ffe9e2)!important;border-color:#edc7bd!important}
+.afaq-home-showcase .afaq-footer-topic--history{background:linear-gradient(130deg,#fff9e7,#f3e8cb)!important;border-color:#e2cda0!important}
+.afaq-home-showcase .afaq-footer-topic--games{background:linear-gradient(130deg,#ecfff2,#dff4ff)!important;border-color:#b9ddd0!important}
+.afaq-home-showcase .afaq-footer-icon{
+ flex:0 0 48px!important;width:48px!important;height:49px!important;
+ border-radius:13px!important;background:#fffdf8!important;border:1px solid #cedce8!important;
+ box-shadow:0 2px 7px #24578113!important;
+ display:grid!important;place-items:center!important;font-size:31px!important;line-height:1!important
+}
+.afaq-home-showcase .afaq-footer-icon svg{width:38px!important;height:31px!important;display:block!important}
+.afaq-home-showcase .afaq-footer-topic-text{
+ display:flex!important;flex:1 1 auto!important;flex-direction:column!important;gap:5px!important;
+ align-items:flex-start!important;min-width:0!important;text-align:right!important
+}
+.afaq-home-showcase .afaq-footer-topic-text>strong{
+ font-size:clamp(12px,1.13vw,16px)!important;line-height:1.4!important;
+ color:#204976!important;font-weight:950!important;overflow-wrap:anywhere!important
+}
+.afaq-home-showcase .afaq-footer-topic-text>small{
+ font-size:clamp(10px,.88vw,12px)!important;line-height:1.6!important;
+ color:#65778a!important;font-weight:750!important;overflow-wrap:anywhere!important
+}
+.afaq-home-showcase .afaq-footer-topic-arrow{
+ flex:0 0 11px!important;color:#b88735!important;font-size:14px!important
+}
+.afaq-home-showcase .afaq-home-mixer.ia-mixer-preview{
+ min-height:100%!important;height:100%!important;align-self:stretch!important;
+ box-shadow:inset 0 0 65px #d6e8ff!important
+}
+.afaq-home-showcase .afaq-home-mixer.ia-mixer-preview strong{font-size:clamp(18px,2vw,26px)!important}
+.afaq-home-showcase .afaq-home-mixer.ia-mixer-preview>span{font-size:64px!important}
+@media(max-width:1220px){
+ .afaq-home-showcase .afaq-footer-topic{gap:6px!important;padding:10px 7px!important}
+ .afaq-home-showcase .afaq-footer-icon{flex-basis:39px!important;width:39px!important;height:42px!important;font-size:27px!important}
+ .afaq-home-showcase .afaq-footer-icon svg{width:34px!important}
+}
+@media(max-width:1020px){
+ .afaq-home-showcase .afaq-home-side{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:repeat(5,minmax(86px,auto))!important}
+ .afaq-home-showcase .afaq-science-card,.afaq-home-showcase .afaq-footer-topic{min-height:86px!important}
+ .afaq-home-showcase .afaq-footer-topic-text strong{font-size:15px!important}
+ .afaq-home-showcase .afaq-footer-topic-text small{font-size:12px!important}
+}
+@media(max-width:730px){
+ .afaq-home-showcase .afaq-home-side{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:auto!important;
+  gap:10px!important
+ }
+ .afaq-home-showcase .afaq-science-card,.afaq-home-showcase .afaq-footer-topic{min-height:106px!important}
+ .afaq-home-showcase .afaq-footer-topic{align-items:center!important}
+ .afaq-home-showcase .afaq-home-mixer.ia-mixer-preview{min-height:220px!important;height:auto!important}
+}
+@media(max-width:480px){
+ .afaq-home-showcase .afaq-home-side{grid-template-columns:minmax(0,1fr)!important}
+ .afaq-home-showcase .afaq-science-card,.afaq-home-showcase .afaq-footer-topic{min-height:95px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .afaq-home-showcase .afaq-footer-topic{transition:none!important}
+}
