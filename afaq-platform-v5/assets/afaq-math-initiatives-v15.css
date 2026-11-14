@@ -1,0 +1,136 @@
+/* Two interactive Grade 6 math initiatives: multiples and the prime sieve. */
+.ami-feature-section{margin:15px 0 21px}
+.ami-feature-heading{padding:3px 3px 14px}
+.ami-feature-heading span{display:block;color:#ae7a2d;font-size:13px;font-weight:900}
+.ami-feature-heading h2{font-size:clamp(23px,3vw,34px);margin:4px 0;color:#123e75}
+.ami-feature-heading p{font-size:14px;color:#5e7891;margin:0;line-height:1.8}
+.ami-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ami-feature-card{min-width:0;overflow:hidden;border:2px solid #d4e4f1;border-radius:18px;background:linear-gradient(130deg,#fff8e5,#e7f3fd);box-shadow:0 9px 20px #345f861c}
+.ami-feature-card:nth-child(2){background:linear-gradient(130deg,#eef9ff,#e9f5e8);border-color:#cde2d9}
+.ami-feature-card>button{width:100%;display:flex;align-items:center;gap:13px;padding:17px 14px;cursor:pointer;direction:rtl;text-align:right;background:transparent;border:0;min-height:117px}
+.ami-feature-card>button:hover,.ami-feature-card>button:focus-visible{background:#ffffff9a;outline:3px solid #3c91ba;outline-offset:-3px}
+.ami-feature-art{display:grid;flex:0 0 64px;place-items:center;width:64px;height:67px;font-size:42px;border:1px solid #d5dbe8;background:#fff9ee;border-radius:16px}
+.ami-feature-card>button>span:nth-child(2){display:grid;flex:1;gap:7px;min-width:0}
+.ami-feature-card strong{font-size:clamp(15px,1.65vw,20px);color:#123e76;line-height:1.5;font-weight:950}
+.ami-feature-card small{color:#58728a;font-size:13px;line-height:1.75;font-weight:700}
+.ami-feature-arrow{color:#ba812f;font-size:24px}
+.ami-page{max-width:1250px;margin:22px auto 44px!important;direction:rtl;color:#173b60}
+.ami-page-head{background:linear-gradient(125deg,#082653,#1c6094);color:#fff;padding:29px 30px;border:2px solid #bba36d;border-radius:23px;margin:0 0 22px}
+.ami-page-head>span{color:#f6d99e;font-size:14px;font-weight:950}
+.ami-page-head h1{font-size:clamp(26px,3.4vw,43px);line-height:1.4;color:#fff!important;margin:9px 0}
+.ami-page-head p{color:#eff8ff;font-size:15px;line-height:2;max-width:970px}
+.ami-page-head button{border:1px solid #e8c685;border-radius:11px;background:#f9deaa;color:#24456b;font-weight:900;padding:11px 17px;cursor:pointer}
+.ami-info,.ami-lab{border:1px solid #d6e4ed;background:#fff;border-radius:20px;padding:24px 27px;margin-bottom:20px;box-shadow:0 9px 24px #1a466f16}
+.ami-info{background:linear-gradient(150deg,#fffaf0,#f7fbff)}
+.ami-info h2,.ami-lab h2{font-size:clamp(21px,2.4vw,30px);color:#164d81!important;margin:0 0 14px}
+.ami-lab h3{font-size:20px;color:#275987;margin:22px 0 13px}
+.ami-info p,.ami-lab p{font-size:15px;color:#385773;line-height:2;margin:10px 0}
+.ami-info strong,.ami-lab strong{color:#195487}
+.ami-formula{display:block;text-align:center;direction:ltr;font-size:clamp(19px,2.6vw,32px);font-weight:900;letter-spacing:.6px;color:#164878;margin:21px 0;padding:17px 12px;background:#e6f3fb;border:2px solid #bcd9ea;border-radius:14px}
+.ami-three-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ami-three-facts article{display:flex;flex-direction:column;gap:9px;align-items:center;text-align:center;background:#fff;border:1px solid #d6e3eb;border-radius:14px;padding:17px 9px}
+.ami-three-facts article:first-child{background:#f5f7ff}
+.ami-three-facts article:nth-child(2){background:#f5fcf5}
+.ami-three-facts article:nth-child(3){background:#fff9ec}
+.ami-three-facts article strong{font-size:14px;color:#25557b;line-height:1.65}
+.ami-three-facts article b{font-size:22px;color:#ad712b}
+.ami-three-facts article small{font-size:12px;line-height:1.75;color:#52697d}
+.ami-info .ami-accuracy{margin-top:18px;background:#fff1d4;border-right:5px solid #d5a14d;padding:11px 17px;border-radius:11px;color:#684c24}
+.ami-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) auto;gap:14px;align-items:end}
+.ami-inputs label,.ami-answer-form label{display:grid;gap:7px;font-size:14px;font-weight:900;color:#24577b}
+.ami-inputs input,.ami-answer-form input{width:100%;font:800 18px Tahoma,Arial,sans-serif;border:2px solid #bad2e1;border-radius:11px;padding:12px 14px;background:white;color:#173e66;box-sizing:border-box}
+.ami-inputs input:focus,.ami-answer-form input:focus{outline:3px solid #73c9e7;outline-offset:2px}
+.ami-inputs button,.ami-answer-form button{border:1px solid #e1c17d;border-radius:11px;background:linear-gradient(125deg,#15598a,#153a74);color:#fff;cursor:pointer;padding:14px 18px;font-size:14px;font-weight:900}
+.ami-inputs button:hover,.ami-answer-form button:hover{filter:brightness(1.12)}
+.ami-quick-steps{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+.ami-quick-steps button{font:900 15px Tahoma,Arial,sans-serif;color:#1c5b88;border:1px solid #bed6e4;border-radius:11px;background:#f1f9ff;padding:9px 17px;cursor:pointer}
+.ami-quick-steps button.current{background:#22598b;border-color:#22598b;color:#fff}
+.ami-validation{min-height:12px;color:#b22f3f!important;font-weight:900;margin:5px 0!important}
+.ami-result{display:grid;justify-items:center;text-align:center;gap:5px;background:linear-gradient(120deg,#0c315f,#165888);border:2px solid #d2ad69;border-radius:22px;padding:20px;color:#fff}
+.ami-result span{font-size:16px;color:#f5deac;font-weight:900}
+.ami-result strong{font-size:clamp(43px,6vw,78px)!important;color:#fff!important;line-height:1.3}
+.ami-result p{font-size:clamp(18px,2.3vw,30px);color:#cdefff!important;margin:2px 0!important;direction:ltr}
+.ami-multiple-strip{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:7px;direction:rtl}
+.ami-multiple-chip{min-width:0;padding:10px 3px;border:1px solid #d0dee8;background:#f5faff;border-radius:12px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}
+.ami-multiple-chip.selected{border:2px solid #d6a040;background:#fff0c4;box-shadow:0 4px 13px #d4ab5c33}
+.ami-multiple-chip span{font-size:12px;color:#59758b;font-weight:850}
+.ami-multiple-chip b{font-size:18px;color:#15558b;overflow-wrap:anywhere}
+.ami-multiple-chip small{font-size:9px;color:#6c8393;direction:ltr}
+.ami-page .ami-note{font-size:12px;color:#668098;line-height:1.9}
+.ami-sieve-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+.ami-sieve-actions button,.ami-export{border:2px solid #cedce6;border-radius:11px;padding:10px 14px;cursor:pointer;background:#f5faff;color:#1b527c;font-size:13px;font-weight:950;font-family:Tahoma,Arial,sans-serif}
+.ami-sieve-actions button[data-ami-reset]{background:#184974;color:#fff;border-color:#184974}
+.ami-sieve-actions button:disabled,.ami-answer-form button:disabled{cursor:not-allowed;opacity:.45}
+.ami-sieve-actions .ami-step-2{border-color:#b83c42;color:#a73540}
+.ami-sieve-actions .ami-step-3{border-color:#b37b2d;color:#97611b}
+.ami-sieve-actions .ami-step-5{border-color:#5572c8;color:#3651ae}
+.ami-sieve-actions .ami-step-7{border-color:#8f63c1;color:#7944b0}
+.ami-sieve-actions .ami-step-button.completed{background:#e9f8ec;color:#187147;border-color:#6cb68e}
+.ami-sieve-progress{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:13px;background:#eaf6ff;border-right:5px solid #277ba7;border-radius:14px;padding:14px 17px;margin:18px 0}
+.ami-sieve-progress strong{background:#164c82;color:#fff!important;border-radius:10px;padding:10px 12px;white-space:nowrap;font-size:13px}
+.ami-sieve-progress span{font-size:13px;line-height:1.85;color:#385f7d;font-weight:700}
+.ami-sieve-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;margin-top:19px}
+.ami-sieve-figure{margin:0;border:1px solid #c9dbe8;border-radius:18px;background:#f8fbfd;padding:14px;min-width:0}
+.ami-sieve-figure figcaption{color:#194c7b;font-size:17px;font-weight:950;text-align:center;margin:3px 0 13px}
+.ami-grid-scroll{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-gutter:stable}
+.ami-hundred-grid{direction:ltr;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;width:100%;min-width:365px;aspect-ratio:1/1;align-content:start}
+.ami-hundred-cell{display:flex;position:relative;align-items:center;justify-content:center;aspect-ratio:1/1;border:1px solid #cbdae4;border-radius:7px;background:#fff9e8;color:#264c6b;font-size:clamp(11px,1.12vw,18px);font-weight:900;font-family:Tahoma,Arial,sans-serif;box-sizing:border-box;overflow:hidden}
+.ami-hundred-cell.ami-removed{color:#4a5662}
+.ami-hundred-cell.ami-by-2{background:#fbe0df!important;border-color:#e09da1}
+.ami-hundred-cell.ami-by-3{background:#fce7c5!important;border-color:#e1bb79}
+.ami-hundred-cell.ami-by-5{background:#dfe8ff!important;border-color:#abbde8}
+.ami-hundred-cell.ami-by-7{background:#eadbfa!important;border-color:#c7aee6}
+.ami-hundred-cell.ami-removed::after{content:"";position:absolute;left:14%;right:14%;top:48%;height:3px;transform:rotate(-42deg);background:#af5554;border-radius:5px}
+.ami-hundred-cell.ami-by-3::after{background:#b37b2b}
+.ami-hundred-cell.ami-by-5::after{background:#536bc2}
+.ami-hundred-cell.ami-by-7::after{background:#8e51b8}
+.ami-hundred-cell.ami-prime{background:#bdedd3!important;border-color:#57b284!important;color:#125c3e}
+.ami-hundred-cell.ami-known-prime{background:#d2f5e3!important;border-color:#60b78b!important;color:#145a43}
+.ami-hundred-cell.ami-unit{background:#e1e5e9!important;color:#636974!important;border-color:#adb9c2}
+.ami-export{width:100%;margin-top:13px;background:#e8f2fe;border-color:#b1cadd}
+.ami-export:hover{background:#d3e8fa}
+.ami-legend{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 17px;margin:17px 0 7px;padding:12px;border-radius:13px;background:#f6f8fb;border:1px solid #dbe3e9}
+.ami-legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#335a76;font-weight:850}
+.ami-dot{display:inline-block;width:17px;height:17px;border:1px solid #c3d0d9;border-radius:4px;background:#eee}
+.ami-dot.ami-by-2{background:#fbe0df;border-color:#e09da1}
+.ami-dot.ami-by-3{background:#fce7c5;border-color:#e1bb79}
+.ami-dot.ami-by-5{background:#dfe8ff;border-color:#abbde8}
+.ami-dot.ami-by-7{background:#eadbfa;border-color:#c7aee6}
+.ami-dot.ami-prime{background:#bdedd3;border-color:#57b284}
+.ami-dot.ami-unit{background:#e1e5e9;border-color:#adb9c2}
+.ami-question{border:2px solid #dac48e;background:linear-gradient(140deg,#fff8e9,#fff)}
+.ami-answer-form{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+.ami-answer-form label{max-width:250px;flex:1 1 190px}
+.ami-answer-form button{min-height:51px}
+.ami-answer-feedback{padding:15px 17px!important;border-radius:12px;margin:15px 0!important;font-weight:900!important}
+.ami-correct{background:#ddf8e7;color:#165f3c!important;border:1px solid #77b993}
+.ami-tryagain{background:#fff2dc;color:#95612a!important;border:1px solid #e0bc75}
+@media(max-width:1100px){
+ .ami-multiple-strip{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .ami-hundred-grid{min-width:335px}
+}
+@media(max-width:850px){
+ .ami-sieve-pair{grid-template-columns:1fr}
+ .ami-hundred-grid{min-width:330px;max-width:720px;margin:auto}
+ .ami-sieve-progress{grid-template-columns:1fr}
+ .ami-three-facts{grid-template-columns:1fr}
+ .ami-inputs{grid-template-columns:1fr 1fr}
+ .ami-inputs button{grid-column:1/-1}
+}
+@media(max-width:570px){
+ .ami-feature-grid{grid-template-columns:1fr}
+ .ami-page-head,.ami-info,.ami-lab{padding:17px 13px}
+ .ami-inputs{grid-template-columns:1fr}
+ .ami-multiple-strip{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .ami-feature-card>button{min-height:100px}
+ .ami-hundred-grid{min-width:320px;gap:3px}
+ .ami-sieve-figure{padding:9px}
+ .ami-hundred-cell{font-size:12px}
+}
+@media print{
+ .ami-sieve-actions,.ami-export,.ami-page-head button{display:none!important}
+ .ami-page{max-width:none!important}
+ .ami-sieve-figure{break-inside:avoid}
+ .ami-hundred-grid{min-width:340px}
+ .ami-hundred-cell{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
