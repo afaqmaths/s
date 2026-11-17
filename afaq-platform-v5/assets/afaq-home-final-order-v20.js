@@ -33,7 +33,7 @@ function afaqFinalEntryMarkup(){
  '<p class="afaq-entry-lead">اختر الطريقة المناسبة من <strong>نافذة الدخول الفعلية</strong>، بدل أزرار منفصلة قد لا تفتح حسابًا. يمكنك الاطلاع على الموارد العامة دون تسجيل، أما بيانات الطلاب وإدارة المسابقة فتتطلب حسابًا مصرحًا به.</p>'+
  '<ol class="afaq-final-entry-steps">'+
  '<li><span class="afaq-final-step-icon" aria-hidden="true">1</span><p><strong>افتح نافذة الدخول</strong><small>اضغط زر «دخول المنصة» الموجود أعلى الصفحة، أو الزر أدناه.</small></p></li>'+
- '<li><span class="afaq-final-step-icon" aria-hidden="true">2</span><p><strong>حدّد نوع الحساب</strong><small>اختر الطالب أو المعلم/المشرف أو الإدارة المدرسية وفق الصلاحية الممنوحة لك. ولولي الأمر قنوات المتابعة المخصصة.</small></p></li>'+
+ '<li><span class="afaq-final-step-icon" aria-hidden="true">2</span><p><strong>حدّد نوع الحساب</strong><small>اختر الطالب أو المشرف الرئيسي أو المشرف المساعد أو الإدارة المدرسية، بحسب أنواع الحسابات المتاحة لك داخل النافذة. وتبقى متابعة ولي الأمر ضمن قنواتها المخصصة.</small></p></li>'+
  '<li><span class="afaq-final-step-icon" aria-hidden="true">3</span><p><strong>أدخل بيانات الدخول المعتمدة</strong><small>طالب السادس يختار شعبته ويدخل رقمه في الكشف والرمز السري المستلم بصورة خاصة.</small></p></li>'+
  '<li><span class="afaq-final-step-icon" aria-hidden="true">4</span><p><strong>ابدأ التعلم والمتابعة</strong><small>ستظهر لك الخدمات المناسبة لحسابك، بما فيها الدروس والأنشطة والنتائج المصرّح بها.</small></p></li>'+
  '</ol>'+
@@ -97,7 +97,7 @@ hubHome=function(){
  const football=[...home.querySelectorAll('.foot-v10-promo')];
  if(count){
   const label=count.querySelector('span');
-  if(label)label.textContent='👥 عدد زوار المنصة';
+  if(label)label.textContent='عدد زوار المنصة';
   count.classList.add('afaq-final-visitor-counter');
   count.setAttribute('aria-label','عدد زوار المنصة التراكمي');
   let explanation=count.querySelector('.afaq-final-counter-note');
