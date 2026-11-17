@@ -1,0 +1,27 @@
+/* Confidential teacher print exports -- only visible in authenticated supervisor center. */
+.afaq-pin-print-panel{direction:rtl;border:2px solid #d9b775!important;background:linear-gradient(135deg,#fffefa,#edf7ff)!important}
+.afaq-pin-header{display:flex;align-items:center;gap:14px;margin-bottom:17px}
+.afaq-pin-header>span{display:grid;place-items:center;width:66px;height:66px;background:#fff2cb;border:1px solid #e5c481;border-radius:17px;font-size:35px;flex-shrink:0}
+.afaq-pin-header h2{font-size:clamp(19px,2.15vw,26px);line-height:1.4;color:#164c7d;margin:0 0 5px}
+.afaq-pin-header p{color:#51728a;margin:0;line-height:1.8;font-size:13px}
+.afaq-pin-toolbar{display:flex;flex-wrap:wrap;align-items:end;gap:12px;background:#f1f7fc;border:1px solid #cfdfed;border-radius:14px;padding:13px;margin-bottom:10px}
+.afaq-pin-toolbar label{display:flex;flex-direction:column;gap:5px;flex:1 1 190px;font-size:13px;font-weight:900;color:#23557d}
+.afaq-pin-toolbar select{background:#fff;width:100%;min-width:0;border:1px solid #a7c8dd;border-radius:9px;padding:10px;font-size:13px;font-family:Tahoma,Arial,sans-serif;color:#18436b}
+.afaq-pin-toolbar button,.afaq-pin-actions button{border:1px solid #b6cfe0;border-radius:10px;padding:11px 13px;background:#e8f3fb;color:#164d78;cursor:pointer;font:900 13px Tahoma,Arial,sans-serif;line-height:1.5}
+.afaq-pin-toolbar .afaq-pin-reveal{background:#185b90;color:#fff;border-color:#185b90}
+.afaq-pin-toolbar button:disabled{opacity:.6;cursor:wait}
+.afaq-pin-privacy{font-size:12px!important;color:#9b5a30!important;line-height:1.85!important;background:#fff4df;border:1px solid #ecd3a5;border-radius:9px;padding:10px;margin:10px 0!important}
+.afaq-pin-error{color:#b13636;font-weight:900}.afaq-pin-status{color:#1d7054;font-weight:850}
+.afaq-pin-ready{border-top:1px solid #d2e2ed;padding-top:14px}
+.afaq-pin-actions{display:flex;flex-wrap:wrap;gap:10px}
+.afaq-pin-actions button:first-child{background:#1c6d9e;color:white}
+.afaq-pin-actions button:nth-child(2){background:#e1f5e8;color:#196643;border-color:#8bcaa5}
+.afaq-pin-actions button:nth-child(3){background:#fff1eb;color:#a45136;border-color:#d8af9f}
+.afaq-pin-ready>p{font-size:12px;color:#446982;line-height:1.8}
+.afaq-pin-scroll{max-height:440px;overflow:auto;background:#fff;border:1px solid #c7dce9;border-radius:11px}
+.afaq-pin-scroll table{border-collapse:collapse;width:100%;font-size:12px;direction:rtl}
+.afaq-pin-scroll th{position:sticky;top:0;background:#154c80;color:#fff;text-align:right;padding:10px}
+.afaq-pin-scroll td{padding:9px 10px;border-bottom:1px solid #e0ecf4;color:#234c74}
+.afaq-pin-scroll td:nth-child(2),.afaq-pin-scroll td:nth-child(3){text-align:center;font-weight:850}
+.afaq-pin-scroll tr:nth-child(even){background:#f1f7fd}
+@media(max-width:620px){.afaq-pin-header{align-items:start}.afaq-pin-header>span{width:50px;height:50px;font-size:27px}.afaq-pin-toolbar label,.afaq-pin-toolbar button{flex:1 1 100%}.afaq-pin-actions button{flex:1 1 160px}.afaq-pin-scroll table{min-width:600px}}
