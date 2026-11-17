@@ -25,7 +25,7 @@ function loginUi(){
  input.disabled=false;input.inputMode='text';input.autocomplete='username';
  if(r==='student'){
   lbl.textContent='اسم المستخدم';
-  input.placeholder='مثال: 6-5-12 أو الاسم الذي اخترته';
+  input.placeholder='مثال: 6512 أو اسم المستخدم الذي اخترته';
  }else if(r==='supervisor'){
   lbl.textContent='حساب المشرف الرئيسي';
   input.value='';input.disabled=true;input.placeholder='الرمز السري للمشرف أدناه';
