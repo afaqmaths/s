@@ -338,7 +338,7 @@ if(typeof afaqHomeShowcase==='function'){
   return iaReplaceBalancedDiv(
    iaShowcaseBefore(),
    '<div class="afaq-home-mixer">',
-   '<div class="afaq-home-mixer ia-mixer-preview"><span aria-hidden="true">🔐</span><strong>خلاط الرياضيات من مبادرات الأستاذ سعيد</strong><p>النشاط متاح بعد موافقة المشرف الرئيسي.</p><button type="button" data-route="teaching_initiatives">طلب تصريح مشاهدة</button></div>'
+   ''
   );
  };
 }
