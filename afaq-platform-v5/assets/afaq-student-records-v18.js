@@ -160,7 +160,8 @@ function arNotesTable(){
  '<p>'+arEsc(n.description)+'</p>'+(n.action_taken?'<p><b>الإجراء:</b> '+arEsc(n.action_taken)+'</p>':'')+
  '<div class="ar-buttons"><button type="button" data-ar-edit="'+n.id+'">تعديل</button>'+
  '<button type="button" data-ar-archive="'+n.id+'" class="ar-danger">حذف من السجل النشط</button>'+
- '<button type="button" data-ar-parent="'+n.id+'">استدعاء ولي الأمر • طباعة / PDF</button></div></article>').join(''):
+ '<button type="button" data-ar-parent="'+n.id+'">استدعاء ولي الأمر • طباعة / PDF</button>'+
+ '<button type="button" data-ar-referral="'+n.id+'">إعداد خطاب إحالة • طباعة / PDF</button></div></article>').join(''):
  '<p class="ar-info">لا توجد ملاحظات في هذا العرض.</p>')+'</div></section>';
 }
 function arAdminPage(){
