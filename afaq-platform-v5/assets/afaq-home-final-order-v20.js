@@ -57,15 +57,9 @@ hubHome=function(){
   replacement.innerHTML=afaqFinalAboutMarkup();
   intro.replaceWith(replacement.firstElementChild);
  }
+ // Preserve the four REAL entry controls.  These buttons open the existing account
+ // dialogs and guest view; only the decorative audience tiles in hubAbout were removed.
  const access=home.querySelector('.afaq-mid-side--right .afaq-home-access')||home.querySelector('.afaq-home-access');
- if(access){
-  const gates=access.querySelector('.hub-gate-grid');
-  if(gates){
-   const content=document.createElement('div');
-   content.innerHTML=afaqFinalEntryMarkup();
-   gates.replaceWith(content.firstElementChild);
-  }
- }
  const mid=home.querySelector('.afaq-mid-layout')||access;
  if(!mid)return mount.innerHTML;
  // Move the live notices and ALL four news rails after "choose entry" and teacher initiatives.
@@ -91,7 +85,9 @@ hubHome=function(){
  feedItems.filter(el=>!el.classList.contains('ae-notice-bar')&&!el.classList.contains('v13-news-rail')).forEach(el=>news.appendChild(el));
  mid.insertAdjacentElement('afterend',news);
  // The first-login reminder is now written as a numbered step inside the actual entry guide.
- home.querySelectorAll('.ia-first-login-guide').forEach(el=>el.remove());
+ // Keep the original first-login reminder; move it under entry controls if present.
+ const firstGuide=home.querySelector('.ia-first-login-guide');
+ if(firstGuide&&access)access.appendChild(firstGuide);
  // Finish with the football illustration, followed immediately by the visitor total.
  const count=home.querySelector('.hub-counter');
  const football=[...home.querySelectorAll('.foot-v10-promo')];
