@@ -3,7 +3,7 @@
 const AC24_ROLES=[
  ['president','الرئيس'],['vice_president','نائب الرئيس'],
  ['secretary','أمين السر'],['relations','مسؤول العلاقات'],
- ['admin_one','إداري أول'],['admin_two','إداري ثانٍ'],['member','عضو']
+ ['admin_one','إداري (١)'],['admin_two','إداري (٢)'],['member','عضو']
 ];
 const AC24_LABEL=Object.fromEntries(AC24_ROLES);
 const AC24_ORDER=Object.fromEntries(AC24_ROLES.map(([k],i)=>[k,i]));
