@@ -40,10 +40,10 @@ function mx25MachineSvg(){
  '<text x="199" y="119" font-size="13" text-anchor="middle" font-weight="900" fill="#1b4c77">÷</text>'+
  '</g>'+
  '<path d="M171 114 V157" stroke="#d3edfb" stroke-width="5"/>'+
- '<g class="amx25-blades" transform="translate(180 111)">'+
+ '<g transform="translate(180 111)"><g class="amx25-blades">'+
  '<path d="M-36 -7 Q-21 -19 0 -2 Q19 -21 36 -7 Q18 -3 7 5 Q19 21 7 27 Q-3 11 -6 5 Q-23 20 -35 10 Q-23 3 -6 -2Z" fill="url(#amx25Steel)" stroke="#2d7398" stroke-width="2"/>'+
  '<circle r="7" fill="#e9bb60" stroke="#fff6cb" stroke-width="3"/>'+
- '</g>'+
+ '</g></g>'+
  '<rect x="127" y="155" width="107" height="66" rx="19" fill="url(#amx25Body)" stroke="#b67d2e" stroke-width="3"/>'+
  '<path d="M143 169 H219" stroke="#fff7d5" stroke-width="4" opacity=".8" stroke-linecap="round"/>'+
  '<rect x="147" y="178" width="68" height="27" rx="8" fill="#103d6e" stroke="#77bce4" stroke-width="2"/>'+
