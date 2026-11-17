@@ -1,0 +1,290 @@
+/* AFAQ Math | Homepage alignment and vertical space 2026-11-18.
+ * Only visual adjustments. All real account, club and permission actions remain intact. */
+
+/* Legacy padlock teaser should never take up space when the modern Mixer exists. */
+.hub-home .v10-init-home.ia-init-teaser{display:none!important}
+
+/* The three OTHER initiatives under the math mixer always share ONE row. */
+.hub-home .afaq-mid-initiative-feature>.afaq-mid-initiative-links{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ grid-template-rows:1fr!important;
+ align-items:stretch!important;
+ justify-content:stretch!important;
+ gap:9px!important;
+ flex:0 0 auto!important;
+ width:100%!important;
+ min-width:0!important;
+}
+.hub-home .afaq-mid-initiative-feature>.afaq-mid-initiative-links>.afaq-mid-initiative-link{
+ min-width:0!important;
+ width:100%!important;
+ min-height:138px!important;
+ height:100%!important;
+ padding:12px 5px!important;
+ box-sizing:border-box!important;
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:flex-start!important;
+ gap:7px!important;
+ text-align:center!important;
+}
+.hub-home .afaq-mid-initiative-links .afaq-mid-initiative-icon{
+ width:54px!important;
+ height:54px!important;
+ min-width:54px!important;
+ min-height:54px!important;
+ border-radius:15px!important;
+ font-size:32px!important;
+ flex:0 0 54px!important;
+}
+.hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy{
+ min-width:0!important;width:100%!important;
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:start!important;
+ gap:3px!important;
+}
+.hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy strong{
+ width:100%!important;
+ font-size:clamp(11px,.96vw,14px)!important;
+ line-height:1.55!important;
+ overflow-wrap:anywhere!important;
+ text-align:center!important;
+}
+.hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy small{
+ width:100%!important;
+ font-size:clamp(10px,.8vw,12px)!important;
+ line-height:1.5!important;
+ overflow-wrap:anywhere!important;
+ text-align:center!important;
+}
+
+/* Enlarge all 5 educational section icons to one consistent visual size. */
+.hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections>.hub-gate-grid{
+ display:flex!important;
+ flex-direction:column!important;
+ gap:10px!important;
+}
+.hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections .hub-gate{
+ grid-template-columns:74px minmax(0,1fr)!important;
+ column-gap:12px!important;
+ min-height:99px!important;
+ padding:10px 12px!important;
+ border-radius:15px!important;
+}
+.hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections .hub-gate>.hub-visual{
+ width:70px!important;
+ max-width:70px!important;
+ height:70px!important;
+ min-height:70px!important;
+ padding:4px!important;
+ border-radius:15px!important;
+ overflow:hidden!important;
+ box-sizing:border-box!important;
+ display:grid!important;place-items:center!important;
+}
+.hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections .hub-gate>.hub-visual svg{
+ width:62px!important;
+ max-width:62px!important;
+ height:62px!important;
+ max-height:62px!important;
+ object-fit:contain!important;
+ display:block!important;
+}
+.hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections .hub-gate>strong{
+ font-size:clamp(14px,1.15vw,17px)!important;
+ line-height:1.55!important;
+}
+.hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections .hub-gate>span:not(.hub-visual){
+ font-size:clamp(11px,.9vw,13px)!important;
+ line-height:1.55!important;
+}
+
+/* Compact top entry panel slightly in WIDTH as requested and clearly in HEIGHT
+   so the BLUE main platform hero is reached sooner. Keep all five live gates. */
+.hub-home .afaq-home-access.afaq-entry-between-flag-hero{
+ width:94%!important;
+ max-width:1190px!important;
+ margin:7px auto 9px!important;
+ padding:10px 13px 11px!important;
+ gap:7px!important;
+ box-sizing:border-box!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-heading{
+ padding:5px 10px!important;
+ gap:1px!important;
+ border-radius:12px!important;
+ min-height:44px!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-heading>span{
+ font-size:10px!important;
+ line-height:1.3!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-heading h2{
+ font-size:clamp(18px,1.7vw,23px)!important;
+ line-height:1.35!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{
+ gap:8px!important;
+ align-items:stretch!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-gate-grid>.hub-gate{
+ min-height:121px!important;
+ padding:9px 7px!important;
+ gap:5px!important;
+ border-radius:12px!important;
+ justify-content:center!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>.hub-visual{
+ width:55px!important;
+ max-width:55px!important;
+ height:55px!important;
+ min-height:55px!important;
+ border-radius:12px!important;
+ margin:0 auto!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>.hub-visual svg{
+ width:52px!important;
+ max-width:52px!important;
+ height:51px!important;
+ max-height:51px!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>strong{
+ font-size:clamp(12px,1.03vw,15px)!important;
+ line-height:1.35!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>span:not(.hub-visual){
+ font-size:clamp(10px,.82vw,12px)!important;
+ line-height:1.4!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>small{
+ font-size:9px!important;
+ line-height:1.2!important;
+}
+.hub-home .afaq-entry-between-flag-hero .afaq-club-entry .ac24-icon-art{
+ width:55px!important;max-width:55px!important;
+ height:55px!important;min-height:55px!important;
+}
+.hub-home .afaq-entry-between-flag-hero .afaq-club-entry .ac24-icon-art svg{
+ width:53px!important;max-width:53px!important;
+ height:53px!important;max-height:53px!important;
+}
+
+/* A slim but still complete first-login reminder, with its student login button intact. */
+.hub-home .afaq-entry-between-flag-hero .ia-first-login-guide{
+ display:flex!important;
+ flex-direction:row!important;
+ align-items:center!important;
+ flex-wrap:wrap!important;
+ gap:8px!important;
+ min-height:0!important;
+ margin:2px 0 0!important;
+ padding:8px 11px!important;
+ border-radius:12px!important;
+ border-width:1px!important;
+ box-shadow:0 3px 9px #34597b16!important;
+}
+.hub-home .afaq-entry-between-flag-hero .ia-first-login-icon{
+ font-size:29px!important;
+ flex:0 0 35px!important;
+ line-height:1!important;
+}
+.hub-home .afaq-entry-between-flag-hero .ia-first-login-guide>div:nth-child(2){
+ flex:1 1 350px!important;
+ min-width:0!important;
+}
+.hub-home .afaq-entry-between-flag-hero .ia-first-login-guide h2{
+ font-size:clamp(14px,1.35vw,18px)!important;
+ line-height:1.3!important;
+ margin:0 0 2px!important;
+}
+.hub-home .afaq-entry-between-flag-hero .ia-first-login-guide p{
+ font-size:clamp(10px,.83vw,12px)!important;
+ line-height:1.5!important;
+ margin:0!important;
+}
+.hub-home .afaq-entry-between-flag-hero .ia-first-login-guide small{
+ font-size:10px!important;
+ line-height:1.35!important;
+}
+.hub-home .afaq-entry-between-flag-hero .ia-first-login-guide button{
+ flex:0 1 auto!important;
+ width:auto!important;
+ padding:8px 10px!important;
+ border-radius:9px!important;
+ font-size:11px!important;
+ white-space:nowrap!important;
+}
+
+/* Keep all three initiative tiles together on small displays. */
+@media(max-width:1120px){
+ .hub-home .afaq-mid-initiative-feature>.afaq-mid-initiative-links{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+ }
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid>.hub-gate{
+  min-height:116px!important;
+ }
+ .hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections .hub-gate{
+  grid-template-columns:67px minmax(0,1fr)!important;
+  gap:9px!important;
+ }
+ .hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections .hub-gate>.hub-visual{
+  width:63px!important;max-width:63px!important;height:63px!important;min-height:63px!important;
+ }
+ .hub-home .afaq-mid-layout--two .afaq-mid-side--left .afaq-home-sections .hub-gate>.hub-visual svg{
+  width:56px!important;max-width:56px!important;height:56px!important;max-height:56px!important;
+ }
+}
+@media(max-width:910px){
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+ .hub-home .afaq-home-access.afaq-entry-between-flag-hero{
+  width:96%!important;max-width:none!important;
+ }
+}
+@media(max-width:610px){
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+ }
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid>.hub-gate{
+  min-height:105px!important;padding:6px 5px!important;
+ }
+ .hub-home .afaq-entry-between-flag-hero .hub-gate>.hub-visual{
+  width:47px!important;max-width:47px!important;height:47px!important;min-height:47px!important;
+ }
+ .hub-home .afaq-entry-between-flag-hero .hub-gate>.hub-visual svg{
+  width:44px!important;max-width:44px!important;height:44px!important;max-height:44px!important;
+ }
+ .hub-home .afaq-entry-between-flag-hero .afaq-club-entry .ac24-icon-art{
+  width:47px!important;max-width:47px!important;height:47px!important;min-height:47px!important;
+ }
+ .hub-home .afaq-entry-between-flag-hero .afaq-club-entry .ac24-icon-art svg{
+  width:44px!important;max-width:44px!important;height:44px!important;max-height:44px!important;
+ }
+ .hub-home .afaq-entry-between-flag-hero .ia-first-login-guide button{
+  flex:1 1 150px!important;min-width:0!important;
+ }
+ .hub-home .afaq-mid-initiative-feature>.afaq-mid-initiative-links>.afaq-mid-initiative-link{
+  min-height:125px!important;padding:9px 3px!important;
+ }
+ .hub-home .afaq-mid-initiative-links .afaq-mid-initiative-icon{
+  width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
+  font-size:25px!important;flex:0 0 42px!important;
+ }
+ .hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy strong{
+  font-size:11px!important;
+ }
+ .hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy small{
+  font-size:10px!important;
+ }
+}
+@media(max-width:370px){
+ .hub-home .afaq-home-access.afaq-entry-between-flag-hero{
+  width:98%!important;padding:8px!important;
+ }
+ .hub-home .afaq-mid-initiative-feature>.afaq-mid-initiative-links{gap:4px!important}
+ .hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy strong{font-size:10px!important}
+ .hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy small{font-size:9px!important}
+}
