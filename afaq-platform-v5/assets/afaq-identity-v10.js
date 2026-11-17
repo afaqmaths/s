@@ -12,8 +12,8 @@ hubHome=function(){
  html=html.replace('</section><section class="hub-intro-panel">',
   '<div class="v10-teacher-signature">✦ من إعداد وإشراف الأستاذ سعيد البريكي • الرياضيات حياة وإبداع</div>'+
   '</section><section class="hub-intro-panel">');
- html=html.replace('<section class="hub-main afaq-home-sections">',
-  footHomePromo()+'<section class="hub-main afaq-home-sections">');
+ /* Put the football banner after the full content, not before the entry/initiatives. */
+ html=html.replace('<div class="hub-counter">',footHomePromo()+'<div class="hub-counter">');
  html=html.replace('<section class="afaq-home-showcase"',
   initHome()+'<section class="afaq-home-showcase"');
  return html;
