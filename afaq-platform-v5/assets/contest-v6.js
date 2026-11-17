@@ -65,7 +65,7 @@ const stageInfo=[
 const models={A:'المحاولة الرسمية الأولى',B:'المحاولة الرسمية الثانية',C:'نموذج الطالب',D:'نموذج الإدارة',E:'نموذج المشرف',F:'نموذج مساعد المشرف'};
 const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',supervisor_assistant:'F'};
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
-const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,
+const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,access:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
  waitingUntil:0,waitingMessage:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -98,7 +98,13 @@ const codeError={unauthorized:'انتهت الجلسة، ادخل إلى منص�
 async function request(endpoint,action,payload={}){
  let resp;try{resp=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',...(STATE.token?{Authorization:'Bearer '+STATE.token}:{})},body:JSON.stringify({action,...payload}),cache:'no-store'})}catch{throw Error('تعذر الاتصال بالإنترنت')}
  let data;try{data=await resp.json()}catch{throw Error('تعذر استلام رد الخادم')}
- if(!resp.ok||!data?.ok)throw Error(codeError[data?.error]||'تعذر تنفيذ الطلب: '+(data?.error||resp.status));
+ if(!resp.ok||!data?.ok){
+  if(student()&&(data?.error==='contest_global_closed'||data?.error==='contest_student_closed')){
+   STATE.access={allowed:false,global_open:data.error!=='contest_global_closed',student_enabled:data.error!=='contest_student_closed'};
+   resetPlay();
+  }
+  throw Error(codeError[data?.error]||'تعذر تنفيذ الطلب: '+(data?.error||resp.status));
+ }
  return data;
 }
 const api=(action,payload)=>request(API,action,payload);
@@ -109,10 +115,23 @@ const back=(action,payload={})=>request(GAME,action,
 async function authenticate(){
  if(!STATE.token)return;
  try{let r=await api('me');STATE.user=r.user;STATE.displayName=STATE.user?.role==='demo'?'متسابق الصف '+(gradeNames[Number(r.user.grade)]||''):(STATE.displayName||STATE.user?.username||'المتسابق');STATE.grade=student()||STATE.user.role==='demo'?Number(r.user.grade||6):6;
-  if(student()||STATE.user.role==='demo'){if(student())STATE.mode='official';STATE.report=(await back('my_results')).report;if(student()){try{const p=(await api('profile'))?.profile?.student;STATE.displayName=p?.full_name||p?.display_name||STATE.displayName;STATE.profile=p||null}catch{}}}
+  if(student()||STATE.user.role==='demo'){
+   if(student()){
+    STATE.mode='official';
+    STATE.access=await back('contest_gate_status');
+    if(STATE.user.pin_changed)STATE.report=(await back('my_results')).report;
+    try{const p=(await api('profile'))?.profile?.student;STATE.displayName=p?.full_name||p?.display_name||STATE.displayName;STATE.profile=p||null}catch{}
+   }else{
+    STATE.report=(await back('my_results')).report;
+   }
+  }
   else {const values=await Promise.all([back('staff_summary'),back('staff_results'),...(supervisor()?[back('tester_status')]:[])]);STATE.summary=values[0].stats;STATE.staffReport=values[1].students;if(supervisor())STATE.testerStatuses=values[2]?.profiles||[];}
-  if(student()){try{await back('contest_visit')}catch(err){console.warn('Contest visit tracking unavailable',err.message)}
-    try{await loadCertificates()}catch(err){STATE.certificateError=err.message}}
+  if(student()&&STATE.user.pin_changed){
+    if(STATE.access?.allowed){
+     try{await back('contest_visit')}catch(err){console.warn('Contest visit tracking unavailable',err.message)}
+    }
+    try{await loadCertificates()}catch(err){STATE.certificateError=err.message}
+  }
  }catch(e){STATE.user=null;STATE.token='';sessionStorage.removeItem(tokenKey);}
 }
 const getCurrent=()=>STATE.mode==='official'?STATE.question:STATE.questions[STATE.index];
@@ -559,10 +578,19 @@ function passwordChangeLock(){return '<div class="contest-lock" dir="rtl"><div c
  '<p>يجب أن تغيّر الرقم السري الأولي بنفسك من لوحة حسابك في منصة آفاق ماث؛ ثم تعود إلى المسابقة باستخدام الرقم الجديد. تبقى الدروس وبقية الأنشطة متاحة لك.</p>'+
  '<a class="primary" href="index.html#dashboard">🔑 الانتقال إلى حسابي لتغيير الرقم السري</a> '+
  '<a class="outline" href="index.html">العودة إلى المنصة</a></div>';}
+function studentGateLock(){
+ const globallyClosed=STATE.access?.global_open===false;
+ return '<div class="contest-lock" role="status"><div class="contest-icon">🔐</div>'+
+ '<h2>دخول مسابقة نجوم آفاق غير متاح حاليًا</h2>'+
+ '<p>'+(globallyClosed?'أوقف المشرف الرئيسي دخول جميع الطلاب إلى المسابقة مؤقتًا.':'لم يُفعّل المشرف الرئيسي السماح بدخول حسابك إلى المسابقة.')+
+ ' يمكنك استخدام بقية أقسام منصة آفاق ماث، وتظل نتائجك السابقة محفوظة.</p>'+
+ '<button class="primary" id="afaqContestGateRefresh" type="button">التحقق من تصريح الدخول مجددًا</button> '+
+ '<a class="outline" href="index.html#dashboard">العودة إلى حسابي</a></div>';
+}
 function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><div class="contest-guest-links"><a href="index.html#competition" class="primary">🔐 الدخول بالحساب المعتمد</a> <a href="index.html#home" class="outline">📚 التصفح كضيف دون تسجيل دخول</a></div></div>'}
 function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
- root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
+ root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():student()&&STATE.access?.allowed===false?studentGateLock():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
   if(isTester()&&!document.getElementById('leaveTester'))root.insertAdjacentHTML('afterbegin',
    '<div class="contest-tester-active"><span>🎓 تعمل الآن بصفحة الطالب التجريبي '+stext(STATE.testerProfile)+'</span>'+
    '<button class="outline" id="leaveTester">العودة إلى دائرة الإشراف</button></div>');
@@ -684,6 +712,12 @@ function bindBank(){document.querySelectorAll('.edit-question').forEach(form=>fo
  for(const [id,published]of [['publishBank',true],['unpublishBank',false]])document.getElementById(id)?.addEventListener('click',async()=>{if(published&&!window.confirm('هل راجعت جميع الأسئلة والرسومات والإجابات وتريد اعتماد النموذج؟'))return;try{await back('publish_model',{grade:STATE.grade,section:STATE.section,model:STATE.editModel,published});STATE.catalog=(await back('catalog')).models;STATE.bank=null;render()}catch(err){alert(err.message)}})
 }
 function bind(){if(!STATE.user)return;
+ document.getElementById('afaqContestGateRefresh')?.addEventListener('click',async()=>{
+  const button=document.getElementById('afaqContestGateRefresh');if(button)button.disabled=true;
+  try{STATE.access=await back('contest_gate_status');STATE.error='';}
+  catch(err){STATE.error=err.message}
+  render();
+ });
  document.getElementById('logoutContest')?.addEventListener('click',async()=>{try{await api('logout')}catch{}sessionStorage.removeItem(tokenKey);STATE.token='';STATE.user=null;resetPlay();render()});
  document.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{STATE.grade=Number(btn.dataset.grade);STATE.section=1;resetPlay();render()}));
  document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{STATE.section=Number(btn.dataset.unit);resetPlay();render()}));
