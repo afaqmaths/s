@@ -358,3 +358,33 @@
  .hub-home .afaq-home-showcase .afaq-home-module-icon{font-size:40px!important}
  .hub-home .afaq-home-showcase .afaq-home-module strong{font-size:13px!important}
 }
+
+/* Six REAL homepage entry doors: student and parent are adjacent.
+   Supervisor/teacher login, visitor and student-club behavior is unchanged. */
+.hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{
+ display:grid!important;
+ grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ gap:8px!important;
+ align-items:stretch!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-gate-grid>.hub-gate{
+ min-width:0!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate[data-route="parent"]{
+ border-color:#e9bbce!important;
+ background:linear-gradient(145deg,#fff8fc,#ffedf5)!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate[data-route="parent"]:focus-visible{
+ outline:3px solid #b74680!important;
+ outline-offset:3px!important;
+}
+@media(max-width:1120px){
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:610px){
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}
