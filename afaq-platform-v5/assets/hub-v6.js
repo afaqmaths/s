@@ -90,6 +90,19 @@ function hubAbout(){
  '<div class="afaq-about-fallback-art"><img src="assets/afaq-v9-shapes.svg?v=20261113-v9" alt="مجسمات هندسية من دروس الصف السادس" width="310" height="270" loading="lazy"></div>'+
  '<p class="hub-note">آفاق ماث — الرياضيات حياة وإبداع • إعداد وإشراف الأستاذ سعيد البريكي.</p></section>';
 }
+/* One functional login action; legacy role tiles are deliberately removed. */
+function hubHomeEntryGuide(){
+ if(typeof afaqFinalEntryMarkup==='function')return afaqFinalEntryMarkup();
+ return '<div class="afaq-final-entry-guide" dir="rtl">'+
+ '<p class="afaq-entry-lead">اختَر نوع الحساب من نافذة الدخول المعتمدة. تظل الموارد العامة متاحة دون حساب.</p>'+
+ '<ol class="afaq-final-entry-steps">'+
+ '<li><p><strong>١. افتح نافذة الدخول</strong><small>عن طريق زر دخول المنصة.</small></p></li>'+
+ '<li><p><strong>٢. حدّد حسابك</strong><small>طالب أو مشرف أو إدارة مدرسية حسب الصلاحية.</small></p></li>'+
+ '<li><p><strong>٣. أدخل البيانات المعتمدة</strong><small>الطالب يختار شعبته ورقمه والرمز السري المستلم.</small></p></li>'+
+ '<li><p><strong>٤. ابدأ التعلم والمتابعة</strong><small>تظهر لك خدمات الحساب المصرّح بها فقط.</small></p></li>'+
+ '</ol><button type="button" id="showLogin" class="afaq-final-entry-button">🔐 فتح نافذة الدخول للمنصة</button>'+
+ '<p class="afaq-entry-guest-note">المكتبة والموارد العامة متاحة للزائر دون تسجيل.</p></div>';
+}
 function hubHome(){
  const paths='<svg class="afaq-hero-lines" viewBox="0 0 1200 350" preserveAspectRatio="none" aria-hidden="true">'+
  '<path d="M-50 245 C180 135 245 335 452 205 S830 100 1250 205"/>'+
@@ -110,11 +123,7 @@ function hubHome(){
  '</section>'+
  hubAbout()+
  '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
- '<div class="hub-gate-grid hub-gate-grid-4">'+
- hubGate('دخول الطالب','book-open','حساب الطالب والدروس والنتائج','data-hub-login="student"','green')+
- hubGate('الإدارة المدرسية','school','مدير المدرسة ومساعده','data-hub-login="director"','purple')+
- hubGate('التصفح كضيف','globe','استكشف المحتوى العام دون حساب','data-route="visitor"','cyan')+
- hubGate('دخول المشرفين','graduation-cap','المشرف الرئيسي والمساعد وتقنية المعلومات','data-hub-login="supervisor"','gold')+
+ hubHomeEntryGuide()+
  '</div></section>'+
  '<section class="hub-main afaq-home-sections"><div class="hub-heading"><span>أبواب المعرفة</span><h2>استكشف أقسام آفاق ماث</h2></div>'+
  '<div class="hub-gate-grid">'+
