@@ -1,0 +1,83 @@
+
+/* Secure student-records UI. Consistent with Afaq Math's navy/gold design. */
+.ar-admin{direction:rtl;max-width:1490px;margin:20px auto 60px!important;color:#19426c}
+.ar-admin .hub-staff-nav{margin:0 0 16px}
+.ar-admin-head{padding:25px;border-radius:24px;border:2px solid #ceb16c;background:linear-gradient(130deg,#0e2d5c,#165b8e 70%,#2382a0);color:#fff;box-shadow:0 12px 29px #234c7626}
+.ar-admin-head>span{color:#f7dba5;font-size:14px;font-weight:950}
+.ar-admin-head h1{color:#fff!important;margin:8px 0;font-size:clamp(24px,3vw,38px)}
+.ar-admin-head p{color:#e7f2ff;font-size:14px;line-height:1.9}
+.ar-admin-head .ar-buttons button{background:#fff4d1;color:#19426b;border-color:#eac98b}
+.ar-feedback{min-height:21px;margin:11px 3px;color:#a45c23;font-weight:900;overflow-wrap:anywhere}
+.ar-card,.ar-student-card{border:1px solid #d0e1ed;border-radius:19px;background:#fff;padding:21px;margin:17px 0;box-shadow:0 8px 20px #1c507014;color:#234f73}
+.ar-student-card{border:2px solid #c2d6e5;background:linear-gradient(120deg,#f6fbff,#fffdf6)}
+.ar-card h2,.ar-student-card h2{color:#134a81;font-size:clamp(20px,2.5vw,27px);margin:0 0 11px}
+.ar-card h3,.ar-student-card h3{color:#1a5483;font-size:19px;margin:18px 0 12px}
+.ar-card>p,.ar-student-card>p{font-size:14px;line-height:1.95;color:#59788d}
+.ar-card .ar-field{display:grid;gap:7px;max-width:800px;font-weight:900}
+.ar-card select,.ar-card input,.ar-card textarea,
+.ar-student-card input{background:#fff;color:#184667;border:1.5px solid #b9d1df;border-radius:10px;padding:11px 13px;font:700 14px Tahoma,Arial,sans-serif;min-width:0;box-sizing:border-box}
+.ar-card input:focus-visible,.ar-card select:focus-visible,.ar-card textarea:focus-visible,
+.ar-student-card input:focus-visible{outline:3px solid #8ed1e9;outline-offset:2px}
+.ar-card button,.ar-student-card button{cursor:pointer;padding:10px 14px;border-radius:10px;background:#194f80;color:#fff;font-size:13px;font-weight:900;border:1px solid #21608e}
+.ar-card button:hover,.ar-student-card button:hover{filter:brightness(1.12)}
+.ar-card button:disabled,.ar-student-card button:disabled{opacity:.5;cursor:not-allowed}
+.ar-demo-note{margin:14px 0 3px;padding:12px;background:#fff6dd;border:1px solid #e2cd9c;border-radius:12px;color:#85632d;font-weight:800;font-size:13px}
+.ar-demo-note button{margin-inline-start:10px}
+.ar-grades{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:13px 0}
+.ar-grades article{display:flex;flex-direction:column;align-items:center;gap:7px;background:#f1f8ff;border:1px solid #ccdeec;border-radius:13px;padding:14px 9px;text-align:center;min-width:0}
+.ar-grades b{font-size:12px;color:#365e7a;line-height:1.6}
+.ar-grades strong{font-size:clamp(19px,2vw,26px);color:#124d7f;line-height:1.3}
+.ar-grades small{color:#708594;font-size:10px;line-height:1.6}
+.ar-info{font-size:13px;color:#668097;line-height:1.9;padding:10px 12px;background:#f2f8fd;border-radius:10px}
+.ar-toggles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ar-toggles>div{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;border:1px solid #d1dfeb;background:#f8fcff;border-radius:13px;padding:12px}
+.ar-toggles strong{font-size:13px;color:#21527c;line-height:1.5}
+.ar-status{border-radius:8px;padding:5px 9px;font-size:11px;font-weight:850;white-space:nowrap}
+.ar-status.yes{background:#e0f7e7;color:#186443}
+.ar-status.no{background:#fff0d9;color:#98632c}
+.ar-toggles button{padding:7px 11px;font-size:11px}
+.ar-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.ar-form label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:850;color:#335e7f}
+.ar-form .ar-wide{grid-column:1/-1}
+.ar-form button[type=submit]{justify-self:start;align-self:end}
+.ar-form .ar-checkbox{display:flex;flex-direction:row;align-items:center;gap:9px}
+.ar-checkbox input{width:auto!important}
+.ar-form .ar-buttons{grid-column:1/-1}
+.ar-inline{display:flex;flex-wrap:wrap;align-items:end;gap:11px;margin:13px 0}
+.ar-inline label{display:grid;gap:7px;font-size:13px;font-weight:900;flex:1 1 240px;max-width:450px}
+.ar-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.ar-buttons button{font-size:12px;padding:9px 13px}
+.ar-buttons .ar-danger,.ar-paper-list .ar-danger{background:#fff0f0;border:1px solid #e7b7b7;color:#a33b3b}
+.ar-paper-list{display:grid;gap:10px}
+.ar-paper-list article{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid #d8e5ed;border-radius:12px;background:#f8fcff;padding:11px}
+.ar-paper-list article>div{flex:1 1 190px}
+.ar-paper-list strong{display:block;color:#21527b;font-size:14px;line-height:1.5}
+.ar-paper-list small{display:block;font-size:11px;color:#6a8193;line-height:1.8}
+.ar-paper-list button{white-space:nowrap;padding:8px 11px;font-size:11px}
+.ar-small{font-size:11px;color:#8a744c}
+.ar-notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:13px}
+.ar-note-item{background:#fffaf0;border:1px solid #e5d5b8;border-radius:14px;padding:14px;min-width:0}
+.ar-note-item>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ar-note-item strong{color:#704e1e;font-size:14px}
+.ar-note-item small{font-size:10px;color:#837b6e}
+.ar-note-item p{font-size:13px;line-height:1.9;color:#625e57;overflow-wrap:anywhere}
+.ar-note-item button{font-size:11px;padding:8px 10px}
+.ar-preview{border-right:5px solid #bf9b51}
+.ar-admin-teaser{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border:2px solid #d8b76d;border-radius:19px;background:linear-gradient(120deg,#f5faff,#fff4d8);padding:18px;margin:15px 0;color:#1c4c7b;box-shadow:0 7px 18px #1c50701b}
+.ar-admin-teaser>span{font-size:42px}
+.ar-admin-teaser>div{flex:1 1 260px}
+.ar-admin-teaser b{display:block;font-size:20px;color:#1f4c7a;line-height:1.5}
+.ar-admin-teaser p{font-size:12px;color:#617a8c;line-height:1.8;margin:4px 0}
+.ar-admin-teaser button,.ar-score-link button{border:1px solid #21649d;background:#164c82;color:#fff;border-radius:10px;font-size:13px;font-weight:900;padding:12px 15px;cursor:pointer}
+.ar-score-link{margin:10px 0}
+@media(max-width:1140px){
+ .ar-toggles{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ar-grades{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ .ar-admin-head,.ar-card,.ar-student-card{padding:15px}
+ .ar-toggles,.ar-notes,.ar-form{grid-template-columns:1fr}
+ .ar-form .ar-wide,.ar-form .ar-buttons{grid-column:1}
+ .ar-grades{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ar-admin-teaser button{width:100%}
+}
