@@ -125,6 +125,7 @@ function hubHome(){
  '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
  '<div class="hub-gate-grid hub-gate-grid-4">'+
  hubGate('دخول الطالب','book-open','حساب الطالب والدروس والنتائج','data-hub-login="student"','green')+
+ hubGate('دخول ولي الأمر','heart-handshake','متابعة نتائج الأبناء والتواصل مع المشرف','data-route="parent"','rose')+
  hubGate('الإدارة المدرسية','school','مدير المدرسة ومساعده','data-hub-login="director"','purple')+
  hubGate('التصفح كضيف','globe','استكشف المحتوى العام دون حساب','data-route="visitor"','cyan')+
  hubGate('دخول المشرفين','graduation-cap','المشرف الرئيسي والمساعد وتقنية المعلومات','data-hub-login="supervisor"','gold')+
