@@ -95,7 +95,7 @@ const codeError={unauthorized:'انتهت الجلسة، ادخل إلى منص�
  contest_student_closed:'🔒 أوقف المشرف دخول هذا الحساب إلى المسابقة مؤقتًا.',
  password_change_required:'🔒 غيّر رقمك السري بنفسك في حسابك بالمنصة، ثم عد إلى المسابقة.',
  attempt_limit:'استنفدت المحاولتين الرسميتين للوحدة. لا يمكنك إنشاء محاولة أخرى إلا بعد إعادة الضبط من المشرف.',previous_section_required:'أكمل الوحدة السابقة أولًا.',
- weekly_locked:'لم يمض أسبوع على بداية الوحدة السابقة بعد.',official_model_not_approved:'لم تُعتمد أسئلة المنافسة الرسمية بعد، ويمكنك استخدام التدريب.',
+ weekly_locked:'لم تمضِ أربعة أيام (٩٦ ساعة) على بدء الوحدة السابقة بعد. تُفتح الوحدة التالية بعد انقضاء المدة وإكمال الوحدة السابقة.',official_model_not_approved:'لم تُعتمد أسئلة المنافسة الرسمية بعد، ويمكنك استخدام التدريب.',
  question_bank_incomplete:'لا تزال بعض الأسئلة قيد المراجعة.',stage_start_required:'اضغط إذن بدء المرحلة أولًا.',stage_not_ready:'المرحلة ليست جاهزة للانطلاق.',question_sequence_changed:'تم تحديث تسلسل الأسئلة؛ عد إلى بوابة الوحدة واستأنف.',invalid_parts:'بيانات السؤال المركب غير صحيحة.'};
 async function request(endpoint,action,payload={}){
  let resp;try{resp=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',...(STATE.token?{Authorization:'Bearer '+STATE.token}:{})},body:JSON.stringify({action,...payload}),cache:'no-store'})}catch{throw Error('تعذر الاتصال بالإنترنت')}
