@@ -62,6 +62,16 @@ hubHome=function(){
  const access=home.querySelector('.afaq-mid-side--right .afaq-home-access')||home.querySelector('.afaq-home-access');
  const mid=home.querySelector('.afaq-mid-layout')||access;
  if(!mid)return mount.innerHTML;
+ // Place the ORIGINAL, functional login section directly after the animated Oman flag
+ // and before the final blue math hero. MOVE the node; do not clone or replace gates.
+ const hero=home.querySelector('.hub-banner.afaq-animated-hero');
+ if(hero&&access){
+  hero.parentNode.insertBefore(access,hero);
+  access.classList.add('afaq-entry-between-flag-hero');
+  const oldSidebar=mid.querySelector('.afaq-mid-side--right');
+  if(oldSidebar&&!oldSidebar.querySelector('.afaq-home-access')&&!oldSidebar.children.length)oldSidebar.remove();
+  if(mid.classList.contains('afaq-mid-layout'))mid.classList.add('afaq-mid-layout--two');
+ }
  // Move the live notices and ALL four news rails after "choose entry" and teacher initiatives.
  const feedItems=[...home.querySelectorAll('.ae-notice-bar,.v13-news-rail,.v9-news-container,.ae-news-bar')];
  const news=document.createElement('section');
