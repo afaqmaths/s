@@ -130,7 +130,13 @@ studentAdmin=function(){
  const base=as22PreviousStudentAdmin();
  if(!as22Allowed()||!auth.selectedStudent)return base;
  arReset();
- if(!AR.loaded&&!AR.loading){AR.selected=auth.selectedStudent;Promise.resolve().then(arLoadAdmin)}
+ if(!AR.loaded&&!AR.loading){
+  const chosen=auth.selectedStudent;AR.selected=chosen;
+  Promise.resolve().then(async()=>{
+   await arLoadAdmin();
+   if(auth.selectedStudent===chosen&&state.page==='dashboard'&&auth.section==='students')render();
+  });
+ }
  return base+as22BehaviorGradeCard();
 };
 async function as22RefreshAndRender(){
