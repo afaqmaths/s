@@ -6,7 +6,7 @@
 const cpSite='https://afaqmaths.github.io/s/afaq-platform-v5/';
 const cpQR=cpSite+'assets/afaq-login-qr.svg';
 const cpClasses=['السادس / ٤','السادس / ٥','السادس / ٦'];
-const CP={className:cpClasses[0],layout:'single',token:'',role:'',roster:[],loaded:false,loading:false,
+const CP={className:cpClasses[0],layout:'single',token:'',role:'',roster:[],loaded:false,loading:false,attempted:false,
  pins:new Map(),issuedAt:0,message:'',error:''};
 const cpEsc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;',">":'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const cpStaff=()=>['supervisor','supervisor_assistant'].includes(auth.user?.role);
@@ -20,14 +20,14 @@ function cpExpirePins(){
 function cpResetOnIdentity(){
  if(CP.token!==auth.token||CP.role!==auth.user?.role){
   CP.token=auth.token||'';CP.role=auth.user?.role||'';
-  CP.loaded=false;CP.roster=[];CP.pins.clear();CP.issuedAt=0;
+  CP.loaded=false;CP.attempted=false;CP.roster=[];CP.pins.clear();CP.issuedAt=0;
  }
  cpExpirePins();
 }
 async function cpLoad(){
  cpResetOnIdentity();
  if(!cpStaff()||CP.loading)return;
- CP.loading=true;CP.error='';const token=auth.token;
+ CP.loading=true;CP.attempted=true;CP.error='';const token=auth.token;
  try{
   const result=await arCall('staff_roster');
   if(token!==auth.token)return;
@@ -52,7 +52,7 @@ function cpCard(student){
 function cpPanel(){
  cpResetOnIdentity();
  if(!cpStaff())return '<div class="container"><p class="notice">طباعة بيانات دخول الطلاب متاحة للمشرف والمساعد فقط.</p></div>';
- if(!CP.loaded&&!CP.loading)Promise.resolve().then(cpLoad);
+ if(!CP.loaded&&!CP.loading&&!CP.attempted)Promise.resolve().then(cpLoad);
  const students=cpClassStudents(), issued=students.filter(s=>CP.pins.has(s.student_id)).length;
  return '<div class="container cp-page" dir="rtl">'+(typeof hubStaffNav==='function'?hubStaffNav():'')+
  '<header class="cp-head"><span>🪪 طباعة بيانات دخول الطلاب</span>'+
@@ -60,14 +60,14 @@ function cpPanel(){
  '<p>كل بطاقة أفقية تتضمن الاسم واسم المستخدم والرقم السري، وبجانبها رمز QR وتحت الرمز رابط المنصة.</p>'+
  '<button type="button" data-tab="overview">العودة إلى لوحة المشرف</button></header>'+
  '<section class="cp-workarea"><div class="cp-inputs">'+
- '<label>اختر الشعبة<select id="cpChooseClass">'+cpClasses.map(x=>
+ '<label>اختر الشعبة<select id="cpChooseClass"'+(CP.loading?' disabled':'')+'>'+cpClasses.map(x=>
  '<option value="'+cpEsc(x)+'"'+(x===CP.className?' selected':'')+'>'+cpEsc(x)+'</option>').join('')+'</select></label>'+
- '<label>تنسيق ورقة الطباعة<select id="cpChooseLayout">'+
+ '<label>تنسيق ورقة الطباعة<select id="cpChooseLayout"'+(CP.loading?' disabled':'')+'>'+
  '<option value="single"'+(CP.layout==='single'?' selected':'')+'>صفحة واحدة: A3 أفقي — ٣ بطاقات بكل صف</option>'+
  '<option value="double"'+(CP.layout==='double'?' selected':'')+'>صفحتان: A4 أفقي — ٣ بطاقات بكل صف</option>'+
  '</select></label></div>'+
  '<div class="cp-actions"><button type="button" id="cpUpdate">تحديث قائمة الطلاب</button>'+
- '<button type="button" id="cpPreview"'+(!CP.loaded?' disabled':'')+'>🖨️ معاينة وطباعة / حفظ PDF</button>'+
+ '<button type="button" id="cpPreview"'+(!CP.loaded||CP.loading?' disabled':'')+'>🖨️ معاينة وطباعة / حفظ PDF</button>'+
  (cpSupervisor()?'<button class="cp-sensitive" type="button" id="cpIssue"'+(!CP.loaded?' disabled':'')+'>🔐 إصدار أرقام سرية مؤقتة للشعبة</button>':'')+'</div>'+
  '<p class="cp-status" role="status">'+cpEsc(CP.error||CP.message||'')+'</p>'+
  '<div class="cp-summary"><strong>'+students.length+' طالبًا</strong>'+
@@ -103,7 +103,7 @@ function cpPrintDocument(rows){
 }
 function cpOpenPrint(){
  const students=cpClassStudents();
- if(!CP.loaded||!students.length){CP.error='لا توجد بيانات جاهزة للطباعة لهذه الشعبة.';render();return}
+ if(!CP.loaded||CP.loading||!students.length){CP.error='لا توجد بيانات جاهزة للطباعة لهذه الشعبة.';render();return}
  const popup=window.open('','_blank','width=1250,height=900');
  if(!popup){CP.error='رجاءً اسمح بالنوافذ المنبثقة لمعاينة كشف الشعبة.';render();return}
  popup.document.open();popup.document.write(cpPrintDocument(students));popup.document.close();popup.focus();
