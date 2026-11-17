@@ -125,6 +125,17 @@ function as22BehaviorGradeCard(){
  '<button type="button" data-as22-referral="'+as22T(n.id)+'">طباعة الإحالة</button></div></article>').join(''):
  '<p class="as22-tip">لا توجد ملاحظات سلوكية مسجلة لهذا الطالب حتى الآن.</p>')+'</div></section>';
 }
+/* Clearly visible trial account on both supervisor and assistant main dashboards. */
+const as22PreviousStaffHome=hubStaffDashboard;
+hubStaffDashboard=function(){
+ const html=as22PreviousStaffHome();
+ if(!as22Allowed())return html;
+ const shortcut='<section class="as22-demo-teaser" aria-label="حساب الطالب التجريبي">'+
+ '<span>👨‍🎓</span><div><strong>حساب الطالب التجريبي</strong>'+
+ '<p>معاينة آمنة لواجهة الطالب دون الدخول باسم أي طالب حقيقي ودون التأثير في درجاته.</p></div>'+
+ '<button type="button" id="as22DashboardDemo">فتح الطالب التجريبي</button></section>';
+ return html.replace('<section class="hub-main hub-staff-stats">',shortcut+'<section class="hub-main hub-staff-stats">');
+};
 const as22PreviousStudentAdmin=studentAdmin;
 studentAdmin=function(){
  const base=as22PreviousStudentAdmin();
@@ -158,6 +169,7 @@ const as22PreviousAttachPortal=attachPortal;
 attachPortal=function(){
  as22PreviousAttachPortal();
  document.getElementById('as22OpenDemo')?.addEventListener('click',as22DemoWindow);
+ document.getElementById('as22DashboardDemo')?.addEventListener('click',as22DemoWindow);
  document.querySelectorAll('[data-ar-referral]').forEach(btn=>btn.addEventListener('click',()=>{
   const n=AR.notes.find(x=>String(x.id)===btn.dataset.arReferral);
   if(n)as22ReferralPrint(n,AR.roster.find(x=>x.student_id===n.student_id));
