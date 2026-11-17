@@ -6,9 +6,13 @@ const AS22={editingId:null,editingStudent:'',busy:false,error:'',message:''};
 const as22Allowed=()=>typeof arStaff==='function'&&arStaff();
 const as22T=v=>arEsc(v??'');
 const as22GradesInfo=grades=>{
- const visible=Array.isArray(grades)?grades:[],total=visible.find(x=>x.category==='total'&&x.max===100);
- const official=visible.filter(x=>x.source==='official'&&x.category!=='total');
- const group=official.length?official:visible.filter(x=>x.category!=='total');
+ const visible=Array.isArray(grades)?grades:[];
+ const recent=visible.find(x=>x.source==='official');
+ // Never add two academic terms together or include diagnostic marks in the /100 total.
+ const current=recent?visible.filter(x=>x.source==='official'&&x.academic_year===recent.academic_year&&x.term===recent.term):
+ visible.filter(x=>x.source==='legacy');
+ const total=current.find(x=>x.category==='total'&&Number(x.max)===100);
+ const group=current.filter(x=>!['total','diagnostic'].includes(x.category));
  const seen=group.filter(x=>x.score!=null).length;
  const partial=group.reduce((n,x)=>n+Number(x.score||0),0),available=group.reduce((n,x)=>n+Number(x.max||0),0);
  return '<div class="as22-summary" aria-live="polite">'+
