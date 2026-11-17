@@ -1,0 +1,54 @@
+/* AFAQ Math — audited student-account view and embedded gradebook behavior records. */
+.ar-admin .as22-mirror{
+ margin:16px 0;padding:21px;border:2px solid #a8cedf;
+ border-radius:20px;background:linear-gradient(125deg,#eefaff,#fffcf0);
+ box-shadow:0 8px 19px rgba(26,78,109,.11);direction:rtl
+}
+.as22-mirror-head,.as22-gr-head{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.as22-mirror-head>span,.as22-gr-head>span{
+ width:56px;height:56px;display:grid;place-items:center;
+ font-size:30px;background:#deeff9;border:1px solid #b5d0df;border-radius:13px
+}
+.as22-mirror-head>div,.as22-gr-head>div{flex:1 1 280px;min-width:0}
+.ar-admin .as22-mirror-head h2{color:#155887;font-size:clamp(20px,2.2vw,27px);margin:0 0 4px}
+.as22-mirror-head p,.as22-gr-head p{font-size:12px!important;line-height:1.9;color:#5b7b8f;margin:0!important}
+.as22-student-id{
+ display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:13px;
+ margin:13px 0;background:#fff;border:1px solid #c7deeb;border-radius:11px;
+ font-size:13px
+}
+.as22-student-id>b{color:#134f7e;font-size:16px}
+.as22-student-id span{color:#607e92}
+.as22-summary{margin:13px 0;padding:15px;border:1px solid #d3b77c;border-radius:12px;background:#fffaf0}
+.as22-summary strong{display:block;font-size:clamp(15px,1.6vw,21px);color:#9a5b21}
+.as22-summary p{font-size:13px;margin:5px 0;color:#2c647f}
+.as22-summary small{display:block;color:#648396;line-height:1.75}
+.as22-tip{font-size:12px!important;color:#587790!important;line-height:1.85!important;
+ border:1px solid #c9e0ee;background:#f4faff;border-radius:10px;padding:9px}
+.as22-gradebook{direction:rtl;border:2px solid #d0bd8c;margin:17px 0!important;background:linear-gradient(135deg,#fff,#fcf7ea)}
+.as22-gradebook h3{color:#194c7a!important;font-size:clamp(18px,2vw,24px)!important;margin:0 0 5px!important}
+.as22-behavior-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:16px 0}
+.as22-behavior-form label{display:flex;flex-direction:column;gap:7px;min-width:0;font-size:12px;font-weight:900;color:#285878}
+.as22-behavior-form label.wide,.as22-behavior-form .as22-gr-actions{grid-column:1 / -1}
+.as22-behavior-form label.check{display:flex;align-items:center;flex-direction:row;gap:9px;align-self:end}
+.as22-behavior-form input[type="date"],.as22-behavior-form input:not([type="checkbox"]),
+.as22-behavior-form textarea,.as22-behavior-form select{
+ width:100%;min-width:0;box-sizing:border-box;padding:11px;border:1px solid #b8cfdf;
+ background:#fff;border-radius:9px;font:13px/1.6 Tahoma,Arial,sans-serif;color:#15436a
+}
+.as22-behavior-form textarea{resize:vertical}
+.as22-gr-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.as22-gr-actions button{padding:9px 12px;border-radius:9px;
+ border:1px solid #b4d1e2;background:#e9f5fc;color:#18527b;
+ cursor:pointer;font:900 12px/1.6 Tahoma,Arial,sans-serif}
+.as22-behavior-form .as22-gr-actions button:first-child{background:#155a8d;color:#fff}
+.as22-gr-actions button:hover{filter:brightness(.96)}
+.as22-gr-actions button:disabled{opacity:.55;cursor:wait}
+.as22-behavior-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:12px}
+.as22-behavior-rows article{padding:14px;border:1px solid #d2e2ed;border-radius:12px;background:#fff;min-width:0}
+.as22-behavior-rows article strong{color:#996326;font-size:13px}
+.as22-behavior-rows article p{font-size:13px;color:#40647c;line-height:1.85;margin:5px 0;white-space:pre-line}
+.as22-behavior-rows article small{font-size:11px;color:#668498}
+.as22-behavior-rows article .as22-gr-actions button:nth-child(2){color:#a33d38;background:#fff1ef;border-color:#e6bdb7}
+.ar-demo-note #as22OpenDemo{background:#fff1c8;border:1px solid #d6b15b;padding:10px;border-radius:8px;font-weight:900;cursor:pointer}
+@media(max-width:690px){.as22-behavior-form,.as22-behavior-rows{grid-template-columns:1fr}.as22-behavior-form label.wide,.as22-behavior-form .as22-gr-actions{grid-column:1}.as22-mirror-head>span,.as22-gr-head>span{height:45px;width:45px;font-size:25px}}
