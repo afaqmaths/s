@@ -134,6 +134,16 @@ async function as22RefreshAndRender(){
  await arLoadAdmin();
  render();
 }
+/* Official 100-point register: direct behavior-note access beside every student, not a global remark only. */
+const as22PreviousOfficialName=ofNameCell;
+ofNameCell=function(student){
+ const html=as22PreviousOfficialName(student);
+ if(!as22Allowed())return html;
+ const label='<button type="button" class="as22-official-note" data-as22-official-note="'+
+ as22T(student.serial_no)+'" data-as22-official-class="'+as22T(ofState.className)+'">'+
+ '📝 ملاحظات سلوكية</button>';
+ return html.replace('</div>',label+'</div>');
+};
 const as22PreviousAttachPortal=attachPortal;
 attachPortal=function(){
  as22PreviousAttachPortal();
@@ -143,6 +153,22 @@ attachPortal=function(){
   if(n)as22ReferralPrint(n,AR.roster.find(x=>x.student_id===n.student_id));
  }));
  if(!as22Allowed())return;
+ document.querySelectorAll('[data-as22-official-note]').forEach(button=>button.addEventListener('click',async()=>{
+  const serial=Number(button.dataset.as22OfficialNote);
+  const className=button.dataset.as22OfficialClass;
+  try{
+   if(!AR.roster.length){
+    const roster=await arCall('staff_roster');AR.roster=roster.students||[];
+   }
+   const student=AR.roster.find(x=>Number(x.serial_no)===serial&&x.class_name===className);
+   if(!student){window.alert('تعذر تحديد الطالب من كشف الدرجات الرسمي.');return}
+   AR.selected=student.student_id;auth.selectedStudent=student.student_id;
+   AS22.editingId=null;AS22.editingStudent='';
+   auth.section='afaq_student_records';
+   if(!AR.loaded){await arLoadAdmin()}else{await arPreview(student.student_id,false)}
+   render();
+  }catch(e){AS22.message=e.message;window.alert('تعذر فتح السجل السلوكي: '+e.message)}
+ }));
  const form=document.getElementById('as22BehaviorForm');
  if(!form)return;
  if(!AR.loaded&&!AR.loading)Promise.resolve().then(arLoadAdmin);
