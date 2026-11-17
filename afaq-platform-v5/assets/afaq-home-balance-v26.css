@@ -288,3 +288,73 @@
  .hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy strong{font-size:10px!important}
  .hub-home .afaq-mid-initiative-links .afaq-mid-initiative-copy small{font-size:9px!important}
 }
+
+/* 2026-11-18: The discontinued duplicate padlock Math Mixer card was removed
+   from afaqHomeShowcase's markup. Expand the REAL module icons into its space.
+   This does not affect the modern interactive mixer in the teacher initiatives. */
+.hub-home .afaq-home-showcase{
+ display:grid!important;
+ grid-template-columns:minmax(230px,24%) minmax(0,1fr)!important;
+ gap:15px!important;align-items:stretch!important;
+}
+.hub-home .afaq-home-showcase>.afaq-home-side{
+ min-width:0!important;
+}
+.hub-home .afaq-home-showcase>.afaq-home-modules{
+ grid-column:2!important;grid-row:1!important;
+ min-width:0!important;width:100%!important;
+ display:grid!important;
+ grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ grid-auto-rows:minmax(130px,1fr)!important;
+ gap:13px!important;align-items:stretch!important;
+}
+.hub-home .afaq-home-showcase .afaq-home-module{
+ width:100%!important;min-width:0!important;
+ min-height:130px!important;padding:16px 12px!important;
+ gap:13px!important;box-sizing:border-box!important;
+}
+.hub-home .afaq-home-showcase .afaq-home-module-icon{
+ font-size:clamp(38px,3.6vw,52px)!important;line-height:1.1!important;
+}
+.hub-home .afaq-home-showcase .afaq-home-module strong{
+ font-size:clamp(13px,1.22vw,17px)!important;
+ line-height:1.65!important;overflow-wrap:anywhere!important;
+}
+@media(max-width:1050px){
+ .hub-home .afaq-home-showcase{
+  grid-template-columns:minmax(205px,28%) minmax(0,1fr)!important;
+ }
+ .hub-home .afaq-home-showcase>.afaq-home-modules{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(115px,1fr)!important;
+  gap:10px!important;
+ }
+ .hub-home .afaq-home-showcase .afaq-home-module{
+  min-height:115px!important;padding:12px 8px!important;
+ }
+}
+@media(max-width:730px){
+ .hub-home .afaq-home-showcase{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+  gap:13px!important;
+ }
+ .hub-home .afaq-home-showcase>.afaq-home-side{
+  grid-column:1!important;grid-row:auto!important;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:auto!important;
+ }
+ .hub-home .afaq-home-showcase>.afaq-home-modules{
+  grid-column:1!important;grid-row:auto!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(108px,1fr)!important;
+ }
+ .hub-home .afaq-home-showcase .afaq-home-module{min-height:108px!important}
+}
+@media(max-width:480px){
+ .hub-home .afaq-home-showcase>.afaq-home-side{grid-template-columns:minmax(0,1fr)!important}
+ .hub-home .afaq-home-showcase>.afaq-home-modules{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ .hub-home .afaq-home-showcase .afaq-home-module-icon{font-size:40px!important}
+ .hub-home .afaq-home-showcase .afaq-home-module strong{font-size:13px!important}
+}
