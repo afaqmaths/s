@@ -24,7 +24,7 @@ async function arCall(action,data={}){
    supervisor_only:'تغيير إعدادات النشر متاح للمشرف الرئيسي فقط.',student_not_found:'الطالب غير موجود.',
    invalid_attachment:'الملف غير صالح. يرجى اختيار PDF أو JPG أو PNG أو WebP بحد أقصى ٥ ميجابايت.',
    invalid_score:'درجة غير صحيحة.',invalid_note:'أكمل بيانات الملاحظة.',invalid_login_name:'اسم المستخدم يجب أن يكون ٣ إلى ٣٢ حرفًا أو رقمًا إنجليزيًا دون مسافات.',
-   login_name_taken:'اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.',server_error:'حدث خطأ في الخادم؛ لم يُحفظ التغيير.'};
+   login_name_taken:'اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.',student_mismatch:'لا يمكن نقل ملاحظة مرتبطة بطالب إلى حساب طالب آخر؛ أنشئ ملاحظة جديدة.',server_error:'حدث خطأ في الخادم؛ لم يُحفظ التغيير.'};
   throw Error(dict[obj.error]||'تعذر تنفيذ العملية: '+(obj.error||res.status));
  }
  return obj;
@@ -122,7 +122,7 @@ function arNoteForm(){
  '<label class="ar-wide">وصف الواقعة أو الملاحظة<textarea name="description" required minlength="3" maxlength="2000" rows="3" placeholder="اكتب ملاحظة موضوعية، دقيقة، قابلة للتوثيق">'+arEsc(n.description||'')+'</textarea></label>'+
  '<label class="ar-wide">الإجراء التربوي المتبع<textarea name="action_taken" maxlength="1000" rows="2" placeholder="حوار • تنبيه • خطة متابعة • إشراك ولي الأمر">'+arEsc(n.action_taken||'')+'</textarea></label>'+
  '<label>الجهة المحال إليها<input name="referred_to" maxlength="160" value="'+arEsc(n.referred_to||'')+'" placeholder="الإدارة المدرسية أو الأخصائي الاجتماعي ..."></label>'+
- '<label>حالة الإحالة<select name="referral_status">'+[['draft','قيد المعالجة'],['referred','تمت الإحالة'],['resolved','تم الحل'],['closed','مغلق']].map(([k,t])=>'<option value="'+k+'"'+(n.referral_status===k?' selected':'')+'>'+t+'</option>').join('')+'</select></label>'+
+ '<label>حالة الإحالة<select name="referral_status">'+[['draft','قيد المعالجة'],['referred','مُعدّ للإحالة'],['resolved','تم الحل'],['closed','مغلق']].map(([k,t])=>'<option value="'+k+'"'+(n.referral_status===k?' selected':'')+'>'+t+'</option>').join('')+'</select></label>'+
  '<label class="ar-checkbox"><input type="checkbox" name="guardian_invitation"'+(n.guardian_invitation?' checked':'')+'> مطلوب استدعاء ولي الأمر</label>'+
  '<div class="ar-buttons"><button type="submit">'+(n.id?'حفظ التعديل':'إضافة الملاحظة إلى السجل')+'</button>'+
  (n.id?'<button type="button" id="arCancelEdit">إلغاء التعديل</button>':'')+'</div></form></section>';
