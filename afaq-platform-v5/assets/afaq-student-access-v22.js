@@ -108,7 +108,7 @@ function as22BehaviorGradeCard(){
  '<label class="wide">الملاحظة السلوكية<textarea name="description" maxlength="2000" minlength="3" rows="2" required placeholder="تدوين الواقعة بطريقة موضوعية">'+as22T(editing?.description||'')+'</textarea></label>'+
  '<label class="wide">الإجراء المتبع<textarea name="action_taken" maxlength="1000" rows="2" placeholder="تنبيه تربوي • متابعة • خطة تعديل سلوك">'+as22T(editing?.action_taken||'')+'</textarea></label>'+
  '<label>الجهة المطلوب إحالة الملاحظة إليها<input name="referred_to" maxlength="160" value="'+as22T(editing?.referred_to||'')+'" placeholder="الإدارة المدرسية / الأخصائي الاجتماعي"></label>'+
- '<label>حالة الإحالة<select name="referral_status">'+[['draft','قيد المعالجة'],['referred','موثّقة كإحالة'],['resolved','تمت المعالجة'],['closed','مغلقة']].map(([v,l])=>
+ '<label>حالة الإحالة<select name="referral_status">'+[['draft','قيد المعالجة'],['referred','مُعدّ للإحالة'],['resolved','تمت المعالجة'],['closed','مغلقة']].map(([v,l])=>
  '<option value="'+v+'"'+((editing?.referral_status||'draft')===v?' selected':'')+'>'+l+'</option>').join('')+'</select></label>'+
  '<label class="check"><input name="guardian_invitation" type="checkbox"'+(editing?.guardian_invitation?' checked':'')+'> مطلوب استدعاء ولي الأمر</label>'+
  '<div class="as22-gr-actions"><button type="submit"'+(AS22.busy?' disabled':'')+'>'+
@@ -192,8 +192,8 @@ attachPortal=function(){
     referral_status:f.elements.referral_status.value,guardian_invitation:f.elements.guardian_invitation.checked});
    AS22.editingId=null;AS22.editingStudent='';AS22.message='حُفظت الملاحظة السلوكية بصورة خاصة مع توثيق العملية.';
    await as22RefreshAndRender();
-  }catch(err){AS22.message=err.message;render()}
-  finally{AS22.busy=false}
+  }catch(err){AS22.message=err.message}
+  finally{AS22.busy=false;if(state.page==='dashboard')render()}
  });
  document.getElementById('as22CancelEdit')?.addEventListener('click',()=>{AS22.editingId=null;AS22.editingStudent='';render()});
  document.querySelectorAll('[data-as22-edit]').forEach(btn=>btn.addEventListener('click',()=>{
