@@ -45,14 +45,14 @@ function aeEnsureStaff(){if(!aeState.staffTried)Promise.resolve().then(()=>aeLoa
 function afaqHomeUpdates(){
  aeEnsurePublic();
  const data=aeState.public;
- if(!data||data.notices_visible===false)return '';
- const rows=aeList(data.notices).filter(n=>n.published);
- if(!rows.length)return '';
- return '<aside class="ae-notice-bar" aria-label="تحديثات المنصة"><strong><span>🔔</span> تحديثات آفاق ماث</strong>'+
- '<div class="ae-notice-track"><div class="ae-notice-motion">'+rows.map(n=>
+ if(data&&data.notices_visible===false)return '';
+ const rows=aeList(data?.notices).filter(n=>n.published);
+ const notices=rows.length?rows.map(n=>
   '<span class="ae-notice-item">'+(n.url?aeExternal(n.url,n.title):aeEsc(n.title))+
-  (n.description?' • '+aeEsc(n.description):'')+'</span>').join('<span class="ae-separator">✦</span>')+
- '</div></div></aside>';
+  (n.description?' • '+aeEsc(n.description):'')+'</span>').join('<span class="ae-separator">✦</span>'):
+  '<span class="ae-notice-item">آخر تحديثات وأنشطة آفاق ماث ستُعرض هنا عند اعتمادها للنشر.</span>';
+ return '<aside class="ae-notice-bar" aria-label="تحديثات آفاق ماث"><strong><span>🔔</span> تحديثات آفاق ماث</strong>'+
+ '<div class="ae-notice-track"><div class="ae-notice-motion">'+notices+'</div></div></aside>';
 }
 const AE_NEWS_CATS=[['world','🌐','الأخبار العامة'],['national','🇴🇲','أخبار وطنية'],
  ['sport','⚽','الرياضة'],['business','💼','المال والأعمال'],['science','🔬','العلوم'],
