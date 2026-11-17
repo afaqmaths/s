@@ -52,3 +52,9 @@
 .as22-behavior-rows article .as22-gr-actions button:nth-child(2){color:#a33d38;background:#fff1ef;border-color:#e6bdb7}
 .ar-demo-note #as22OpenDemo{background:#fff1c8;border:1px solid #d6b15b;padding:10px;border-radius:8px;font-weight:900;cursor:pointer}
 @media(max-width:690px){.as22-behavior-form,.as22-behavior-rows{grid-template-columns:1fr}.as22-behavior-form label.wide,.as22-behavior-form .as22-gr-actions{grid-column:1}.as22-mirror-head>span,.as22-gr-head>span{height:45px;width:45px;font-size:25px}}
+
+/* A compact per-student behavior shortcut inside the official 100-point register. */
+.of-table .as22-official-note{display:block;margin:5px 0 0;padding:5px 8px;white-space:nowrap;
+font:850 10px/1.5 Tahoma,Arial,sans-serif;color:#174a7b;background:#e8f2fc;
+border:1px solid #b6d4e9;border-radius:8px;cursor:pointer}
+.of-table .as22-official-note:hover{background:#fceccd;border-color:#d5b075}
