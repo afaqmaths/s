@@ -80,17 +80,15 @@ function hubSectionCard(title,icon,desc,route,color){
   support:'contact',importance:'importance',environment:'environment'}[route]||HUB_ART[icon]||'learning';
  return hubGate(title,icon,desc,'data-route="'+route+'"',color,art);
 }
-const hubAudience=[
- ['زائر','تصفح المكتبة والتعلم والألعاب العامة، وتجربة سهلة واحدة لمسابقة النجوم.'],
- ['طالب','دروس وأنشطة ونتائج معتمدة ومسابقات رسمية بحساب الطالب.'],
- ['ولي أمر','متابعة نتائج الأبناء المعتمدة والتواصل الآمن برمز مخصص.'],
- ['معلم ومشرف','تحضير دروس وتقويم الطلاب ومبادرات ومصادر وكشوف وطباعة.']
-];
+/* Describe the platform, not decorative role buttons. */
 function hubAbout(){
- return '<section class="hub-intro-panel"><h2>ما هي منصة آفاق ماث؟</h2><p>مساحة تعليمية عمانية لتعلّم الرياضيات من الصف الخامس إلى الثامن، وتوسّع المعرفة بتاريخ الرياضيات وعلمائها وتطبيقاتها، وتجمع الدروس والاختبارات والألعاب والمسابقات والأنشطة المساندة.</p>'+
- '<div class="hub-audience">'+hubAudience.map(([role,desc])=>'<article><b>'+role+'</b><p>'+desc+'</p></article>').join('')+'</div>'+
- '<p class="hub-note">تُتاح الموارد العامة دون تسجيل دخول، وتبقى بيانات الطلاب ونتائجهم محمية.</p>'+
- '</section>';
+ if(typeof afaqFinalAboutMarkup==='function')return afaqFinalAboutMarkup();
+ return '<section class="hub-intro-panel afaq-about-extended" dir="rtl"><h2>ما هي منصة آفاق ماث؟</h2>'+
+ '<p><strong>منصة آفاق ماث AFAQMATHS</strong> بيئة تعليمية عمانية تفاعلية لتعليم الرياضيات للصفوف الخامس والسادس والسابع والثامن، تجمع الفهم والتطبيق والاستدلال وتساعد الطلاب على بناء المفاهيم بثقة.</p>'+
+ '<p>تقدم دروس الأعداد والعمليات والقياس والهندسة والبيانات، وأوراق العمل وبنك الأسئلة والتدريب والتقويم، ومكتبة رياضية وفيديوهات تعليمية ومقاطع للاستماع، بالإضافة إلى الألعاب ومسابقات نجوم آفاق.</p>'+
+ '<p>تشجع المنصة التعلم بالمشاركة والتدرج في التمارين، وتدعم التمايز بين الطلاب بأنشطة علاجية وإثرائية. يستطيع الزائر الاطلاع على الموارد العامة دون حساب، بينما تتطلب النتائج والبيانات الخاصة تسجيلًا مصرحًا به.</p>'+
+ '<div class="afaq-about-fallback-art"><img src="assets/afaq-v9-shapes.svg?v=20261113-v9" alt="مجسمات هندسية من دروس الصف السادس" width="310" height="270" loading="lazy"></div>'+
+ '<p class="hub-note">آفاق ماث — الرياضيات حياة وإبداع • إعداد وإشراف الأستاذ سعيد البريكي.</p></section>';
 }
 function hubHome(){
  const paths='<svg class="afaq-hero-lines" viewBox="0 0 1200 350" preserveAspectRatio="none" aria-hidden="true">'+
@@ -111,9 +109,6 @@ function hubHome(){
  '<button type="button" class="hub-primary" data-route="learning">ابدأ رحلتك في الرياضيات</button></div>'+
  '</section>'+
  hubAbout()+
- (typeof afaqHomeUpdates==="function"?afaqHomeUpdates():"")+
- /* Four category news ribbons are inserted between homepage sections by the layout layer. */
- ''+
  '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
  '<div class="hub-gate-grid hub-gate-grid-4">'+
  hubGate('دخول الطالب','book-open','حساب الطالب والدروس والنتائج','data-hub-login="student"','green')+
@@ -129,9 +124,10 @@ function hubHome(){
  hubSectionCard('الألعاب والمسابقات','trophy','نجوم آفاق والمنافسات','contests','gold')+
  hubSectionCard('الدعم والتواصل','smartphone','الاقتراحات والرسائل','support','cyan')+
  '</div></section>'+
+ (typeof afaqHomeUpdates==="function"?afaqHomeUpdates():"")+
  (typeof afaqHomeShowcase==="function"?afaqHomeShowcase():"")+
- '<div class="hub-counter"><span>🌐 عدّاد الزيارات التراكمي التقديري</span><strong id="hubVisitorCount">'+
- (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong></div></div>';
+ '<div class="hub-counter"><span>عدد زوار المنصة</span><strong id="hubVisitorCount">'+
+ (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong><small class="afaq-final-counter-note">يشمل رصيدًا افتتاحيًا قدره ٦٬٥٠٠ إضافة إلى المتصفحات المسجلة.</small></div></div>';
 }
 async function hubCall(action,payload={},token=''){
  const result=await fetch(HUB_API,{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify({action,...payload}),cache:'no-store'});
