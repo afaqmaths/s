@@ -89,7 +89,9 @@ arStudentSection=function(){
 };
 function as22BehaviorGradeCard(){
  if(!as22Allowed()||!auth.selectedStudent)return '';
- const id=auth.selectedStudent,match=(auth.students||AR.roster||[]).find(x=>x.student_id===id);
+ const id=auth.selectedStudent;
+ if(AS22.editingStudent&&AS22.editingStudent!==id){AS22.editingId=null;AS22.editingStudent=''}
+ const match=(auth.students||AR.roster||[]).find(x=>x.student_id===id);
  const notes=AR.notes.filter(x=>x.student_id===id&&x.category==='behavior');
  const editing=notes.find(n=>String(n.id)===String(AS22.editingId))||null;
  return '<section class="ar-card as22-gradebook" data-as22-student="'+as22T(id)+'">'+
@@ -124,7 +126,7 @@ studentAdmin=function(){
  const base=as22PreviousStudentAdmin();
  if(!as22Allowed()||!auth.selectedStudent)return base;
  arReset();
- if(!AR.loaded&&!AR.loading)Promise.resolve().then(arLoadAdmin);
+ if(!AR.loaded&&!AR.loading){AR.selected=auth.selectedStudent;Promise.resolve().then(arLoadAdmin)}
  return base+as22BehaviorGradeCard();
 };
 async function as22RefreshAndRender(){
