@@ -145,10 +145,29 @@ async function loadCertificates(){
  if(r.report)STATE.report=r.report;
  STATE.certificateError='';
 }
-function unitCards(){let cards=[];for(let s=1;s<=units(STATE.grade);s++){
- const part=STATE.report?.parts?.find(x=>x.section===s);
- cards.push('<button class="contest-unit '+(STATE.section===s?'selected':'')+'" data-unit="'+s+'"><span class="unit-num">'+s+'</span><strong>'+(STATE.grade===6?'الوحدة':'القسم')+' '+s+' — '+unitName(STATE.grade,s)+'</strong><small>'+(STATE.grade===6?'١٠٠':'٢٥')+' نقطة</small>'+(STATE.grade===6?'':'<small>'+friendly(splitSyllabus[STATE.grade]?.[s-1]?.topics||'')+'</small>')+(part?'<small>أفضل نتيجة: '+friendly(part.best??'—')+' / ١٠٠ • المحاولات المتاحة: '+friendly(part.attempts_remaining)+'</small>':'')+'</button>');
- }return '<div class="contest-units">'+cards.join('')+'</div>';
+function unitCards(){
+ let cards=[];
+ for(let s=1;s<=units(STATE.grade);s++){
+  const part=STATE.report?.parts?.find(x=>x.section===s);
+  const requiresFourDayRelease=STATE.grade===6&&STATE.mode==='official'&&student()&&s>1;
+  const prev=STATE.report?.parts?.find(x=>x.section===s-1);
+  const begins=(prev?.records||[]).map(x=>Date.parse(x.started_at)).filter(Number.isFinite);
+  const first=begins.length?Math.min(...begins):null;
+  const openAt=first==null?null:first+4*24*60*60*1000;
+  const locked=requiresFourDayRelease&&(!prev?.finished||openAt===null||Date.now()<openAt);
+  const timeLeft=openAt===null?0:Math.max(0,Math.ceil((openAt-Date.now())/3600000));
+  const days=Math.floor(timeLeft/24),hours=timeLeft%24;
+  const lockText=locked?(!prev?.finished?'🔒 أكمل الوحدة السابقة أولًا':
+   '🔒 تُفتح بعد ٤ أيام من بدء الوحدة السابقة — المتبقي '+stext(days)+' يوم و'+stext(hours)+' ساعة'):'';
+  cards.push('<button class="contest-unit '+(STATE.section===s?'selected ':'')+
+   (locked?'contest-unit-locked':'')+'" data-unit="'+s+'"'+(locked?' disabled aria-disabled="true"':'')+'>'+
+   '<span class="unit-num">'+s+'</span><strong>'+(STATE.grade===6?'الوحدة':'القسم')+' '+s+' — '+unitName(STATE.grade,s)+'</strong>'+
+   '<small>'+(STATE.grade===6?'١٠٠':'٢٥')+' نقطة</small>'+
+   (STATE.grade===6?'':'<small>'+friendly(splitSyllabus[STATE.grade]?.[s-1]?.topics||'')+'</small>')+
+   (part?'<small>أفضل نتيجة: '+friendly(part.best??'—')+' / ١٠٠ • المحاولات المتاحة: '+friendly(part.attempts_remaining)+'</small>':'')+
+   (locked?'<small class="contest-unit-lock-note">'+lockText+'</small>':'')+'</button>');
+ }
+ return '<div class="contest-units">'+cards.join('')+'</div>';
 }
 function road(active=0){return '<div class="stage-track">'+stageInfo.map((st,i)=>'<div class="stage-node '+(i+1===active?'active':i+1<active?'passed':'')+'">'+image(stageArt(i+1),st.title,'stage-pic')+'<strong>'+st.title+'</strong><small>'+st.detail+'</small><b class="stage-points">١٠ نقاط</b></div>').join('')+'</div>'}
 function progress(){let r=STATE.report;if(!r)return '';
