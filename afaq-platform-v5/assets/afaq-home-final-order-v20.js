@@ -122,6 +122,10 @@ hubHome=function(){
   });
  }
  if(count)home.appendChild(count);
+ // The older lock-image initiative teaser is redundant now that the real,
+ // interactive Math Mixer is presented above. Remove its DOM node entirely;
+ // do not touch the protected full mixer route or supervisor permissions.
+ home.querySelectorAll('.v10-init-home.ia-init-teaser').forEach(teaser=>teaser.remove());
  return mount.innerHTML;
 };
 const afaqFinalPriorAttach=attach;
