@@ -2,7 +2,7 @@
 'use strict';
 const afaqPinPrint={className:'السادس / ٤',pages:1,students:null,token:'',loadedClass:'',loading:false,error:'',message:''};
 const afaqPinSite='https://afaqmaths.github.io/s/afaq-platform-v5/';
-const afaqPinQR='https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data='+encodeURIComponent(afaqPinSite);
+const afaqPinQR='https://afaqmaths.github.io/s/afaq-platform-v5/assets/afaq-platform-qr-v22.svg';
 const afaqPinSafe=s=>afaqStarsEsc(s);
 const afaqPinDisplay=s=>s.pin_status==='changed'?'غيّره الطالب':(s.pin_status==='original'&&s.pin?s.pin:'غير متاح');
 function afaqPinClear(){afaqPinPrint.students=null;afaqPinPrint.token='';afaqPinPrint.loadedClass='';afaqPinPrint.error='';afaqPinPrint.message=''}
