@@ -1,0 +1,107 @@
+/* AFAQMATHS — final homepage 2026-11-17.
+   The original, functioning four role-entry controls sit between Omani flag and blue main hero.
+   Only the final composed hero is allowed to render during initial loading. */
+.hub-home .afaq-home-access.afaq-entry-between-flag-hero{
+ display:flex!important;flex-direction:column!important;gap:12px!important;
+ margin:13px 0 19px!important;padding:18px 20px 20px!important;
+ width:100%!important;max-width:none!important;min-width:0!important;
+ background:linear-gradient(120deg,#f6fbff,#e9f6fb 70%,#fff5df)!important;
+ border:2px solid #bfd8e7!important;border-top:4px solid #0f8585!important;
+ border-radius:22px!important;box-shadow:0 10px 27px rgba(24,62,93,.11)!important;
+ box-sizing:border-box!important;direction:rtl!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-heading{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex-direction:column!important;gap:3px!important;margin:0!important;
+ padding:11px!important;min-height:0!important;text-align:center!important;
+ background:linear-gradient(115deg,#153d70,#236998)!important;border-radius:14px!important;
+ border:1px solid #3678a1!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-heading>span{
+ font-size:12px!important;color:#ffe1a3!important;font-weight:900!important
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-heading h2{
+ color:#fff!important;font-size:clamp(20px,2.15vw,27px)!important;
+ line-height:1.55!important;font-weight:950!important;margin:0!important;
+ text-shadow:0 2px 5px #0a3562!important
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ width:100%!important;max-width:none!important;min-width:0!important;
+ flex:none!important;gap:12px!important;align-items:stretch!important;
+ overflow:visible!important;scroll-snap-type:none!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate{
+ min-width:0!important;max-width:none!important;width:100%!important;
+ min-height:165px!important;height:auto!important;
+ padding:15px 10px!important;border-radius:14px!important;
+ box-shadow:0 6px 14px rgba(27,75,103,.1)!important;
+ transform:none!important;transition:background-color .16s ease,border-color .16s ease!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:center!important;text-align:center!important;gap:8px!important;
+ box-sizing:border-box!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate:hover{
+ transform:none!important;box-shadow:0 9px 20px rgba(27,75,103,.18)!important;
+ border-color:#d0ac6c!important
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>.hub-visual{
+ order:0;flex:none!important;width:70px!important;max-width:70px!important;
+ height:70px!important;min-height:0!important;margin:0 auto!important;
+ display:grid!important;place-items:center!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>.hub-visual svg{
+ width:65px!important;height:65px!important;max-width:65px!important;
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>strong{
+ order:1;color:#174d7e!important;font-size:clamp(13px,1.22vw,17px)!important;
+ line-height:1.5!important;font-weight:950!important;text-align:center!important
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>span:not(.hub-visual){
+ order:2;font-size:clamp(11px,.92vw,13px)!important;
+ line-height:1.7!important;color:#54758e!important;text-align:center!important
+}
+.hub-home .afaq-entry-between-flag-hero .hub-gate>small{
+ order:3;color:#49758b!important;font-size:11px!important;
+ font-weight:850!important;text-align:center!important
+}
+.hub-home .afaq-mid-layout.afaq-mid-layout--two{
+ grid-template-columns:minmax(0,1.18fr) minmax(0,1fr)!important;
+ align-items:stretch!important;gap:17px!important
+}
+.hub-home .afaq-mid-layout--two>.afaq-mid-center{grid-column:1!important;grid-row:1!important}
+.hub-home .afaq-mid-layout--two>.afaq-mid-side--left{grid-column:2!important;grid-row:1!important}
+.hub-home .afaq-entry-between-flag-hero .ia-first-login-guide{
+ margin:8px 0 0!important;max-width:none!important
+}
+@media(max-width:1100px){
+ .hub-home .afaq-mid-layout.afaq-mid-layout--two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{gap:9px!important}
+ .hub-home .afaq-entry-between-flag-hero .hub-gate{min-height:150px!important}
+}
+@media(max-width:790px){
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+ }
+ .hub-home .afaq-mid-layout.afaq-mid-layout--two{grid-template-columns:minmax(0,1fr)!important}
+ .hub-home .afaq-mid-layout--two>.afaq-mid-center,
+ .hub-home .afaq-mid-layout--two>.afaq-mid-side--left{grid-column:1!important;grid-row:auto!important}
+ .hub-home .afaq-entry-between-flag-hero .hub-gate{min-height:137px!important}
+}
+@media(max-width:500px){
+ .hub-home .afaq-entry-between-flag-hero{padding:12px!important;gap:9px!important}
+ .hub-home .afaq-entry-between-flag-hero>.hub-gate-grid{gap:8px!important}
+ .hub-home .afaq-entry-between-flag-hero .hub-gate{
+  padding:10px 6px!important;min-height:126px!important
+ }
+ .hub-home .afaq-entry-between-flag-hero .hub-gate>.hub-visual{
+  width:54px!important;max-width:54px!important;height:54px!important
+ }
+ .hub-home .afaq-entry-between-flag-hero .hub-gate>.hub-visual svg{width:50px!important;height:50px!important}
+ .hub-home .afaq-entry-between-flag-hero .hub-gate>strong{font-size:13px!important}
+ .hub-home .afaq-entry-between-flag-hero .hub-gate>span:not(.hub-visual){font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .afaq-entry-between-flag-hero .hub-gate{transition:none!important}
+}
