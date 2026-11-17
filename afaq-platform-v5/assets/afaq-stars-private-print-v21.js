@@ -33,39 +33,49 @@ function afaqPinPanel(){
  '<td dir="ltr">'+afaqPinSafe(afaqPinDisplay(s))+'</td></tr>').join('')+'</tbody></table></div></div>':'')+
  '</section>';
 }
+function afaqPinCredentialsTable(items){
+ return '<table class="credentials"><thead><tr><th>اسم الطالب</th><th>اسم المستخدم</th><th>الرقم السري</th><th>كود دخول المنصة ورابطها</th></tr></thead><tbody>'+
+ items.map(s=>'<tr class="credential-row"><td class="student-name">'+afaqPinSafe(s.full_name)+'</td>'+
+ '<td class="login" dir="ltr">'+afaqPinSafe(s.login_name)+'</td>'+
+ '<td class="pin" dir="ltr">'+afaqPinSafe(afaqPinDisplay(s))+'</td>'+
+ '<td class="row-qr-cell"><div class="row-qr"><img loading="eager" src="'+afaqPinSafe(afaqPinQR)+'" alt="باركود الدخول إلى منصة آفاق ماث">'+
+ '<small dir="ltr">'+afaqPinSafe(afaqPinSite.replace("https://",""))+'</small></div></td></tr>').join('')+'</tbody></table>';
+}
 function afaqPinPrintablePage(items,pageNumber,pageCount){
  const compact=afaqPinPrint.pages===1;
+ const chunks=compact?[items.slice(0,Math.ceil(items.length/2)),items.slice(Math.ceil(items.length/2))]:[items];
  return '<section class="print-page '+(compact?'compact':'comfortable')+'">'+
  '<header class="print-head"><div><h1>منصة آفاق ماث | بيانات دخول الطلاب</h1>'+
- '<h2>'+afaqPinSafe(afaqPinPrint.className)+' — '+(compact?'صفحة واحدة':'نسخة من صفحتين')+'</h2>'+
- '<p>AFAQMATHS • الصفحة '+pageNumber+' من '+pageCount+'</p></div>'+
- '<figure><img alt="باركود دخول منصة آفاق ماث" src="'+afaqPinSafe(afaqPinQR)+'">'+
- '<figcaption>كود دخول المنصة<small dir="ltr">'+afaqPinSafe(afaqPinSite)+'</small></figcaption></figure></header>'+
- '<table class="credentials"><thead><tr><th>اسم الطالب</th><th>اسم المستخدم</th><th>الرقم السري</th></tr></thead><tbody>'+
- items.map(s=>'<tr><td>'+afaqPinSafe(s.full_name)+'</td><td dir="ltr">'+afaqPinSafe(s.login_name)+'</td>'+
- '<td dir="ltr">'+afaqPinSafe(afaqPinDisplay(s))+'</td></tr>').join('')+'</tbody></table>'+
- '<footer>كشف خاص بالمعلم - تُسلَّم بيانات كل طالب له وحده. «غيّره الطالب» تعني أن الرمز القديم غير صالح.</footer>'+
+ '<h2>'+afaqPinSafe(afaqPinPrint.className)+' — '+(compact?'جميع الطلاب في صفحة أفقية واحدة':'نسخة أوضح موزعة على صفحتين')+'</h2>'+
+ '<p>AFAQMATHS • الصفحة '+pageNumber+' من '+pageCount+' • كود دخول ورابط مستقل أمام كل طالب</p></div></header>'+
+ '<div class="credential-columns">'+chunks.map(x=>afaqPinCredentialsTable(x)).join('')+'</div>'+
+ '<footer>كشف خاص بالمعلم — باركود المنصة ورابطها أمام كل طالب. «غيّره الطالب» تعني أن رقمه السري الحالي خاص به.</footer>'+
  '</section>';
 }
 function afaqPinBuildPrintDocument(){
  const all=afaqPinPrint.students||[],groups=afaqPinPrint.pages===1?[all]:
  [all.slice(0,Math.ceil(all.length/2)),all.slice(Math.ceil(all.length/2))];
- const css='*{box-sizing:border-box}body{direction:rtl;margin:0;font-family:Tahoma,Arial,sans-serif;background:#e9eef4;color:#153b64}' +
- '.toolbar{position:sticky;top:0;z-index:9;padding:12px;text-align:center;background:#164675;color:#fff}.toolbar button{background:#ffe09c;color:#18416b;font-weight:900;border:0;padding:10px 18px;border-radius:8px;cursor:pointer;margin-right:10px}' +
- '.print-page{width:280mm;min-height:194mm;margin:9px auto;background:#fff;padding:3mm;border:1px solid #bed2e4;break-after:page}.print-page:last-child{break-after:auto}' +
- '.print-head{height:30mm;background:#153e74;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:2mm 5mm;border-bottom:2px solid #d6ad69}' +
- '.print-head h1{font-size:18px;margin:0 0 3px}.print-head h2{font-size:13px;color:#ffe2a1;margin:0 0 3px}.print-head p{font-size:9px;margin:0}' +
- '.print-head figure{display:flex;flex-direction:column;align-items:center;margin:0}.print-head img{width:20mm;height:20mm;background:white;image-rendering:pixelated}' +
- '.print-head figcaption{font-size:9px;text-align:center}.print-head small{display:block;font-size:8px;color:#f3dfbf}' +
- 'table{border-collapse:collapse;width:100%;table-layout:fixed;margin-top:2mm;direction:rtl}' +
- 'th{background:#e8f2fa;color:#184d81;padding:1mm;border:1px solid #c8d9e9}td{border:1px solid #dde7f0;line-height:1.1;padding:.5mm 1mm}tr:nth-child(even){background:#f3f8fc}' +
- 'td:first-child,th:first-child{width:62%}td:nth-child(2),th:nth-child(2){width:17%;text-align:center}td:nth-child(3),th:nth-child(3){width:21%;text-align:center}' +
- 'td:nth-child(2),td:nth-child(3){font-weight:800}.compact table{font-size:10px}.compact td{height:4mm}.comfortable table{font-size:14px}.comfortable td{height:7.3mm}' +
- 'footer{text-align:center;color:#86542b;background:#fff9eb;font-size:10px;padding:2mm}' +
- '@page{size:A4 landscape;margin:6mm}@media print{body{background:#fff}.toolbar{display:none}.print-page{border:0;margin:0;padding:0;width:100%;min-height:0}}';
+ const css=[
+ '*{box-sizing:border-box}body{direction:rtl;margin:0;font-family:Tahoma,Arial,sans-serif;background:#e9eef4;color:#153b64}',
+ '.toolbar{position:sticky;top:0;z-index:9;padding:12px;text-align:center;background:#164675;color:#fff}.toolbar button{background:#ffe09c;color:#18416b;font-weight:900;border:0;padding:10px 18px;border-radius:8px;cursor:pointer;margin-right:10px}',
+ '.print-page{width:281mm;height:197mm;margin:9px auto;background:#fff;padding:1mm;border:1px solid #bed2e4;break-after:page;display:flex;flex-direction:column;overflow:hidden}.print-page:last-child{break-after:auto}',
+ '.print-head{height:19mm;flex:0 0 19mm;background:#153e74;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:2mm 4mm;border-bottom:2px solid #d6ad69}',
+ '.print-head h1{font-size:17px;margin:0 0 3px}.print-head h2{font-size:12px;color:#ffe2a1;margin:0 0 3px}.print-head p{font-size:9px;margin:0}',
+ '.credential-columns{display:grid;grid-template-columns:1fr;gap:2mm;flex:1;min-height:0;margin-top:1mm}.compact .credential-columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}',
+ 'table.credentials{border-collapse:collapse;width:100%;height:100%;table-layout:fixed;direction:rtl;margin:0}',
+ 'table.credentials th{background:#e8f2fa;color:#184d81;font-size:10px;height:6mm;line-height:1.05;padding:.4mm;border:1px solid #c8d9e9}',
+ 'table.credentials td{border:1px solid #dde7f0;line-height:1.12;padding:.3mm .8mm;vertical-align:middle}table.credentials tr:nth-child(even){background:#f3f8fc}',
+ 'table.credentials th:first-child,table.credentials td.student-name{width:42%;text-align:right}table.credentials th:nth-child(2),table.credentials td.login{width:14%;text-align:center}table.credentials th:nth-child(3),table.credentials td.pin{width:14%;text-align:center}table.credentials th:nth-child(4),table.credentials td.row-qr-cell{width:30%;text-align:center}',
+ '.compact table.credentials{font-size:9px}.compact td.student-name{font-size:8px}.comfortable table.credentials{font-size:14px}.comfortable td.student-name{font-size:13px}',
+ 'td.login,td.pin{font-weight:850}td.row-qr-cell{padding:0!important;line-height:1!important}.row-qr{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:.6mm;height:100%;min-width:0}',
+ '.row-qr img{display:block;width:8.6mm;height:8.6mm;object-fit:contain;flex-shrink:0;image-rendering:pixelated}.row-qr small{display:block;overflow-wrap:anywhere;font-family:Arial,sans-serif;font-size:5.7px;line-height:1.12;max-width:30mm;text-align:left}',
+ '.comfortable .row-qr img{width:9.2mm;height:9.2mm}.comfortable .row-qr small{font-size:8px;max-width:64mm}',
+ '.print-page footer{height:6mm;flex:0 0 6mm;text-align:center;color:#86542b;background:#fff9eb;font-size:9px;padding:1mm}',
+ '@page{size:A4 landscape;margin:6mm}@media print{html,body{margin:0;padding:0;background:#fff}.toolbar{display:none}.print-page{border:0;margin:0;padding:0;width:100%;height:197mm}}'
+ ].join('');
  return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow">'+
  '<title>كشف آفاق ماث '+afaqPinSafe(afaqPinPrint.className)+'</title><style>'+css+'</style></head><body>'+
- '<div class="toolbar">مستند خاص بالمشرف — يمكنك حفظه PDF من نافذة الطباعة. <button onclick="window.print()">طباعة / حفظ PDF</button></div>'+
+ '<div class="toolbar">مستند خاص بالمشرف — باركود مستقل أمام كل طالب. <button onclick="window.print()">طباعة / حفظ PDF</button></div>'+
  groups.map((g,i)=>afaqPinPrintablePage(g,i+1,groups.length)).join('')+'</body></html>';
 }
 async function afaqPinLoadPrivate(){
