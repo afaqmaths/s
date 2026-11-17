@@ -1,0 +1,155 @@
+/* Featured and secure supervisor control center for Stars Mathematics Contest. */
+.hub-staff-home .afaq-stars-spotlight{
+ display:flex;direction:rtl;align-items:center;gap:16px;flex-wrap:wrap;
+ margin:16px 0 22px;padding:20px 22px;border:2px solid #d8ad4f;border-radius:23px;
+ background:linear-gradient(115deg,#102e64,#185e91 63%,#2487a2);color:#fff;
+ box-shadow:0 11px 27px rgba(20,59,107,.27)
+}
+.hub-staff-home .afaq-stars-spotlight-icon{
+ flex:0 0 63px;display:grid;place-items:center;width:63px;height:63px;
+ font-size:41px;background:#fff6db;border-radius:15px;
+ box-shadow:0 4px 12px rgba(0,0,0,.12)
+}
+.hub-staff-home .afaq-stars-spotlight>div{flex:1 1 280px;min-width:0}
+.hub-staff-home .afaq-stars-spotlight strong{
+ display:block;font-size:clamp(20px,2vw,26px);font-weight:950;color:#ffe3a0;line-height:1.6
+}
+.hub-staff-home .afaq-stars-spotlight p{margin:4px 0;color:#e7f3ff;font-size:13px;line-height:1.7}
+.hub-staff-home .afaq-stars-spotlight button{
+ padding:13px 19px;border:1px solid #fff3b7;border-radius:13px;background:#f8d58b;color:#1c4374;
+ font-size:14px;font-weight:950;cursor:pointer;
+ box-shadow:0 4px 12px rgba(0,0,0,.15)
+}
+.hub-staff-home .afaq-stars-spotlight button:hover{background:#ffedbd}
+.hub-staff-nav .afaq-stars-nav-link{
+ border:2px solid #cbac64!important;
+ background:linear-gradient(125deg,#eaf7ff,#f9e9b9)!important;
+ color:#194a7e!important;font-weight:950!important
+}
+.hub-staff-nav .afaq-stars-nav-link.selected{
+ background:#163f78!important;color:#ffe1a0!important;
+ border-color:#e2bf67!important
+}
+.afaq-stars-console{
+ direction:rtl!important;max-width:1480px;margin:20px auto 55px!important;
+ color:#1b4066
+}
+.afaq-stars-console .hub-staff-nav{margin:0 0 16px}
+.afaq-stars-hero{
+ display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:26px 25px;
+ background:linear-gradient(125deg,#102851,#195788 67%,#288caa);
+ color:white;border:2px solid #d5b66b;border-radius:24px;
+ box-shadow:0 12px 27px rgba(15,44,82,.22);margin-bottom:15px
+}
+.afaq-stars-hero-medal{
+ flex:0 0 74px;width:74px;height:74px;display:grid;place-items:center;
+ border-radius:18px;background:#ffedc2;font-size:49px;color:#18436f
+}
+.afaq-stars-hero-copy{flex:1 1 300px;min-width:0}
+.afaq-stars-hero-copy>span{color:#f8dda6;font-size:13px;font-weight:950}
+.afaq-stars-hero h1{color:#fff!important;font-size:clamp(24px,3vw,38px);line-height:1.4;margin:6px 0}
+.afaq-stars-hero p{font-size:14px;color:#e5f3ff;line-height:1.9;margin:0}
+.afaq-stars-hero-links{display:flex;flex-direction:column;gap:9px;flex:0 1 245px}
+.afaq-stars-hero-links>*,
+.afaq-stars-secondary-button{
+ display:block;text-decoration:none;text-align:center;cursor:pointer;
+ padding:11px 14px;font:850 13px Tahoma,Arial,sans-serif;
+ border-radius:11px;border:1px solid #dec99c
+}
+.afaq-stars-main-button{color:#193f71;background:#ffe19d}
+.afaq-stars-secondary-button{color:#24517a;background:#ecf5ff;border-color:#a9c9dd}
+.afaq-stars-return{color:#e7f2ff;background:transparent;border-color:#c4d4e4}
+.afaq-stars-hero-links a:hover,.afaq-stars-hero-links button:hover{filter:brightness(1.08)}
+.afaq-stars-message{font-size:14px;font-weight:850;line-height:1.9;color:#255982;min-height:20px;margin:9px 0}
+.afaq-stars-panel{
+ padding:22px;margin:18px 0;background:#fff;border:1px solid #d5e3ef;
+ border-radius:19px;box-shadow:0 7px 22px rgba(25,70,110,.11)
+}
+.afaq-stars-panel h2{font-size:clamp(20px,2.3vw,27px);color:#194b7b;margin:0 0 9px}
+.afaq-stars-panel p{color:#526e83;font-size:13px;line-height:1.9;margin:8px 0}
+.afaq-stars-global-gate{
+ display:flex;align-items:center;gap:12px 20px;justify-content:space-between;flex-wrap:wrap;
+ border:2px solid #c6d9e8;background:linear-gradient(105deg,#f8fcff,#fff8ea)
+}
+.afaq-stars-global-gate>div:first-child{flex:1 1 280px}
+.afaq-stars-gate-row{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.afaq-stars-gate-status{
+ display:inline-block;border-radius:9px;padding:10px 13px;
+ font-size:13px;font-weight:950;line-height:1.6
+}
+.afaq-stars-gate-status.open{background:#e4f7ea;color:#15643f;border:1px solid #83c39d}
+.afaq-stars-gate-status.closed{background:#ffebeb;color:#9e3232;border:1px solid #d99696}
+.afaq-stars-gate-action{
+ padding:11px 14px;border-radius:11px;border:1px solid #d5a4a4;
+ font-weight:950;font-size:13px;cursor:pointer;color:#fff;background:#a83f43
+}
+.afaq-stars-gate-action.success{background:#17673e;border-color:#17673e}
+.afaq-stars-gate-action:disabled,.afaq-stars-row-action:disabled{opacity:.5;cursor:wait}
+.afaq-stars-global-gate>.afaq-stars-note{flex-basis:100%}
+.afaq-stars-metrics{
+ display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:17px 0
+}
+.afaq-stars-metrics article{
+ display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;
+ border:1px solid #bed9e9;border-radius:15px;
+ background:linear-gradient(140deg,#f3faff,#fff9eb);text-align:center;min-height:100px;padding:13px 7px
+}
+.afaq-stars-metrics strong{font-size:clamp(26px,3vw,35px);color:#164979;line-height:1.2}
+.afaq-stars-metrics span{color:#58738a;font-size:12px;font-weight:850;line-height:1.5}
+.afaq-stars-section-title{
+ display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:14px
+}
+.afaq-stars-section-title>div{flex:1}
+.afaq-stars-filters{
+ display:flex;align-items:end;flex-wrap:wrap;gap:12px;background:#f3f8fd;
+ border-radius:13px;padding:11px 13px;margin:0 0 15px
+}
+.afaq-stars-filters label{display:flex;flex-direction:column;gap:5px;flex:1 1 200px;color:#325b77;font-size:12px;font-weight:900}
+.afaq-stars-filters input,.afaq-stars-filters select{
+ color:#174b73;background:#fff;border:1px solid #abcbdc;border-radius:10px;padding:11px;font-size:13px;
+ font-family:Tahoma,Arial,sans-serif;width:100%;box-sizing:border-box
+}
+.afaq-stars-filters input:focus-visible,.afaq-stars-filters select:focus-visible{outline:3px solid #77c4e5}
+.afaq-stars-filters #afaqStarsVisible{color:#426980;font-size:12px;font-weight:850;padding:8px}
+.afaq-stars-table-scroll{width:100%;overflow-x:auto;border:1px solid #d3e1e9;border-radius:12px}
+.afaq-stars-table{width:100%;min-width:1130px;border-collapse:collapse;direction:rtl;background:#fff;font-size:12px;text-align:right}
+.afaq-stars-table th{
+ background:#154776;color:#fff;padding:13px 11px;font-size:12px;
+ position:sticky;top:0;z-index:1;white-space:nowrap
+}
+.afaq-stars-table td{border-bottom:1px solid #e0eaf1;padding:10px 9px;color:#31536e;vertical-align:middle}
+.afaq-stars-table tbody tr:nth-child(even){background:#f5faff}
+.afaq-stars-table tbody tr:hover{background:#fff8e8}
+.afaq-stars-table tr[hidden]{display:none!important}
+.afaq-stars-table td strong{color:#184b7e;font-size:13px}
+.afaq-stars-table td small{display:block;font-size:10px;line-height:1.7;color:#6b7f8b;margin-top:3px}
+.afaq-stars-table-mini{white-space:normal;line-height:1.9;font-size:11px}
+.afaq-stars-table b{font-size:14px;color:#114d87}
+.afaq-stars-pill{
+ display:inline-block;border-radius:8px;padding:5px 8px;
+ font-weight:950;font-size:11px;line-height:1.6;white-space:nowrap
+}
+.afaq-stars-pill.qualifies,.afaq-stars-pill.enabled{background:#def5e6;color:#1c754d}
+.afaq-stars-pill.ongoing{background:#fff0ca;color:#92601b}
+.afaq-stars-pill.disabled{background:#ffe1e2;color:#a63338}
+.afaq-stars-pin-warning{color:#bd6536!important}
+.afaq-stars-row-action{
+ display:block;margin-top:7px;padding:8px 10px;
+ background:#ecf3ff;color:#23547a;border:1px solid #b6cddd;border-radius:9px;
+ cursor:pointer;font-family:Tahoma,Arial,sans-serif;font-size:11px;font-weight:900
+}
+.afaq-stars-row-action[data-stars-enabled="true"]{color:#146440;border-color:#9dcbaf;background:#e5f7e9}
+.afaq-stars-row-action:hover{filter:brightness(.95)}
+.afaq-stars-note{font-size:11px!important;line-height:1.9;color:#688194}
+@media(max-width:1200px){.afaq-stars-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:750px){
+ .afaq-stars-hero{padding:19px 15px;gap:12px}
+ .afaq-stars-hero-links{flex:1 1 100%;flex-direction:row;flex-wrap:wrap}
+ .afaq-stars-hero-links>*{flex:1 1 170px}
+ .afaq-stars-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .afaq-stars-panel{padding:14px}
+ .afaq-stars-gate-row{width:100%}
+ .hub-staff-home .afaq-stars-spotlight{padding:15px}
+ .hub-staff-home .afaq-stars-spotlight button{width:100%}
+}
+@media(max-width:470px){.afaq-stars-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
