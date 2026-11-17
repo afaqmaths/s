@@ -432,8 +432,7 @@ if(typeof window!=='undefined'&&auth.user?.role==='supervisor')iaRefreshVisibili
 const iaHomeBeforeFirstEntry=hubHome;
 hubHome=function(){
  const html=iaHomeBeforeFirstEntry();
- /* The updated homepage explains first-time login in its actual entry guide. */
- if(typeof afaqFinalEntryMarkup==='function')return html;
+ /* Preserve the dedicated grade-six first-login guide near the entry cards. */
  const card='<section class="ia-first-login-guide" aria-label="الدخول الأول للطالب">'+
  '<div class="ia-first-login-icon" aria-hidden="true">🎓</div>'+
  '<div><h2>الدخول الأول للطالب — الصف السادس</h2>'+
