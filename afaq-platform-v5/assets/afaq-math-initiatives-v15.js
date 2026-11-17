@@ -41,7 +41,8 @@ async function iaFetch(action,payload={},admin=false){
 }
 function iaGateView(page){
  const label=page==='afaq_multiples'?'مبادرة المضاعفات الصفرية والموجبة':
- page==='afaq_prime_sieve'?'مبادرة غربال الأعداد الأولية':'مبادرات الأستاذ سعيد البريكي';
+ page==='afaq_prime_sieve'?'مبادرة غربال الأعداد الأولية':
+ page==='mixer'?'خلاط الرياضيات — طلب تصريح التشغيل':'مبادرات الأستاذ سعيد البريكي';
  return '<div class="container ia-page" dir="rtl"><section class="ia-gate">'+
  '<div class="ia-shield">🔐</div><span class="ia-eyebrow">محتوى تعليمي محمي بإذن المشرف</span>'+
  '<h1>'+iaEscape(label)+'</h1>'+
