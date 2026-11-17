@@ -28,9 +28,9 @@ function afaqPinPanel(){
  '<button type="button" id="afaqPinHide">إخفاء الأرقام السرية</button></div>'+
  '<p><strong>'+afaqPinSafe(afaqPinPrint.className)+'</strong> — '+afaqPinPrint.students.length+' طالبًا، منهم '+
  afaqPinPrint.students.filter(s=>s.pin_status==='changed').length+' غيّروا الرقم السري.</p>'+
- '<div class="afaq-pin-scroll"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الرقم السري</th></tr></thead><tbody>'+
+ '<div class="afaq-pin-scroll"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الرقم السري</th><th>باركود المنصة ورابطها</th></tr></thead><tbody>'+
  afaqPinPrint.students.map(s=>'<tr><td>'+afaqPinSafe(s.full_name)+'</td><td dir="ltr">'+afaqPinSafe(s.login_name)+'</td>'+
- '<td dir="ltr">'+afaqPinSafe(afaqPinDisplay(s))+'</td></tr>').join('')+'</tbody></table></div></div>':'')+
+ '<td dir="ltr">'+afaqPinSafe(afaqPinDisplay(s))+'</td><td class="afaq-pin-preview-qr"><img loading="lazy" src="'+afaqPinSafe(afaqPinQR)+'" alt="باركود المنصة"><small dir="ltr">'+afaqPinSafe(afaqPinSite.replace("https://",""))+'</small></td></tr>').join('')+'</tbody></table></div></div>':'')+
  '</section>';
 }
 function afaqPinCredentialsTable(items){
@@ -67,9 +67,9 @@ function afaqPinBuildPrintDocument(){
  'table.credentials td{border:1px solid #dde7f0;line-height:1.12;padding:.3mm .8mm;vertical-align:middle}table.credentials tr:nth-child(even){background:#f3f8fc}',
  'table.credentials th:first-child,table.credentials td.student-name{width:42%;text-align:right}table.credentials th:nth-child(2),table.credentials td.login{width:14%;text-align:center}table.credentials th:nth-child(3),table.credentials td.pin{width:14%;text-align:center}table.credentials th:nth-child(4),table.credentials td.row-qr-cell{width:30%;text-align:center}',
  '.compact table.credentials{font-size:9px}.compact td.student-name{font-size:8px}.comfortable table.credentials{font-size:14px}.comfortable td.student-name{font-size:13px}',
- 'td.login,td.pin{font-weight:850}td.row-qr-cell{padding:0!important;line-height:1!important}.row-qr{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:.6mm;height:100%;min-width:0}',
- '.row-qr img{display:block;width:8.6mm;height:8.6mm;object-fit:contain;flex-shrink:0;image-rendering:pixelated}.row-qr small{display:block;overflow-wrap:anywhere;font-family:Arial,sans-serif;font-size:5.7px;line-height:1.12;max-width:30mm;text-align:left}',
- '.comfortable .row-qr img{width:9.2mm;height:9.2mm}.comfortable .row-qr small{font-size:8px;max-width:64mm}',
+ 'td.login,td.pin{font-weight:850}td.row-qr-cell{padding:0!important;line-height:1!important}.row-qr{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1mm;height:100%;min-width:0}',
+ '.row-qr img{display:block;width:7mm;height:7mm;object-fit:contain;flex-shrink:0;image-rendering:pixelated}.row-qr small{display:block;font-family:Arial,sans-serif;font-size:4.9px;line-height:1.05;max-width:100%;text-align:center;white-space:nowrap}',
+ '.comfortable .row-qr img{width:7.8mm;height:7.8mm}.comfortable .row-qr small{font-size:7px;max-width:100%}',
  '.print-page footer{height:6mm;flex:0 0 6mm;text-align:center;color:#86542b;background:#fff9eb;font-size:9px;padding:1mm}',
  '@page{size:A4 landscape;margin:6mm}@media print{html,body{margin:0;padding:0;background:#fff}.toolbar{display:none}.print-page{border:0;margin:0;padding:0;width:100%;height:197mm}}'
  ].join('');
