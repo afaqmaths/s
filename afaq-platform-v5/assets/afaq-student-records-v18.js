@@ -10,10 +10,10 @@ const arOwner=()=>auth.user?.role==='supervisor';
 const arStudent=()=>auth.user?.role==='student';
 const arTypes=[['diagnostic','التشخيصي'],['oral','الشفوي'],['homework','الواجبات'],['question','الأسئلة القصيرة'],['short_exam','الاختبارات القصيرة'],['project','المشروع'],['final_exam','النهائي'],['total','المجموع من ١٠٠'],['work_samples','أوراق التقييم']];
 const arCategories=[['daily','يومية'],['behavior','سلوكية'],['academic','تعليمية'],['attendance','حضور'],['positive','إيجابية'],['other','أخرى']];
-const AR={token:'',loaded:false,loading:false,studentLoaded:false,studentLoading:false,roster:[],visibility:{},notes:[],selected:'',current:null,myPanel:null,message:'',error:'',filter:'',activeTab:'student',editing:null,search:''};
+const AR={token:'',loaded:false,loading:false,studentLoaded:false,studentLoading:false,roster:[],visibility:{},notes:[],selected:'',current:null,myPanel:null,message:'',error:'',filter:'',activeTab:'student',editing:null,search:'',behaviorOnly:false};
 function arReset(){
  if(AR.token===auth.token)return;
- Object.assign(AR,{token:auth.token||'',loaded:false,loading:false,studentLoaded:false,studentLoading:false,roster:[],visibility:{},notes:[],selected:'',current:null,myPanel:null,message:'',error:'',filter:'',activeTab:'student',editing:null,search:''});
+ Object.assign(AR,{token:auth.token||'',loaded:false,loading:false,studentLoaded:false,studentLoading:false,roster:[],visibility:{},notes:[],selected:'',current:null,myPanel:null,message:'',error:'',filter:'',activeTab:'student',editing:null,search:'',behaviorOnly:false});
 }
 async function arCall(action,data={}){
  if(!auth.token)throw Error('الرجاء تسجيل الدخول أولاً.');
@@ -145,9 +145,13 @@ function arPrintNote(note,student){
  w.document.open();w.document.write(html);w.document.close();w.focus();
 }
 function arNotesTable(){
- const xs=AR.notes.filter(n=>!AR.selected||n.student_id===AR.selected);
+ const xs=AR.notes.filter(n=>(!AR.selected||n.student_id===AR.selected)&&(!AR.behaviorOnly||n.category==='behavior'));
  const student=AR.roster.find(x=>x.student_id===AR.selected);
- return '<section class="ar-card"><h2>⚠️ سجل المتابعة السلوكية والملاحظات اليومية</h2>'+
+ const behavior=AR.notes.filter(n=>n.category==='behavior'&&n.student_id);
+ const flagged=[...new Map(behavior.map(n=>[n.student_id,AR.roster.find(s=>s.student_id===n.student_id)])).entries()].filter(x=>x[1]);
+ return '<section class="ar-card"><h2>⚠️ سجل المتابعة السلوكية والملاحظات اليومية</h2>'+ 
+ '<div class="ar-behavior-list"><h3>طلاب لديهم ملاحظات سلوكية مسجلة</h3>'+ 
+ (flagged.length?'<div class="ar-behavior-rows">'+flagged.map(([id,person])=>{const last=behavior.find(n=>n.student_id===id);return '<article><strong>'+arEsc(person.full_name||person.display_name)+'</strong><small>'+arEsc(person.class_name)+' • '+arEsc(last?.note_date||'')+'</small><p>'+arEsc(last?.action_taken||'الإجراء قيد التحديد')+'</p><button type="button" data-ar-select-behavior="'+arEsc(id)+'">فتح الملاحظات والإجراءات</button></article>'}).join('')+'</div>':'<p class="ar-info">لا توجد أسماء في قائمة الملاحظات السلوكية.</p>')+'</div>'+ 
  '<div class="ar-inline"><button type="button" id="arShowAllNotes">إظهار الملاحظات المدرسية لجميع الطلاب</button>'+
  '<button type="button" id="arShowBehavior">قائمة الطلاب غير المنضبطين سلوكيًا</button></div>'+
  '<div class="ar-notes">'+(xs.length?xs.map(n=>'<article class="ar-note-item">'+
@@ -210,7 +214,7 @@ const arOriginalStudentAdmin=studentAdmin;
 studentAdmin=function(){
  const html=arOriginalStudentAdmin();
  if(!arStaff())return html;
- return html.replace('</div>','<div class="ar-score-link"><button type="button" data-tab="afaq_student_records">📝 الملاحظات السلوكية وأوراق التقييم للطالب</button></div></div>');
+ return html+'<section class="ar-score-link"><button type="button" data-tab="afaq_student_records">📝 الملاحظات السلوكية وأوراق التقييم للطالب</button></section>';
 };
 async function arRefresh(){
  const selected=AR.selected;AR.loaded=false;AR.message='';AR.error='';
@@ -268,7 +272,7 @@ attachPortal=function(){
  }));
  document.getElementById('arNoteForm')?.addEventListener('submit',async e=>{
   e.preventDefault();const f=e.target;
-  const data={id:AR.editing?.id||'',student_id:AR.selected,
+  const data={id:AR.editing?.id||'',student_id:AR.editing?.student_id||AR.selected,
    note_date:f.elements.note_date.value,category:f.elements.category.value,
    description:f.elements.description.value,action_taken:f.elements.action_taken.value,
    referred_to:f.elements.referred_to.value,referral_status:f.elements.referral_status.value,
@@ -277,14 +281,15 @@ attachPortal=function(){
   catch(err){AR.message=err.message;render()}
  });
  document.getElementById('arCancelEdit')?.addEventListener('click',()=>{AR.editing=null;render()});
- document.getElementById('arShowAllNotes')?.addEventListener('click',()=>{AR.selected='';AR.current=null;render()});
- document.getElementById('arShowBehavior')?.addEventListener('click',()=>{
+ document.getElementById('arShowAllNotes')?.addEventListener('click',()=>{AR.selected='';AR.current=null;AR.behaviorOnly=false;render()});
+ document.getElementById('arShowBehavior')?.addEventListener('click',()=>{AR.selected='';AR.current=null;AR.behaviorOnly=true;
   const offenders=new Map(AR.notes.filter(n=>n.category==='behavior'&&n.student_id).map(n=>{
    const student=AR.roster.find(x=>x.student_id===n.student_id);
    return [n.student_id,student?.full_name||student?.display_name||'طالب']}));
   const names=[...offenders.values()];AR.message=names.length?'الطلاب المسجلون في سجل الملاحظات السلوكية: '+names.join('، '):'لا توجد ملاحظات سلوكية مسجلة حتى الآن.';
   render();
  });
+ document.querySelectorAll('[data-ar-select-behavior]').forEach(b=>b.addEventListener('click',()=>{AR.behaviorOnly=true;AR.selected=b.dataset.arSelectBehavior;arPreview(AR.selected)}));
  document.querySelectorAll('[data-ar-edit]').forEach(b=>b.addEventListener('click',()=>{
   AR.editing=AR.notes.find(n=>n.id===b.dataset.arEdit)||null;render();
   document.getElementById('arNoteForm')?.scrollIntoView({block:'start',behavior:'smooth'});
