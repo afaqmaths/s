@@ -44,19 +44,14 @@ function v13Headlines(type){
   (time?'<span class="v13-news-timestamp" title="آخر طلب للمصدر">تحديث '+v13Escape(time)+'</span>':'')+
   '</aside>';
 }
+/* Keep all public news strips BELOW the entrance/initiatives columns. */
 const v13BaseHome=hubHome;
 hubHome=function(){
  let html=v13BaseHome();
- const anchors=[
-  ['<section class="hub-main afaq-home-access">','general'],
-  ['<section class="hub-main afaq-home-sections">','sport'],
-  ['<section class="v10-init-home"','business'],
-  ['<section class="afaq-home-showcase"','science']
- ];
- for(const [anchor,group] of anchors){
-  if(html.includes(anchor))html=html.replace(anchor,v13Headlines(group)+anchor);
- }
- return html;
+ const anchor='<section class="afaq-home-showcase"';
+ if(!html.includes(anchor))return html;
+ const grouped=['general','sport','business','science'].map(v13Headlines).join('');
+ return html.replace(anchor,grouped+anchor);
 };
 /* Existing aeLoadNews makes a no-store request each fresh page load.
    In an open tab, fetch new public headlines at a moderate three-minute cadence. */
