@@ -124,7 +124,7 @@ function hubHome(){
  hubAbout()+
  '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
  hubHomeEntryGuide()+
- '</div></section>'+
+ '</section>'+
  '<section class="hub-main afaq-home-sections"><div class="hub-heading"><span>أبواب المعرفة</span><h2>استكشف أقسام آفاق ماث</h2></div>'+
  '<div class="hub-gate-grid">'+
  hubSectionCard('التعليم والتعلّم','graduation-cap','الدروس والمشاغل والتدريبات','learning','green')+
