@@ -134,7 +134,7 @@ function afaqStarsGateControls(){
  (open?'🟢 المسابقة مفتوحة للطلاب المسموح لهم':'🔴 المسابقة مغلقة أمام جميع الطلاب')+'</span>'+
  '<button type="button" id="afaqStarsToggleAll" class="afaq-stars-gate-action '+(open?'danger':'success')+'"'+(afaqStarsConsole.busy?' disabled':'')+'>'+
  (open?'إغلاق دخول جميع الطلاب':'فتح دخول جميع الطلاب')+'</button></div>'+
- '<p class="afaq-stars-note">عند الإغلاق العام تتوقف المحاولات الجديدة والاستكمال والتدريب حتى إعادة الفتح. تبقى بيانات التقدم السابقة محفوظة. ويمكن السماح لطالب بعينه أو منعه باستخدام الجدول أدناه.</p></section>';
+ '<p class="afaq-stars-note">عند الإغلاق العام تتوقف المحاولات الجديدة والاستكمال والتدريب حتى إعادة الفتح؛ ويسري الإغلاق العام حتى على الطلاب المسموح لهم فرديًا. تبقى بيانات التقدم السابقة محفوظة. ويمكن السماح لطالب بعينه أو منعه من الجدول أدناه بعد إعادة فتح المسابقة.</p></section>';
 }
 function afaqStarsManagementView(){
  if(!afaqStarsSupervisor())return '<div class="container"><p class="notice">إدارة دخول مسابقة نجوم آفاق متاحة للمشرف الرئيسي فقط بعد تسجيل الدخول المعتمد.</p></div>';
