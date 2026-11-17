@@ -15,10 +15,35 @@ const canEdit=()=>['supervisor','supervisor_assistant'].includes(auth.user?.role
 const isAdmin=()=>auth.user?.role==='supervisor';
 const isStaff=()=>staffRoles.includes(auth.user?.role);
 const getRole=()=>auth.user?.role||'guest';
-function loginUi(){const r=document.getElementById('loginRole').value;document.getElementById('loginGradeWrap').hidden=!['student','demo'].includes(r);document.getElementById('loginClassWrap').hidden=r!=='student';document.getElementById('loginGrade').value=r==='student'?'6':document.getElementById('loginGrade').value==='6'?'5':document.getElementById('loginGrade').value;const i=document.getElementById('loginUser');if(r==='supervisor'){i.value='';i.placeholder='غير مطلوب — أدخل الرمز فقط';i.disabled=true}else if(['director','deputy','supervisor_assistant'].includes(r)){i.disabled=true;i.value=r}else if(r==='it_viewer'){i.disabled=false;if(!/^IT0[1-3]$/.test(i.value))i.value='IT01';i.placeholder='IT01 أو IT02 أو IT03';i.inputMode='text';document.getElementById('loginUserLabel').textContent='اسم المستخدم لمشرف تقنية المعلومات'}else{i.disabled=false;i.value='';i.inputMode='numeric';i.placeholder=r==='demo'?'1000 أو 2000':'رقمك في كشف الشعبة (١، ٢، ٣...)'};if(r!=='it_viewer')document.getElementById('loginUserLabel').textContent='رقم الطالب في كشف الشعبة / اسم المستخدم';}
+function loginUi(){
+ const r=document.getElementById('loginRole').value;
+ // Two-field student form; grade and class are inferred securely from unique username.
+ document.getElementById('loginGradeWrap').hidden=true;
+ document.getElementById('loginClassWrap').hidden=true;
+ const input=document.getElementById('loginUser');
+ const lbl=document.getElementById('loginUserLabel');
+ input.disabled=false;input.inputMode='text';input.autocomplete='username';
+ if(r==='student'){
+  lbl.textContent='اسم المستخدم';
+  input.placeholder='مثال: 6-5-12 أو الاسم الذي اخترته';
+ }else if(r==='supervisor'){
+  lbl.textContent='حساب المشرف الرئيسي';
+  input.value='';input.disabled=true;input.placeholder='الرمز السري للمشرف أدناه';
+ }else if(['supervisor_assistant','director','deputy'].includes(r)){
+  lbl.textContent='الحساب الإداري';
+  input.value=r;input.disabled=true;
+ }else if(r==='it_viewer'){
+  lbl.textContent='اسم مستخدم تقنية المعلومات';
+  if(!/^IT0[1-3]$/.test(input.value))input.value='IT01';
+  input.placeholder='IT01 أو IT02 أو IT03';
+ }else{
+  lbl.textContent='اسم المستخدم';
+  input.placeholder='اسم المستخدم المعتمد';
+ }
+}
 function selectEntryGate(gate){
  const groups={
-  student:{roles:['student','demo'],start:'student',title:'دخول الطالب والحسابات التدريبية'},
+  student:{roles:['student'],start:'student',title:'دخول الطالب — اسم المستخدم والرقم السري فقط'},
   supervision:{roles:['supervisor','supervisor_assistant','it_viewer'],start:'supervisor',title:'دخول المشرفين — المشرف الرئيسي والمساعد وتقنية المعلومات'},
   management:{roles:['director','deputy'],start:'director',title:'الإدارة المدرسية — المدير ومساعد المدير'}
  };
@@ -33,12 +58,14 @@ function selectEntryGate(gate){
  if(!roleSelect)return;
  Array.from(roleSelect.options).forEach(o=>{o.hidden=!options.roles.includes(o.value)});
  roleSelect.value=options.start;
+ roleSelect.hidden=gate==='student';
+ document.getElementById('loginGroupCaption').hidden=gate==='student';
  document.getElementById('loginGroupCaption').textContent=options.title;
  document.querySelectorAll('[data-login-gate]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.loginGate===gate?'true':'false'));
  loginUi();document.getElementById('loginStatus').textContent='';
  if(!dialog.open)dialog.showModal();
 }
-async function doLogin(){const r=document.getElementById('loginRole').value;const status=document.getElementById('loginStatus');const pin=document.getElementById('loginPass').value;const user=document.getElementById('loginUser').value.trim();const grade=+document.getElementById('loginGrade').value;const cls=document.getElementById('loginClass').value;status.textContent='جارٍ التحقق من الحساب...';try{let username=r==='supervisor'?'':r==='student'?cls+'|'+user:user;const x=await api('login',{role:r,username,pin,grade:r==='student'?6:grade});auth.token=x.token;auth.user=x.user;sessionStorage.setItem('afaq_access_token_v2',auth.token);document.getElementById('loginPass').value='';document.getElementById('authDialog').close();auth.section='overview';await reloadDashboard();document.getElementById('accountBtn').textContent='حسابي • '+(roleLabel[auth.user.role]||'مستخدم');route('dashboard')}catch(err){status.textContent=err.message}}
+async function doLogin(){const r=document.getElementById('loginRole').value;const status=document.getElementById('loginStatus');const pin=document.getElementById('loginPass').value;const user=document.getElementById('loginUser').value.trim();const grade=+document.getElementById('loginGrade').value;const cls=document.getElementById('loginClass').value;status.textContent='جارٍ التحقق من الحساب...';try{let username=r==='supervisor'?'':user;const x=await api('login',{role:r,username,pin,grade:r==='student'?6:grade});auth.token=x.token;auth.user=x.user;sessionStorage.setItem('afaq_access_token_v2',auth.token);document.getElementById('loginPass').value='';document.getElementById('authDialog').close();auth.section='overview';await reloadDashboard();document.getElementById('accountBtn').textContent='حسابي • '+(roleLabel[auth.user.role]||'مستخدم');route('dashboard')}catch(err){status.textContent=err.message}}
 async function reloadDashboard(){if(!auth.user)return;auth.error='';try{
  if(auth.user.role==='it_viewer'){
   const x=await api('it_overview');
