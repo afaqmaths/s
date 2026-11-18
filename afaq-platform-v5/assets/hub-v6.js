@@ -319,24 +319,28 @@ function hubScholarEncyclopaedia(){
 }
 
 function hubLibrary(){
- const categories=[['all','جميع محتويات المكتبة'],['history','تاريخ الرياضيات'],['scholars','📚 علماء الرياضيات ('+hn(hubScholarItems().length)+')'],['daily_math','الرياضيات في الحياة'],['books','الكتب'],['exams','الاختبارات'],['question_bank','بنك الأسئلة'],['video','يوتيوب تعليمي'],['game','الألعاب'],['flash','الفلاشات']];
+ const categories=[['all','جميع محتويات المكتبة'],['history','تاريخ الرياضيات'],['scholars','📚 علماء الرياضيات ('+hn(hubScholarItems().length)+')'],['daily_math','الرياضيات في الحياة'],['books','الكتب'],['exams','الاختبارات'],['question_bank','بنك الأسئلة'],['video','يوتيوب تعليمي'],['game','الألعاب'],['flash','الفلاشات'],['print','🖨️ مركز الطباعة']];
  let chosen=hub.libraryCat;
- const filter=['all','history','scholars','daily_math','books','exams','question_bank','video','game','flash'].includes(chosen)?chosen:'all';
+ const filter=['all','history','scholars','daily_math','books','exams','question_bank','video','game','flash','print'].includes(chosen)?chosen:'all';
  return '<div class="container hub-page"><section class="hub-page-head"><span>المكتبة العامة</span><h1>معرفة رياضية مفتوحة للجميع</h1><p>من تاريخ الأرقام والعلماء إلى الاختبارات والأسئلة والكتب والفيديوهات التعليمية والألعاب والمحاكاة.</p>'+
  hubIcon('book-open','blue')+'</section>'+
  '<div class="hub-tabs">'+categories.map(([c,t])=>'<button type="button" data-hub-library="'+c+'"'+(filter===c?' class="selected"':'')+'>'+t+'</button>').join('')+'</div>'+
  (filter==='all'?hubScholarDirectory():'')+
  '<section class="hub-main"><h2>'+hv(categories.find(x=>x[0]===filter)?.[1]||'المكتبة')+'</h2>'+
- (filter==='scholars'?hubScholarEncyclopaedia():hubResourceGrid(filter==='all'?['history','daily_math','books','exams','question_bank','video','game','flash','learning']: [filter]))+
+ (filter==='print'?hubLibraryPrintCenter():filter==='scholars'?hubScholarEncyclopaedia():hubResourceGrid(filter==='all'?['history','daily_math','books','exams','question_bank','video','game','flash','learning']: [filter]))+
  '</section><section class="hub-main"><h2>بنك الأسئلة حسب المرحلة التعليمية</h2>'+
  '<div class="hub-audience">'+
  '<article><b>الصفوف ١–٤</b><p>مساحة لاستقبال التدريبات التأسيسية الملائمة للصفوف الأولى. لم تُنشر ملفات رسمية في هذه المجموعة بعد.</p></article>'+
  '<article><b>الصفوف ٥–٨</b><p>نماذج وتمارين تدريبية متاحة من بوابة الاختبارات الحالية.</p></article>'+
  '<article><b>الصفوف ٩–١٢</b><p>تُضاف مواد هذه الصفوف بعد مراجعة توافقها مع المناهج المعتمدة.</p></article>'+
  '</div>'+
- '</section><section class="hub-main"><h2>خيارات إضافية</h2>'+
- '<div class="hub-inline-actions"><a class="hub-secondary" href="exams.html">اختبارات قابلة للطباعة والتنزيل بصيغة Word</a>'+
- '<button class="hub-secondary" data-route="learning">الوحدات والدروس</button></div></section></div>';
+ '</section><section class="hub-main"><h2>خيارات إضافية للمكتبة — المرح والتسلية والألعاب</h2>'+
+ '<p>يمكنك الانتقال إلى الأقسام الترفيهية، أو استخدام مركز الطباعة لطباعة محتوى المكتبة أو أي مادة منشورة من الأقسام الأخرى، دون مغادرة هذه الصفحة.</p>'+
+ '<div class="hub-inline-actions"><button class="hub-secondary" data-route="fun">المرح والتسلية</button>'+
+ '<button class="hub-secondary" data-route="games">الألعاب الرياضية</button>'+
+ '<button class="hub-secondary" data-route="flashes">الفلاشات</button>'+
+ '<button class="hub-secondary" data-route="minicontests">التحديات المصغرة</button>'+
+ '<button class="hub-primary" data-hub-library="print">🖨️ مركز الطباعة لجميع الأقسام</button></div></section></div>';
 }
 function hubFun(){
  const cats=[['all','جميع مواد المرح'],['cartoon','الكاريكاتير'],['article','المقالات والألغاز'],['fun_book','كتب التسلية']];
@@ -714,6 +718,82 @@ function hubApps(){
  '</div><div class="hub-inline-actions"><button class="hub-secondary" data-hub-work="resources">إضافة رابط في دليل أعمال المعلم</button>'+
  '<button class="hub-secondary" data-tab="hub_catalog">إضافة مصدر إلى المكتبة العامة</button></div></section></div>';
 }
+
+/* A public, in-place print directory unifying titles of published materials across the site. */
+function hubLibraryPrintOptions(){
+ const list=[
+  ['intro','التعريف بالمنصة وبوابات الدخول','الرئيسية'],
+  ['library','فهرس مواد المكتبة العامة','المكتبة'],
+  ['scholars_print','موسوعة علماء الرياضيات — جميع السير التفصيلية','مكتبة آفاق'],
+  ['learn_units','الوحدات والدروس للصفوف ٥–٨','التعليم والتعلّم'],
+  ['exams_archive','فهرس الاختبارات والأوراق القابلة للطباعة','التعليم والتعلّم'],
+  ['fun_print','المقالات والألغاز وكتب التسلية','المرح والتسلية'],
+  ['game_print','الألعاب والفلاشات الرياضية','الألعاب التعليمية'],
+  ['contest_guide','دليل مسابقة نجوم آفاق والجوائز','المسابقات']
+ ];
+ const papers=typeof V5_PAST_PAPERS!=='undefined'&&Array.isArray(V5_PAST_PAPERS)?V5_PAST_PAPERS:[];
+ papers.forEach((p,i)=>list.push(['paper:'+i,'الصف '+hn(p.grade)+' — '+p.title+' ('+p.year+')','الاختبارات السابقة']));
+ hub.catalog.filter(s=>s.published).forEach(s=>list.push(['item:'+s.id,s.title,H_CATEGORIES[s.category]||'المحتوى العام']));
+ if(typeof canEdit==='function'&&canEdit()){
+  const privileged=hubPrintableList().filter(row=>['class','student_pred','student_final'].includes(row[0])||row[0].startsWith('record:'));
+  list.push(...privileged);
+ }
+ return list;
+}
+function hubLibraryPrintSourceUrl(){
+ const key=hub.printChosen;
+ if(key.startsWith('paper:')){
+  const index=Number(key.slice(6));
+  const papers=typeof V5_PAST_PAPERS!=='undefined'?V5_PAST_PAPERS:[];
+  return papers[index]?.url||'';
+ }
+ if(key.startsWith('item:')){
+  const row=hub.catalog.find(x=>x.published&&String(x.id)===key.slice(5));
+  const url=row?.resource_url||'';
+  return /^https:\/\//.test(url)?url:'';
+ }
+ return '';
+}
+function hubLibraryPrintSourceLink(){
+ const url=hubLibraryPrintSourceUrl();
+ return /^https:\/\/[a-z0-9.-]+(?:\/[^\s]*)?$/i.test(url)?
+  '<p class="hub-note">إذا كان المصدر الأصلي ملف PDF خارجيًا، افتحه في تبويب مستقل للطباعة من الملف نفسه؛ تبقى المكتبة مفتوحة هنا. لا يتحول PDF تلقائيًا إلى Word.</p>'+
+  '<a class="hub-secondary" href="'+hv(url)+'" target="_blank" rel="noopener noreferrer">فتح الملف أو المرجع الأصلي للطباعة</a>':'';
+}
+function hubLibraryPrintCenter(){
+ const opts=hubLibraryPrintOptions(),current=opts.some(r=>r[0]===hub.printChosen)?hub.printChosen:'library';
+ hub.printChosen=current;
+ let group='',html='';
+ for(const [id,title,category] of opts){
+  if(category!==group){
+   if(group)html+='</optgroup>';
+   group=category;html+='<optgroup label="'+hv(group)+'">';
+  }
+  html+='<option value="'+hv(id)+'"'+(id===current?' selected':'')+'>'+hv(title)+'</option>';
+ }
+ if(group)html+='</optgroup>';
+ return '<div class="hub-library-print" dir="rtl">'+
+  '<h3>🖨️ مركز طباعة آفاق ماث — من المكتبة دون مغادرتها</h3>'+
+  '<p>يعرض الفهرس عناوين المواد المنشورة من جميع الأقسام، إضافة إلى مراجع المكتبة وسير العلماء والوحدات والاختبارات. اختر عنوانًا ثم عاينه واطبعه بصيغة PDF أو صدّر النص إلى Word.</p>'+
+  '<div class="hub-library-print-fields"><label>اختر عنوان المادة أو القسم<select id="hubPrintSource" aria-label="جميع عناوين الطباعة">'+html+'</select></label>'+
+  '<label>اتجاه الطباعة<select id="hubPrintOrientation"><option value="portrait"'+(hub.printOrientation==='portrait'?' selected':'')+'>A4 عمودي</option>'+
+  '<option value="landscape"'+(hub.printOrientation==='landscape'?' selected':'')+'>A4 أفقي</option></select></label></div>'+
+  '<div class="hub-inline-actions"><button type="button" class="hub-primary" id="hubPrintPreview">معاينة المادة هنا</button>'+
+  '<button type="button" class="hub-secondary" id="hubPrintPDF">طباعة / حفظ PDF</button>'+
+  '<button type="button" class="hub-secondary" id="hubPrintWord">تصدير النص إلى Word</button></div>'+
+  '<div id="hubLibraryPrintLink">'+hubLibraryPrintSourceLink()+'</div>'+
+  '<div id="hubPrintPreviewArea" class="hub-library-print-preview" aria-live="polite">'+hubPaper()+'</div>'+
+  '</div>';
+}
+function hubLibraryPrintableCategory(categories,title){
+ const subset=hub.catalog.filter(x=>x.published&&categories.includes(x.category));
+ return '<h2>'+hv(title)+'</h2>'+
+ (subset.length?subset.map(x=>'<section><h3>'+hv(x.title)+'</h3>'+
+ '<p>'+hv(x.description||'')+'</p><p>'+hv(x.body||'').replace(/\r?\n/g,'<br>')+'</p>'+
+ (x.resource_url?'<small>المصدر: '+hv(x.resource_url)+'</small>':'')+'</section>').join(''):
+ '<p>لا توجد مواد منشورة في هذا القسم حتى الآن.</p>');
+}
+
 function hubPrintableList(){
  const current=ssState?.records||[],sources=[
  ['intro','تعريف المنصة وبوابات الدخول','صفحة عامة من المنصة'],
@@ -760,9 +840,34 @@ function hubPrintHtml(){
    ssClassPortraitLayout(auth.gbClassReport):gbClassReportMarkup(auth.gbClassReport);
  }
  if(src.startsWith('item:')){
-  const item=hub.adminItems.find(x=>String(x.id)===src.slice(5));if(!item)return '<p>المادة غير موجودة.</p>';
+  const item=hub.catalog.find(x=>x.published&&String(x.id)===src.slice(5))||
+  (typeof canEdit==='function'&&canEdit()?hub.adminItems.find(x=>String(x.id)===src.slice(5)):null);
+  if(!item)return '<p>المادة غير منشورة أو غير متاحة.</p>';
   return '<h2>'+hv(item.title)+'</h2><p>'+hv(item.description||'')+'</p><p>'+hv(item.body||'')+'</p>'+
    (item.resource_url?'<p>رابط المصدر: '+hv(item.resource_url)+'</p>':'');
+ }
+ if(src==='scholars_print')return hubLibraryPrintableCategory(['scholars'],'موسوعة علماء الرياضيات — التراجم الكاملة');
+ if(src==='learn_units'){
+  const courses=typeof course6!=='undefined'&&Array.isArray(course6)?course6:[];
+  return '<h2>الوحدات والدروس في الرياضيات</h2><p>الصف السادس: الوحدات المدرجة في آفاق ماث، والصفوف الأخرى: الموارد المنشورة.</p>'+
+   courses.map(unit=>'<section><h3>'+hv(unit.name)+'</h3><p>'+unit.lessons.map(l=>hv(l)).join(' • ')+'</p></section>').join('')+
+   hubLibraryPrintableCategory(['learning'],'مواد التعليم والتعلّم المنشورة');
+ }
+ if(src==='exams_archive'){
+  const arr=typeof V5_PAST_PAPERS!=='undefined'?V5_PAST_PAPERS:[];
+  return '<h2>فهرس الاختبارات السابقة والقابلة للطباعة</h2>'+
+  arr.map(p=>'<section><h3>الصف '+hn(p.grade)+' — '+hv(p.title)+'</h3><p>'+hv(p.year)+' — '+hv(p.source)+'</p><small>'+hv(p.url)+'</small></section>').join('')+
+  hubLibraryPrintableCategory(['exams','question_bank'],'اختبارات وبنوك أسئلة منشورة')+
+  '<p>ملفات الاختبارات الأصلية بصيغة PDF أو Word تفتح من روابطها المخصصة؛ لا يُحول التنزيل إلى Word تلقائيًا.</p>';
+ }
+ if(src==='fun_print')return hubLibraryPrintableCategory(['cartoon','article','fun_book'],'المرح والتسلية والألغاز');
+ if(src==='game_print')return hubLibraryPrintableCategory(['game','flash'],'الألعاب والفلاشات الرياضية');
+ if(src.startsWith('paper:')){
+  const arr=typeof V5_PAST_PAPERS!=='undefined'?V5_PAST_PAPERS:[];
+  const paper=arr[Number(src.slice(6))];
+  return paper?'<h2>'+hv(paper.title)+'</h2><p>الصف '+hn(paper.grade)+' — '+hv(paper.year)+'</p><p>'+hv(paper.type)+' — '+hv(paper.source)+'</p><p>ملف المصدر الأصلي: '+hv(paper.url)+'</p>'+
+    '<p>لطباعة الأسئلة نفسها يرجى فتح ملف PDF الأصلي من الرابط الظاهر تحت اختيار المادة.</p>':
+   '<p>تعذر العثور على الورقة في الأرشيف.</p>';
  }
  if(src==='library')return '<h2>محتويات المكتبة العامة</h2>'+
  hub.catalog.filter(x=>x.published).map(x=>'<h3>'+hv(x.title)+'</h3><p>'+hv(x.description||'')+'</p>').join('');
@@ -810,6 +915,21 @@ function hubExportWord(){
 const hubOldHome=home,hubOldLibrary=library;
 home=function(){return hubHome()};
 library=function(){return hubLibrary()};
+
+/* Printable learning resources live under تعليم وتعلّم, not under library extras. */
+const hubSavedLearning=learning;
+learning=function(){
+ return hubSavedLearning()+
+ '<section class="container hub-main hub-learning-quicklinks" dir="rtl">'+
+ '<h2>📚 الوحدات والدروس والاختبارات القابلة للطباعة</h2>'+
+ '<p>أدوات التعلم والتقويم متاحة هنا، ويمكن الرجوع إلى مركز طباعة المكتبة لعرض عنوان أي مورد منشور وطباعته.</p>'+
+ '<div class="hub-inline-actions">'+
+ '<a class="hub-primary" href="exams.html" target="_blank" rel="noopener noreferrer">اختبارات قابلة للطباعة والتنزيل بصيغة Word</a>'+
+ [5,6,7,8].map(g=>'<button type="button" class="hub-secondary" data-grade="'+g+'">الوحدات والدروس — الصف '+hn(g)+'</button>').join('')+
+ '<button type="button" class="hub-secondary" data-hub-to-library-print>🖨️ مركز طباعة المكتبة</button>'+
+ '</div></section>';
+};
+
 const hubOriginalStaffPanel=staffPanel;
 staffPanel=function(){
  if(!canEdit())return hubOriginalStaffPanel();
@@ -967,6 +1087,18 @@ function hubAttach(){
   if(hub.parentIssued)await navigator.clipboard?.writeText(hub.parentIssued);
  });
  document.getElementById('hubPrintSource')?.addEventListener('change',hubPrintUpdateState);
+ document.querySelectorAll('[data-hub-to-library-print]').forEach(button=>button.addEventListener('click',()=>{
+  hub.libraryCat='print';route('library');
+ }));
+ document.getElementById('hubPrintSource')?.addEventListener('change',()=>{
+  if(state.page!=='library'||hub.libraryCat!=='print')return;
+  hubPrintUpdateState();
+  const link=document.getElementById('hubLibraryPrintLink');
+  if(link)link.innerHTML=hubLibraryPrintSourceLink();
+  const preview=document.getElementById('hubPrintPreviewArea');
+  if(preview)preview.innerHTML=hubPaper();
+ });
+
  document.getElementById('hubPrintOrientation')?.addEventListener('change',hubPrintUpdateState);
  document.getElementById('hubPrintPDF')?.addEventListener('click',()=>{hubPrintUpdateState();hubPdfPrint()});
  document.getElementById('hubPrintWord')?.addEventListener('click',()=>{hubPrintUpdateState();hubExportWord()});
