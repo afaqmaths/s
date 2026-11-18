@@ -84,7 +84,7 @@ const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',su
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,access:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
+ waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const supervisor=()=>STATE.user?.role==='supervisor';
@@ -711,7 +711,7 @@ function studentGateLock(){
  '<a class="outline" href="index.html#dashboard">العودة إلى حسابي</a></div>';
 }
 function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><div class="contest-guest-links"><a href="index.html#competition" class="primary">🔐 الدخول بالحساب المعتمد</a> <a href="index.html#home" class="outline">📚 التصفح كضيف دون تسجيل دخول</a></div></div>'}
-function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);afaqCueHistory.clear();STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.stageBreakUntil=0;STATE.breakReady=false;STATE.breakAutoBusy=false;STATE.hintFor=null;STATE.audioNotice='';STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
+function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);afaqCueHistory.clear();STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.stageBreakUntil=0;STATE.breakReady=false;STATE.breakAutoBusy=false;STATE.breakRetryAt=0;STATE.hintFor=null;STATE.audioNotice='';STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
  root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():student()&&STATE.access?.allowed===false?studentGateLock():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
   if(isTester()&&!document.getElementById('leaveTester'))root.insertAdjacentHTML('afterbegin',
@@ -741,11 +741,11 @@ function tickBreak(){
   if(left===0){
    clearInterval(STATE.timer);
    afaqOnceCue(k+'|start',()=>afaqRisingBell('start'));
-   if(!STATE.breakAutoBusy){STATE.breakAutoBusy=true;beginStage(true).finally(()=>{STATE.breakAutoBusy=false});}
+   if(!STATE.breakAutoBusy&&Date.now()>=STATE.breakRetryAt){STATE.breakAutoBusy=true;beginStage(true).finally(()=>{STATE.breakAutoBusy=false});}
   }
  };
  execute();
- if(STATE.readyStage&&STATE.stageBreakUntil>Date.now())STATE.timer=setInterval(execute,200);
+ if(STATE.readyStage&&STATE.stageBreakUntil)STATE.timer=setInterval(execute,250);
 }
 function tickGame(){clearInterval(STATE.timer);STATE.timer=setInterval(()=>{
  const q=getCurrent();if(!q||STATE.busy||STATE.readyStage||STATE.waitingUntil)return;
@@ -783,7 +783,7 @@ async function beginStage(automatic=false){
    if(STATE.questions.length===0){const r=await back('training',{grade:STATE.grade,section:STATE.section});STATE.questions=r.questions||[];STATE.index=0;if(STATE.questions.length!==38)throw Error('بنك التدريب غير مكتمل')}
    STATE.started=Date.now();STATE.stageStarted=Date.now();STATE.readyStage=0;STATE.stageBreakUntil=0;STATE.breakReady=false;
  }
-}catch(err){STATE.error=err.message}finally{STATE.busy=false;render()}}
+}catch(err){STATE.error=err.message;STATE.breakRetryAt=Date.now()+5000}finally{STATE.busy=false;render()}}
 function getParts(){const q=getCurrent();return(q?.parts||[]).map((p,i)=>p.type==='choice'?document.querySelector('input[name="part'+i+'"]:checked')?.value??null:contestToASCII(document.querySelector('[data-part="'+i+'"]')?.value?.trim()??null))}
 async function submitResponse(answer,expired=false){
  if(STATE.busy||STATE.waitingUntil||STATE.readyStage)return;
@@ -823,7 +823,7 @@ function adoptOfficial(r){
 async function expireStage(){if(STATE.busy||STATE.readyStage)return;const skippedStage=getCurrent()?.stage;STATE.busy=true;clearInterval(STATE.timer);try{
  if(STATE.mode==='official'){const r=await back('skip_stage',{attempt_id:STATE.attemptId,index:STATE.index});adoptOfficial(r)}
  else{const current=getCurrent()?.stage;while(getCurrent()?.stage===current){STATE.answers[getCurrent().id]=null;STATE.index++}
- if(STATE.index>=STATE.questions.length)await completeTraining();else STATE.readyStage=STATE.questions[STATE.index].stage;
+ if(STATE.index>=STATE.questions.length)await completeTraining();else{STATE.readyStage=STATE.questions[STATE.index].stage;STATE.stageBreakUntil=Date.now()+120000;STATE.breakReady=false;}
  }
  if(skippedStage&&(STATE.readyStage>skippedStage||STATE.result))closeStage(skippedStage);
 }catch(err){STATE.error=err.message}finally{STATE.busy=false;STATE.waitingUntil=0;render()}}
