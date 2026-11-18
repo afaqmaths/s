@@ -85,7 +85,7 @@ const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',su
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,access:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,allModelBanks:null,allBanksSection:0,modelNotice:'',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
+ waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,allModelBanks:null,allBanksSection:0,modelNotice:'',reminders:[],pendingApprovals:0,reminderError:'',reminderShowAll:false,reminderBusy:false,reminderNewCount:0,editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const supervisor=()=>STATE.user?.role==='supervisor';
@@ -207,6 +207,10 @@ async function authenticate(){
    }
   }
   else {const values=await Promise.all([back('staff_summary'),back('staff_results'),...(supervisor()?[back('tester_status')]:[])]);STATE.summary=values[0].stats;STATE.staffReport=values[1].students;if(supervisor())STATE.testerStatuses=values[2]?.profiles||[];}
+  if(supervisor()&&!isTester()){
+   try{await loadSupervisorReminders();startSupervisorReminderPoll()}
+   catch(err){STATE.reminderError=err.message||'تعذر تحميل تنبيهات المشرف'}
+  }
   if(student()&&STATE.user.pin_changed){
     if(STATE.access?.allowed){
      try{await back('contest_visit')}catch(err){console.warn('Contest visit tracking unavailable',err.message)}
@@ -396,6 +400,123 @@ function bankView(){const all=STATE.bank.questions||[];return '<div class="conte
  '<label>ملف الرسم SVG (للمشرف فقط)</label><textarea name="visual_svg" rows="5">'+friendly(q.visual_svg||'')+'</textarea><label>وصف الرسم</label><input name="visual_caption" value="'+friendly(q.visual_caption||'')+'">'+
  (q.question_kind==='complex'?'<label>أجزاء السؤال بصيغة JSON</label><textarea name="parts" rows="7">'+friendly(JSON.stringify(q.parts,null,2))+'</textarea>':(q.options||[]).map((opt,i)=>'<label>الخيار '+(i+1)+'</label><input name="opt'+i+'" value="'+friendly(opt)+'">').join('')+'<label>رقم الإجابة الصحيحة (٠–٣)</label><input name="answer_index" type="number" min="0" max="3" value="'+q.answer_index+'">')+
  '<button class="soft" type="submit">حفظ التعديل</button></form></details>').join('')+'<button class="primary" id="publishBank">اعتماد النموذج</button><button class="outline" id="unpublishBank">إيقاف النموذج</button></div>'}
+
+/* In-app supervisor reminders persist across sign-out and across devices.
+   Events originate exclusively from completed official stages on the server. */
+async function loadSupervisorReminders(){
+ if(!supervisor()||isTester())return false;
+ const oldIds=new Set((STATE.reminders||[]).map(item=>item.id));
+ const r=await back('supervisor_reminders');
+ const list=Array.isArray(r.reminders)?r.reminders:[];
+ STATE.reminderNewCount=list.filter(x=>x.kind==='stage'&&!oldIds.has(x.id)).length;
+ STATE.reminders=list;
+ STATE.pendingApprovals=Number(r.pending_approvals)||0;
+ STATE.reminderError='';
+ return true;
+}
+let supervisorReminderPoll=null;
+function startSupervisorReminderPoll(){
+ if(supervisorReminderPoll)return;
+ supervisorReminderPoll=setInterval(async()=>{
+  if(!supervisor()||isTester()||!STATE.token)return;
+  try{
+   const previous=(STATE.reminders||[]).map(x=>x.id).join(',');
+   await loadSupervisorReminders();
+   const next=(STATE.reminders||[]).map(x=>x.id).join(',');
+   if(previous!==next){
+    const host=document.getElementById('contestSupervisorRemindersHost');
+    if(host){
+     host.outerHTML=supervisorReminderPanel();
+     bindSupervisorReminders();
+    }
+   }
+  }catch(err){STATE.reminderError=err.message||'تعذر تحديث التنبيهات'}
+ },45000);
+}
+function formatSupervisorReminderDate(raw){
+ try{return new Date(raw).toLocaleString('ar-OM',{dateStyle:'short',timeStyle:'short'})}
+ catch{return ''}
+}
+function supervisorReminderPanel(){
+ if(!supervisor()||isTester())return '';
+ const reminders=[...(STATE.reminders||[])].sort((a,b)=>
+  (a.kind==='review'?0:1)-(b.kind==='review'?0:1)||
+  String(b.created_at||'').localeCompare(String(a.created_at||'')));
+ const visible=STATE.reminderShowAll?reminders:reminders.slice(0,8);
+ const stageCount=reminders.filter(x=>x.kind==='stage').length;
+ const reviewCount=reminders.filter(x=>x.kind==='review').length;
+ const manualCount=reminders.filter(x=>x.kind==='manual').length;
+ return '<section id="contestSupervisorRemindersHost" class="contest-reminders" aria-label="تذكيرات المشرف" dir="rtl">'+
+ '<div class="contest-reminders-head"><div><span class="contest-reminder-tag">🔔 تذكيرات وإشعارات حساب المشرف</span>'+
+ '<h3>مركز تذكيرات نجوم آفاق <small>'+reminders.length+' تنبيه</small></h3>'+
+ '<p>تظهر تذكيراتك عند تسجيل الدخول، ويجري تحديث تنبيهات إكمال مراحل الطلاب تلقائيًا أثناء فتح صفحة المسابقة.</p></div>'+
+ '<button type="button" class="outline" id="refreshContestReminders">↻ تحديث التنبيهات</button></div>'+
+ '<div class="contest-reminders-metrics">'+
+ '<span>📚 مراجعة النماذج: <b>'+reviewCount+'</b></span>'+
+ '<span>🏅 إنجاز الطلاب: <b>'+stageCount+'</b></span>'+
+ '<span>📝 تذكيراتي: <b>'+manualCount+'</b></span></div>'+
+ (STATE.pendingApprovals>0?'<div class="contest-reminder-review-state">المسابقة تحتوي على <b>'+STATE.pendingApprovals+
+ ' نموذجًا غير معتمد</b> من نماذج الوحدات الأربع. <button type="button" id="jumpContestModels" class="outline">الانتقال لمراجعة النماذج</button></div>':'')+
+ (STATE.reminderError?'<p class="contest-reminder-error" role="alert">'+friendly(STATE.reminderError)+'</p>':'')+
+ '<div class="contest-reminder-items">'+(visible.length?visible.map(item=>{
+  const icon=item.kind==='stage'?'🏅':item.kind==='review'?'📋':'📝';
+  const category=item.kind==='stage'?'إنجاز طالب':item.kind==='review'?'مراجعة واعتماد':'تذكير شخصي';
+  return '<article class="contest-reminder-item contest-reminder-'+item.kind+'">'+
+   '<div class="contest-reminder-icon" aria-hidden="true">'+icon+'</div><div class="contest-reminder-text">'+
+   '<span class="contest-reminder-type">'+category+
+   (item.due_on?' • موعد '+friendly(item.due_on):'')+
+   '</span><h4>'+friendly(item.title)+'</h4>'+
+   (item.detail?'<p>'+friendly(item.detail)+'</p>':'')+
+   '<small>'+friendly(formatSupervisorReminderDate(item.created_at))+'</small></div>'+
+   '<button type="button" class="contest-reminder-delete" data-reminder-delete="'+friendly(item.id)+
+   '" aria-label="حذف التذكير: '+friendly(item.title)+'" title="حذف هذا التذكير">حذف <span aria-hidden="true">×</span></button></article>';
+ }).join(''):'<p class="contest-reminders-empty">لا توجد تذكيرات معلّقة. يمكنك إضافة تذكير جديد أدناه.</p>')+'</div>'+
+ (reminders.length>8?'<button type="button" id="showAllContestReminders" class="outline">'+
+ (STATE.reminderShowAll?'عرض أحدث ٨ تذكيرات فقط':'عرض التذكيرات كلها ('+reminders.length+')')+'</button>':'')+
+ '<form id="contestReminderCreate" class="contest-reminder-compose">'+
+ '<h4>✍️ إضافة تذكير جديد</h4>'+
+ '<div class="contest-reminder-inputs">'+
+ '<label>عنوان التذكير<input name="title" type="text" minlength="4" maxlength="180" required placeholder="مثال: مراجعة أسئلة الوحدة الثالثة"></label>'+
+ '<label>تاريخ اختياري<input name="due_on" type="date" aria-label="تاريخ التذكير"></label></div>'+
+ '<label>تفاصيل إضافية (اختياري)<textarea name="detail" maxlength="700" rows="2" placeholder="ملاحظاتك وما يلزم إنجازه"></textarea></label>'+
+ '<button class="primary" type="submit" '+(STATE.reminderBusy?'disabled':'')+'>＋ حفظ التذكير</button></form>'+
+ '</section>';
+}
+function bindSupervisorReminders(){
+ if(!supervisor()||isTester())return;
+ document.getElementById('refreshContestReminders')?.addEventListener('click',async()=>{
+  try{await loadSupervisorReminders()}catch(err){STATE.reminderError=err.message}render();
+ });
+ document.getElementById('showAllContestReminders')?.addEventListener('click',()=>{
+  STATE.reminderShowAll=!STATE.reminderShowAll;render();
+ });
+ document.getElementById('jumpContestModels')?.addEventListener('click',()=>{
+  document.querySelector('.contest-supervisor-models')?.scrollIntoView({behavior:'smooth',block:'start'});
+ });
+ document.getElementById('contestReminderCreate')?.addEventListener('submit',async ev=>{
+  ev.preventDefault();if(STATE.reminderBusy)return;
+  const form=new FormData(ev.currentTarget);
+  STATE.reminderBusy=true;
+  try{
+   await back('supervisor_reminder_add',{
+    title:String(form.get('title')||'').trim(),
+    detail:String(form.get('detail')||'').trim(),
+    due_on:String(form.get('due_on')||'')
+   });
+   await loadSupervisorReminders();
+  }catch(err){STATE.reminderError=err.message||'تعذر حفظ التذكير'}
+  finally{STATE.reminderBusy=false;render()}
+ });
+ document.querySelectorAll('[data-reminder-delete]').forEach(button=>button.addEventListener('click',async()=>{
+  const id=button.dataset.reminderDelete;
+  if(!window.confirm('حذف هذا التذكير من مركز المشرف؟ لن يظهر في قائمة التذكيرات من جديد.'))return;
+  try{
+   await back('supervisor_reminder_delete',{id});
+   await loadSupervisorReminders();
+  }catch(err){STATE.reminderError=err.message||'تعذر حذف التذكير'}
+  render();
+ }));
+}
 function home(){
  const approved=STATE.catalog.some(x=>x.grade===STATE.grade&&x.section===STATE.section&&numberedModels.includes(x.model)&&x.published);
  const introduction=STATE.grade===6?'أربع وحدات • ٤٠٠ نقطة • التأهل من ٣٥٠ نقطة • محاولتان رسميتان لكل وحدة':'قسمان من دروس الفصل الأول • ٢٥ نقطة لكل قسم • المجموع ٥٠ ويضاعف إلى ١٠٠ • تدريب رمزي دون محاولات رسمية';
@@ -405,7 +526,7 @@ function home(){
  const allowed=STATE.mode!=='official'||(approved&&!exhausted);
  const avatar=image(entryArt(),player()?'الصورة المعتمدة للطالب':'الصورة المعتمدة للمشرف والإدارة','entry-approved-avatar');
  return '<div class="contest-home">'+(isTester()?'<div class="contest-tester-active"><b>🎓 وضع الطالب التجريبي رقم '+stext(STATE.testerProfile)+' — تخضع محاولاتك لقواعد الطالب نفسها.</b><button type="button" id="leaveTester" class="outline">العودة إلى دائرة الإشراف</button></div>':'')+
- '<div class="contest-welcome contest-welcome-image">'+avatar+'<div><span class="contest-label">⭐ مسابقة نجوم آفاق الرياضيات ⭐</span><h2>مرحبًا '+friendly(STATE.displayName||STATE.user?.username||'بك')+'</h2><p>'+introduction+'</p></div><button class="outline" id="logoutContest">خروج</button></div>'+ (allowedStaff()?'<div class="contest-grades">'+[5,6,7,8].map(g=>'<button class="'+(STATE.grade===g?'chosen':'')+'" data-grade="'+g+'">الصف '+gradeNames[g]+'</button>').join('')+'</div>':'')+
+ '<div class="contest-welcome contest-welcome-image">'+avatar+'<div><span class="contest-label">⭐ مسابقة نجوم آفاق الرياضيات ⭐</span><h2>مرحبًا '+friendly(STATE.displayName||STATE.user?.username||'بك')+'</h2><p>'+introduction+'</p></div><button class="outline" id="logoutContest">خروج</button></div>'+supervisorReminderPanel()+(allowedStaff()?'<div class="contest-grades">'+[5,6,7,8].map(g=>'<button class="'+(STATE.grade===g?'chosen':'')+'" data-grade="'+g+'">الصف '+gradeNames[g]+'</button>').join('')+'</div>':'')+
  unitCards()+progress()+sampleScorePanel()+certificateHistoryPanel()+studentPasswordPanel()+
  '<h3 class="contest-title">اختر النموذج</h3><div class="contest-modes"><button class="'+(STATE.mode==='training'?'primary':'outline')+'" data-mode="training">🎯 تدريب غير رسمي — '+trainingTitle()+'</button>'+(official()?'<button class="'+(STATE.mode==='official'?'primary':'outline')+'" data-mode="official">🏆 المحاولات الرسمية</button>':'')+'</div>'+
  '<p class="contest-instructions">المراحل الخمس في التدريب والمحاولات الرسمية متشابهة في العرض والتوقيت والصور. تظهر الإجابة الصحيحة والتعزيز خلال ٥ ثوانٍ، وبين كل مرحلتين استراحة ثابتة مدتها دقيقتان مع عداد رقمي وجرس؛ ثم تبدأ المرحلة التالية تلقائيًا ولو لم يضغط الطالب زر الاستعداد. لكل سؤال تلميح مساعد، ويتضمن النموذج سؤالين فقط بأسلوب صوتي أو بإدخال أرقام عربية أو إنجليزية.</p>'+road()+
@@ -1027,7 +1148,8 @@ function bind(){if(!STATE.user)return;
   catch(err){STATE.error=err.message}
   render();
  });
- document.getElementById('logoutContest')?.addEventListener('click',async()=>{try{await api('logout')}catch{}sessionStorage.removeItem(tokenKey);STATE.token='';STATE.user=null;resetPlay();render()});
+ document.getElementById('logoutContest')?.addEventListener('click',async()=>{try{await api('logout')}catch{}sessionStorage.removeItem(tokenKey);STATE.token='';STATE.user=null;clearInterval(supervisorReminderPoll);supervisorReminderPoll=null;resetPlay();render()});
+ bindSupervisorReminders();
  document.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{STATE.grade=Number(btn.dataset.grade);STATE.section=1;STATE.previewModel=null;STATE.allModelBanks=null;STATE.allBanksSection=0;STATE.modelSummary=null;STATE.modelAssignments=null;STATE.editModel=STATE.grade===6?'01':'C';resetPlay();render()}));
  document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{STATE.section=Number(btn.dataset.unit);STATE.modelSummary=null;STATE.modelAssignments=null;resetPlay();render()}));
  document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{STATE.mode=btn.dataset.mode;resetPlay();render()}));
