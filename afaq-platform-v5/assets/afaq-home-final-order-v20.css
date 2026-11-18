@@ -208,3 +208,32 @@
 @media(prefers-reduced-motion:reduce){
  .hub-home .afaq-final-entry-button{transition:none!important}
 }
+
+/* Login instructions directly beneath the functional entry buttons. */
+.hub-home .afaq-entry-instructions{
+ direction:rtl;display:block;box-sizing:border-box;width:100%;margin:16px 0 5px;
+ padding:20px 23px 22px;border:3px solid #c99a38;border-radius:18px;
+ background:linear-gradient(115deg,#fff2c9 0%,#fffaf0 52%,#ffefb8 100%);
+ box-shadow:0 8px 22px rgba(117,85,32,.17);
+}
+.hub-home .afaq-entry-instructions h3{
+ margin:0 0 15px!important;color:#76500d!important;
+ font-size:clamp(21px,2.1vw,27px)!important;line-height:1.55!important;
+ font-weight:950!important;
+}
+.hub-home .afaq-entry-instructions-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch;
+}
+.hub-home .afaq-entry-instructions-grid p{
+ margin:0!important;padding:14px 16px;box-sizing:border-box;min-width:0;
+ border:1px solid #dfbd72;border-radius:12px;background:rgba(255,255,255,.82);
+ color:#503d22!important;font-size:clamp(15px,1.3vw,17px)!important;
+ line-height:1.95!important;font-weight:600!important;
+}
+.hub-home .afaq-entry-instructions-grid strong{color:#785012!important;font-weight:950}
+.hub-home .afaq-entry-instructions-grid .afaq-entry-instructions-guest{grid-column:1/-1}
+@media(max-width:700px){
+ .hub-home .afaq-entry-instructions{padding:14px 12px}
+ .hub-home .afaq-entry-instructions-grid{grid-template-columns:1fr}
+ .hub-home .afaq-entry-instructions-grid p{padding:12px 13px;font-size:15px!important}
+}
