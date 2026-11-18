@@ -342,7 +342,7 @@ function contestAllBanksView(){
   return '<details class="contest-all-bank" data-bank="'+model+'">'+
    '<summary><strong>النموذج '+model+'</strong><span>'+questions.length+' / ٣٨ سؤال'+
    (Number(model)<=5?' • المحاولة الأولى':' • المحاولة الثانية')+'</span></summary>'+
-   '<div class="contest-all-bank-questions">'+questions.map(q=>
+   '<div class="contest-all-bank-questions"><div class="contest-admin-try"><button type="button" class="primary" data-try-bank-model="'+model+'">🎮 جرّب النموذج '+model+' بشاشة الطالب نفسها</button><small>المعاينة لا تضيف درجات للطلاب ولا تستهلك محاولاتهم.</small></div>'+questions.map(q=>
     '<details class="contest-bank-question"><summary>السؤال '+q.ordinal+' — '+friendly(q.objective||'')+
     ' | '+friendly(q.prompt||'').slice(0,120)+'</summary>'+
     '<div class="contest-bank-question-content"><p><b>'+friendly(q.prompt||'')+'</b></p>'+
@@ -350,6 +350,7 @@ function contestAllBanksView(){
     (q.question_kind==='complex'?'<div class="contest-bank-parts">'+
       (q.parts||[]).map((part,i)=>'<div><b>الجزء '+(i+1)+': </b>'+friendly(part.text||'')+
        (part.choices?.length?'<p>'+part.choices.map(friendly).join(' • ')+'</p>':'')+
+       '<small class="contest-bank-answer">✓ الإجابة الصحيحة: '+friendly(part.displayAnswer??part.answer??(part.choices?.[part.answer_index]??'راجع مفتاح الإجابة'))+'</small>'+
        '</div>').join('')+'</div>':
       '<ol class="contest-bank-choices">'+(q.options||[]).map((choice,i)=>
        '<li class="'+(i===q.answer_index?'correct':'')+'">'+friendly(choice)+
@@ -1124,6 +1125,14 @@ function bind(){if(!STATE.user)return;
   catch(err){STATE.modelNotice=err.message;render()}
  });
 
+ document.querySelectorAll('[data-try-bank-model]').forEach(button=>button.addEventListener('click',()=>{
+  const model=button.dataset.tryBankModel;
+  if(!supervisor()||isTester()||!numberedModels.includes(model))return;
+  STATE.editModel=model;
+  STATE.previewModel=model;
+  STATE.mode='training';
+  prepare();
+ }));
  document.getElementById('loadAllContestBanks')?.addEventListener('click',async()=>{
   if(!supervisor()||isTester()||STATE.grade!==6)return;
   const section=STATE.section;
