@@ -421,9 +421,10 @@ function startSupervisorReminderPoll(){
   if(!supervisor()||isTester()||!STATE.token)return;
   try{
    const previous=(STATE.reminders||[]).map(x=>x.id).join(',');
+   const oldApprovals=STATE.pendingApprovals;
    await loadSupervisorReminders();
    const next=(STATE.reminders||[]).map(x=>x.id).join(',');
-   if(previous!==next){
+   if(previous!==next||oldApprovals!==STATE.pendingApprovals){
     const host=document.getElementById('contestSupervisorRemindersHost');
     if(host){
      host.outerHTML=supervisorReminderPanel();
@@ -466,7 +467,7 @@ function supervisorReminderPanel(){
    '<span class="contest-reminder-type">'+category+
    (item.due_on?' • موعد '+friendly(item.due_on):'')+
    '</span><h4>'+friendly(item.title)+'</h4>'+
-   (item.detail?'<p>'+friendly(item.detail)+'</p>':'')+
+   (item.detail?'<p>'+friendly(item.kind==='review'?('تبقّى '+STATE.pendingApprovals+' نموذجًا للمراجعة والاعتماد في وحدات المسابقة الأربع؛ راجع الأسئلة والصور والإجابات قبل النشر.'):item.detail)+'</p>':'')+
    '<small>'+friendly(formatSupervisorReminderDate(item.created_at))+'</small></div>'+
    '<button type="button" class="contest-reminder-delete" data-reminder-delete="'+friendly(item.id)+
    '" aria-label="حذف التذكير: '+friendly(item.title)+'" title="حذف هذا التذكير">حذف <span aria-hidden="true">×</span></button></article>';
