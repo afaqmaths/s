@@ -26,8 +26,15 @@
   '<h2>رحلة زمنية مع العلماء الثمانية في نجوم آفاق الرياضيات</h2>'+
   '<p>استكشف العلماء الذين اختيرت أسماؤهم لجولات المسابقة، مرتبين بحسب أقدمية زمن حياتهم لا بحسب تسلسل الجولات. اقرأ عن أهم اكتشافاتهم، ثم تعرّف كيف ظهرت أفكارهم وتطورت في الحساب والهندسة والجبر والقياس والإحصاء والفيزياء والحوسبة.</p>'+
   '<p class="afaq-scholars-time-note">التواريخ القديمة والتراجم المبكرة تقريبية في بعض المواضع، وشرح ارتباط الأفكار بالمناهج هو ربط تربوي معاصر لا يعني أن العالم ألّف كتابًا مدرسيًا لكل صف.</p></header>'+
-  '<nav class="afaq-scholars-quicklinks" aria-label="الانتقال إلى أحد العلماء">'+scholars.map((s,i)=>'<a href="#scholar-history-'+(i+1)+'">'+(i+1)+' · '+escape(s.n)+'</a>').join('')+'</nav>'+
+  '<nav class="afaq-scholars-quicklinks" aria-label="الانتقال إلى أحد العلماء">'+scholars.map((s,i)=>'<button type="button" data-scholar-scroll="scholar-history-'+(i+1)+'">'+(i+1)+' · '+escape(s.n)+'</button>').join('')+'</nav>'+
   '<div class="afaq-scholars-timeline">'+scholars.map(one).join('')+'</div>'+
   '<p class="afaq-scholars-further">الاطلاع على سير العلماء من خلال <a href="https://mathshistory.st-andrews.ac.uk/" target="_blank" rel="noopener noreferrer">موسوعة MacTutor لتاريخ الرياضيات — جامعة سانت أندروز</a>.</p>'+
   '</section>';
+ if(typeof document!=='undefined')document.addEventListener('click',event=>{
+  const control=event.target.closest?.('[data-scholar-scroll]');
+  if(!control)return;
+  const id=control.getAttribute('data-scholar-scroll');
+  if(!/^scholar-history-[1-8]$/.test(id))return;
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+ });
 })();
