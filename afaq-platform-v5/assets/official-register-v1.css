@@ -163,3 +163,88 @@
 .of-table .of-band-label{display:block;font:800 10px Tahoma,Arial,sans-serif;margin:1px 0 2px;color:#33566e}
 .of-table .of-name .of-band-label{white-space:normal;overflow-wrap:anywhere}
 @media print{.of-color-legend{display:none!important}.of-table tbody tr>th,.of-table tbody tr>td{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+
+/* 2026-11-18 | Student behavioral history: a real, anchored grade-table
+   column immediately before remarks. Counts remain visible when notes hide. */
+.of-table{min-width:2220px!important}
+.of-table col.of-col-behavior{width:276px}
+.of-table .of-behavior,
+.of-table .of-remarks,
+.of-table .of-actions{box-sizing:border-box}
+.of-table tbody tr>td.of-behavior{
+ position:sticky!important;left:252px!important;z-index:4!important;
+ width:276px;min-width:276px;max-width:276px;
+ text-align:right!important;vertical-align:top!important;
+ padding:8px!important;background:#fff9ed!important;
+ box-shadow:3px 0 6px #455c6b16;
+}
+.of-table tbody tr>td.of-remarks{
+ position:sticky!important;left:92px!important;z-index:5!important;
+ background:#fff!important;
+}
+.of-table tbody tr>td.of-actions{
+ position:sticky!important;left:0!important;z-index:6!important;
+ background:#f3f8fb!important;
+}
+.of-table thead tr.of-group-row th.of-behavior-head{
+ position:sticky!important;left:252px!important;top:0!important;
+ z-index:10!important;background:#ffefd1!important;color:#8a5b23!important;
+}
+.of-table thead tr.of-group-row th:nth-last-child(2){
+ position:sticky!important;left:92px!important;top:0!important;z-index:11!important;
+}
+.of-table thead tr.of-group-row th:last-child{
+ position:sticky!important;left:0!important;top:0!important;z-index:12!important;
+}
+.of-behavior-head small{font-size:10px;line-height:1.5}
+.of-behavior-summary{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap}
+.of-behavior-summary strong{font-size:12px;color:#70461b;line-height:1.6}
+.of-behavior-summary button{
+ font:800 10px Tahoma,Arial,sans-serif;cursor:pointer;
+ border:1px solid #d7bc87;border-radius:7px;
+ padding:4px 6px;background:#fff;color:#785320;
+}
+.of-behavior-history{
+ list-style:decimal;margin:7px 0;padding:0 20px 0 2px;max-height:155px;
+ overflow:auto;text-align:right;direction:rtl;
+ scrollbar-width:thin;
+}
+.of-behavior-history li{
+ font-size:11px;line-height:1.65;color:#29475b;
+ padding:5px 0;border-bottom:1px dashed #decba4;overflow-wrap:anywhere;
+}
+.of-behavior-history li time{display:block;font-size:10px;color:#8a612d}
+.of-behavior-history li span{display:block;white-space:pre-wrap}
+.of-behavior-history li small{display:block;color:#596f7f;white-space:pre-wrap}
+.of-behavior-muted,.of-behavior-pending,.of-behavior-private{
+ display:block;margin:7px 0;font-size:11px;color:#745e46;
+ line-height:1.65;overflow-wrap:anywhere;text-align:right;
+}
+.of-behavior-controls{display:flex;align-items:center;gap:7px;justify-content:flex-start;margin:8px 0 0}
+.of-behavior-controls button{
+ border-radius:8px;border:1px solid #c0cccb;
+ min-width:34px;height:30px;background:#edf9f3;
+ color:#13734c;font:950 21px Arial,sans-serif;line-height:1;
+ cursor:pointer;
+}
+.of-behavior-controls button[data-of-behavior-open="remove"]{
+ color:#994e43;background:#fff1eb;border-color:#ebc0b8;
+}
+.of-behavior-controls button:disabled,.of-behavior-summary button:disabled{
+ opacity:.5;cursor:not-allowed;
+}
+.of-behavior-controls button:focus-visible,.of-behavior-summary button:focus-visible{
+ outline:2px solid #238a8a;outline-offset:2px;
+}
+@media(max-width:700px){
+ .of-table col.of-col-behavior{width:240px}
+ .of-table tbody tr>td.of-behavior{width:240px;min-width:240px;max-width:240px}
+ .of-table{min-width:2100px!important}
+}
+@media print{
+ .of-table tbody tr>td.of-behavior,.of-table tbody tr>td.of-remarks,.of-table tbody tr>td.of-actions,
+ .of-table thead tr.of-group-row th.of-behavior-head,
+ .of-table thead tr.of-group-row th:nth-last-child(2),
+ .of-table thead tr.of-group-row th:last-child{position:static!important;box-shadow:none!important}
+}
