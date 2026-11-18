@@ -193,3 +193,43 @@ body{background:#f6f9ff}
 .hub-free-contests .hub-visual svg{width:81px;height:81px}
 @media(max-width:900px){.hub-free-contests{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.hub-free-contests{grid-template-columns:1fr}}
+
+/* Scholar biographies: historic timeline managed from the supervisor content catalog. */
+.hub-managed-scholars{direction:rtl;background:linear-gradient(135deg,#fffaf0,#f4f9ff);border:2px solid #d5ad63;border-radius:19px;padding:22px;margin:18px 0 24px;box-sizing:border-box;color:#244d70}
+.hub-managed-scholars h2{font-size:clamp(21px,2.2vw,29px)!important;color:#875d1e!important;font-weight:950}
+.hub-managed-scholars>p,.hub-managed-scholars header>p{font-size:16px;line-height:1.9;color:#5b6172}
+.hub-scholar-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.hub-scholar-tags,.hub-scholar-jumps{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.hub-scholar-tags span,.hub-scholar-jumps a{font:850 14px/1.5 Tahoma,Arial,sans-serif;background:#fff;border:1px solid #e0c991;border-radius:100px;padding:9px 12px;text-decoration:none;color:#79551d}
+.hub-scholar-jumps a:hover{background:#fff0ca}
+.hub-scholar-profiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.hub-scholar-profile{background:#fff;border:1px solid #cbdbe9;border-radius:17px;padding:19px;min-width:0;box-shadow:0 6px 18px #174a6b12;scroll-margin-top:20px}
+.hub-scholar-identity{display:flex;gap:13px;align-items:center}
+.hub-scholar-ordinal{flex:none;display:flex;align-items:center;justify-content:center;width:49px;height:49px;background:#fff1d0;border:1px solid #dbbc7a;color:#7c5a25;font-size:22px;font-weight:950;border-radius:50%}
+.hub-scholar-identity small{color:#9d773e;font-weight:800}
+.hub-scholar-identity h3{margin:3px 0!important;color:#1d527c;font-size:22px}
+.hub-scholar-summary{line-height:1.85;color:#536981;font-size:15px}
+.hub-scholar-profile details{border-top:1px solid #d9e2ea;margin-top:12px;padding-top:10px}
+.hub-scholar-profile summary{cursor:pointer;font-size:16px;font-weight:900;color:#20678b;line-height:1.7}
+.hub-scholar-full{margin-top:13px;white-space:normal;line-height:2;font-size:15px;color:#425e73}
+.hub-scholar-source{margin:15px 0 0}.hub-scholar-source a{color:#166992;font-weight:850}
+.hub-learning-quicklinks{margin:22px auto}
+.hub-learning-quicklinks .hub-inline-actions{gap:11px}
+/* All printable document titles are selectable from inside the library. */
+.hub-library-print{direction:rtl;border:2px solid #d6b76f;border-radius:17px;background:linear-gradient(145deg,#fffdf5,#f5faff);padding:20px;box-sizing:border-box}
+.hub-library-print h3{font-size:23px;color:#79551c}
+.hub-library-print>p{color:#546e84;line-height:1.85}
+.hub-library-print-fields{display:grid;grid-template-columns:2fr 1fr;gap:15px;margin:17px 0}
+.hub-library-print-fields label{display:flex;flex-direction:column;gap:8px;font-size:16px;font-weight:900;color:#264f70}
+.hub-library-print-fields select{font:16px Tahoma,Arial,sans-serif;width:100%;min-width:0;padding:13px 12px;background:white;color:#193f60;border-radius:10px;border:1px solid #a9c2d4}
+.hub-library-print-fields optgroup{color:#856321;font-weight:950}
+.hub-library-print-preview{max-height:600px;overflow:auto;padding:9px 12px;background:#f1f7ff;border:1px solid #ccdfeb;border-radius:12px}
+.hub-library-print-preview .hub-printed-document{margin:0;background:#fff}
+.hub-library-print-preview section{padding:8px 0;border-bottom:1px solid #e5edf3;break-inside:avoid}
+.hub-library-print-preview p{line-height:1.9}
+#hubLibraryPrintLink{margin:14px 0}
+@media(max-width:800px){
+ .hub-scholar-profiles{grid-template-columns:1fr}
+ .hub-library-print-fields{grid-template-columns:1fr}
+ .hub-managed-scholars,.hub-library-print{padding:15px}
+}
