@@ -113,8 +113,8 @@ function arDocuments(){
  '<h3>الأوراق المحفوظة للطالب</h3>'+arPaperRows(AR.current?.papers||[],true)+'</section>';
 }
 function arNoteForm(){
- const n=AR.editing||{};
- return '<section class="ar-card"><h2>📝 '+(n.id?'تعديل الملاحظة المدرسية':'إضافة ملاحظة مدرسية يومية أو سلوكية')+'</h2>'+
+ const n=AR.editing||(AR.noteDefaultCategory?{category:AR.noteDefaultCategory}:{});
+ return '<section class="ar-card ar-notes-editor"><h2>📝 '+(n.id?'تعديل الملاحظة المدرسية':'إضافة ملاحظة مدرسية يومية أو سلوكية')+'</h2>'+
  '<p>السجلات خاصة بالمشرف ومساعده، وتوثّق الواقعة وإجراء المعالجة والجهة المحال إليها. الإحالة هنا للتوثيق وإعداد الخطاب، ولا ترسل البيانات تلقائيًا إلى جهات خارجية.</p>'+
  '<form id="arNoteForm" class="ar-form">'+
  '<label>التاريخ<input type="date" name="note_date" required value="'+arEsc(n.note_date||arToday())+'"></label>'+
@@ -149,7 +149,7 @@ function arNotesTable(){
  const student=AR.roster.find(x=>x.student_id===AR.selected);
  const behavior=AR.notes.filter(n=>n.category==='behavior'&&n.student_id);
  const flagged=[...new Map(behavior.map(n=>[n.student_id,AR.roster.find(s=>s.student_id===n.student_id)])).entries()].filter(x=>x[1]);
- return '<section class="ar-card"><h2>⚠️ سجل المتابعة السلوكية والملاحظات اليومية</h2>'+ 
+ return '<section class="ar-card" id="arNotesList"><h2>⚠️ سجل المتابعة السلوكية والملاحظات اليومية</h2>'+ 
  '<div class="ar-behavior-list"><h3>طلاب لديهم ملاحظات سلوكية مسجلة</h3>'+ 
  (flagged.length?'<div class="ar-behavior-rows">'+flagged.map(([id,person])=>{const last=behavior.find(n=>n.student_id===id);return '<article><strong>'+arEsc(person.full_name||person.display_name)+'</strong><small>'+arEsc(person.class_name)+' • '+arEsc(last?.note_date||'')+'</small><p>'+arEsc(last?.action_taken||'الإجراء قيد التحديد')+'</p><button type="button" data-ar-select-behavior="'+arEsc(id)+'">فتح الملاحظات والإجراءات</button></article>'}).join('')+'</div>':'<p class="ar-info">لا توجد أسماء في قائمة الملاحظات السلوكية.</p>')+'</div>'+ 
  '<div class="ar-inline"><button type="button" id="arShowAllNotes">إظهار الملاحظات المدرسية لجميع الطلاب</button>'+
