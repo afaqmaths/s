@@ -53,11 +53,27 @@
 .ar-demo-note #as22OpenDemo{background:#fff1c8;border:1px solid #d6b15b;padding:10px;border-radius:8px;font-weight:900;cursor:pointer}
 @media(max-width:690px){.as22-behavior-form,.as22-behavior-rows{grid-template-columns:1fr}.as22-behavior-form label.wide,.as22-behavior-form .as22-gr-actions{grid-column:1}.as22-mirror-head>span,.as22-gr-head>span{height:45px;width:45px;font-size:25px}}
 
-/* A compact per-student behavior shortcut inside the official 100-point register. */
-.of-table .as22-official-note{display:block;margin:5px 0 0;padding:5px 8px;white-space:nowrap;
-font:850 10px/1.5 Tahoma,Arial,sans-serif;color:#174a7b;background:#e8f2fc;
-border:1px solid #b6d4e9;border-radius:8px;cursor:pointer}
-.of-table .as22-official-note:hover{background:#fceccd;border-color:#d5b075}
+/* Student serial opens the protected grades and notes; no link beneath names. */
+.of-table .of-serial .as22-official-serial{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-width:32px;min-height:34px;width:100%;box-sizing:border-box;
+ border:1px solid #9fbfdb;border-radius:8px;padding:4px 3px;
+ background:#e9f4ff;color:#154f7d;
+ font:950 15px/1.2 Tahoma,Arial,sans-serif;cursor:pointer;
+ text-align:center;transition:background .15s ease,border-color .15s ease;
+}
+.of-table .of-serial .as22-official-serial:hover{
+ background:#ffe6ae;color:#754e16;border-color:#c69b41;
+}
+.of-table .of-serial .as22-official-serial:focus-visible{
+ outline:3px solid #0e8782;outline-offset:2px;
+}
+@media print{
+ .of-table .of-serial .as22-official-serial{
+  background:transparent!important;border:0!important;min-height:0!important;
+  padding:0!important;color:#1c4259!important;
+ }
+}
 
 /* Role-protected demo entry displayed only on supervisor/assistant home. */
 .hub-staff-home .as22-demo-teaser{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:17px 19px;margin:14px 0 21px;border:2px solid #ccbd81;border-radius:17px;background:linear-gradient(115deg,#f5faff,#fffae9);box-shadow:0 7px 19px #173b6820;direction:rtl}
