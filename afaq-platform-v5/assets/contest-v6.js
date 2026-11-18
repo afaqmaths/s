@@ -79,12 +79,13 @@ const stageInfo=[
  {title:'عمر الخيام وأويلر',desc:'المختبر الرياضي',time:600,detail:'٤ مسائل مركبة — ١٠ دقائق للمرحلة'},
  {title:'أنا ومعلمي أ.سعيد البريكي',desc:'تحدي الاستدلال',time:300,detail:'٤ مسائل مركبة — ٥ دقائق للمرحلة'}
 ];
-const models={A:'المحاولة الرسمية الأولى',B:'المحاولة الرسمية الثانية',C:'نموذج الطالب',D:'نموذج الإدارة',E:'نموذج المشرف',F:'نموذج مساعد المشرف'};
+const models={A:'السابق A',B:'السابق B',C:'نموذج الطالب',D:'نموذج الإدارة',E:'نموذج المشرف',F:'نموذج مساعد المشرف',...Object.fromEntries(Array.from({length:10},(_,i)=>[String(i+1).padStart(2,'0'),'النموذج '+(i+1)]))};
+const numberedModels=Array.from({length:10},(_,i)=>String(i+1).padStart(2,'0'));
 const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',supervisor_assistant:'F'};
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,access:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
+ waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,modelNotice:'',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const supervisor=()=>STATE.user?.role==='supervisor';
@@ -93,7 +94,7 @@ const allowedStaff=()=>!isTester()&&['supervisor','supervisor_assistant','direct
 const student=()=>STATE.user?.role==='student';
 const player=()=>student()||isTester();
 const official=()=>player()&&STATE.grade===6;
-const trainingModel=()=>isTester()?'C':roleModels[STATE.user?.role]||'C';
+const trainingModel=()=>supervisor()&&!isTester()&&STATE.previewModel?STATE.previewModel:isTester()?'C':roleModels[STATE.user?.role]||'C';
 const trainingTitle=()=>models[trainingModel()]||'نموذج التدريب';
 const sampleKey=()=> 'afaq_nonofficial_parts_'+(STATE.user?.username||'demo')+'_'+STATE.grade;
 const savedSample=()=>{try{return JSON.parse(sessionStorage.getItem(sampleKey())||'{}')}catch{return {}}};
@@ -188,8 +189,10 @@ async function request(endpoint,action,payload={}){
 const api=(action,payload)=>request(API,action,payload);
 const PLAYER_ACTIONS=new Set(['my_results','my_certificates','start','begin_stage','answer','skip_stage','submit',
  'training','training_feedback','check_training']);
+const previewActions=new Set(['training','check_training','training_feedback']);
 const back=(action,payload={})=>request(GAME,action,
- isTester()&&PLAYER_ACTIONS.has(action)?{...payload,tester_profile:STATE.testerProfile}:payload);
+ isTester()&&PLAYER_ACTIONS.has(action)?{...payload,tester_profile:STATE.testerProfile}:
+ supervisor()&&!isTester()&&STATE.previewModel&&previewActions.has(action)?{...payload,preview_model:STATE.previewModel}:payload);
 async function authenticate(){
  if(!STATE.token)return;
  try{let r=await api('me');STATE.user=r.user;STATE.displayName=STATE.user?.role==='demo'?'متسابق الصف '+(gradeNames[Number(r.user.grade)]||''):(STATE.displayName||STATE.user?.username||'المتسابق');STATE.grade=student()||STATE.user.role==='demo'?Number(r.user.grade||6):6;
@@ -313,8 +316,43 @@ function studentPasswordPanel(){
 }
 function manager(){
  if(!supervisor()||isTester())return '';
- return contestSupervisorControls()+
-  '<section class="panel contest-admin"><h3>إدارة النماذج ومراجعة الأسئلة المصورة</h3><p>تظهر الرسوم الأصلية وأجزاؤها في شاشة المراجعة. لا تُفتح المحاولات الرسمية حتى اعتماد نماذجها.</p><label for="editModel">النموذج</label><select id="editModel">'+Object.entries(models).map(([k,n])=>'<option value="'+k+'" '+(k===STATE.editModel?'selected':'')+'">'+n+'</option>').join('')+'</select><button class="outline" id="loadBank">عرض بنك الأسئلة</button>'+(STATE.bank?bankView():'')+'</section>';
+ return contestSupervisorControls()+contestModelTools()+
+  '<section class="panel contest-admin"><h3>تحرير النماذج العشرة والأسئلة المصورة</h3>'+
+  '<p>النماذج ١–٥ للمحاولة الأولى، و٦–١٠ للمحاولة الثانية. يمكنك استعراض الرسومات وتعديل السؤال وإجابته، واعتماد النموذج بعد المراجعة.</p>'+
+  '<label for="editModel">اختر نموذج المسابقة</label><select id="editModel">'+
+  [...numberedModels,'A','B','C','D','E','F'].map(k=>'<option value="'+k+'" '+(STATE.editModel===k?'selected':'')+'>'+friendly(models[k])+'</option>').join('')+'</select>'+
+  '<div class="contest-model-actions"><button class="outline" id="loadBank">عرض جميع الأسئلة وصورها</button>'+
+  '<button class="primary" id="tryContestModel" '+(numberedModels.includes(STATE.editModel)?'':'disabled')+'>🎮 تجربة النموذج بواجهة الطالب</button></div>'+
+  (STATE.bank?bankView():'')+'</section>';
+}
+function contestModelTools(){
+ const summaries=STATE.modelSummary?.models||[];
+ const assignment=STATE.modelAssignments?.assignments||[];
+ const grouped=Object.values(assignment.reduce((obj,x)=>{
+  const id=x.class_name+'|'+x.serial_no;
+  if(!obj[id])obj[id]={class_name:x.class_name,serial:x.serial_no,name:x.student_name,first:'—',second:'—',source:'آلي'};
+  obj[id][x.attempt_no===1?'first':'second']=x.model;
+  if(x.assignment_source==='supervisor')obj[id].source='تعديل المشرف';
+  return obj;
+ },{})).sort((a,b)=>String(a.class_name).localeCompare(String(b.class_name),'ar')||Number(a.serial)-Number(b.serial));
+ return '<section class="panel contest-admin contest-supervisor-models"><h3>🎯 النماذج ١–١٠ وتوزيعها على الطلاب</h3>'+
+ '<p>خمسة نماذج للمحاولة الأولى، وخمسة للمحاولة الثانية؛ موزعة بالتساوي تقريبًا (٦–٧ طلاب للنموذج الواحد في الشعبة). لا يُسمح بتبديل نموذج محاولة بدأت بالفعل.</p>'+
+ '<div class="contest-model-actions"><button id="loadModelSummary" class="primary">مراجعة العشرة نماذج</button>'+
+ '<button id="loadModelAssignments" class="outline">كشف توزيع نماذج الطلاب</button></div>'+
+ (summaries.length?'<div class="contest-model-summary">'+summaries.map(m=>
+ '<div><strong>النموذج '+friendly(m.model)+'</strong><span>'+m.questions+'/٣٨ سؤال • '+m.images+' رسم • '+m.objectives+' هدف</span>'+
+ '<small>'+(m.published?'✅ معتمد':'🔒 مسودة تحتاج الاعتماد')+'</small></div>').join('')+'</div>':'')+
+ '<h4>تعديل نموذج طالب محدد قبل بدء المحاولة</h4>'+
+ '<form id="contestModelOverride" class="contest-model-override">'+
+ '<label>الشعبة<select name="class_name">'+['السادس / ٤','السادس / ٥','السادس / ٦'].map(n=>'<option>'+n+'</option>').join('')+'</select></label>'+
+ '<label>رقم الطالب<input name="serial_no" type="number" min="1" max="100" required></label>'+
+ '<label>المحاولة<select name="attempt_no"><option value="1">الأولى</option><option value="2">الثانية</option></select></label>'+
+ '<label>النموذج<select name="model">'+numberedModels.map(n=>'<option value="'+n+'">نموذج '+n+'</option>').join('')+'</select></label>'+
+ '<button class="primary" type="submit">حفظ التعديل</button></form>'+
+ '<p class="contest-model-note" role="status">'+friendly(STATE.modelNotice||'النماذج ١–٥ للأولى، و٦–١٠ للثانية. سيُوثَّق كل تغيير.')+'</p>'+
+ (grouped.length?'<div class="contest-model-table-wrap"><table class="contest-model-table"><thead><tr><th>الشعبة</th><th>الرقم</th><th>الطالب</th><th>المحاولة الأولى</th><th>المحاولة الثانية</th><th>المصدر</th></tr></thead><tbody>'+
+ grouped.map(x=>'<tr><td>'+friendly(x.class_name)+'</td><td>'+friendly(x.serial)+'</td><td>'+friendly(x.name)+'</td><td>'+friendly(x.first)+'</td><td>'+friendly(x.second)+'</td><td>'+friendly(x.source)+'</td></tr>').join('')+'</tbody></table></div>':'')+
+ '</section>';
 }
 function bankView(){const all=STATE.bank.questions||[];return '<div class="contest-bank"><p>عدد الأسئلة: '+all.length+' / ٣٨</p>'+all.map(q=>'<details><summary>س '+q.ordinal+' | '+friendly(q.objective)+' — '+friendly(q.prompt).slice(0,130)+'</summary>'+
  '<form class="edit-question" data-ordinal="'+q.ordinal+'"><label>نص السؤال</label><textarea name="prompt" rows="3">'+friendly(q.prompt)+'</textarea>'+
@@ -323,7 +361,7 @@ function bankView(){const all=STATE.bank.questions||[];return '<div class="conte
  (q.question_kind==='complex'?'<label>أجزاء السؤال بصيغة JSON</label><textarea name="parts" rows="7">'+friendly(JSON.stringify(q.parts,null,2))+'</textarea>':(q.options||[]).map((opt,i)=>'<label>الخيار '+(i+1)+'</label><input name="opt'+i+'" value="'+friendly(opt)+'">').join('')+'<label>رقم الإجابة الصحيحة (٠–٣)</label><input name="answer_index" type="number" min="0" max="3" value="'+q.answer_index+'">')+
  '<button class="soft" type="submit">حفظ التعديل</button></form></details>').join('')+'<button class="primary" id="publishBank">اعتماد النموذج</button><button class="outline" id="unpublishBank">إيقاف النموذج</button></div>'}
 function home(){
- const approved=STATE.catalog.some(x=>x.grade===STATE.grade&&x.section===STATE.section&&x.model==='A'&&x.published);
+ const approved=STATE.catalog.some(x=>x.grade===STATE.grade&&x.section===STATE.section&&numberedModels.includes(x.model)&&x.published);
  const introduction=STATE.grade===6?'أربع وحدات • ٤٠٠ نقطة • التأهل من ٣٥٠ نقطة • محاولتان رسميتان لكل وحدة':'قسمان من دروس الفصل الأول • ٢٥ نقطة لكل قسم • المجموع ٥٠ ويضاعف إلى ١٠٠ • تدريب رمزي دون محاولات رسمية';
  const thisUnit=STATE.report?.parts?.find(p=>p.section===STATE.section);
  const exhausted=!!(STATE.mode==='official'&&thisUnit?.attempts_remaining===0&&
