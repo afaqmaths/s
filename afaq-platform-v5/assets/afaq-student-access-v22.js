@@ -96,10 +96,10 @@ function as22BehaviorGradeCard(){
  const id=auth.selectedStudent;
  if(AS22.editingStudent&&AS22.editingStudent!==id){AS22.editingId=null;AS22.editingStudent=''}
  const match=(auth.students||AR.roster||[]).find(x=>x.student_id===id);
- const notes=AR.notes.filter(x=>x.student_id===id&&x.category==='behavior');
+ const notes=AR.notes.filter(x=>x.student_id===id&&['behavior','daily'].includes(x.category));
  const editing=notes.find(n=>String(n.id)===String(AS22.editingId))||null;
  return '<section class="ar-card as22-gradebook" data-as22-student="'+as22T(id)+'">'+
- '<div class="as22-gr-head"><span>📝</span><div><h3>الملاحظات السلوكية — ضمن سجل درجات الطالب</h3>'+
+ '<div class="as22-gr-head"><span>📝</span><div><h3>الملاحظات السلوكية واليومية — ضمن سجل درجات الطالب</h3>'+
  '<p>'+as22T(match?.full_name||match?.display_name||'الطالب المحدد')+' • سجلات خاصة لا تظهر في درجاته المنشورة. قابلة للإضافة والتعديل والأرشفة.</p></div></div>'+
  (AS22.message?'<p class="as22-tip" role="status">'+as22T(AS22.message)+'</p>':'')+
  (!AR.loaded?'<p>جارٍ تحميل السجل السلوكي المحمي ...</p>':'')+
@@ -116,14 +116,14 @@ function as22BehaviorGradeCard(){
  (editing?'<button type="button" id="as22CancelEdit">إلغاء التعديل</button>':'')+
  '<button type="button" data-tab="afaq_student_records">فتح سجل المدرسة والمتابعة</button></div></form>'+
  '<div class="as22-behavior-rows">'+(notes.length?notes.map(n=>
- '<article><strong>'+as22T(n.note_date)+'</strong><p>'+as22T(n.description)+'</p>'+
+ '<article><strong>'+(n.category==='daily'?'يومية':'سلوكية')+' • '+as22T(n.note_date)+'</strong><p>'+as22T(n.description)+'</p>'+
  '<p><b>الإجراء:</b> '+as22T(n.action_taken||'قيد المتابعة')+'</p>'+
  (n.referred_to?'<small>الجهة: '+as22T(n.referred_to)+'</small>':'')+
  '<div class="as22-gr-actions"><button type="button" data-as22-edit="'+as22T(n.id)+'">تعديل</button>'+
  '<button type="button" data-as22-archive="'+as22T(n.id)+'">حذف من السجل النشط</button>'+
  '<button type="button" data-as22-guardian="'+as22T(n.id)+'">استدعاء ولي الأمر</button>'+
  '<button type="button" data-as22-referral="'+as22T(n.id)+'">طباعة الإحالة</button></div></article>').join(''):
- '<p class="as22-tip">لا توجد ملاحظات سلوكية مسجلة لهذا الطالب حتى الآن.</p>')+'</div></section>';
+ '<p class="as22-tip">لا توجد ملاحظات سلوكية أو يومية مسجلة لهذا الطالب حتى الآن.</p>')+'</div></section>';
 }
 /* Clearly visible trial account on both supervisor and assistant main dashboards. */
 const as22PreviousStaffHome=hubStaffDashboard;
