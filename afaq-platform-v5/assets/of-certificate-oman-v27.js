@@ -88,7 +88,7 @@ const style="<style>\n@page{size:A4 portrait;margin:0}\n*{box-sizing:border-box}
     '<meta name="viewport" content="width=device-width,initial-scale=1">'+
     '<title>شهادة رصد درجات الرياضيات — '+safe(student.full_name||'الطالب')+'</title>'+
     style+'</head><body><main class="oc-page" role="document">'+
-    '<div class="oc-pattern"></div><div class="oc-flag oc-flag-top"></div><div class="oc-flag oc-flag-bottom"></div>'+
+    '<div class="oc-pattern"></div>'+ "<svg viewBox=\"0 0 840 240\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" style=\"position:absolute;bottom:16mm;left:6mm;width:196mm;height:62mm;opacity:.22;z-index:0;pointer-events:none\"><path d=\"M0 210 L58 160 L121 198 L173 152 L250 201 L340 175 M510 205 L570 148 L640 198 L711 158 L840 212\" fill=\"none\" stroke=\"#b08b5a\" stroke-width=\"7\"/><path d=\"M10 208 L20 113 L99 113 L109 208 Z M35 112 L35 86 L55 86 L55 94 L70 94 L70 86 L90 86 L90 112\" fill=\"#d2b083\" stroke=\"#9c784f\" stroke-width=\"3\"/><path d=\"M48 210 V176 Q60 164 74 176 V210 M20 139 H100 M20 162 H100\" fill=\"none\" stroke=\"#a18055\" stroke-width=\"3\"/><path d=\"M776 216 V106\" stroke=\"#718e5b\" stroke-width=\"6\"/><path d=\"M777 119 Q730 56 697 86 Q739 86 777 119 M777 119 Q824 54 840 89 Q801 83 777 119 M777 119 Q716 110 720 148 Q738 118 777 119 M777 119 Q832 114 835 145 Q808 118 777 119\" fill=\"none\" stroke=\"#6e925b\" stroke-width=\"5\"/></svg>" +'<div class="oc-flag oc-flag-top"></div><div class="oc-flag oc-flag-bottom"></div>'+
     '<div class="oc-knot tr"></div><div class="oc-knot tl"></div><div class="oc-knot br"></div><div class="oc-knot bl"></div>'+
     '<div class="oc-content">'+heading+
     '<div class="oc-title">شهادة رصد درجات الطالب في مادة الرياضيات</div>'+
