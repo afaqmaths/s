@@ -308,3 +308,111 @@
   -webkit-print-color-adjust:exact;print-color-adjust:exact;
  }
 }
+
+
+/* Paired historical-scholar artworks for newly named five-round contest.
+   Four dual portraits replace obsolete mascot depictions; the approved
+   original student/teacher illustration remains on round five. */
+.contest-pair-art{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ direction:rtl;align-items:stretch;gap:12px;
+ margin:0 auto;max-width:100%;min-width:0;
+}
+.contest-pair-portrait{
+ display:flex;flex-direction:column;align-items:center;min-width:0;
+ margin:0;padding:6px;border:1.5px solid var(--contest-stage-border,#bdcfdf);
+ border-radius:18px;background:rgba(255,255,255,.88);
+ box-shadow:0 5px 15px rgba(24,55,79,.13);
+}
+.contest-pair-portrait .contest-scholar-image{
+ display:block;flex:1 1 auto;min-width:0;width:100%;
+ background:linear-gradient(145deg,#fffaf0,#ecf4fa);
+ border-radius:12px;object-fit:contain;object-position:center;
+ border:1px solid #e7e3d9;
+}
+.contest-pair-portrait figcaption{
+ width:100%;font-weight:950;font-family:Tahoma,Arial,sans-serif;
+ color:var(--contest-stage-ink,#205677);line-height:1.35;text-align:center;
+ white-space:normal;overflow-wrap:normal;
+}
+.contest-pair-ready{width:min(440px,90vw);gap:14px}
+.contest-pair-ready .contest-pair-portrait{height:266px;padding:8px}
+.contest-pair-ready .contest-scholar-image{height:214px}
+.contest-pair-ready figcaption{font-size:17px;padding:8px 2px 4px}
+.stage-ready-page.contest-stage-rest .contest-pair-ready{width:min(376px,87vw)}
+.stage-ready-page.contest-stage-rest .contest-pair-ready .contest-pair-portrait{height:225px}
+.stage-ready-page.contest-stage-rest .contest-pair-ready .contest-scholar-image{height:180px}
+.contest-pair-banner{
+ width:282px;min-width:282px;gap:8px;align-items:stretch;
+}
+.contest-pair-banner .contest-pair-portrait{
+ height:172px;border-width:2px;padding:5px;box-shadow:0 6px 15px rgba(8,26,46,.2);
+}
+.contest-pair-banner .contest-scholar-image{height:130px}
+.contest-pair-banner figcaption{font-size:12px;padding:5px 1px 1px}
+.contest-game-area:has(.contest-pair-banner) .contest-character{
+ width:292px;min-width:292px;height:181px;
+}
+.contest-pair-road{width:100%;gap:4px;margin:2px auto 6px}
+.contest-pair-road .contest-pair-portrait{
+ padding:3px;border-radius:10px;box-shadow:none;min-width:0;
+ height:74px;
+}
+.contest-pair-road .contest-scholar-image{height:49px;border-radius:7px}
+.contest-pair-road figcaption{font-size:9px;padding:3px 0 0;line-height:1.25}
+.stage-node:has(.contest-pair-road){
+ min-width:0;
+}
+.stage-ready-page:has(.contest-pair-ready) h2{
+ font-size:clamp(26px,3.8vw,48px)!important;line-height:1.35!important;
+}
+.contest-game-area:has(.contest-pair-banner) .contest-stage-banner h2{
+ font-size:clamp(21px,2.1vw,31px)!important;
+ line-height:1.45!important;
+}
+.contest-game-area:has(.contest-pair-banner) .contest-stage-banner{
+ gap:13px;flex-wrap:wrap;
+}
+.contest-game-area:has(.contest-pair-banner) .contest-stage-banner>.contest-timer{
+ margin-right:auto;
+}
+@media(max-width:880px){
+ .contest-pair-banner{width:226px;min-width:226px;gap:6px}
+ .contest-pair-banner .contest-pair-portrait{height:146px}
+ .contest-pair-banner .contest-scholar-image{height:108px}
+ .contest-pair-banner figcaption{font-size:11px}
+ .contest-game-area:has(.contest-pair-banner) .contest-character{
+  width:236px;min-width:236px;height:155px;
+ }
+ .contest-pair-road .contest-pair-portrait{height:68px}
+ .contest-pair-road .contest-scholar-image{height:43px}
+}
+@media(max-width:650px){
+ .contest-pair-ready{width:min(350px,91vw);gap:7px}
+ .contest-pair-ready .contest-pair-portrait{height:216px;padding:5px}
+ .contest-pair-ready .contest-scholar-image{height:175px}
+ .contest-pair-ready figcaption{font-size:13px;padding:5px 1px 0}
+ .stage-ready-page.contest-stage-rest .contest-pair-ready{width:min(310px,90vw)}
+ .stage-ready-page.contest-stage-rest .contest-pair-ready .contest-pair-portrait{height:191px}
+ .stage-ready-page.contest-stage-rest .contest-pair-ready .contest-scholar-image{height:149px}
+ .contest-pair-banner{width:170px;min-width:170px;gap:4px}
+ .contest-pair-banner .contest-pair-portrait{height:119px;padding:3px;border-radius:10px}
+ .contest-pair-banner .contest-scholar-image{height:89px;border-radius:7px}
+ .contest-pair-banner figcaption{font-size:10px;padding:3px 0 0}
+ .contest-game-area:has(.contest-pair-banner) .contest-character{
+  width:180px;min-width:180px;height:125px;
+ }
+ .contest-pair-road{gap:3px}
+ .contest-pair-road .contest-pair-portrait{height:61px;padding:2px;border-radius:7px}
+ .contest-pair-road .contest-scholar-image{height:39px;border-radius:5px}
+ .contest-pair-road figcaption{font-size:8px}
+}
+@media(max-width:390px){
+ .contest-pair-banner{width:145px;min-width:145px}
+ .contest-game-area:has(.contest-pair-banner) .contest-character{
+  width:153px;min-width:153px;height:118px;
+ }
+ .contest-pair-banner .contest-pair-portrait{height:110px}
+ .contest-pair-banner .contest-scholar-image{height:79px}
+ .contest-pair-banner figcaption{font-size:9px}
+}
