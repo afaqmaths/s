@@ -50,11 +50,11 @@ function mm29Reset(op,a,b,method){
 }
 function mm29Round(number){
  const n=Number(number);
- if(n===0)return {target:0,delta:0,unit:10};
+ if(n===0||n%10===0)return {target:n,delta:0,unit:10};
  const candidates=[10,100,1000].flatMap(unit=>{
   const lower=Math.floor(n/unit)*unit,upper=lower+unit;
   return [{target:lower,delta:lower-n,unit},{target:upper,delta:upper-n,unit}];
- }).filter(x=>x.target>=0&&x.target!==n);
+ }).filter(x=>x.target>0&&x.target!==n);
  candidates.sort((a,b)=>Math.abs(a.delta)-Math.abs(b.delta)||b.unit-a.unit);
  return candidates[0]||{target:n,delta:0,unit:10};
 }
@@ -208,6 +208,10 @@ function mm29Build(op,a,b,selected){
    for(const unit of [10,100,1000,10000]){
     const target=Math.ceil(running/unit)*unit;
     if(target>running&&target<=a)push(target,'أقفز إلى '+mm29Num(unit)+' أو مضاعفها التالي');
+   }
+   for(const unit of [10000,1000,100,10]){
+    const target=Math.floor(a/unit)*unit;
+    if(target>running&&target<a)push(target,'أقفز إلى أقرب '+mm29Num(unit)+' داخل المدى');
    }
    push(a,'أكمل القفزة الأخيرة');
    if(!jumps.length)add('لم أحتج إلى قفزة',mm29Num(a)+' = '+mm29Num(b),'لأن العددين متساويان فالفرق صفر.');
