@@ -984,7 +984,7 @@ function studentGateLock(){
  '<a class="outline" href="index.html#dashboard">العودة إلى حسابي</a></div>';
 }
 const contestLoginRoles=[
- ['student','👨‍🎓 الطالب'],['supervisor','👨‍🏫 المشرف الرئيسي'],
+ ['student','👨‍🎓 طالب 6'],['supervisor','👨‍🏫 المشرف الرئيسي'],
  ['supervisor_assistant','🧑‍🏫 المشرف المساعد'],['it_viewer','💻 مشرف تقنية المعلومات'],
  ['director','🏫 مدير المدرسة'],['deputy','📋 مساعد المدير'],
  ['demo','🎯 الحساب التدريبي (٥ و٧ و٨)']
