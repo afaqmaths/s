@@ -133,6 +133,24 @@ const stageEndArt=n=>window.AFAQ_STAGE_END_ART?.[n-1]||stageArt(n);
 const stageArtAlt=n=>n===5?'رسم المرحلة الخامسة: أنا ومعلمي الأستاذ سعيد البريكي':
   'رسم رمزي لشخصيات المرحلة '+stage(n).title;
 function stagePortrait(n,variant){
+ /* Both entry images are the precise approved student and teacher artwork
+    already loaded in this competition by contest-original-art.js. */
+ if(n===5){
+  const student=window.AFAQ_ENTRY_ART?.student||'';
+  const teacher=window.AFAQ_ENTRY_ART?.staff||'';
+  if(student&&teacher){
+   const duo=[
+    {name:'أنا الطالب',description:'صورة الطالب المعتمدة في منصة آفاق ماث',src:student},
+    {name:'معلمي أ. سعيد البريكي',description:'صورة المعلم العُماني المعتمدة في منصة آفاق ماث',src:teacher}
+   ];
+   return '<div class="contest-pair-art contest-pair-'+variant+' contest-student-teacher" aria-label="أنا ومعلمي الأستاذ سعيد البريكي">'+
+    duo.map(item=>'<figure class="contest-pair-portrait">'+
+     '<img class="contest-scholar-image" src="'+item.src+'" alt="'+item.description+'" loading="eager">'+
+     '<figcaption>'+item.name+'</figcaption></figure>').join('')+'</div>';
+  }
+  /* Retain the approved older fifth-stage artwork only as a graceful fallback. */
+  return image(stageArt(n),stageArtAlt(n),variant==='ready'?'stage-ready-photo':variant==='road'?'stage-pic':'stage-banner-photo');
+ }
  const two=contestPairedArt[n];
  if(!two)return image(stageArt(n),stageArtAlt(n),variant==='ready'?'stage-ready-photo':
   variant==='road'?'stage-pic':'stage-banner-photo');
