@@ -193,6 +193,17 @@
 }
 .contest-art-credit a{color:#4f718b;text-decoration:underline;text-underline-offset:2px}
 .contest-art-credit a:focus-visible{outline:3px solid #17868b;outline-offset:3px}
+/* Image credits stay legible but unobtrusive in the dark game banner. */
+.contest-stage-banner .contest-art-credit{
+ display:block;width:fit-content;max-width:440px;
+ margin:5px 0 0;padding:4px 8px;
+ background:rgba(255,255,255,.92);
+ border:1px solid rgba(255,255,255,.7);
+ border-radius:9px;
+ font-size:9px;line-height:1.5;
+}
+.contest-stage-banner .contest-art-credit a{color:#345c79!important}
+
 
 /* OMAN FLAG. Top white, MIDDLE red, bottom green; red vertical hoist. */
 .stage-theme-saeed.stage-ready-page::before,
