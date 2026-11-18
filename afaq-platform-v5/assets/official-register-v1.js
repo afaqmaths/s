@@ -127,8 +127,11 @@ function ofBehaviorContent(s){
  if(!student)return '<small class="of-behavior-pending">تعذرت مطابقة الطالب مع سجل الملاحظات. لا يمكن عرض عدد مؤكد.</small>';
  const notes=ofBehaviorNotes(s),hidden=!!b.hidden[key];
  const count='<div class="of-behavior-summary"><strong>عدد الملاحظات: '+ofNumber(notes.length)+'</strong>'+
+  '<div class="of-behavior-summary-actions">'+
   '<button type="button" data-of-behavior-hide="'+serial+'" aria-label="'+(hidden?'إظهار':'إخفاء')+' ملاحظات الطالب" '+
-  (notes.length?'':'disabled')+'>'+(hidden?'◉ إظهار':'◉ إخفاء')+'</button></div>';
+  (notes.length?'':'disabled')+'>'+(hidden?'◉ إظهار':'◉ إخفاء')+'</button>'+
+  '<button type="button" data-of-behavior-print="'+serial+'" aria-label="طباعة ملاحظات الطالب" title="طباعة جميع الملاحظات السلوكية واليومية لهذا الطالب مباشرة" '+
+  (notes.length?'':'disabled')+'>🖨 طباعة</button></div></div>';
  const list=hidden?'<p class="of-behavior-muted">الملاحظات مخفية في هذا الكشف فقط؛ لم تُحذف.</p>':
   (notes.length?'<ol class="of-behavior-history">'+notes.map(n=>
    '<li><time><span class="of-behavior-type">'+(n.category==='daily'?'يومية':'سلوكية')+'</span> • '+ofSafe(n.note_date||'بدون تاريخ')+'</time><span>'+ofSafe(n.description||'ملاحظة محفوظة')+'</span>'+
@@ -139,6 +142,20 @@ function ofBehaviorContent(s){
   '<button type="button" data-of-behavior-open="remove" data-of-behavior-serial="'+serial+'" title="فتح ملاحظات الطالب لحذف ملاحظة بعد تأكيد" aria-label="فتح سجل حذف الملاحظات" '+(notes.length?'':'disabled')+'>−</button>'+
   '</div>';
  return count+list+controls;
+}
+function ofPrintBehavior(serial){
+ if(!ofEdit()||ofState.behavior.token!==auth.token||!ofState.behavior.loaded)return;
+ const row=ofFindStudent(serial);
+ const student=row&&ofBehaviorStudent(row);
+ if(!student?.student_id){window.alert('تعذر مطابقة الطالب مع سجل الملاحظات. حدّث الملاحظات وحاول مجددًا.');return}
+ const notes=ofBehaviorNotes(row);
+ if(!notes.length)return;
+ if(typeof as22ReferralPrint!=='function'){
+  window.alert('نموذج طباعة الملاحظات غير متاح حاليًا.');return;
+ }
+ // All records are drawn from the authenticated staff notes list for this one student;
+ // hiding the on-screen text does not alter the archived record or printing.
+ as22ReferralPrint(notes,student,true);
 }
 async function ofLoadBehavior(force=false){
  if(!ofEdit()||typeof arCall!=='function')return;
@@ -588,6 +605,8 @@ function ofBind(){
    const cell=hide.closest('.of-behavior');if(cell)cell.innerHTML=ofBehaviorContent(s);
    return;
   }
+  const print=event.target.closest('[data-of-behavior-print]');
+  if(print){ofPrintBehavior(Number(print.dataset.ofBehaviorPrint));return}
   const open=event.target.closest('[data-of-behavior-open]');
   if(open)void ofOpenBehavior(Number(open.dataset.ofBehaviorSerial),open.dataset.ofBehaviorOpen);
  });
