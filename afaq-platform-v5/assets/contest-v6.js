@@ -772,7 +772,7 @@ async function beginStage(automatic=false){
   if(button){button.disabled=true;button.textContent='✅ أنت مستعد للمرحلة التالية'}
   return;
  }
- afaqTune(STATE.readyStage,'start');
+ if(!automatic)afaqTune(STATE.readyStage,'start');
  STATE.busy=true;STATE.error='';try{
  if(STATE.mode==='official'){
    const r=STATE.attemptId&&STATE.readyStage>1?await back('begin_stage',{attempt_id:STATE.attemptId}):await back('start',{grade:STATE.grade,section:STATE.section});
@@ -891,7 +891,7 @@ function bind(){if(!STATE.user)return;
  document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{STATE.section=Number(btn.dataset.unit);resetPlay();render()}));
  document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{STATE.mode=btn.dataset.mode;resetPlay();render()}));
  document.getElementById('prepare')?.addEventListener('click',prepare);
- document.getElementById('beginStage')?.addEventListener('click',beginStage);
+ document.getElementById('beginStage')?.addEventListener('click',()=>beginStage(false));
  document.getElementById('exitStage')?.addEventListener('click',()=>{if(STATE.attemptId&&STATE.mode==='official'){if(!window.confirm('ستظل المحاولة الرسمية محفوظة ويمكن استكمالها عند العودة. هل تريد الخروج؟'))return}resetPlay();render()});
  document.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-choice]').forEach(x=>x.disabled=true);btn.classList.add('selected');submitResponse(Number(btn.dataset.choice))}));
  document.getElementById('contestHintButton')?.addEventListener('click',()=>{
