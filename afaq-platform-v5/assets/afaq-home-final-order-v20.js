@@ -110,7 +110,7 @@ hubHome=function(){
   if(!explanation){
    explanation=document.createElement('small');
    explanation.className='afaq-final-counter-note';
-   explanation.textContent='عداد تراكمي يشمل رصيدًا افتتاحيًا قدره ٦٬٥٠٠ إضافة إلى المتصفحات المسجّلة؛ وليس إحصاءً موثقًا لأشخاص فريدين.';
+   explanation.textContent='شكرًا لزيارتكم آفاق ماث؛ نتمنى لكم تصفحًا ممتعًا ومعرفةً نافعة، ونسأل الله أن يكلّل مسيرتكم بالتوفيق والنجاح والتفوّق.';
    count.appendChild(explanation);
   }
  }
