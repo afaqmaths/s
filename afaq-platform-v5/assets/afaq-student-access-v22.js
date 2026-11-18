@@ -55,7 +55,7 @@ function as22ReferralPrint(note,student){
  if(!as22Allowed()||!note)return;
  const safe=as22T,school='مدرسة الحسين بن علي للتعليم الأساسي';
  const html='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>خطاب إحالة ملاحظة مدرسية</title>'+
- '<style>body{font:17px/2 Tahoma,Arial,sans-serif;color:#193c61;padding:35px;direction:rtl}header{text-align:center;border-bottom:2px solid #c4a165;padding-bottom:15px}h1{font-size:26px;color:#153d78}p{margin:11px 0}.sign{margin-top:47px}.toolbar{margin:18px;padding:9px}button{padding:11px;background:#184e7e;color:#fff;border:0;border-radius:8px}@media print{.toolbar{display:none}}@page{size:A4 portrait;margin:17mm}</style>'+
+ '<style>body{font:17px/2 Tahoma,Arial,sans-serif;color:#193c61;padding:35px;direction:rtl}header{text-align:center;border-bottom:2px solid #c4a165;padding-bottom:15px}h1{font-size:26px;color:#153d78}p{margin:11px 0}.sign{margin-top:47px}.admin-followup{margin-top:28px;border-top:1px solid #c5d5df;padding-top:12px;break-inside:avoid}.admin-followup p{margin:0 0 8px}.admin-followup-lines{min-height:50px;overflow:hidden;white-space:nowrap;color:#8397a6}.admin-followup-meta{display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap;margin-top:10px;font-weight:bold}.toolbar{margin:18px;padding:9px}button{padding:11px;background:#184e7e;color:#fff;border:0;border-radius:8px}@media print{.toolbar{display:none}}@page{size:A4 portrait;margin:17mm}</style>'+
  '</head><body><header><b>سلطنة عُمان — وزارة التربية والتعليم</b><h1>خطاب إحالة ملاحظة مدرسية</h1><div>'+safe(school)+'</div></header>'+
  '<p>التاريخ: <strong>'+safe(note.note_date)+'</strong></p>'+
  '<p>إلى الفاضل/ة: <b>'+safe(note.referred_to||'الجهة المختصة')+'</b> المحترم/ة</p>'+
@@ -67,7 +67,9 @@ function as22ReferralPrint(note,student){
  '<p><b>حالة الإحالة في السجل:</b> '+safe(note.referral_status||'draft')+'</p>'+
  '<p>نرجو التكرم بالاطلاع واتخاذ ما ترونه مناسبًا وفق الإجراءات المدرسية المعتمدة، مع إفادتنا بنتيجة المتابعة.</p>'+
  '<div class="sign">اسم المُحيل: ............................................<br>التوقيع: ............................................<br>الاستلام والتاريخ: ............................................</div>'+
- '<p><small>وثيقة داخلية خاصة؛ الطباعة لا تعني أن الإحالة أُرسلت أو سُلِّمت تلقائيًا.</small></p>'+
+ '<div class="admin-followup"><p><b>تعقيب الإدارة في الإجراء المتبع :</b></p>'+ 
+ '<div class="admin-followup-lines">..............................................................................................................................</div>'+ 
+ '<div class="admin-followup-meta"><span>التوقيع : ................................</span><span>الختم : ................................</span></div></div>'+
  '<div class="toolbar"><button onclick="window.print()">طباعة / حفظ PDF</button></div></body></html>';
  const popup=window.open('','_blank','width=900,height=800');
  if(!popup){AS22.message='اسمح بفتح نافذة خطاب الإحالة.';render();return}
