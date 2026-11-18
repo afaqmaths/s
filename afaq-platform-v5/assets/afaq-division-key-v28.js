@@ -177,7 +177,8 @@ function dk28Vertical(model,ctx){
    lines++;
   }
  }
- const gridWidths='--dk28-numeric-count:'+numberColumns+';--dk28-decimal-count:'+(hasDecimal?1:0)+';';
+ const gridWidths='--dk28-grid-width:'+(50+numberColumns*45+(hasDecimal?22:0))+'px;'+
+  '--dk28-numeric-count:'+numberColumns+';--dk28-decimal-count:'+(hasDecimal?1:0)+';';
  return '<section class="dk28-vertical-lesson" aria-label="القسمة المطولة المدرسية العمودية">'+
   '<div class="dk28-vertical-header"><strong>✍️ القسمة المطوّلة عموديًا</strong>'+
   '<span>المربعات ثابتة؛ كل رقم من الخارج فوق منزلة المقسوم المقابلة</span></div>'+
