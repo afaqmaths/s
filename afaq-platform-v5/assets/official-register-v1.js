@@ -11,7 +11,7 @@ const OF_CLASSES=['السادس / ٤','السادس / ٥','السادس / ٦'];
 const ofState={
  term:1,className:'السادس / ٤',report:null,reportKey:'',
  loading:false,attemptedKey:'',error:'',message:'',
- drafts:{},busy:{},savingAll:false,paper:'a3-landscape',totalUpdating:false
+ drafts:{},busy:{},savingAll:false,paper:'a3-landscape',totalUpdating:false,certificateSerial:''
 };
 const ofRead=()=>['supervisor','supervisor_assistant','director','deputy'].includes(auth.user?.role);
 const ofEdit=()=>['supervisor','supervisor_assistant'].includes(auth.user?.role);
@@ -269,6 +269,11 @@ function ofPage(){
  if(r&&ofEdit()&&!ofState.behavior.loading&&
   (ofState.behavior.token!==auth.token||(!ofState.behavior.loaded&&!ofState.behavior.error)))
   Promise.resolve().then(()=>ofLoadBehavior());
+ const certStudents=r?.students||[];
+ const certValid=certStudents.some(s=>String(s.serial_no)===String(ofState.certificateSerial));
+ const certOptions='<option value="">— اختر الطالب —</option>'+certStudents.map(s=>
+  '<option value="'+ofSafe(s.serial_no)+'"'+(String(s.serial_no)===String(ofState.certificateSerial)?' selected':'')+'>'+
+  ofNumber(s.serial_no)+' — '+ofSafe(s.full_name||'الطالب')+'</option>').join('');
  const classes=OF_CLASSES.map(c=>'<option'+(ofState.className===c?' selected':'')+'>'+c+'</option>').join('');
  return '<div class="container of-page" dir="rtl">'+
  '<header class="of-hero"><span>وزارة التربية والتعليم • المدرسة: الحسين بن علي للتعليم الأساسي</span>'+
@@ -282,6 +287,13 @@ function ofPage(){
  [['a3-landscape','A3 أفقي (الأوضح للكشف الكبير)'],['a4-landscape','A4 أفقي'],['a4-portrait','A4 عمودي (بطاقة لكل طالب)']].map(x=>
  '<option value="'+x[0]+'"'+(ofState.paper===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+
  '</select></label>'+
+ '<div class="of-certificate-tools" role="group" aria-label="شهادة درجات الطالب">'+
+ '<label class="of-certificate-picker">شهادة درجات طالب محدد'+
+ '<select id="ofCertificateStudent" aria-label="اختر الطالب لإصدار شهادة درجاته" '+(!r?'disabled':'')+'>'+certOptions+'</select></label>'+
+ '<div class="of-certificate-actions">'+
+ '<button type="button" data-of-certificate="print" class="of-primary" '+(!certValid?'disabled':'')+'>🖨️ طباعة شهادة الطالب / PDF</button>'+
+ '<button type="button" data-of-certificate="download" class="of-soft" '+(!certValid?'disabled':'')+'>⬇️ تنزيل نسخة الشهادة</button></div>'+
+ '<small>متاحة في جميع مراحل الرصد، ولو لم تكتمل الدرجات. تظهر الملاحظات بعد الدرجات إذا كانت ظاهرة في سجل الطالب، وتُستبعد عند إخفائها. زر التنزيل يحفظ ملف HTML قابلًا للطباعة؛ ولحفظ PDF اختر ذلك من نافذة الطباعة.</small></div>'+
  '<div class="of-toolbar">'+
  '<button id="ofRefresh" type="button" class="of-soft">تحديث الكشف</button>'+ (ofEdit()?'<button id="ofBehaviorRefresh" type="button" class="of-soft">↻ تحديث الملاحظات السلوكية</button>':'')+
  '<button type="button" data-of-print="class" class="of-primary" '+(!r?'disabled':'')+'>🖨️ طباعة الشعبة الحالية / PDF</button>'+
@@ -541,6 +553,98 @@ function ofPrintableDocument(reports,paper){
  '<span>مدير المدرسة: الأستاذ عبد الله بن علي العيسائي</span></footer></section>').join('')+
  '</body></html>';
 }
+
+const ofCertificateMark=v=>v===null||v===undefined||v===''?'—':ofNumber(v);
+function ofCertificateDocument(s){
+ const m=s.marks||{},r=ofCourse(m),serial=Number(s.serial_no),cls=ofState.className;
+ const shown=!ofState.behavior.hidden?.[cls+'|'+serial];
+ const notes=shown&&ofEdit()?ofBehaviorNotes(s):[];
+ const remarks=shown?String(m.remarks||'').trim():'';
+ const approved=m.status==='approved'&&r.total!==null;
+ const aPlus=m.a_plus_points,aMinus=m.a_minus_points;
+ const indicator=(aPlus===null||aPlus===undefined||aPlus==='')&&(aMinus===null||aMinus===undefined||aMinus==='')?
+ '—':ofNumber(Math.min(40,Math.max(0,Number(aPlus||0)-Number(aMinus||0)))/2);
+ const rows=[
+ ['تشخيصي خارج المجموع','الاختبار التشخيصي',ofCertificateMark(m.diagnostic_score),'١٠'],
+ ...OF_FIELDS.slice(0,9).map(([key,label,max])=>['أعمال الفصل',label,ofCertificateMark(m[key]),ofNumber(max)]),
+ ['مجموع أعمال الفصل',r.seen===9?'المجموع الفصلي':'المجموع المرحلي ('+ofNumber(r.seen)+' من ٩ بنود)',r.seen?ofNumber(r.sum):'—','٦٠'],
+ ['النهائي','الاختبار النهائي',ofCertificateMark(m.final_exam),'٤٠'],
+ ['المجموع النهائي','المجموع من ١٠٠',r.total===null?'غير مكتمل':ofNumber(r.total),'١٠٠'],
+ ['المستوى','التقدير النهائي',r.level||'غير محدد','—'],
+ ['مؤشر استرشادي','A+ و A− (خارج المجموع)',indicator,'٢٠']
+ ].map(([group,label,value,max])=>'<tr><td>'+ofSafe(group)+'</td><td>'+ofSafe(label)+'</td>'+
+  '<td>'+ofSafe(value)+'</td><td>'+ofSafe(max)+'</td></tr>').join('');
+ const history=notes.map((n,i)=>'<article class="of-cert-note"><b>'+ofNumber(i+1)+' ـ '+
+  (n.category==='daily'?'يومية':'سلوكية')+' • '+ofSafe(n.note_date||'بدون تاريخ')+'</b>'+
+  '<p>'+ofSafe(n.description||'')+'</p>'+
+  (n.action_taken?'<p><b>الإجراء المتبع :</b> '+ofSafe(n.action_taken)+'</p>':'')+'</article>').join('');
+ const noteSection=shown&&(remarks||notes.length)?'<section class="of-cert-notes"><h2>الملاحظات والمتابعة التربوية</h2>'+
+  (remarks?'<article class="of-cert-note"><b>ملاحظات سجل الدرجات</b><p>'+ofSafe(remarks)+'</p></article>':'')+
+  history+'</section>':'';
+ const date=new Intl.DateTimeFormat('ar-OM',{dateStyle:'medium',timeZone:'Asia/Muscat'}).format(new Date());
+ return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
+ '<meta name="viewport" content="width=device-width,initial-scale=1"><title>شهادة درجات الرياضيات — '+ofSafe(s.full_name||'الطالب')+'</title>'+
+ '<style>@page{size:A4 portrait;margin:13mm}*{box-sizing:border-box}'+
+ 'body{direction:rtl;margin:0;background:#eef5f9;font:14px/1.9 Tahoma,Arial,sans-serif;color:#193f5b}'+
+ '.of-cert{max-width:840px;margin:18px auto;padding:24px 27px;background:white;border:2px solid #c7dce6;border-radius:15px}'+
+ '.of-cert header{text-align:center;padding-bottom:15px;margin-bottom:13px;border-bottom:3px double #ad8d50}'+
+ '.of-cert h1{font-size:25px;color:#155a7b;margin:5px 0}.of-cert h2{font-size:18px;color:#175171}'+
+ '.of-cert-status{padding:7px 12px;margin:12px 0;background:#fff6db;border:1px solid #d6b675;border-radius:8px;text-align:center;font-weight:900}'+
+ '.of-cert-status.approved{background:#e9f6eb;color:#226844;border-color:#a1d1ac}'+
+ '.of-cert-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:13px 0}'+
+ '.of-cert-meta span{border:1px solid #d8e6ed;background:#f5fafc;padding:6px 10px;border-radius:8px}'+
+ '.of-cert table{width:100%;border-collapse:collapse;margin:15px 0;font-size:13px}'+
+ '.of-cert th,.of-cert td{padding:7px;border:1px solid #aec4d1;overflow-wrap:anywhere}'+
+ '.of-cert th{background:#dcebf3}.of-cert td:nth-child(3),.of-cert td:nth-child(4){text-align:center;font-weight:900}'+
+ '.of-cert tr{break-inside:avoid}.of-cert-tip{font-size:11px;color:#6d7885;line-height:1.8}'+
+ '.of-cert-notes{margin-top:17px;padding-top:11px;border-top:2px solid #b49a60}'+
+ '.of-cert-note{margin:8px 0;padding:9px 12px;background:#f8fbfd;border:1px solid #c9dbe5;border-radius:9px;break-inside:avoid}'+
+ '.of-cert-note b{color:#73602d}.of-cert-note p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}'+
+ '.of-cert-footer{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;border-top:1px solid #c8dbe5;margin-top:16px;padding-top:10px;font-size:12px}'+
+ '.of-cert-tools{text-align:center;margin:15px}.of-cert-tools button{padding:12px 22px;background:#17667e;color:white;border:0;border-radius:8px;cursor:pointer}'+
+ '@media print{body{background:white}.of-cert{border:0;margin:0;padding:0;max-width:none}'+
+ '.of-cert-tools{display:none}.of-cert-note,.of-cert-meta span,.of-cert th{print-color-adjust:exact;-webkit-print-color-adjust:exact}}'+
+ '@media(max-width:550px){.of-cert{padding:13px}.of-cert-meta{grid-template-columns:1fr}}'+
+ '</style></head><body><main class="of-cert"><header><small>سلطنة عُمان — وزارة التربية والتعليم</small>'+
+ '<div>مدرسة الحسين بن علي للتعليم الأساسي</div><h1>شهادة رصد درجات الطالب — الرياضيات</h1>'+
+ '<div>العام الدراسي ٢٠٢٦ / ٢٠٢٧ م • الفصل الدراسي '+ofTerm(ofState.term)+'</div></header>'+
+ '<div class="of-cert-status'+(approved?' approved':'')+'">'+(approved?'درجات معتمدة':'كشف متابعة مرحلي — غير معتمد')+'</div>'+
+ '<div class="of-cert-meta"><span><b>الطالب :</b> '+ofSafe(s.full_name||'—')+'</span>'+
+ '<span><b>الصف والشعبة :</b> '+ofSafe(s.class_name||cls)+'</span>'+
+ '<span><b>رقم الطالب :</b> '+ofNumber(serial)+'</span>'+
+ '<span><b>تاريخ الإصدار :</b> '+ofSafe(date)+'</span></div>'+
+ '<table aria-label="درجات الطالب"><thead><tr><th>المجال</th><th>بند التقييم</th><th>الدرجة المرصودة</th><th>من</th></tr></thead><tbody>'+
+ rows+'</tbody></table>'+
+ '<p class="of-cert-tip">الاختبار التشخيصي ومؤشر A+ وA− من ٢٠ لا يدخلان في مجموع ١٠٠. البنود غير المرصودة تظهر بعلامة (—)، ولا يُعرض مجموع نهائي أو مستوى قبل اكتمال البنود المطلوبة. تصدر هذه الشهادة بالدرجات المحفوظة عند الإصدار.</p>'+
+ noteSection+
+ '<div class="of-cert-footer"><span>معلم المادة: سعيد جمعة عبدالله البريكي</span><span>مدير المدرسة: عبدالله بن علي العيسائي</span></div>'+
+ '</main><div class="of-cert-tools"><button type="button" onclick="window.print()">🖨️ طباعة / حفظ PDF</button></div></body></html>';
+}
+function ofCertificateAction(mode){
+ if(!ofRead()||!ofState.report||ofState.loading||ofState.savingAll)return;
+ const student=ofFindStudent(ofState.certificateSerial);
+ if(!student){window.alert('اختر الطالب من القائمة أولًا.');return}
+ if(ofChangedStudents().length){
+  window.alert('احفظ جميع التعديلات أولًا؛ الشهادة تعكس الدرجات المحفوظة فقط.');return;
+ }
+ const b=ofState.behavior;
+ if(ofEdit()&&(!b.loaded||b.token!==auth.token)){
+  window.alert('لم يكتمل تحميل الملاحظات. اضغط «تحديث الملاحظات السلوكية» قبل إصدار الشهادة.');return;
+ }
+ const html=ofCertificateDocument(student);
+ if(mode==='download'){
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  const cls=(ofState.className.split('/').pop()||'6').trim().replace(/[^٠-٩0-9]/g,'')||'6';
+  a.href=url;a.download='AfaqMath_Grade6_Class'+cls+'_Student'+student.serial_no+'_Term'+ofState.term+'.html';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
+ }else if(mode==='print'){
+  const win=window.open('','_blank');
+  if(!win){window.alert('اسمح بفتح النافذة المنبثقة لطباعة الشهادة أو حفظها PDF.');return}
+  win.document.open();win.document.write(html);win.onload=()=>{win.focus();win.print()};win.document.close();
+ }
+}
+
 async function ofPrint(scope){
  if(!ofRead()||ofState.loading||ofState.savingAll)return;
  if(ofChangedStudents().length){
@@ -582,9 +686,15 @@ function ofBind(){
    if(!ofState.savingAll)window.alert('احفظ جميع التعديلات قبل تغيير الشعبة.');
    return;
   }
-  ofState.className=e.target.value;ofState.report=null;ofState.reportKey='';ofState.error='';render();ofLoad();
+  ofState.className=e.target.value;ofState.certificateSerial='';ofState.report=null;ofState.reportKey='';ofState.error='';render();ofLoad();
  });
  document.getElementById('ofPrintSize')?.addEventListener('change',e=>{ofState.paper=e.target.value});
+ document.getElementById('ofCertificateStudent')?.addEventListener('change',event=>{
+  ofState.certificateSerial=event.target.value;
+  document.querySelectorAll('[data-of-certificate]').forEach(button=>{button.disabled=!ofState.certificateSerial});
+ });
+ document.querySelectorAll('[data-of-certificate]').forEach(button=>
+  button.addEventListener('click',()=>ofCertificateAction(button.dataset.ofCertificate)));
  document.getElementById('ofBehaviorRefresh')?.addEventListener('click',()=>ofLoadBehavior(true));
  document.getElementById('ofRefresh')?.addEventListener('click',()=>{
   if(ofState.savingAll)return;
@@ -615,7 +725,7 @@ function ofBind(){
  document.querySelectorAll('[data-of-reopen]').forEach(b=>b.addEventListener('click',()=>ofApproval(Number(b.dataset.ofReopen),true)));
  ofUpdateSaveIndicator();
  document.getElementById('portalLogout')?.addEventListener('click',()=>{
-  ofState.report=null;ofState.reportKey='';ofState.attemptedKey='';ofState.drafts={};ofState.error='';
+  ofState.report=null;ofState.reportKey='';ofState.attemptedKey='';ofState.drafts={};ofState.certificateSerial='';ofState.error='';
    ofState.behavior={token:'',loaded:false,loading:false,error:'',roster:[],notes:[],hidden:{}};
  });
 }
