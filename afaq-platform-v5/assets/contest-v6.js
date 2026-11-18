@@ -316,13 +316,13 @@ function studentPasswordPanel(){
 }
 function manager(){
  if(!supervisor()||isTester())return '';
- return contestSupervisorControls()+contestModelTools()+
+ return contestSupervisorControls()+(STATE.grade===6?contestModelTools():'')+
   '<section class="panel contest-admin"><h3>تحرير النماذج العشرة والأسئلة المصورة</h3>'+
   '<p>النماذج ١–٥ للمحاولة الأولى، و٦–١٠ للمحاولة الثانية. يمكنك استعراض الرسومات وتعديل السؤال وإجابته، واعتماد النموذج بعد المراجعة.</p>'+
   '<label for="editModel">اختر نموذج المسابقة</label><select id="editModel">'+
-  [...numberedModels,'A','B','C','D','E','F'].map(k=>'<option value="'+k+'" '+(STATE.editModel===k?'selected':'')+'>'+friendly(models[k])+'</option>').join('')+'</select>'+
+  (STATE.grade===6?[...numberedModels,'A','B','C','D','E','F']:['C','D','E','F']).map(k=>'<option value="'+k+'" '+(STATE.editModel===k?'selected':'')+'>'+friendly(models[k])+'</option>').join('')+'</select>'+
   '<div class="contest-model-actions"><button class="outline" id="loadBank">عرض جميع الأسئلة وصورها</button>'+
-  '<button class="primary" id="tryContestModel" '+(numberedModels.includes(STATE.editModel)?'':'disabled')+'>🎮 تجربة النموذج بواجهة الطالب</button></div>'+
+  '<button class="primary" id="tryContestModel" '+(STATE.grade===6&&numberedModels.includes(STATE.editModel)?'':'disabled')+'>🎮 تجربة النموذج بواجهة الطالب</button></div>'+
   (STATE.bank?bankView():'')+'</section>';
 }
 function contestModelTools(){
@@ -992,7 +992,7 @@ function bind(){if(!STATE.user)return;
   render();
  });
  document.getElementById('logoutContest')?.addEventListener('click',async()=>{try{await api('logout')}catch{}sessionStorage.removeItem(tokenKey);STATE.token='';STATE.user=null;resetPlay();render()});
- document.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{STATE.grade=Number(btn.dataset.grade);STATE.section=1;STATE.previewModel=null;STATE.modelSummary=null;STATE.modelAssignments=null;resetPlay();render()}));
+ document.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{STATE.grade=Number(btn.dataset.grade);STATE.section=1;STATE.previewModel=null;STATE.modelSummary=null;STATE.modelAssignments=null;STATE.editModel=STATE.grade===6?'01':'C';resetPlay();render()}));
  document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{STATE.section=Number(btn.dataset.unit);STATE.modelSummary=null;STATE.modelAssignments=null;resetPlay();render()}));
  document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{STATE.mode=btn.dataset.mode;resetPlay();render()}));
  document.getElementById('prepare')?.addEventListener('click',prepare);
