@@ -206,6 +206,7 @@ async function authenticate(){
     STATE.report=(await back('my_results')).report;
    }
   }
+  else if(STATE.user?.role==='it_viewer'){STATE.mode='training';STATE.summary=null;STATE.staffReport=null;}
   else {const values=await Promise.all([back('staff_summary'),back('staff_results'),...(supervisor()?[back('tester_status')]:[])]);STATE.summary=values[0].stats;STATE.staffReport=values[1].students;if(supervisor())STATE.testerStatuses=values[2]?.profiles||[];}
   if(supervisor()&&!isTester()){
    try{await loadSupervisorReminders();startSupervisorReminderPoll()}
@@ -535,6 +536,13 @@ function home(){
  (exhausted?'<div class="notice">اكتملت المحاولتان الرسميتان لهذه الوحدة؛ لن تُفتح محاولة ثالثة إلا بعد إعادة الضبط من دائرة الإشراف.</div>':approved||STATE.mode!=='official'?'':'<div class="notice">المحاولة الرسمية لهذه الوحدة لم تعتمد بعد؛ يمكنك تجربة نموذج التدريب.</div>')+
  (STATE.error?'<p class="notice" role="alert">'+friendly(STATE.error)+'</p>':'')+
  '<div class="contest-start-wrap"><button class="primary" id="prepare" '+(allowed?'':'disabled')+'>'+(STATE.mode==='official'?'الاستعداد للمحاولة الرسمية':'بدء '+trainingTitle())+'</button></div>'+staffResults()+manager()+'</div>';
+}
+function itViewerHome(){
+ return '<section class="contest-lock"><div class="contest-icon">💻</div>'+
+ '<h2>دخول مشرف تقنية المعلومات — عرض فقط</h2>'+
+ '<p>تم التحقق من حسابك. هذا الحساب لا يملك صلاحية الاطلاع على الأسئلة غير المعتمدة أو النتائج الخاصة بالطلاب أو الدخول كمشرف للمسابقة. يمكنه العودة إلى لوحة المنصة المصرح بها.</p>'+
+ '<div class="contest-guest-links"><a class="primary" href="index.html#dashboard">فتح حساب التقنية في المنصة</a>'+
+ '<button class="outline" id="logoutContest" type="button">تسجيل الخروج</button></div></section>';
 }
 function readyPage(){
  const n=STATE.readyStage,st=stage(n),breakRequired=n>1&&STATE.stageBreakUntil>0;
@@ -1019,7 +1027,7 @@ async function contestDirectLogin(form){
 }
 function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);afaqCueHistory.clear();STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.stageBreakUntil=0;STATE.breakReady=false;STATE.breakAutoBusy=false;STATE.breakRetryAt=0;STATE.hintFor=null;STATE.audioNotice='';STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
- root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():student()&&STATE.access?.allowed===false?studentGateLock():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
+ root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():student()&&STATE.access?.allowed===false?studentGateLock():STATE.user?.role==='it_viewer'?itViewerHome():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
   if(supervisor()&&!isTester()&&STATE.previewModel)root.insertAdjacentHTML('afterbegin',
    '<div class="contest-tester-active"><b>🔬 تجربة المشرف للنموذج '+friendly(STATE.previewModel)+' — نفس شاشة الطالب والتوقيت والتصحيح، دون احتساب درجات الطلاب</b><button class="outline" id="stopModelPreview">إيقاف التجربة والعودة للإدارة</button></div>');
   if(isTester()&&!document.getElementById('leaveTester'))root.insertAdjacentHTML('afterbegin',
