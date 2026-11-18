@@ -1,0 +1,67 @@
+/* Afaq Math • private supervisor reminder center, 2026-11-18 */
+.contest-reminders{
+ direction:rtl;text-align:right;margin:18px 0 22px;
+ border:2px solid #8bb8d4;border-radius:23px;
+ padding:21px;box-shadow:0 13px 32px rgba(16,62,95,.11);
+ background:linear-gradient(143deg,#f7fcff 0%,#fdfdf5 55%,#f2f8f3 100%);
+ color:#244e6c;
+}
+.contest-reminders-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.contest-reminder-tag{display:inline-block;background:#e3f2fd;border:1px solid #a4cde8;
+ padding:5px 11px;border-radius:100px;color:#23628d;font-weight:900;font-size:12px}
+.contest-reminders-head h3{margin:9px 0 5px;font-size:clamp(21px,2.4vw,30px);font-weight:950;color:#185978}
+.contest-reminders-head h3 small{font-size:14px;background:#d7f2e0;color:#286d4d;padding:4px 9px;border-radius:18px;margin-inline-start:9px}
+.contest-reminders-head p{max-width:860px;font-size:13px;color:#496d82;line-height:1.9;margin:0}
+.contest-reminders-head button{font-weight:850;white-space:nowrap}
+.contest-reminders-metrics{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+.contest-reminders-metrics span{font-weight:900;padding:9px 12px;color:#1e5977;
+ background:#fff;border-radius:11px;border:1px solid #c3dce8;font-size:13px}
+.contest-reminders-metrics b{font-size:17px;color:#165f4d}
+.contest-reminder-review-state{padding:12px 15px;border:1px solid #eed9a0;
+ border-right:5px solid #d6aa48;background:#fffcf0;border-radius:12px;
+ color:#77572a;font-size:13px;line-height:2;margin:12px 0}
+.contest-reminder-review-state button{font-size:12px;margin-inline-start:10px}
+.contest-reminder-error{border-radius:9px;background:#fff1ef;color:#9e3232;padding:10px;font-size:13px}
+.contest-reminder-items{display:grid;gap:10px}
+.contest-reminder-item{display:flex;align-items:flex-start;gap:12px;
+ padding:14px 13px;border:1px solid #d0e2eb;border-radius:14px;
+ background:#fff;box-shadow:0 3px 12px rgba(34,72,92,.05)}
+.contest-reminder-stage{border-right:5px solid #74ae8e}
+.contest-reminder-review{border-right:5px solid #d4b161;background:#fffdf5}
+.contest-reminder-manual{border-right:5px solid #8facce}
+.contest-reminder-icon{border-radius:14px;padding:9px;font-size:25px;line-height:1;
+ background:#edf6fb;flex:0 0 auto}
+.contest-reminder-text{flex:1;min-width:0}
+.contest-reminder-type{font-size:11px;color:#527992;font-weight:900}
+.contest-reminder-text h4{font-size:15px;font-weight:950;margin:3px 0;color:#225779;line-height:1.7}
+.contest-reminder-text p{font-size:12px;color:#526e7b;margin:2px 0;line-height:1.9}
+.contest-reminder-text small{font-size:10px;color:#7d929d}
+.contest-reminder-delete{appearance:none;flex:0 0 auto;background:#fff5f4;
+ color:#9a4b47;border:1px solid #efd0cb;border-radius:9px;cursor:pointer;
+ padding:7px 11px;font-size:12px;font-weight:850}
+.contest-reminder-delete span{font-size:17px;padding-inline-start:3px}
+.contest-reminder-delete:hover{background:#ffe4e1;border-color:#d69b95}
+.contest-reminders-empty{padding:15px;text-align:center;color:#6c8695}
+.contest-reminder-compose{display:grid;gap:10px;margin-top:16px;padding:14px;
+ border:1.5px solid #b2d9c4;border-radius:15px;
+ background:linear-gradient(145deg,rgba(255,255,255,.98),#f0f9f4)}
+.contest-reminder-compose h4{margin:0;font-size:17px;color:#256349}
+.contest-reminder-compose label{display:grid;gap:4px;color:#3a7180;font-weight:800;font-size:12px}
+.contest-reminder-compose input,.contest-reminder-compose textarea{
+ box-sizing:border-box;width:100%;padding:12px;min-width:0;
+ font:inherit;font-size:13px;text-align:right;direction:rtl;
+ background:#fff;color:#193e54;border:1px solid #bdced4;border-radius:10px}
+.contest-reminder-compose input:focus,.contest-reminder-compose textarea:focus{
+ outline:3px solid #cdeadd;border-color:#449c83}
+.contest-reminder-inputs{display:grid;grid-template-columns:minmax(0,2fr) minmax(160px,1fr);gap:10px}
+.contest-reminder-compose button[type=submit]{width:fit-content;min-width:180px;font-weight:950}
+@media(max-width:630px){
+ .contest-reminders{padding:12px;border-radius:16px}
+ .contest-reminders-head h3{font-size:21px}
+ .contest-reminder-inputs{grid-template-columns:minmax(0,1fr)}
+ .contest-reminder-item{gap:6px;padding:9px 7px}
+ .contest-reminder-icon{font-size:20px;padding:7px}
+ .contest-reminder-text h4{font-size:13px}
+ .contest-reminder-delete{padding:6px;font-size:10px}
+ .contest-reminder-compose button[type=submit]{width:100%}
+}
