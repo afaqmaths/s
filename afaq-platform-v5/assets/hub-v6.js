@@ -141,7 +141,7 @@ function hubHome(){
  (typeof afaqHomeUpdates==="function"?afaqHomeUpdates():"")+
  (typeof afaqHomeShowcase==="function"?afaqHomeShowcase():"")+
  '<div class="hub-counter"><span>عدد زوار المنصة</span><strong id="hubVisitorCount">'+
- (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong><small class="afaq-final-counter-note">يشمل رصيدًا افتتاحيًا قدره ٦٬٥٠٠ إضافة إلى المتصفحات المسجلة.</small></div></div>';
+ (hub.visitorCount==null?'—':hn(hub.visitorCount))+'</strong><small class="afaq-final-counter-note">شكرًا لزيارتكم آفاق ماث؛ نتمنى لكم تصفحًا ممتعًا ومعرفةً نافعة، ونسأل الله أن يكلّل مسيرتكم بالتوفيق والنجاح والتفوّق.</small></div></div>';
 }
 async function hubCall(action,payload={},token=''){
  const result=await fetch(HUB_API,{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify({action,...payload}),cache:'no-store'});
