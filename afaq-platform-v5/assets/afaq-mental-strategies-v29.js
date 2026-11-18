@@ -234,7 +234,8 @@ function mm29Verification(model,s){
   op==='add'?mm29M(result,'−',b)+' = '+mm29Num(a):
   mm29M(result,'+',b)+' = '+mm29Num(a);
  const proof=op==='mul'?(a===0||result/a===b):op==='add'?result-b===a:result+b===a;
- const calculator=mm29M(a,op==='mul'?'×':op==='add'?'+':'−',b)+' = '+mm29Num(result);
+ const independent=op==='mul'?Number(a)*Number(b):op==='add'?Number(a)+Number(b):Number(a)-Number(b);
+ const calculator=mm29M(a,op==='mul'?'×':op==='add'?'+':'−',b)+' = '+mm29Num(independent);
  return '<section class="mm29-verify"><header><span>✓</span><div><h2>تحقق من الناتج بطريقتين</h2><p>العملية العكسية ثم الحاسبة، لتطمئن إلى صحة التفكير الذهني.</p></div></header>'+
  '<div class="mm29-check-grid"><div class="mm29-check-card"><h3>١ • العملية العكسية</h3>'+
  '<button type="button" data-mm29-verify="inverse">'+(s.showInverse?'إخفاء التحقق':'أظهر التحقق العكسي')+'</button>'+
@@ -243,7 +244,7 @@ function mm29Verification(model,s){
  '</div><div class="mm29-check-card"><h3>٢ • الحاسبة العلمية</h3>'+
  '<button type="button" data-mm29-verify="calculator">'+(s.showCalculator?'إخفاء الحاسبة':'شغّل الحاسبة وتحقق')+'</button>'+
  (s.showCalculator?'<p class="mm29-math-proof" dir="ltr">'+mm29Esc(calculator)+'</p>'+
- '<small>حساب مستقل بالنظام العددي؛ النتيجة مطابقة للتحقق الذهني.</small>':'')+
+ '<small>'+(independent===result?'✔ ناتج الحاسبة مطابق لنتيجة الخطوات الذهنية.':'⚠ النتيجة غير مطابقة؛ راجع العمليات.')+'</small>':'')+
  '</div></div></section>';
 }
 function mm29Page(){
