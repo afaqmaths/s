@@ -256,3 +256,23 @@
  .of-table thead tr.of-group-row th:nth-last-child(2),
  .of-table thead tr.of-group-row th:last-child{position:static!important;box-shadow:none!important}
 }
+
+
+/* Certificate picker for individual sixth-grade students at any marking stage. */
+.of-tools .of-certificate-tools{
+ display:flex;flex:1 1 100%;align-items:flex-end;gap:12px;flex-wrap:wrap;
+ margin:1px 0 2px;padding:13px 14px;background:#f1f8fb;
+ border:1px solid #bfdae8;border-radius:13px;
+}
+.of-certificate-picker{display:flex;flex-direction:column;gap:6px;min-width:235px;
+ flex:1 1 280px;font-size:13px;font-weight:900;color:#1a5979}
+.of-tools .of-certificate-picker select{max-width:100%;width:100%;min-height:43px;
+ background:white;font-weight:700}
+.of-certificate-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.of-certificate-actions button{min-height:43px;border:1px solid #bdd6e3;
+ border-radius:10px;padding:9px 13px;cursor:pointer;font:900 13px Tahoma,Arial,sans-serif}
+.of-certificate-actions .of-primary{background:#167a81;color:#fff;border-color:#167a81}
+.of-certificate-actions .of-soft{background:#fff;color:#1a637f}
+.of-certificate-actions button:disabled{opacity:.52;cursor:not-allowed}
+.of-certificate-tools>small{flex:1 1 100%;font-size:11px;color:#557184;line-height:1.8}
+@media(max-width:650px){.of-certificate-actions{width:100%}.of-certificate-actions button{flex:1 1 185px}}
