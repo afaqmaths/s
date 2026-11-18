@@ -1,0 +1,22 @@
+/* Supervisor first-login reminder preview in the main Afaq dashboard */
+.afaq-supervisor-entry-reminders{direction:rtl;text-align:right;
+ margin:14px auto 20px;padding:17px 20px;border:2px solid #9acbc6;border-radius:21px;
+ background:linear-gradient(135deg,#eaf9f7,#fffdf5 61%,#f4faff);
+ box-shadow:0 10px 25px rgba(30,98,105,.11);
+ color:#205d68;font-family:Tahoma,Arial,sans-serif}
+.afaq-supervisor-entry-header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px}
+.afaq-supervisor-entry-header span{font-size:12px;font-weight:950;background:#dbf4ea;border-radius:30px;padding:5px 11px}
+.afaq-supervisor-entry-header h3{font-size:23px;font-weight:950;margin:9px 0 5px;color:#24657f}
+.afaq-supervisor-entry-header p{font-size:13px;line-height:1.8;color:#4d7885;margin:0}
+a.afaq-supervisor-reminders-link{display:inline-flex;align-items:center;justify-content:center;
+ background:#235f7e;color:white!important;text-decoration:none;border-radius:11px;
+ padding:12px 17px;font-weight:950;font-size:13px;line-height:1.6;
+ box-shadow:0 5px 12px rgba(35,95,126,.16)}
+a.afaq-supervisor-reminders-link:hover{background:#14455f}
+.afaq-supervisor-entry-items{margin-top:13px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.afaq-supervisor-entry-items>div{display:flex;gap:8px;align-items:center;padding:10px;
+ background:#fff;border:1px solid #cbe0e0;border-radius:12px;min-width:0}
+.afaq-supervisor-entry-items strong{font-size:12px;color:#326675;line-height:1.7;overflow-wrap:anywhere}
+.afaq-supervisor-entry-error{display:block;color:#a34b3e;margin:7px}
+@media(max-width:800px){.afaq-supervisor-entry-items{grid-template-columns:1fr}}
+@media(max-width:500px){.afaq-supervisor-entry-reminders{padding:12px}.afaq-supervisor-entry-header h3{font-size:20px}a.afaq-supervisor-reminders-link{width:100%}}
