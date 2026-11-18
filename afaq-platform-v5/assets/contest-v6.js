@@ -340,12 +340,80 @@ function stageResultsPanel(){
  return '<section class="contest-stage-results"><h3>📊 حصيلة المراحل المنجزة</h3><div class="contest-stage-result-grid">'+done.map(n=>'<div class="contest-stage-result-item"><span>المرحلة '+stext(n)+' — '+friendly(stage(n).title)+'</span><strong>'+stext(sttotal(n).earned)+' / ١٠</strong><small>'+stext(sper(sttotal(n).earned,10))+'٪ من نقاط المرحلة</small></div>').join('')+
  '</div><div class="contest-stage-total">مجموع المراحل المكتملة: <strong>'+stext(earned)+' / '+stext(max)+'</strong> — <strong>'+stext(sper(earned,max))+'٪</strong></div></section>';
 }
+
+/* Accessible presentation variations: only ordinals 7 and 18 in the 38-question
+   model. Correct answers never leave the server before assessment. */
+function contestToASCII(v){return String(v??'').replace(/[٠-٩]/g,x=>'٠١٢٣٤٥٦٧٨٩'.indexOf(x))
+ .replace(/[۰-۹]/g,x=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(x)).replace(/٫/g,'.').replace(/[٬\s]/g,'').replace(/[−–]/g,'-')}
+function contestReadable(v){
+ let s=String(v??'');
+ if(STATE.digitStyle==='en')s=s.replace(/[٠-٩]/g,x=>'٠١٢٣٤٥٦٧٨٩'.indexOf(x)).replace(/[۰-۹]/g,x=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(x));
+ else s=s.replace(/[0-9]/g,x=>'٠١٢٣٤٥٦٧٨٩'[Number(x)]).replace(/[۰-۹]/g,x=>'٠١٢٣٤٥٦٧٨٩'['۰۱۲۳۴۵۶۷۸۹'.indexOf(x)]);
+ return friendly(s);
+}
+function contestSpecial(q){
+ if(!q||q.question_kind==='complex')return '';
+ if(q.ordinal===7)return 'voice';
+ if(q.ordinal===18)return (q.options||[]).length>0&&q.options.every(v=>/^[+-]?\d+(?:\.\d+)?$/.test(contestToASCII(v)))?'number':'voice';
+ return '';
+}
+function contestHint(q){
+ const t=String(q?.prompt||'')+' '+String(q?.objective||'');
+ if(/قيمة مكانية|منزلة|مئات|عشرات|آحاد|الألوف/.test(t))return 'حدّد المنزلة من جهة الآحاد وانتبه للفرق بين الرقم وقيمته المكانية.';
+ if(/تقريب|أقرب/.test(t))return 'حدّد المنزلة المطلوبة وافحص الرقم المجاور: ٥ أو أكثر يعني رفع المنزلة.';
+ if(/أولي|قاسم|عوامل|القواسم/.test(t))return 'اختبر القواسم الصغيرة وتحقق من شرط المسألة.';
+ if(/المضاعفات|مضاعف/.test(t))return 'استعن بجدول الضرب وابحث عن نمط المضاعفات.';
+ if(/ضرب|×/.test(t))return 'استعن بالتوزيع أو المضاعفة والتنصيف ثم تحقق بالتقدير.';
+ if(/قسمة|÷|باقي/.test(t))return 'استخدم الضرب العكسي، وتحقق من علاقة المقسوم بالضرب والباقي.';
+ if(/جمع|طرح/.test(t))return 'جرّب التجزئة حسب المنازل أو التعويض، ثم تحقق عكسيًا.';
+ if(/محيط/.test(t))return 'اجمع أطوال الأضلاع الخارجية واحفظ وحدة القياس.';
+ if(/مساحة/.test(t))return 'تخيّل المربعات التي تغطي داخل الشكل وحدد الوحدات المناسبة.';
+ if(/زاوية|مستقيم|مثلث|مربع|مستطيل/.test(t))return 'راجع خصائص الأضلاع والزوايا قبل الحل.';
+ if(/زمن|ساعة|دقيقة/.test(t))return 'وحّد الوحدات؛ الساعة ٦٠ دقيقة.';
+ if(q?.question_kind==='complex')return 'جزّئ المسألة إلى خطوات، وحدّد العملية المناسبة لكل جزء.';
+ return 'اقرأ المعطيات وحدد المطلوب، ثم قدّر الناتج واستبعد الإجابة غير المنطقية.';
+}
+function contestSpeakQuestion(q){
+ const status=document.getElementById('contestAudioStatus');
+ if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){
+  if(status)status.textContent='تعذّر تشغيل الصوت؛ جميع نصوص السؤال والخيارات ظاهرة ويمكن قراءتها.';
+  return;
+ }
+ try{
+  window.speechSynthesis.cancel();
+  const choices=(q.options||[]).map((v,i)=>'الخيار '+['الأول','الثاني','الثالث','الرابع'][i]+': '+v).join('، ');
+  const utterance=new SpeechSynthesisUtterance(String(q.prompt)+'، '+choices);
+  utterance.lang='ar-OM';utterance.rate=.86;
+  utterance.voice=(window.speechSynthesis.getVoices?.()||[]).find(v=>/^ar(-|$)/i.test(v.lang))||null;
+  utterance.onerror=()=>{if(status)status.textContent='تعذّر سماع القراءة، ويظل السؤال والخيارات ظاهرة أمامك.'};
+  window.speechSynthesis.speak(utterance);
+  if(status)status.textContent='🔊 تُقرأ المسألة بالعربية، وجميع خيارات الإجابة ظاهرة على الشاشة.';
+ }catch{if(status)status.textContent='تعذّر تشغيل الصوت؛ اقرأ النص الظاهر أمامك.'}
+}
 function quiz(){const q=getCurrent();if(!q)return '';
  const st=stage(q.stage),isMulti=q.question_kind==='complex',n=q.stage<=3?(q.ordinal-1)%10+1:(q.ordinal-31)%4+1;
  const seconds=remaining(),frac=Math.max(0,Math.min(100,seconds/st.time*100));
- const choices=isMulti?(q.parts||[]).map((part,i)=>'<div class="contest-subpart"><h4>('+String(i+1)+') '+friendly(part.text)+'</h4>'+(part.type==='choice'?'<div class="contest-choice-grid">'+(part.choices||[]).map(v=>'<label><input type="radio" name="part'+i+'" value="'+friendly(v)+'"><span>'+friendly(v)+'</span></label>').join('')+'</div>':'<input class="contest-number" inputmode="decimal" data-part="'+i+'" placeholder="اكتب الإجابة">')+'</div>').join(''):(q.options||[]).map((v,i)=>'<button class="contest-option" data-choice="'+i+'"><span class="option-letter">'+['أ','ب','ج','د'][i]+'</span>'+friendly(v)+'</button>').join('');
+ const special=contestSpecial(q);
+ const choices=isMulti?(q.parts||[]).map((part,i)=>'<div class="contest-subpart"><h4>('+String(i+1)+') '+contestReadable(part.text)+'</h4>'+
+ (part.type==='choice'?'<div class="contest-choice-grid">'+(part.choices||[]).map(v=>'<label><input type="radio" name="part'+i+'" value="'+friendly(v)+'"><span>'+contestReadable(v)+'</span></label>').join('')+'</div>':
+ '<input class="contest-number" inputmode="decimal" data-part="'+i+'" placeholder="أرقام عربية ١٢٣ أو إنجليزية 123">')+'</div>').join(''):
+ special==='number'?'<form class="contest-numeric-entry" id="contestNumericForm">'+
+ '<label for="contestNumericInput">🔢 اكتب الإجابة بأرقام عربية أو إنجليزية</label>'+
+ '<div class="contest-numeric-line"><input id="contestNumericInput" inputmode="decimal" autocomplete="off" required placeholder="١٠٠ أو 100">'+
+ '<button type="submit" class="primary">✅ تأكيد العدد</button></div>'+
+ '<p class="contest-numeric-values">القيم المتاحة: '+(q.options||[]).map(contestReadable).join(' • ')+'</p>'+
+ '<p id="contestNumericError" role="alert" class="contest-numeric-error"></p></form>':
+ (q.options||[]).map((v,i)=>'<button class="contest-option" data-choice="'+i+'">'+
+ '<span class="option-letter">'+['أ','ب','ج','د'][i]+'</span>'+contestReadable(v)+'</button>').join('');
+ const helpTools='<div class="contest-question-tools">'+
+ '<button type="button" id="contestHintButton" aria-expanded="'+(STATE.hintFor===q.id)+'">💡 '+(STATE.hintFor===q.id?'إخفاء التلميح':'تلميح مساعد')+'</button>'+
+ (special==='voice'?'<button type="button" id="contestListenButton">🔊 استمع للسؤال بالعربية</button>':'')+
+ (special?'<button type="button" id="contestDigitsToggle">🔢 تبديل الأرقام '+(STATE.digitStyle==='ar'?'١٢٣ / 123':'123 / ١٢٣')+'</button>':'')+
+ '</div>'+(special==='voice'?'<p class="contest-audio-transcript">📝 النص والخيارات ظاهرة حتى عند تعذر الصوت.</p>':'')+
+ '<p class="contest-audio-status" id="contestAudioStatus" role="status"></p>'+
+ '<div id="contestHintText" class="contest-hint-box" '+(STATE.hintFor===q.id?'':'hidden')+'>'+friendly(contestHint(q))+'</div>';
  return '<div class="contest-playing"><div class="contest-headline"><div><span>'+(STATE.mode==='official'?'🏆 المحاولة الرسمية':'🎯 '+trainingTitle())+'</span><h2>'+unitName(STATE.grade,STATE.section)+'</h2><small>'+friendly(STATE.displayName||STATE.user?.username||'الطالب')+'</small></div><div class="contest-score-badge"><strong>٥٠ ← ١٠٠</strong><small>أفضل نتيجة</small></div></div>'+road(q.stage)+raceTrack(q,false)+
- '<div class="contest-game-area"><div class="contest-stage-banner"><div class="contest-character">'+image(stageArt(q.stage),st.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+q.stage+' من ٥ — ١٠ درجات</span><h2>'+st.title+'</h2><p>'+st.desc+'</p></div><div class="contest-timer"><strong id="contestClock">'+tformat(seconds,q.stage)+'</strong><small>'+(q.stage<=3?'وقت السؤال':'وقت المرحلة')+'</small><span class="contest-timerline"><i id="contestTimerBar" style="width:'+frac+'%"></i></span></div></div><div class="contest-question-meta"><span>السؤال '+n+' من '+(q.stage<=3?10:4)+'</span><span>التقدم '+(STATE.index+1)+' / ٣٨</span><span>'+(isMulti?'مسألة متعددة الأجزاء':'اختيار من متعدد')+'</span></div><div class="contest-question"><h3>'+friendly(q.prompt)+'</h3>'+figure(q)+choices+
+ '<div class="contest-game-area"><div class="contest-stage-banner"><div class="contest-character">'+image(stageArt(q.stage),st.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+q.stage+' من ٥ — ١٠ درجات</span><h2>'+st.title+'</h2><p>'+st.desc+'</p></div><div class="contest-timer"><strong id="contestClock">'+tformat(seconds,q.stage)+'</strong><small>'+(q.stage<=3?'وقت السؤال':'وقت المرحلة')+'</small><span class="contest-timerline"><i id="contestTimerBar" style="width:'+frac+'%"></i></span></div></div><div class="contest-question-meta"><span>السؤال '+n+' من '+(q.stage<=3?10:4)+'</span><span>التقدم '+(STATE.index+1)+' / ٣٨</span><span>'+(isMulti?'مسألة متعددة الأجزاء':'اختيار من متعدد')+'</span></div><div class="contest-question"><h3>'+contestReadable(q.prompt)+'</h3>'+figure(q)+helpTools+choices+
  '<div class="contest-help" id="contestHelp">'+friendly(STATE.feedback||('ركز يا '+(STATE.user?.username||'بطل')+'، ثم أجب عن السؤال.'))+'</div></div><div class="contest-controls">'+(isMulti?'<button id="sendComplex" class="primary">✅ إرسال الإجابات والمتابعة</button>':'<p class="auto-answer-hint">اختر الإجابة لعرض التصحيح والتعزيز ثم الانتقال تلقائيًا بعد ٥ ثوانٍ.</p>')+'<button id="finishEarly" class="outline">إنهاء '+(STATE.mode==='official'?'المحاولة':'التدريب')+' الآن</button></div>'+
  (STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+'</div></div>';
 }
