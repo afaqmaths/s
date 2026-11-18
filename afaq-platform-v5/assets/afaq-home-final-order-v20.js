@@ -33,8 +33,8 @@ function afaqFinalEntryMarkup(){
  '<p class="afaq-entry-lead">اختر الطريقة المناسبة من <strong>نافذة الدخول الفعلية</strong>، بدل أزرار منفصلة قد لا تفتح حسابًا. يمكنك الاطلاع على الموارد العامة دون تسجيل، أما بيانات الطلاب وإدارة المسابقة فتتطلب حسابًا مصرحًا به.</p>'+
  '<ol class="afaq-final-entry-steps">'+
  '<li><span class="afaq-final-step-icon" aria-hidden="true">1</span><p><strong>افتح نافذة الدخول</strong><small>اضغط زر «دخول المنصة» الموجود أعلى الصفحة، أو الزر أدناه.</small></p></li>'+
- '<li><span class="afaq-final-step-icon" aria-hidden="true">2</span><p><strong>حدّد نوع الحساب</strong><small>اختر الطالب أو المشرف الرئيسي أو المشرف المساعد أو الإدارة المدرسية، بحسب أنواع الحسابات المتاحة لك داخل النافذة. أما ولي الأمر فيدخل عبر بوابته المستقلة الموجودة بجوار «دخول الطالب» في أعلى الصفحة.</small></p></li>'+
- '<li><span class="afaq-final-step-icon" aria-hidden="true">3</span><p><strong>أدخل بيانات الدخول المعتمدة</strong><small>طالب السادس يختار شعبته ويدخل رقمه في الكشف والرمز السري المستلم بصورة خاصة.</small></p></li>'+
+ '<li><span class="afaq-final-step-icon" aria-hidden="true">2</span><p><strong>حدّد نوع الحساب</strong><small>اختر «طلاب صف 6» أو «طلاب الصفوف الأخرى» أو بوابة المشرفين والإدارة المدرسية. ولولي الأمر بوابة مستقلة لمتابعة بيانات ابنه.</small></p></li>'+
+ '<li><span class="afaq-final-step-icon" aria-hidden="true">3</span><p><strong>أدخل بيانات الدخول المعتمدة</strong><small>طلاب الصف السادس يستخدمون اسم المستخدم والرقم السري المعتمدين؛ وطلاب الصفوف 5 و7 و8 يختارون صفهم الدراسي. يدخل ولي الأمر عبر بوابته برمز مستقل.</small></p></li>'+
  '<li><span class="afaq-final-step-icon" aria-hidden="true">4</span><p><strong>ابدأ التعلم والمتابعة</strong><small>ستظهر لك الخدمات المناسبة لحسابك، بما فيها الدروس والأنشطة والنتائج المصرّح بها.</small></p></li>'+
  '</ol>'+
  '<button type="button" class="afaq-final-entry-button" data-afaq-open-account-dialog>🔐 فتح نافذة الدخول إلى المنصة</button>'+
@@ -94,10 +94,6 @@ hubHome=function(){
  }
  feedItems.filter(el=>!el.classList.contains('ae-notice-bar')&&!el.classList.contains('v13-news-rail')).forEach(el=>news.appendChild(el));
  mid.insertAdjacentElement('afterend',news);
- // The first-login reminder is now written as a numbered step inside the actual entry guide.
- // Keep the original first-login reminder; move it under entry controls if present.
- const firstGuide=home.querySelector('.ia-first-login-guide');
- if(firstGuide&&access)access.appendChild(firstGuide);
  // Finish with the football illustration, followed immediately by the visitor total.
  const count=home.querySelector('.hub-counter');
  const football=[...home.querySelectorAll('.foot-v10-promo')];
