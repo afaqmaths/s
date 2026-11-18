@@ -113,7 +113,7 @@ function ofBehaviorStudent(s){
 function ofBehaviorNotes(s){
  const student=ofBehaviorStudent(s);
  if(!student)return [];
- return (ofState.behavior.notes||[]).filter(n=>String(n.student_id)===String(student.student_id)&&n.category==='behavior')
+ return (ofState.behavior.notes||[]).filter(n=>String(n.student_id)===String(student.student_id)&&['behavior','daily'].includes(n.category))
   .sort((a,b)=>String(b.note_date||'').localeCompare(String(a.note_date||''))||
    String(b.created_at||'').localeCompare(String(a.created_at||'')));
 }
@@ -131,7 +131,7 @@ function ofBehaviorContent(s){
   (notes.length?'':'disabled')+'>'+(hidden?'◉ إظهار':'◉ إخفاء')+'</button></div>';
  const list=hidden?'<p class="of-behavior-muted">الملاحظات مخفية في هذا الكشف فقط؛ لم تُحذف.</p>':
   (notes.length?'<ol class="of-behavior-history">'+notes.map(n=>
-   '<li><time>'+ofSafe(n.note_date||'بدون تاريخ')+'</time><span>'+ofSafe(n.description||'ملاحظة محفوظة')+'</span>'+
+   '<li><time><span class="of-behavior-type">'+(n.category==='daily'?'يومية':'سلوكية')+'</span> • '+ofSafe(n.note_date||'بدون تاريخ')+'</time><span>'+ofSafe(n.description||'ملاحظة محفوظة')+'</span>'+
    (n.action_taken?'<small>الإجراء: '+ofSafe(n.action_taken)+'</small>':'')+'</li>').join('')+'</ol>':
    '<p class="of-behavior-muted">لا توجد ملاحظات سلوكية محفوظة في السجل النشط.</p>');
  const controls='<div class="of-behavior-controls">'+
@@ -234,7 +234,7 @@ function ofTable(report){
  '<th rowspan="2">المشروع<br>١٠</th><th rowspan="2" class="of-summary-head">مجموع<br>٦٠</th>'+
  '<th rowspan="2">النهائي<br>٤٠</th><th rowspan="2" class="of-summary-head">المجموع<br>١٠٠</th>'+
  '<th rowspan="2">المستوى</th><th rowspan="2" class="of-indicator-head">A+ و A−<br>مؤشر /٢٠<br><small>خارج المجموع</small></th>'+
- '<th rowspan="2" class="of-behavior-head">ملاحظات سلوكية<br><small>العدد والسجل السابق</small></th><th rowspan="2">الملاحظات</th><th rowspan="2">إجراء</th></tr>'+
+ '<th rowspan="2" class="of-behavior-head">ملاحظات سلوكية ويومية<br><small>العدد والسجل السابق</small></th><th rowspan="2">الملاحظات</th><th rowspan="2">إجراء</th></tr>'+
  '<tr class="of-subhead">'+
  '<th>١ /٥</th><th>٢ /٥</th><th>١ /٥</th><th>٢ /٥</th>'+
  '<th>١ /٥</th><th>٢ /٥</th><th>١ /١٠</th><th>٢ /١٠</th></tr></thead>'+
@@ -274,7 +274,7 @@ function ofPage(){
  'المؤشر = صافي النقاط التراكمية الموجبة والسالبة (بحد أقصى ٤٠) ÷ ٢؛ يستخدمه المعلم للاستئناس عند رصد شفوي ٥ + ٥.<br>'+
  'يظهر التقدير (أ، ب، ج، د، هـ) تلقائيًا فور اكتمال الدرجات التسع للأعمال الفصلية والاختبار النهائي من ٤٠، حتى قبل الحفظ. وتُحفظ درجات جميع الطلاب التي تغيّرت بضغطة واحدة على زر «حفظ جميع التعديلات» أسفل الكشف.<br>'+
   'تظهر أنشطة العلاج عند ≤٥٠٪ من أي بند، والإثراء عند ≥٨٥٪. (*) يعني مجموعًا جزئيًا غير مكتمل.<br>'+
-  'الملاحظات السلوكية تُقرأ مباشرة من سجل «ملفات الطلاب والسلوك»؛ عددها لا يتأثر بإخفاء النص، وزر (+) للإضافة و(−) لفتح السجل وحذف ملاحظة بعد التأكيد.</div></section>'+
+  'الملاحظات السلوكية واليومية تُقرأ مباشرة من سجل «ملفات الطلاب والسلوك» بحسب تصنيفها المحفوظ؛ عددها لا يتأثر بإخفاء النص، وزر (+) للإضافة و(−) لفتح السجل وحذف ملاحظة بعد التأكيد.</div></section>'+
  (ofState.error?'<p class="of-error">'+ofSafe(ofState.error)+'</p>':'')+
  (ofState.message?'<p class="of-message">'+ofSafe(ofState.message)+'</p>':'')+
  (ofState.loading?'<p class="of-loading">جارٍ جلب أسماء الطلبة ودرجاتهم المسجلة…</p>':'')+
