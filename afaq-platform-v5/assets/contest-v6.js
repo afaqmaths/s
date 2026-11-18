@@ -73,9 +73,9 @@ function afaqSoundButton(){
 
 const root=document.getElementById('contestApp');
 const stageInfo=[
- {title:'جامبول وداروين',desc:'بوابة الأعداد والمفاهيم',time:25,detail:'١٠ أسئلة — ٢٥ ثانية لكل سؤال'},
+ {title:'الخوارزمي',desc:'بوابة الأعداد والمفاهيم',time:25,detail:'١٠ أسئلة — ٢٥ ثانية لكل سؤال'},
  {title:'عامر',desc:'تحدي المهارات',time:20,detail:'١٠ أسئلة — ٢٠ ثانية لكل سؤال'},
- {title:'ستيف',desc:'سباق السرعة',time:20,detail:'١٠ أسئلة — ٢٠ ثانية لكل سؤال'},
+ {title:'جابر بن حيان',desc:'سباق السرعة والاكتشاف',time:20,detail:'١٠ أسئلة — ٢٠ ثانية لكل سؤال'},
  {title:'مستر بين',desc:'المختبر الرياضي',time:600,detail:'٤ مسائل مركبة — ١٠ دقائق للمرحلة'},
  {title:'الأستاذ سعيد',desc:'تحدي الاستدلال',time:300,detail:'٤ مسائل مركبة — ٥ دقائق للمرحلة'}
 ];
@@ -102,8 +102,26 @@ const sampleScorePanel=()=>{if(STATE.grade===6)return '';const p=savedSample(),s
 const stage=(n)=>stageInfo[n-1]||stageInfo[0];
 const image=(src,alt,cls)=>src?'<img class="'+cls+'" src="'+src+'" alt="'+friendly(alt)+'" loading="lazy">':'';
 const entryArt=()=>window.AFAQ_ENTRY_ART?.[player()||STATE.user?.role==='demo'?'student':'staff']||'';
-const stageArt=n=>window.AFAQ_STAGE_ART?.[n-1]||'';
-const stageEndArt=n=>window.AFAQ_STAGE_END_ART?.[n-1]||stageArt(n);
+/* Historical imagery for the two renamed stages. Their depictions are
+   historical artistic illustrations, not photographic likenesses. Leave the
+   original approved local images unchanged for عامر / مستر بين / الأستاذ سعيد. */
+const stageThemeClass=n=>['stage-theme-khwarizmi','stage-theme-amer','stage-theme-jabir',
+ 'stage-theme-mrbean','stage-theme-saeed'][Number(n)-1]||'stage-theme-khwarizmi';
+const contestHistoricalArt={
+ 1:'https://upload.wikimedia.org/wikipedia/commons/d/dd/Al-Khwarizmi_portrait.jpg',
+ 3:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Jabir_ibn_Hayyan_Geber%2C_Arabian_alchemist_Wellcome_L0005558.jpg/569px-Jabir_ibn_Hayyan_Geber%2C_Arabian_alchemist_Wellcome_L0005558.jpg'
+};
+const contestArtCredit={
+ 1:{label:'تصوير فني تخيلي للخوارزمي — Michel Bakni / Wikimedia Commons (CC BY-SA 4.0)',
+ url:'https://commons.wikimedia.org/wiki/File:Al-Khwarizmi_portrait.jpg'},
+ 3:{label:'نقش تاريخي من مجموعة Wellcome عن جابر بن حيان (CC BY 4.0)',
+ url:'https://commons.wikimedia.org/wiki/File:Jabir_ibn_Hayyan_Geber,_Arabian_alchemist_Wellcome_L0005558.jpg'}
+};
+const stageArt=n=>contestHistoricalArt[n]||window.AFAQ_STAGE_ART?.[n-1]||'';
+const stageEndArt=n=>contestHistoricalArt[n]||window.AFAQ_STAGE_END_ART?.[n-1]||stageArt(n);
+const stageArtCaption=n=>contestArtCredit[n]?'<small class="contest-art-credit">'+
+ '<a href="'+contestArtCredit[n].url+'" target="_blank" rel="noopener noreferrer" title="مصدر التصوير الفني وترخيصه">'+
+ friendly(contestArtCredit[n].label)+'</a></small>':'';
 const units=g=>g===6?4:2;
 const splitSyllabus={5:[{name:'الأعداد والهندسة',topics:'الوحدتان ١أ الأعداد و١ب الهندسة'},{name:'القياس والأعداد',topics:'الوحدتان ١ج القياس و٢أ الأعداد'}],7:[{name:'الأعداد والجبر والأعداد العشرية والقياس',topics:'الوحدات ١–٤'},{name:'الزوايا والكسور والمساحة والنسب المئوية',topics:'الوحدات ٥–٨'}],8:[{name:'الأعداد والقوى والشبكات والزوايا والكسور',topics:'الوحدات ١–٤'},{name:'الجبر والمساحة والحجم والاحتمالات والنسب المئوية',topics:'الوحدات ٥–٨'}]};
 const unitName=(g,s)=>g===6?['الأعداد (١)','القياس','الهندسة','الأعداد (٢)'][s-1]:'القسم '+s+' — '+(splitSyllabus[g]?.[s-1]?.name||'النصف '+(s===1?'الأول':'الثاني'));
@@ -186,7 +204,7 @@ function unitCards(){
  }
  return '<div class="contest-units">'+cards.join('')+'</div>';
 }
-function road(active=0){return '<div class="stage-track">'+stageInfo.map((st,i)=>'<div class="stage-node '+(i+1===active?'active':i+1<active?'passed':'')+'">'+image(stageArt(i+1),st.title,'stage-pic')+'<strong>'+st.title+'</strong><small>'+st.detail+'</small><b class="stage-points">١٠ نقاط</b></div>').join('')+'</div>'}
+function road(active=0){return '<div class="stage-track">'+stageInfo.map((st,i)=>'<div class="stage-node '+stageThemeClass(i+1)+' '+(i+1===active?'active':i+1<active?'passed':'')+'">'+image(stageArt(i+1),st.title,'stage-pic')+'<strong>'+st.title+'</strong><small>'+st.detail+'</small><b class="stage-points">١٠ نقاط</b></div>').join('')+'</div>'}
 function progress(){let r=STATE.report;if(!r)return '';
  return '<section class="contest-progress"><h3>🎖️ تقدمي في مسابقة نجوم آفاق</h3><div class="contest-metrics"><div><strong>'+friendly(r.total)+' / ٤٠٠</strong><small>مجموع أفضل نتائجي</small></div><div><strong>'+friendly(r.completed_units)+' / ٤</strong><small>الوحدات المكتملة</small></div><div><strong>'+friendly(r.attempts_remaining)+'</strong><small>المحاولات المتبقية</small></div><div><strong>'+friendly(r.points_needed)+'</strong><small>نقطة تفصلني عن التأهل</small></div></div><p>'+(r.qualified?'🏆 أكملت الوحدات الأربع وحققت ٣٥٠ نقطة فأكثر؛ أنت ضمن المتأهلين للمفاضلة على الجوائز.':'أكمل الوحدات الأربع، واجمع ٣٥٠ نقطة فأكثر للتأهل للجوائز. تُحتسب أفضل محاولتين رسميتين لكل وحدة.')+'</p></section>';
 }
@@ -286,8 +304,8 @@ function readyPage(){
  const left=breakRequired?clockSec(STATE.stageBreakUntil):0;
  const fraction=breakRequired?Math.max(0,Math.min(100,left/120*100)):0;
  return '<div class="contest-between-stages">'+(n>1?stageResultsPanel():'')+
- '<section class="stage-ready-page '+(breakRequired?'contest-stage-rest':'')+'"><div class="ready-art">'+
- image(stageArt(n),st.title,'stage-ready-photo')+'</div>'+
+ '<section class="stage-ready-page '+stageThemeClass(n)+' '+(breakRequired?'contest-stage-rest':'')+'"><div class="ready-art">'+
+ image(stageArt(n),st.title,'stage-ready-photo')+stageArtCaption(n)+'</div>'+
  '<span class="ready-kicker">استعد للمرحلة '+stext(n)+' من ٥</span><h2>'+st.title+'</h2><h3>'+st.desc+'</h3>'+
  '<p>'+st.detail+(breakRequired?' — استراحة إلزامية مدتها دقيقتان قبل المرحلة التالية.':' — أحضر تركيزك واستعد للتحدي.')+'</p>'+
  (breakRequired?'<div class="contest-break-panel" aria-label="الاستراحة بين مراحل المسابقة">'+
@@ -337,7 +355,7 @@ function raceTrack(q,answered=false){
 function stageResultsPanel(){
  const done=STATE.completedStages.slice().sort((a,b)=>a-b);if(!done.length)return '';
  const earned=done.reduce((s,n)=>s+nscore(sttotal(n).earned),0),max=done.length*10;
- return '<section class="contest-stage-results"><h3>📊 حصيلة المراحل المنجزة</h3><div class="contest-stage-result-grid">'+done.map(n=>'<div class="contest-stage-result-item"><span>المرحلة '+stext(n)+' — '+friendly(stage(n).title)+'</span><strong>'+stext(sttotal(n).earned)+' / ١٠</strong><small>'+stext(sper(sttotal(n).earned,10))+'٪ من نقاط المرحلة</small></div>').join('')+
+ return '<section class="contest-stage-results"><h3>📊 حصيلة المراحل المنجزة</h3><div class="contest-stage-result-grid">'+done.map(n=>'<div class="contest-stage-result-item '+stageThemeClass(n)+'"><span>المرحلة '+stext(n)+' — '+friendly(stage(n).title)+'</span><strong>'+stext(sttotal(n).earned)+' / ١٠</strong><small>'+stext(sper(sttotal(n).earned,10))+'٪ من نقاط المرحلة</small></div>').join('')+
  '</div><div class="contest-stage-total">مجموع المراحل المكتملة: <strong>'+stext(earned)+' / '+stext(max)+'</strong> — <strong>'+stext(sper(earned,max))+'٪</strong></div></section>';
 }
 
@@ -418,8 +436,8 @@ function quiz(){const q=getCurrent();if(!q)return '';
  '</div>'+(special==='voice'?'<p class="contest-audio-transcript">📝 النص والخيارات ظاهرة حتى عند تعذر الصوت.</p>':'')+
  '<p class="contest-audio-status" id="contestAudioStatus" role="status"></p>'+
  '<div id="contestHintText" class="contest-hint-box" '+(STATE.hintFor===q.id?'':'hidden')+'>'+friendly(contestHint(q))+'</div>';
- return '<div class="contest-playing"><div class="contest-headline"><div><span>'+(STATE.mode==='official'?'🏆 المحاولة الرسمية':'🎯 '+trainingTitle())+'</span><h2>'+unitName(STATE.grade,STATE.section)+'</h2><small>'+friendly(STATE.displayName||STATE.user?.username||'الطالب')+'</small></div><div class="contest-score-badge"><strong>٥٠ ← ١٠٠</strong><small>أفضل نتيجة</small></div></div>'+road(q.stage)+raceTrack(q,false)+
- '<div class="contest-game-area"><div class="contest-stage-banner"><div class="contest-character">'+image(stageArt(q.stage),st.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+q.stage+' من ٥ — ١٠ درجات</span><h2>'+st.title+'</h2><p>'+st.desc+'</p></div><div class="contest-timer"><strong id="contestClock">'+tformat(seconds,q.stage)+'</strong><small>'+(q.stage<=3?'وقت السؤال':'وقت المرحلة')+'</small><span class="contest-timerline"><i id="contestTimerBar" style="width:'+frac+'%"></i></span><small class="contest-clock-warning" id="contestTimeWarning" role="status">'+(seconds<=(q.stage<=3?5:90)?'🔔 بقي وقت قليل، استعد لإنهاء الإجابة.':'')+'</small></div></div><div class="contest-question-meta"><span>السؤال '+n+' من '+(q.stage<=3?10:4)+'</span><span>التقدم '+(STATE.index+1)+' / ٣٨</span><span>'+(isMulti?'مسألة متعددة الأجزاء':'اختيار من متعدد')+'</span></div><div class="contest-question"><h3>'+contestReadable(q.prompt)+'</h3>'+figure(q)+choices+helpTools+
+ return '<div class="contest-playing '+stageThemeClass(q.stage)+'"><div class="contest-headline"><div><span>'+(STATE.mode==='official'?'🏆 المحاولة الرسمية':'🎯 '+trainingTitle())+'</span><h2>'+unitName(STATE.grade,STATE.section)+'</h2><small>'+friendly(STATE.displayName||STATE.user?.username||'الطالب')+'</small></div><div class="contest-score-badge"><strong>٥٠ ← ١٠٠</strong><small>أفضل نتيجة</small></div></div>'+road(q.stage)+raceTrack(q,false)+
+ '<div class="contest-game-area '+stageThemeClass(q.stage)+'"><div class="contest-stage-banner"><div class="contest-character">'+image(stageArt(q.stage),st.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+q.stage+' من ٥ — ١٠ درجات</span><h2>'+st.title+'</h2><p>'+st.desc+'</p></div><div class="contest-timer"><strong id="contestClock">'+tformat(seconds,q.stage)+'</strong><small>'+(q.stage<=3?'وقت السؤال':'وقت المرحلة')+'</small><span class="contest-timerline"><i id="contestTimerBar" style="width:'+frac+'%"></i></span><small class="contest-clock-warning" id="contestTimeWarning" role="status">'+(seconds<=(q.stage<=3?5:90)?'🔔 بقي وقت قليل، استعد لإنهاء الإجابة.':'')+'</small></div></div><div class="contest-question-meta"><span>السؤال '+n+' من '+(q.stage<=3?10:4)+'</span><span>التقدم '+(STATE.index+1)+' / ٣٨</span><span>'+(isMulti?'مسألة متعددة الأجزاء':'اختيار من متعدد')+'</span></div><div class="contest-question"><h3>'+contestReadable(q.prompt)+'</h3>'+figure(q)+choices+helpTools+
  '<div class="contest-help" id="contestHelp">'+friendly(STATE.feedback||('ركز يا '+(STATE.user?.username||'بطل')+'، ثم أجب عن السؤال.'))+'</div></div><div class="contest-controls">'+(isMulti?'<button id="sendComplex" class="primary">✅ إرسال الإجابات والمتابعة</button>':'<p class="auto-answer-hint">اختر الإجابة لعرض التصحيح والتعزيز ثم الانتقال تلقائيًا بعد ٥ ثوانٍ.</p>')+'<button id="finishEarly" class="outline">إنهاء '+(STATE.mode==='official'?'المحاولة':'التدريب')+' الآن</button></div>'+
  (STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+'</div></div>';
 }
@@ -459,11 +477,11 @@ function transition(){
   '<div><strong>'+stext(stageScore)+' / ١٠</strong><small>المرحلة • '+stext(sper(stageScore,10))+'٪</small></div>'+
   '<div><strong>'+stext(overall)+' / ٥٠</strong><small>الإجمالي • '+stext(sper(overall,50))+'٪</small></div></div>';
  const art=stage(n),sec=clockSec(STATE.waitingUntil);
- return '<div class="contest-playing contest-answer-phase"><div class="contest-headline">'+
+ return '<div class="contest-playing contest-answer-phase '+stageThemeClass(n)+'"><div class="contest-headline">'+
   '<div><span>'+(STATE.mode==='official'?'🏆 محاولة رسمية':'🎯 تدريب')+'</span><h2>'+unitName(STATE.grade,STATE.section)+'</h2>'+
   '<small>'+friendly(name)+'</small></div><div class="contest-score-badge"><strong>'+stext(overall)+' / ٥٠</strong><small>المجموع الحالي</small></div></div>'+
   road(n)+raceTrack(q,true)+
-  '<div class="contest-game-area"><div class="contest-stage-banner"><div class="contest-character">'+
+  '<div class="contest-game-area '+stageThemeClass(n)+'"><div class="contest-stage-banner"><div class="contest-character">'+
   image(stageArt(n),art.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+stext(n)+' من ٥</span>'+
   '<h2>'+friendly(art.title)+'</h2><p>التصحيح داخل لوحة السؤال نفسها</p></div></div>'+
   '<div class="contest-question contest-correction-inline"><h3>'+friendly(q.prompt)+'</h3>'+figure(q)+
