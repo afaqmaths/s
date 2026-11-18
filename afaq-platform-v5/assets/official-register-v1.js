@@ -249,8 +249,9 @@ function ofStats(report){
 }
 function ofPage(){
  const r=ofState.report;
- if(r&&ofEdit()&&!ofState.behavior.loading&&!ofState.behavior.error&&
-  (!ofState.behavior.loaded||ofState.behavior.token!==auth.token))Promise.resolve().then(()=>ofLoadBehavior());
+ if(r&&ofEdit()&&!ofState.behavior.loading&&
+  (ofState.behavior.token!==auth.token||(!ofState.behavior.loaded&&!ofState.behavior.error)))
+  Promise.resolve().then(()=>ofLoadBehavior());
  const classes=OF_CLASSES.map(c=>'<option'+(ofState.className===c?' selected':'')+'>'+c+'</option>').join('');
  return '<div class="container of-page" dir="rtl">'+
  '<header class="of-hero"><span>وزارة التربية والتعليم • المدرسة: الحسين بن علي للتعليم الأساسي</span>'+
