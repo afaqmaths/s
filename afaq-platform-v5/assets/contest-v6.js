@@ -530,7 +530,7 @@ function home(){
  '<div class="contest-welcome contest-welcome-image">'+avatar+'<div><span class="contest-label">⭐ مسابقة نجوم آفاق الرياضيات ⭐</span><h2>مرحبًا '+friendly(STATE.displayName||STATE.user?.username||'بك')+'</h2><p>'+introduction+'</p></div><button class="outline" id="logoutContest">خروج</button></div>'+supervisorReminderPanel()+(allowedStaff()?'<div class="contest-grades">'+[5,6,7,8].map(g=>'<button class="'+(STATE.grade===g?'chosen':'')+'" data-grade="'+g+'">الصف '+gradeNames[g]+'</button>').join('')+'</div>':'')+
  unitCards()+progress()+sampleScorePanel()+certificateHistoryPanel()+studentPasswordPanel()+
  '<h3 class="contest-title">اختر النموذج</h3><div class="contest-modes"><button class="'+(STATE.mode==='training'?'primary':'outline')+'" data-mode="training">🎯 تدريب غير رسمي — '+trainingTitle()+'</button>'+(official()?'<button class="'+(STATE.mode==='official'?'primary':'outline')+'" data-mode="official">🏆 المحاولات الرسمية</button>':'')+'</div>'+
- '<p class="contest-instructions">المراحل الخمس في التدريب والمحاولات الرسمية متشابهة في العرض والتوقيت والصور. تظهر الإجابة الصحيحة والتعزيز خلال ٥ ثوانٍ، وبين كل مرحلتين استراحة ثابتة مدتها دقيقتان مع عداد رقمي وجرس؛ ثم تبدأ المرحلة التالية تلقائيًا ولو لم يضغط الطالب زر الاستعداد. لكل سؤال تلميح مساعد، ويتضمن النموذج سؤالين فقط بأسلوب صوتي أو بإدخال أرقام عربية أو إنجليزية.</p>'+road()+
+ '<p class="contest-instructions">المراحل الخمس في التدريب والمحاولات الرسمية متشابهة في العرض والتوقيت والصور. تظهر الإجابة الصحيحة والتعزيز خلال ٥ ثوانٍ، وبين كل مرحلتين استراحة أقصاها دقيقتان مع عداد رقمي وجرس؛ يبدأ الطالب الجولة فور الضغط على زر الاستعداد، أو تبدأ تلقائيًا عند انتهاء الوقت دون ضغط. لكل سؤال تلميح مساعد، ويتضمن النموذج سؤالين فقط بأسلوب صوتي أو بإدخال أرقام عربية أو إنجليزية.</p>'+road()+
  '<div class="contest-rules"><b>طريقة احتساب الدرجة:</b> ثلاث جولات سريعة، ثم جولة عمر الخيام وأويلر، وأخيرًا جولة أنا ومعلمي أ. سعيد البريكي. لكل مرحلة ١٠ نقاط، فيكون المجموع ٥٠ ويُضاعف إلى ١٠٠. تُحتسب أفضل نتيجة لكل وحدة.</div>'+
  (exhausted?'<div class="notice">اكتملت المحاولتان الرسميتان لهذه الوحدة؛ لن تُفتح محاولة ثالثة إلا بعد إعادة الضبط من دائرة الإشراف.</div>':approved||STATE.mode!=='official'?'':'<div class="notice">المحاولة الرسمية لهذه الوحدة لم تعتمد بعد؛ يمكنك تجربة نموذج التدريب.</div>')+
  (STATE.error?'<p class="notice" role="alert">'+friendly(STATE.error)+'</p>':'')+
@@ -544,22 +544,22 @@ function readyPage(){
  '<section class="stage-ready-page '+stageThemeClass(n)+' '+(breakRequired?'contest-stage-rest':'')+'"><div class="ready-art">'+
  stagePortrait(n,'ready')+stageArtCaption(n)+'</div>'+
  '<span class="ready-kicker">استعد للمرحلة '+stext(n)+' من ٥</span><h2>'+st.title+'</h2><h3>'+st.desc+'</h3>'+
- '<p>'+st.detail+(breakRequired?' — استراحة إلزامية مدتها دقيقتان قبل المرحلة التالية.':' — أحضر تركيزك واستعد للتحدي.')+'</p>'+
+ '<p>'+st.detail+(breakRequired?' — ابدأ الجولة فور استعدادك، أو انتظر الانطلاق التلقائي بعد دقيقتين كحد أقصى.':' — أحضر تركيزك واستعد للتحدي.')+'</p>'+
  (breakRequired?'<div class="contest-break-panel" aria-label="الاستراحة بين مراحل المسابقة">'+
- '<span class="contest-break-caption">⏳ الوقت المتبقي لبداية المرحلة التالية</span>'+
+ '<span class="contest-break-caption">⏳ الوقت المتبقي للانطلاق التلقائي (يمكنك البدء قبل ذلك)</span>'+
  '<strong class="contest-digital-clock" id="contestBreakClock" role="timer" aria-live="off">'+tformat(left,n)+'</strong>'+
  '<div class="contest-break-progress"><i id="contestBreakBar" style="width:'+fraction+'%"></i></div>'+
  '<p id="contestBreakStatus" role="status">'+(left<=20?'🔔 اقترب موعد الانطلاق. استعد الآن!':'ستسمع تنبيهًا تصاعديًا عند بقاء ٢٠ ثانية، ثم جرس بدء المرحلة.')+'</p>'+
  '<div id="contestBreakReadyStatus" class="contest-break-ready" role="status">'+
- (STATE.breakReady?'✅ تم تسجيل استعدادك. ستبدأ المرحلة تلقائيًا عند انتهاء الدقيقتين.':
- 'يمكنك إعلان استعدادك الآن؛ وحتى إن لم تفعل فستبدأ المرحلة تلقائيًا عند نهاية الاستراحة.')+
+ (STATE.breakReady?'✅ انطلق عند استعدادك.':
+ 'اضغط أنا مستعد لتبدأ فورًا، أو اترك العدّاد ليبدأ تلقائيًا بعد دقيقتين.')+
  '</div></div>':'')+
- '<div class="ready-rules">✔️ '+(breakRequired?'فاصل ٠٢:٠٠ ثابت • انطلاق تلقائي • جرس قبل ٢٠ ثانية':'يمكنك بدء المرحلة الأولى الآن')+
+ '<div class="ready-rules">✔️ '+(breakRequired?'استراحة اختيارية حتى ٠٢:٠٠ • بدء فوري عند الاستعداد • انطلاق تلقائي':'يمكنك بدء المرحلة الأولى الآن')+
  ' • ✔️ التصحيح بعد كل سؤال • ✔️ تنبيه قبل نهاية وقت الإجابة</div>'+
  (STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+
  '<div class="ready-buttons"><button class="primary" id="beginStage" '+
- (STATE.busy||breakRequired&&STATE.breakReady?'disabled':'')+'>'+
- (breakRequired?(STATE.breakReady?'✅ أنا مستعد للمرحلة القادمة':'✅ أنا مستعد وسأكمل'):'✅ أوافق على بدء المرحلة — انطلق!')+
+ (STATE.busy?'disabled':'')+'>'+
+ (breakRequired?'✅ أنا مستعد — ابدأ الجولة الآن':'✅ أوافق على بدء المرحلة — انطلق!')+
  '</button><button class="outline" id="exitStage">العودة إلى لوحة الوحدات</button></div></section></div>';
 }
 function figure(q){const svg=String(q?.visual_svg||'');if(!svg.trim().startsWith('<svg')||svg.length>22000)return '';
@@ -1072,18 +1072,12 @@ function tickGame(){clearInterval(STATE.timer);STATE.timer=setInterval(()=>{
 function prepare(){resetPlay();STATE.readyStage=1;render()}
 async function beginStage(automatic=false){
  if(STATE.busy||!STATE.readyStage)return;
- if(STATE.readyStage>1&&STATE.stageBreakUntil>Date.now()){
-  STATE.breakReady=true;
-  const label=document.getElementById('contestBreakReadyStatus');
-  if(label)label.textContent='✅ تم تسجيل استعدادك. يبدأ التحدي تلقائيًا عند اكتمال الدقيقتين.';
-  const button=document.getElementById('beginStage');
-  if(button){button.disabled=true;button.textContent='✅ أنت مستعد للمرحلة التالية'}
-  return;
- }
+ // Clicking "ready" starts the stage immediately; the 120-second timer is
+ // only the unattended AUTO-start deadline, also enforced by the server.
  if(!automatic)afaqTune(STATE.readyStage,'start');
  STATE.busy=true;STATE.error='';try{
  if(STATE.mode==='official'){
-   const r=STATE.attemptId&&STATE.readyStage>1?await back('begin_stage',{attempt_id:STATE.attemptId}):await back('start',{grade:STATE.grade,section:STATE.section});
+   const r=STATE.attemptId&&STATE.readyStage>1?await back('begin_stage',{attempt_id:STATE.attemptId,ready:!automatic}):await back('start',{grade:STATE.grade,section:STATE.section});
    if(r.stage_ready){STATE.readyStage=r.stage_number;STATE.attemptId=r.attempt_id||STATE.attemptId;STATE.attemptNo=r.attempt_no||STATE.attemptNo;
      STATE.stageBreakUntil=Date.parse(r.break_ends_at)||Date.now()+120000;STATE.breakReady=false;}
    else{STATE.question=r.question;STATE.index=r.index;STATE.attemptId=r.attempt_id||STATE.attemptId;STATE.attemptNo=r.attempt_no||STATE.attemptNo;STATE.started=Date.parse(r.question_started_at)||Date.now();STATE.stageStarted=Date.parse(r.stage_started_at)||Date.now();STATE.readyStage=0;STATE.stageBreakUntil=0;STATE.breakReady=false;}
@@ -1187,7 +1181,14 @@ function bindBank(){document.querySelectorAll('.edit-question').forEach(form=>fo
  try{await back('save_question',payload);alert('تم الحفظ');await fetchBank()}catch(err){alert(err.message)}}));
  for(const [id,published]of [['publishBank',true],['unpublishBank',false]])document.getElementById(id)?.addEventListener('click',async()=>{if(published&&!window.confirm('هل راجعت جميع الأسئلة والرسومات والإجابات وتريد اعتماد النموذج؟'))return;try{await back('publish_model',{grade:STATE.grade,section:STATE.section,model:STATE.editModel,published});STATE.catalog=(await back('catalog')).models;STATE.bank=null;render()}catch(err){alert(err.message)}})
 }
-function bind(){if(!STATE.user)return;
+function bind(){
+ if(!STATE.user){
+  document.querySelectorAll('[data-contest-login-role]').forEach(btn=>btn.addEventListener('click',()=>{
+   STATE.loginRole=btn.dataset.contestLoginRole;STATE.loginMessage='';render()
+  }));
+  document.getElementById('contestRoleLoginForm')?.addEventListener('submit',event=>{event.preventDefault();contestDirectLogin(event.currentTarget)});
+  return;
+ }
  document.getElementById('afaqContestGateRefresh')?.addEventListener('click',async()=>{
   const button=document.getElementById('afaqContestGateRefresh');if(button)button.disabled=true;
   try{STATE.access=await back('contest_gate_status');STATE.error='';}
