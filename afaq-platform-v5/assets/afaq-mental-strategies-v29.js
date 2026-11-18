@@ -44,7 +44,8 @@ const mm29M=(a,s,b)=>mm29Num(a)+' '+s+' '+mm29Num(b);
 function mm29Reset(op,a,b,method){
  const previous=mm29.states[op];
  const chosen=method||previous.method;
- mm29.states[op]={...previous,a,b,method:chosen,guess:'',checked:false,started:false,step:-1,
+ const valid=mm29Compatible(op,a,b,chosen)?chosen:op==='mul'?'split':op==='add'?'place':'comp';
+ mm29.states[op]={...previous,a,b,method:valid,guess:'',checked:false,started:false,step:-1,
   showAll:false,showInverse:false,showCalculator:false,error:''};
 }
 function mm29Round(number){
@@ -366,4 +367,12 @@ attach=function(){
 if(typeof iaPrivatePages!=='undefined'){
  iaPrivatePages.add('mental_multiply');
  iaPrivatePages.add('mental_add_sub');
+}
+/* Direct links to both protected lessons must enter their existing permission gate. */
+if(typeof window!=='undefined'&&typeof state!=='undefined'){
+ const requested=(window.AFAQ_REQUESTED_HASH||window.location?.hash?.slice(1)||'');
+ if(['mental_multiply','mental_add_sub'].includes(requested)&&state.page!==requested){
+  state.page=requested;
+  if(typeof render==='function')render();
+ }
 }
