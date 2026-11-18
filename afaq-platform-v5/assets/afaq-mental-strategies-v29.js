@@ -317,7 +317,8 @@ attach=function(){
     iaState.page!==state.page||!iaState.html||iaState.blocked)return;
  document.querySelectorAll('[data-mm29-op]').forEach(button=>button.addEventListener('click',()=>{
   mm29.operation=button.dataset.mm29Op==='sub'?'sub':'add';
-  render();
+  if(state.page!=='mental_add_sub')route('mental_add_sub');
+  else render();
  }));
  document.querySelectorAll('[data-mm29-preset]').forEach(button=>button.addEventListener('click',()=>{
   const op=mm29CurrentOperation(),[a,b]=button.dataset.mm29Preset.split('-').map(Number);
