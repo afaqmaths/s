@@ -817,6 +817,8 @@ function guest(){return '<div class="contest-lock"><div class="contest-icon">�
 function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);afaqCueHistory.clear();STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.stageBreakUntil=0;STATE.breakReady=false;STATE.breakAutoBusy=false;STATE.breakRetryAt=0;STATE.hintFor=null;STATE.audioNotice='';STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
  root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():student()&&STATE.access?.allowed===false?studentGateLock():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
+  if(supervisor()&&!isTester()&&STATE.previewModel)root.insertAdjacentHTML('afterbegin',
+   '<div class="contest-tester-active"><b>🔬 تجربة المشرف للنموذج '+friendly(STATE.previewModel)+' — نفس شاشة الطالب والتوقيت والتصحيح، دون احتساب درجات الطلاب</b><button class="outline" id="stopModelPreview">إيقاف التجربة والعودة للإدارة</button></div>');
   if(isTester()&&!document.getElementById('leaveTester'))root.insertAdjacentHTML('afterbegin',
    '<div class="contest-tester-active"><span>🎓 تعمل الآن بصفحة الطالب التجريبي '+stext(STATE.testerProfile)+'</span>'+
    '<button class="outline" id="leaveTester">العودة إلى دائرة الإشراف</button></div>');
@@ -990,8 +992,8 @@ function bind(){if(!STATE.user)return;
   render();
  });
  document.getElementById('logoutContest')?.addEventListener('click',async()=>{try{await api('logout')}catch{}sessionStorage.removeItem(tokenKey);STATE.token='';STATE.user=null;resetPlay();render()});
- document.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{STATE.grade=Number(btn.dataset.grade);STATE.section=1;resetPlay();render()}));
- document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{STATE.section=Number(btn.dataset.unit);resetPlay();render()}));
+ document.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{STATE.grade=Number(btn.dataset.grade);STATE.section=1;STATE.previewModel=null;STATE.modelSummary=null;STATE.modelAssignments=null;resetPlay();render()}));
+ document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{STATE.section=Number(btn.dataset.unit);STATE.modelSummary=null;STATE.modelAssignments=null;resetPlay();render()}));
  document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{STATE.mode=btn.dataset.mode;resetPlay();render()}));
  document.getElementById('prepare')?.addEventListener('click',prepare);
  document.getElementById('beginStage')?.addEventListener('click',()=>beginStage(false));
@@ -1081,6 +1083,34 @@ function bind(){if(!STATE.user)return;
    await api('student_change_pin',{current_pin:current,new_pin:next,confirm_pin:confirmed});
    ev.target.reset();status.textContent='نجح تغيير رقمك السري. استعمل الرقم الجديد في الدخول القادم.';
   }catch(err){status.textContent=err.message}
+ });
+ document.getElementById('loadModelSummary')?.addEventListener('click',async()=>{
+  try{STATE.modelSummary=await back('model_bank_summary',{grade:6,section:STATE.section});STATE.modelNotice='تم تحميل نماذج هذه الوحدة.';render()}
+  catch(err){STATE.modelNotice=err.message;render()}
+ });
+ document.getElementById('loadModelAssignments')?.addEventListener('click',async()=>{
+  try{STATE.modelAssignments=await back('model_assignment_list',{section:STATE.section});STATE.modelNotice='تم عرض توزيع طلاب الشعب الثلاث.';render()}
+  catch(err){STATE.modelNotice=err.message;render()}
+ });
+ document.getElementById('contestModelOverride')?.addEventListener('submit',async ev=>{
+  ev.preventDefault();const form=new FormData(ev.currentTarget),attempt_no=Number(form.get('attempt_no')),model=String(form.get('model'));
+  if((attempt_no===1&&Number(model)>5)||(attempt_no===2&&Number(model)<6)){
+   STATE.modelNotice='اختر نموذجًا من ١–٥ للمحاولة الأولى، أو من ٦–١٠ للمحاولة الثانية.';render();return;
+  }
+  const payload={section:STATE.section,attempt_no,model,class_name:String(form.get('class_name')),serial_no:Number(form.get('serial_no'))};
+  if(!window.confirm('هل تؤكد تغيير النموذج قبل بدء محاولة الطالب؟ سيُسجل التعديل باسم المشرف.'))return;
+  try{
+   await back('model_assignment_set',payload);
+   STATE.modelAssignments=await back('model_assignment_list',{section:STATE.section});
+   STATE.modelNotice='✅ تم حفظ تعديل النموذج وتوثيقه.';render();
+  }catch(err){STATE.modelNotice=err.message;render()}
+ });
+ document.getElementById('tryContestModel')?.addEventListener('click',()=>{
+  if(!supervisor()||isTester()||!numberedModels.includes(STATE.editModel))return;
+  STATE.previewModel=STATE.editModel;STATE.mode='training';prepare();
+ });
+ document.getElementById('stopModelPreview')?.addEventListener('click',()=>{
+  STATE.previewModel=null;resetPlay();STATE.mode='training';render();
  });
  document.getElementById('loadBank')?.addEventListener('click',fetchBank);
  document.getElementById('editModel')?.addEventListener('change',ev=>{STATE.editModel=ev.target.value;STATE.bank=null;render()});
