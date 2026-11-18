@@ -281,15 +281,53 @@ function hubContests(){
  '<button class="hub-secondary" data-route="flashes">الفلاشات</button></div></section></div>';
 }
 
+
+/* Managed biographical library sourced exclusively from the supervisor-editable catalog. */
+function hubScholarItems(){
+ return hub.catalog.filter(s=>s.published&&s.category==='scholars')
+  .slice().sort((a,b)=>Number(a.sort_order)-Number(b.sort_order)||Number(a.id)-Number(b.id));
+}
+function hubScholarDirectory(){
+ const arr=hubScholarItems();
+ const manager=auth.user?.role==='supervisor'?'<button type="button" class="hub-primary" data-hub-scholar-manager>⚙️ إدارة العلماء من لوحة المشرف</button>':'';
+ return '<section class="hub-managed-scholars hub-managed-directory" dir="rtl">'+
+ '<h2>📚 موسوعة علماء الرياضيات — '+hn(arr.length)+' عالمًا</h2>'+
+ '<p>ثمانية من علماء مراحل مسابقة نجوم آفاق وأربعة علماء إضافيين، مرتبون تاريخيًا. لكل عالم سيرته وإنجازاته وعلاقتها بالمناهج ووسائل الاستكشاف.</p>'+
+ '<div class="hub-scholar-actions"><button class="hub-primary" type="button" data-hub-library="scholars">فتح قائمة علماء الرياضيات والتفاصيل</button>'+manager+'</div>'+
+ '<div class="hub-scholar-tags">'+arr.map(s=>'<span>'+hv(s.title)+'</span>').join('')+'</div></section>';
+}
+function hubScholarEncyclopaedia(){
+ const arr=hubScholarItems();
+ const manager=auth.user?.role==='supervisor'?'<button class="hub-primary" type="button" data-hub-scholar-manager>⚙️ إضافة أو تحرير أو حذف عالم</button>':'';
+ if(!arr.length)return '<p class="hub-empty">لم تُنشر أي تراجم بعد؛ يستطيع المشرف إضافتها من لوحة الإدارة.</p>'+manager;
+ return '<div class="hub-managed-scholars hub-scholar-encyclopaedia" dir="rtl">'+
+ '<header class="hub-scholar-head"><h2>📚 موسوعة علماء الرياضيات ('+hn(arr.length)+')</h2>'+
+ '<p>العلماء مرتبون زمنيًا منذ إقليدس وأرخميدس. افتح السيرة التفصيلية للقراءة عن الحياة والإنجازات وتطبيقاتها في الصفوف المختلفة.</p>'+manager+'</header>'+
+ '<nav class="hub-scholar-jumps" aria-label="التنقل بين العلماء">'+
+ arr.map((s,i)=>'<a href="#hub-scholar-'+Number(s.id)+'">'+hn(i+1)+' · '+hv(s.title)+'</a>').join('')+'</nav>'+
+ '<div class="hub-scholar-profiles">'+arr.map((s,i)=>{
+  const source=String(s.resource_url||'');
+  const link=source.startsWith('https://')?'<p class="hub-scholar-source"><a href="'+hv(source)+'" target="_blank" rel="noopener noreferrer">المصدر التاريخي الموثوق (MacTutor)</a></p>':'';
+  return '<article class="hub-scholar-profile" id="hub-scholar-'+Number(s.id)+'">'+
+   '<div class="hub-scholar-identity"><span class="hub-scholar-ordinal">'+hn(i+1)+'</span><div>'+
+   '<small>'+(s.featured?'أحد العلماء الثمانية المرتبطين بالمسابقة':'شخصية إضافية في الموسوعة')+'</small>'+
+   '<h3>'+hv(s.title)+'</h3></div></div>'+
+   '<p class="hub-scholar-summary">'+hv(s.description||'')+'</p>'+
+   '<details '+(i===0?'open':'')+'><summary>السيرة والإنجازات وعلاقتها بالمناهج</summary>'+
+   '<div class="hub-scholar-full">'+hv(s.body||'').replace(/\r?\n/g,'<br>')+'</div>'+link+'</details></article>';
+ }).join('')+'</div></div>';
+}
+
 function hubLibrary(){
- const categories=[['all','جميع محتويات المكتبة'],['history','تاريخ الرياضيات'],['scholars','العلماء'],['daily_math','الرياضيات في الحياة'],['books','الكتب'],['exams','الاختبارات'],['question_bank','بنك الأسئلة'],['video','يوتيوب تعليمي'],['game','الألعاب'],['flash','الفلاشات']];
+ const categories=[['all','جميع محتويات المكتبة'],['history','تاريخ الرياضيات'],['scholars','📚 علماء الرياضيات ('+hn(hubScholarItems().length)+')'],['daily_math','الرياضيات في الحياة'],['books','الكتب'],['exams','الاختبارات'],['question_bank','بنك الأسئلة'],['video','يوتيوب تعليمي'],['game','الألعاب'],['flash','الفلاشات']];
  let chosen=hub.libraryCat;
  const filter=['all','history','scholars','daily_math','books','exams','question_bank','video','game','flash'].includes(chosen)?chosen:'all';
  return '<div class="container hub-page"><section class="hub-page-head"><span>المكتبة العامة</span><h1>معرفة رياضية مفتوحة للجميع</h1><p>من تاريخ الأرقام والعلماء إلى الاختبارات والأسئلة والكتب والفيديوهات التعليمية والألعاب والمحاكاة.</p>'+
  hubIcon('book-open','blue')+'</section>'+
  '<div class="hub-tabs">'+categories.map(([c,t])=>'<button type="button" data-hub-library="'+c+'"'+(filter===c?' class="selected"':'')+'>'+t+'</button>').join('')+'</div>'+
+ (filter==='all'?hubScholarDirectory():'')+
  '<section class="hub-main"><h2>'+hv(categories.find(x=>x[0]===filter)?.[1]||'المكتبة')+'</h2>'+
- hubResourceGrid(filter==='all'?['history','scholars','daily_math','books','exams','question_bank','video','game','flash','learning']: [filter])+
+ (filter==='scholars'?hubScholarEncyclopaedia():hubResourceGrid(filter==='all'?['history','daily_math','books','exams','question_bank','video','game','flash','learning']: [filter]))+
  '</section><section class="hub-main"><h2>بنك الأسئلة حسب المرحلة التعليمية</h2>'+
  '<div class="hub-audience">'+
  '<article><b>الصفوف ١–٤</b><p>مساحة لاستقبال التدريبات التأسيسية الملائمة للصفوف الأولى. لم تُنشر ملفات رسمية في هذه المجموعة بعد.</p></article>'+
@@ -495,6 +533,7 @@ const HUB_STAFF_BLOCKS=[
  ]],
  ['الموارد والمحتوى',[
   ['إدارة المكتبة العامة','book-open','إضافة وحذف ونشر مواد المكتبة','data-tab="hub_catalog"','purple'],
+  ['موسوعة علماء الرياضيات','landmark','إضافة وتحرير وحذف تراجم العلماء','data-tab="hub_catalog_scholars"','gold'],
   ['إدارة الألعاب والمسابقات','trophy','إضافة أو إخفاء مسابقات المنصة','data-tab="hub_catalog_contests"','gold'],
   ['بنك الأسئلة والاختبارات','file-text','نماذج سابقة وتدريبية','hub-staff="exams"','blue'],
   ['الموارد التعليمية','video','دروس وفيديوهات وتطبيقات وفلاشات','data-tab="hub_apps"','green']
@@ -511,7 +550,7 @@ function hubStaffNav(){
  const routes=[
   ['overview','الرئيسية'],['staff_hub','التحضير'],['students','تقويم الطلبة'],
   ['hub_apps','التطبيقات والبرامج'],['class_results','كشوف الشعب'],
-  ['hub_catalog','إدارة المحتوى'],['staff_contacts','التواصل المؤسسي'],
+  ['hub_catalog','إدارة المحتوى'],['hub_catalog_scholars','إدارة العلماء'],['staff_contacts','التواصل المؤسسي'],
   ['hub_inbox','الرسائل والدعم'],['hub_parent_codes','أولياء الأمور'],
   ['hub_print','مركز الطباعة']
  ];
@@ -548,7 +587,7 @@ async function hubLoadStaffStats(){
 async function hubLoadAdminCatalog(){
  if(!isAdmin())return;
  try{const d=await hubCall('catalog_admin',{},auth.token);hub.adminItems=d.items||[];hub.adminLoaded=true;
-  if(state.page==='dashboard'&&['hub_catalog','hub_catalog_contests'].includes(auth.section))render()}
+  if(state.page==='dashboard'&&['hub_catalog','hub_catalog_contests','hub_catalog_scholars'].includes(auth.section))render()}
  catch(err){hub.error=err.message}
 }
 async function hubLoadInbox(){
@@ -558,14 +597,14 @@ async function hubLoadInbox(){
  catch(err){hub.error=err.message}
 }
 function hubAdminCatalog(){
- const type=auth.section==='hub_catalog_contests'?'contest':null;
+ const type=auth.section==='hub_catalog_contests'?'contest':auth.section==='hub_catalog_scholars'?'scholars':null;
  const items=(hub.adminLoaded?hub.adminItems:hub.catalog).filter(x=>!type||x.category===type);
  const r=hub.adminEdit&&(!type||hub.adminEdit.category===type)?hub.adminEdit:null;
  const fields=['contest','history','scholars','daily_math','books','exams','question_bank','video','game','flash','cartoon','article','fun_book','learning','other'];
  return '<div class="container hub-admin-page">'+
  (typeof ssBanner==='function'?ssBanner('إدارة المكتبة والمسابقات','النشر والإخفاء والإضافة والحذف من حساب المشرف الرئيسي'):'')+
  hubStaffNav()+
- '<section class="hub-main"><h2>إضافة محتوى أو مسابقة</h2>'+
+ '<section class="hub-main"><h2>'+(type==='scholars'?'إضافة عالم أو تعديل سيرته':'إضافة محتوى أو مسابقة')+'</h2>'+
  '<p>تتحكم حالة «منشور» في ظهوره للزوار. يُسمح بإضافة رابط لعبة أو مصدر من موقع موثوق؛ لا تُحذف بيانات الطلاب أو نتائجهم عند إخفاء مسابقة من القائمة.</p>'+
  '<form id="hubCatalogForm" class="hub-admin-form"><div class="hub-form-grid">'+
  '<label>نوع المادة<select name="category">'+fields.map(cat=>'<option value="'+cat+'"'+((r?.category||type||'contest')===cat?' selected':'')+'>'+hv(H_CATEGORIES[cat])+'</option>').join('')+'</select></label>'+
@@ -775,7 +814,7 @@ const hubOriginalStaffPanel=staffPanel;
 staffPanel=function(){
  if(!canEdit())return hubOriginalStaffPanel();
  if(auth.section==='overview')return hubStaffDashboard();
- if(auth.section==='hub_catalog'||auth.section==='hub_catalog_contests'){
+ if(['hub_catalog','hub_catalog_contests','hub_catalog_scholars'].includes(auth.section)){
   if(!isAdmin())return '<div class="notice">تعديل الموارد والمسابقات متاح للمشرف الرئيسي فقط.</div>';
   return hubAdminCatalog();
  }
@@ -830,7 +869,7 @@ function hubSelectWork(tab){
 }
 function hubLoadForTab(id){
  if(!canEdit())return;
- if(['hub_catalog','hub_catalog_contests'].includes(id)&&isAdmin()&&!hub.adminLoaded)hubLoadAdminCatalog();
+ if(['hub_catalog','hub_catalog_contests','hub_catalog_scholars'].includes(id)&&isAdmin()&&!hub.adminLoaded)hubLoadAdminCatalog();
  if(id==='hub_inbox'&&!hub.inboxLoaded)hubLoadInbox();
  if(id==='overview'&&!hub.stats)hubLoadStaffStats();
  if(id==='hub_print'){
@@ -875,6 +914,11 @@ function hubAttach(){
  document.querySelectorAll('[data-hub-login]').forEach(x=>x.addEventListener('click',()=>hubSetLogin(x.dataset.hubLogin)));
  document.querySelectorAll('[data-hub-library]').forEach(x=>x.addEventListener('click',()=>{
   hub.libraryCat=x.dataset.hubLibrary;render();
+ }));
+ document.querySelectorAll('[data-hub-scholar-manager]').forEach(x=>x.addEventListener('click',()=>{
+  if(auth.user?.role!=='supervisor')return;
+  hub.adminEdit=null;auth.section='hub_catalog_scholars';route('dashboard');
+  if(!hub.adminLoaded)hubLoadAdminCatalog();
  }));
  document.querySelectorAll('[data-hub-fun]').forEach(x=>x.addEventListener('click',()=>{
   hub.funCat=x.dataset.hubFun;render();
