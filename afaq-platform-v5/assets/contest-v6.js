@@ -5,7 +5,7 @@ const GAME='https://xcwuwflggiwkehzquugz.supabase.co/functions/v1/afaq-contest-v
 const tokenKey='afaq_access_token_v2';
 
 /* Original synthesized motivational cues, stage celebrations and user-controlled sound. */
-let afaqAudioEnabled=localStorage.getItem('afaq_stars_sound')==='on';
+let afaqAudioEnabled=localStorage.getItem('afaq_stars_sound')!=='off';
 let afaqAudioContext=null, afaqLastEffect=0;
 const afaqReduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
 function afaqAudioContextReady(){
@@ -30,6 +30,23 @@ function afaqTune(stageNo,kind){
  };
  const pitches=motifs[kind]?.[Math.min(4,Math.max(0,stageNo-1))]||motifs.correct[0];
  pitches.forEach((f,i)=>afaqTone(f,i*(kind==='finish'?.125:.108),kind==='finish'?.27:.16,kind==='incorrect'?'triangle':'sine',kind==='incorrect'?.032:.055));
+}
+
+/* Contest bell cues are synthesized locally (no copyrighted audio file).
+   Browser audio may require the learner's first button click; all alarms also
+   have a visible text and numeric-clock counterpart. */
+const afaqCueHistory=new Set();
+function afaqOnceCue(key,cb){
+ if(afaqCueHistory.has(key))return false;
+ afaqCueHistory.add(key);cb();return true;
+}
+function afaqRisingBell(kind){
+ if(!afaqAudioEnabled)return;
+ const pitches=kind==='start'?[523,659,831,1047,1319]:
+  kind==='break'?[392,494,622,784,988]:
+  kind==='long'?[415,523,659,831]:
+  [659,784,988,1175];
+ pitches.forEach((freq,i)=>afaqTone(freq,i*.145,.31,'triangle',.06+i*.006));
 }
 function afaqDecorate(kind='confetti',quantity=16){
  if(afaqReduceMotion())return;
@@ -58,16 +75,16 @@ const root=document.getElementById('contestApp');
 const stageInfo=[
  {title:'جامبول وداروين',desc:'بوابة الأعداد والمفاهيم',time:25,detail:'١٠ أسئلة — ٢٥ ثانية لكل سؤال'},
  {title:'عامر',desc:'تحدي المهارات',time:20,detail:'١٠ أسئلة — ٢٠ ثانية لكل سؤال'},
- {title:'ستيف',desc:'سباق السرعة',time:17,detail:'١٠ أسئلة — ١٧ ثانية لكل سؤال'},
- {title:'مستر بين',desc:'المختبر الرياضي',time:720,detail:'٤ مسائل مركبة — ١٢ دقيقة للمرحلة'},
- {title:'الأستاذ سعيد',desc:'تحدي الاستدلال',time:600,detail:'٤ مسائل مركبة — ١٠ دقائق للمرحلة'}
+ {title:'ستيف',desc:'سباق السرعة',time:20,detail:'١٠ أسئلة — ٢٠ ثانية لكل سؤال'},
+ {title:'مستر بين',desc:'المختبر الرياضي',time:600,detail:'٤ مسائل مركبة — ١٠ دقائق للمرحلة'},
+ {title:'الأستاذ سعيد',desc:'تحدي الاستدلال',time:300,detail:'٤ مسائل مركبة — ٥ دقائق للمرحلة'}
 ];
 const models={A:'المحاولة الرسمية الأولى',B:'المحاولة الرسمية الثانية',C:'نموذج الطالب',D:'نموذج الإدارة',E:'نموذج المشرف',F:'نموذج مساعد المشرف'};
 const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',supervisor_assistant:'F'};
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,access:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
+ waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'A',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const supervisor=()=>STATE.user?.role==='supervisor';
@@ -95,7 +112,7 @@ const codeError={unauthorized:'انتهت الجلسة، ادخل إلى منص�
  contest_student_closed:'🔒 أوقف المشرف دخول هذا الحساب إلى المسابقة مؤقتًا.',
  password_change_required:'🔒 غيّر رقمك السري بنفسك في حسابك بالمنصة، ثم عد إلى المسابقة.',
  attempt_limit:'استنفدت المحاولتين الرسميتين للوحدة. لا يمكنك إنشاء محاولة أخرى إلا بعد إعادة الضبط من المشرف.',previous_section_required:'أكمل الوحدة السابقة أولًا.',
- weekly_locked:'لم تمضِ أربعة أيام (٩٦ ساعة) على بدء الوحدة السابقة بعد. تُفتح الوحدة التالية بعد انقضاء المدة وإكمال الوحدة السابقة.',official_model_not_approved:'لم تُعتمد أسئلة المنافسة الرسمية بعد، ويمكنك استخدام التدريب.',
+ stage_break_active:'🔔 الاستراحة إلزامية؛ تبدأ المرحلة التالية بعد اكتمال الدقيقتين.',weekly_locked:'لم تمضِ أربعة أيام (٩٦ ساعة) على بدء الوحدة السابقة بعد. تُفتح الوحدة التالية بعد انقضاء المدة وإكمال الوحدة السابقة.',official_model_not_approved:'لم تُعتمد أسئلة المنافسة الرسمية بعد، ويمكنك استخدام التدريب.',
  question_bank_incomplete:'لا تزال بعض الأسئلة قيد المراجعة.',stage_start_required:'اضغط إذن بدء المرحلة أولًا.',stage_not_ready:'المرحلة ليست جاهزة للانطلاق.',question_sequence_changed:'تم تحديث تسلسل الأسئلة؛ عد إلى بوابة الوحدة واستأنف.',invalid_parts:'بيانات السؤال المركب غير صحيحة.'};
 async function request(endpoint,action,payload={}){
  let resp;try{resp=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',...(STATE.token?{Authorization:'Bearer '+STATE.token}:{})},body:JSON.stringify({action,...payload}),cache:'no-store'})}catch{throw Error('تعذر الاتصال بالإنترنت')}
@@ -265,13 +282,30 @@ function home(){
  '<div class="contest-start-wrap"><button class="primary" id="prepare" '+(allowed?'':'disabled')+'>'+(STATE.mode==='official'?'الاستعداد للمحاولة الرسمية':'بدء '+trainingTitle())+'</button></div>'+staffResults()+manager()+'</div>';
 }
 function readyPage(){
- const n=STATE.readyStage,st=stage(n);
+ const n=STATE.readyStage,st=stage(n),breakRequired=n>1&&STATE.stageBreakUntil>0;
+ const left=breakRequired?clockSec(STATE.stageBreakUntil):0;
+ const fraction=breakRequired?Math.max(0,Math.min(100,left/120*100)):0;
  return '<div class="contest-between-stages">'+(n>1?stageResultsPanel():'')+
- '<section class="stage-ready-page"><div class="ready-art">'+image(stageArt(n),st.title,'stage-ready-photo')+'</div><span class="ready-kicker">استعد للمرحلة '+stext(n)+' من ٥</span><h2>'+st.title+'</h2><h3>'+st.desc+'</h3>'+
- '<p>'+st.detail+' — أحضر تركيزك واستعد للتحدي. سيبدأ وقت المرحلة بعد موافقتك على الانطلاق.</p>'+
- '<div class="ready-rules">✔️ عرض الإجابة الصحيحة بالأخضر والخاطئة بالأحمر • ✔️ الدرجة والنسبة بعد كل سؤال • ✔️ نتائج كل مرحلة • ✔️ الانتقال بعد ٥ ثوانٍ</div>'+
+ '<section class="stage-ready-page '+(breakRequired?'contest-stage-rest':'')+'"><div class="ready-art">'+
+ image(stageArt(n),st.title,'stage-ready-photo')+'</div>'+
+ '<span class="ready-kicker">استعد للمرحلة '+stext(n)+' من ٥</span><h2>'+st.title+'</h2><h3>'+st.desc+'</h3>'+
+ '<p>'+st.detail+(breakRequired?' — استراحة إلزامية مدتها دقيقتان قبل المرحلة التالية.':' — أحضر تركيزك واستعد للتحدي.')+'</p>'+
+ (breakRequired?'<div class="contest-break-panel" aria-label="الاستراحة بين مراحل المسابقة">'+
+ '<span class="contest-break-caption">⏳ الوقت المتبقي لبداية المرحلة التالية</span>'+
+ '<strong class="contest-digital-clock" id="contestBreakClock" role="timer" aria-live="off">'+tformat(left,n)+'</strong>'+
+ '<div class="contest-break-progress"><i id="contestBreakBar" style="width:'+fraction+'%"></i></div>'+
+ '<p id="contestBreakStatus" role="status">'+(left<=20?'🔔 اقترب موعد الانطلاق. استعد الآن!':'ستسمع تنبيهًا تصاعديًا عند بقاء ٢٠ ثانية، ثم جرس بدء المرحلة.')+'</p>'+
+ '<div id="contestBreakReadyStatus" class="contest-break-ready" role="status">'+
+ (STATE.breakReady?'✅ تم تسجيل استعدادك. ستبدأ المرحلة تلقائيًا عند انتهاء الدقيقتين.':
+ 'يمكنك إعلان استعدادك الآن؛ وحتى إن لم تفعل فستبدأ المرحلة تلقائيًا عند نهاية الاستراحة.')+
+ '</div></div>':'')+
+ '<div class="ready-rules">✔️ '+(breakRequired?'فاصل ٠٢:٠٠ ثابت • انطلاق تلقائي • جرس قبل ٢٠ ثانية':'يمكنك بدء المرحلة الأولى الآن')+
+ ' • ✔️ التصحيح بعد كل سؤال • ✔️ تنبيه قبل نهاية وقت الإجابة</div>'+
  (STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+
- '<div class="ready-buttons"><button class="primary" id="beginStage" '+(STATE.busy?'disabled':'')+'>✅ أوافق على بدء المرحلة — انطلق!</button><button class="outline" id="exitStage">العودة إلى لوحة الوحدات</button></div></section></div>';
+ '<div class="ready-buttons"><button class="primary" id="beginStage" '+
+ (STATE.busy||breakRequired&&STATE.breakReady?'disabled':'')+'>'+
+ (breakRequired?(STATE.breakReady?'✅ أنا مستعد للمرحلة القادمة':'✅ أنا مستعد وسأكمل'):'✅ أوافق على بدء المرحلة — انطلق!')+
+ '</button><button class="outline" id="exitStage">العودة إلى لوحة الوحدات</button></div></section></div>';
 }
 function figure(q){const svg=String(q?.visual_svg||'');if(!svg.trim().startsWith('<svg')||svg.length>22000)return '';
  const safeSvg='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
@@ -282,7 +316,7 @@ function remaining(){const q=getCurrent();if(!q)return 0;const st=stage(q.stage)
  if(q.stage<=3)return clockSec(STATE.started+st.time*1000);
  return clockSec(STATE.stageStarted+st.time*1000);
 }
-function tformat(seconds,which){return which<=3?seconds+' ث':String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
+function tformat(seconds,which){return String(Math.floor(Math.max(0,seconds)/60)).padStart(2,'0')+':'+String(Math.max(0,seconds)%60).padStart(2,'0')}
 
 const nscore=v=>Number.isFinite(Number(v))?Number(v):0;
 const stext=v=>new Intl.NumberFormat('ar-OM',{maximumFractionDigits:2}).format(Math.round(nscore(v)*100)/100);
@@ -609,7 +643,7 @@ function studentGateLock(){
  '<a class="outline" href="index.html#dashboard">العودة إلى حسابي</a></div>';
 }
 function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><div class="contest-guest-links"><a href="index.html#competition" class="primary">🔐 الدخول بالحساب المعتمد</a> <a href="index.html#home" class="outline">📚 التصفح كضيف دون تسجيل دخول</a></div></div>'}
-function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
+function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);afaqCueHistory.clear();STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.stageBreakUntil=0;STATE.breakReady=false;STATE.breakAutoBusy=false;STATE.hintFor=null;STATE.audioNotice='';STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
  root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():student()&&STATE.access?.allowed===false?studentGateLock():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
   if(isTester()&&!document.getElementById('leaveTester'))root.insertAdjacentHTML('afterbegin',
@@ -617,25 +651,69 @@ function render(){clearInterval(STATE.timer);const showQ=getCurrent();
    '<button class="outline" id="leaveTester">العودة إلى دائرة الإشراف</button></div>');
   root.insertAdjacentHTML('beforeend',afaqSoundButton());bind();document.getElementById('afaqSoundToggle')?.addEventListener('click',()=>{afaqAudioEnabled=!afaqAudioEnabled;localStorage.setItem('afaq_stars_sound',afaqAudioEnabled?'on':'off');if(afaqAudioEnabled){afaqAudioContextReady();afaqTune(STATE.feedbackStage||1,'start')}render()});
  if(STATE.waitingUntil>Date.now()){tickTransition();return}
+ if(STATE.readyStage>1&&STATE.stageBreakUntil){tickBreak();return}
  if(showQ&&!STATE.readyStage&&!STATE.result)tickGame();
 }
 function tickTransition(){clearInterval(STATE.timer);STATE.timer=setInterval(()=>{const left=clockSec(STATE.waitingUntil);const place=document.getElementById('nextCountdown');if(place)place.textContent=stext(left);if(left===0){clearInterval(STATE.timer);STATE.waitingUntil=0;render()}},150)}
+
+function tickBreak(){
+ clearInterval(STATE.timer);
+ const execute=()=>{
+  if(STATE.busy||!STATE.readyStage||!STATE.stageBreakUntil)return;
+  const left=clockSec(STATE.stageBreakUntil);
+  const label=document.getElementById('contestBreakClock');
+  const fill=document.getElementById('contestBreakBar');
+  const status=document.getElementById('contestBreakStatus');
+  if(label)label.textContent=tformat(left,STATE.readyStage);
+  if(fill)fill.style.width=Math.max(0,Math.min(100,left/120*100))+'%';
+  if(status&&left<=20&&left>0)status.textContent='🔔 الاستعداد النهائي: تبقى '+left+' ثانية للانطلاق التلقائي.';
+  const k='break|'+STATE.stageBreakUntil+'|'+STATE.readyStage;
+  if(left>0&&left<=20)afaqOnceCue(k+'|20',()=>afaqRisingBell('break'));
+  if(left>0&&left<=5)afaqOnceCue(k+'|5',()=>afaqRisingBell('short'));
+  if(left===0){
+   clearInterval(STATE.timer);
+   afaqOnceCue(k+'|start',()=>afaqRisingBell('start'));
+   if(!STATE.breakAutoBusy){STATE.breakAutoBusy=true;beginStage(true).finally(()=>{STATE.breakAutoBusy=false});}
+  }
+ };
+ execute();
+ if(STATE.readyStage&&STATE.stageBreakUntil>Date.now())STATE.timer=setInterval(execute,200);
+}
 function tickGame(){clearInterval(STATE.timer);STATE.timer=setInterval(()=>{
  const q=getCurrent();if(!q||STATE.busy||STATE.readyStage||STATE.waitingUntil)return;
  const sec=remaining(),label=document.getElementById('contestClock'),line=document.getElementById('contestTimerBar');
  if(label)label.textContent=tformat(sec,q.stage);
  if(line)line.style.width=Math.max(0,Math.min(100,sec/stage(q.stage).time*100))+'%';
+ const warning=q.stage<=3?5:90;
+ const id=q.stage<=3?'q|'+q.id+'|'+STATE.started:'stage|'+q.stage+'|'+STATE.stageStarted;
+ if(sec>0&&sec<=warning)afaqOnceCue(id+'|warning',()=>{
+  afaqRisingBell(q.stage<=3?'short':'long');
+  const notice=document.getElementById('contestTimeWarning');
+  if(notice)notice.textContent='🔔 تبقّى '+tformat(sec,q.stage)+' على '+(q.stage<=3?'السؤال':'المرحلة')+'.';
+ });
  if(sec<=0){clearInterval(STATE.timer);q.stage<=3?submitResponse(null,true):expireStage()}
 },200)}
 function prepare(){resetPlay();STATE.readyStage=1;render()}
-async function beginStage(){if(STATE.busy||!STATE.readyStage)return;afaqTune(STATE.readyStage,'start');STATE.busy=true;STATE.error='';try{
+async function beginStage(automatic=false){
+ if(STATE.busy||!STATE.readyStage)return;
+ if(STATE.readyStage>1&&STATE.stageBreakUntil>Date.now()){
+  STATE.breakReady=true;
+  const label=document.getElementById('contestBreakReadyStatus');
+  if(label)label.textContent='✅ تم تسجيل استعدادك. يبدأ التحدي تلقائيًا عند اكتمال الدقيقتين.';
+  const button=document.getElementById('beginStage');
+  if(button){button.disabled=true;button.textContent='✅ أنت مستعد للمرحلة التالية'}
+  return;
+ }
+ afaqTune(STATE.readyStage,'start');
+ STATE.busy=true;STATE.error='';try{
  if(STATE.mode==='official'){
    const r=STATE.attemptId&&STATE.readyStage>1?await back('begin_stage',{attempt_id:STATE.attemptId}):await back('start',{grade:STATE.grade,section:STATE.section});
-   if(r.stage_ready){STATE.readyStage=r.stage_number;STATE.attemptId=r.attempt_id||STATE.attemptId;STATE.attemptNo=r.attempt_no||STATE.attemptNo;}
-   else{STATE.question=r.question;STATE.index=r.index;STATE.attemptId=r.attempt_id||STATE.attemptId;STATE.attemptNo=r.attempt_no||STATE.attemptNo;STATE.started=Date.parse(r.question_started_at)||Date.now();STATE.stageStarted=Date.parse(r.stage_started_at)||Date.now();STATE.readyStage=0;}
+   if(r.stage_ready){STATE.readyStage=r.stage_number;STATE.attemptId=r.attempt_id||STATE.attemptId;STATE.attemptNo=r.attempt_no||STATE.attemptNo;
+     STATE.stageBreakUntil=Date.parse(r.break_ends_at)||Date.now()+120000;STATE.breakReady=false;}
+   else{STATE.question=r.question;STATE.index=r.index;STATE.attemptId=r.attempt_id||STATE.attemptId;STATE.attemptNo=r.attempt_no||STATE.attemptNo;STATE.started=Date.parse(r.question_started_at)||Date.now();STATE.stageStarted=Date.parse(r.stage_started_at)||Date.now();STATE.readyStage=0;STATE.stageBreakUntil=0;STATE.breakReady=false;}
  }else{
    if(STATE.questions.length===0){const r=await back('training',{grade:STATE.grade,section:STATE.section});STATE.questions=r.questions||[];STATE.index=0;if(STATE.questions.length!==38)throw Error('بنك التدريب غير مكتمل')}
-   STATE.started=Date.now();STATE.stageStarted=Date.now();STATE.readyStage=0;
+   STATE.started=Date.now();STATE.stageStarted=Date.now();STATE.readyStage=0;STATE.stageBreakUntil=0;STATE.breakReady=false;
  }
 }catch(err){STATE.error=err.message}finally{STATE.busy=false;render()}}
 function getParts(){const q=getCurrent();return(q?.parts||[]).map((p,i)=>p.type==='choice'?document.querySelector('input[name="part'+i+'"]:checked')?.value??null:document.querySelector('[data-part="'+i+'"]')?.value?.trim()??null)}
@@ -655,7 +733,7 @@ async function submitResponse(answer,expired=false){
    feedback=r.feedback||null;
    STATE.answers[q.id]=expired?null:answer;STATE.index++;
    if(STATE.index>=STATE.questions.length)await completeTraining();
-   else if(STATE.questions[STATE.index].stage!==previousStage){STATE.readyStage=STATE.questions[STATE.index].stage;STATE.started=0;STATE.stageStarted=0;}
+   else if(STATE.questions[STATE.index].stage!==previousStage){STATE.readyStage=STATE.questions[STATE.index].stage;STATE.stageBreakUntil=Date.now()+120000;STATE.breakReady=false;STATE.started=0;STATE.stageStarted=0;}
    else{STATE.started=Date.now()+5000;STATE.waitingUntil=STATE.started;if(previousStage>=4)STATE.stageStarted+=5000;}
    if(STATE.readyStage||STATE.result)STATE.waitingUntil=Date.now()+5000;
   }
@@ -670,8 +748,8 @@ async function submitResponse(answer,expired=false){
 function adoptOfficial(r){
  if(r.finished){STATE.result={...r,training:false};STATE.report=r.report||STATE.report;STATE.question=null;STATE.questions=[];return}
  STATE.index=r.index;
- if(r.stage_ready){STATE.question=null;STATE.readyStage=r.stage_number;STATE.started=0;STATE.stageStarted=0;return}
- STATE.question=r.question;STATE.started=Date.parse(r.question_started_at)||Date.now();STATE.stageStarted=Date.parse(r.stage_started_at)||Date.now();
+ if(r.stage_ready){STATE.question=null;STATE.readyStage=r.stage_number;STATE.stageBreakUntil=Date.parse(r.break_ends_at)||Date.now()+120000;STATE.breakReady=false;STATE.started=0;STATE.stageStarted=0;return}
+ STATE.question=r.question;STATE.stageBreakUntil=0;STATE.breakReady=false;STATE.started=Date.parse(r.question_started_at)||Date.now();STATE.stageStarted=Date.parse(r.stage_started_at)||Date.now();
 }
 async function expireStage(){if(STATE.busy||STATE.readyStage)return;const skippedStage=getCurrent()?.stage;STATE.busy=true;clearInterval(STATE.timer);try{
  if(STATE.mode==='official'){const r=await back('skip_stage',{attempt_id:STATE.attemptId,index:STATE.index});adoptOfficial(r)}
