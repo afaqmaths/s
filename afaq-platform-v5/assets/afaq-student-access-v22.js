@@ -155,15 +155,20 @@ async function as22RefreshAndRender(){
  await arLoadAdmin();
  render();
 }
-/* Official 100-point register: direct behavior-note access beside every student, not a global remark only. */
-const as22PreviousOfficialName=ofNameCell;
-ofNameCell=function(student){
- const html=as22PreviousOfficialName(student);
+/* Open the same protected student grades and notes from the serial number,
+   removing the behavior link that previously crowded each student's name. */
+const as22PreviousOfficialRow=ofRow;
+ofRow=function(student){
+ const html=as22PreviousOfficialRow(student);
  if(!as22Allowed())return html;
- const label='<button type="button" class="as22-official-note" data-as22-official-note="'+
- as22T(student.serial_no)+'" data-as22-official-class="'+as22T(ofState.className)+'">'+
- '📝 ملاحظات سلوكية</button>';
- return html.replace('</div>',label+'</div>');
+ const oldCell='<th class="of-serial">'+ofNumber(student.serial_no)+'</th>';
+ if(!html.includes(oldCell))return html;
+ const serial=as22T(student.serial_no);
+ const button='<button type="button" class="as22-official-serial" data-as22-official-note="'+
+  serial+'" data-as22-official-class="'+as22T(ofState.className)+'"'+
+  ' aria-label="فتح ملف درجات وملاحظات الطالب رقم '+serial+'"'+
+  ' title="فتح ملف درجات الطالب وملاحظاته">'+ofNumber(student.serial_no)+'</button>';
+ return html.replace(oldCell,'<th class="of-serial">'+button+'</th>');
 };
 const as22PreviousAttachPortal=attachPortal;
 attachPortal=function(){
