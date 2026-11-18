@@ -85,7 +85,7 @@ const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',su
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,access:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,allModelBanks:null,allBanksSection:0,modelNotice:'',reminders:[],pendingApprovals:0,reminderError:'',reminderShowAll:false,reminderBusy:false,reminderNewCount:0,loginRole:'student',loginMessage:'',loginBusy:false,editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
+ waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,allModelBanks:null,allBanksSection:0,modelNotice:'',modelBulkBusy:false,reminders:[],pendingApprovals:0,reminderError:'',reminderShowAll:false,reminderBusy:false,reminderNewCount:0,loginRole:'student',loginMessage:'',loginBusy:false,editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const supervisor=()=>STATE.user?.role==='supervisor';
@@ -379,6 +379,10 @@ function contestModelTools(){
  '<div class="contest-model-actions"><button id="loadModelSummary" class="primary">مراجعة العشرة نماذج</button>'+
  '<button id="loadAllContestBanks" class="outline">📚 عرض أسئلة جميع النماذج العشرة وصورها</button>'+
  '<button id="loadModelAssignments" class="outline">كشف توزيع نماذج الطلاب</button></div>'+
+  '<div class="contest-model-actions" style="border:1px solid #d7dfed;border-radius:12px;padding:12px;margin:12px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center">'+
+  '<button type="button" class="primary" id="approveAllContestModels" '+(STATE.modelBulkBusy?'disabled':'')+'>✅ اعتماد جميع النماذج لجميع الشعب والوحدات الأربع (٤٠ نموذجًا)</button>'+
+  '<button type="button" class="outline" id="approveCurrentContestModels" '+(STATE.modelBulkBusy?'disabled':'')+'>اعتماد نماذج الوحدة الحالية لجميع الشعب (١٠ نماذج)</button></div>'+
+  '<p class="contest-model-note" role="status" aria-live="polite">'+friendly(STATE.modelNotice||'الاعتماد يتيح النماذج لجميع طلاب الشعب السادس / ٤ و السادس / ٥ و السادس / ٦، ولا يختص بطالب أو شعبة واحدة. راجع الأسئلة والإجابات أولًا.')+'</p>'+
  contestAllBanksView()+
  (summaries.length?'<div class="contest-model-summary">'+summaries.map(m=>
  '<div><strong>النموذج '+friendly(m.model)+'</strong><span>'+m.questions+'/٣٨ سؤال • '+m.images+' رسم • '+m.objectives+' هدف</span>'+
@@ -1297,6 +1301,26 @@ function bind(){
    ev.target.reset();status.textContent='نجح تغيير رقمك السري. استعمل الرقم الجديد في الدخول القادم.';
   }catch(err){status.textContent=err.message}
  });
+ async function approveContestModelsBulk(scope){
+  if(!supervisor()||isTester()||STATE.grade!==6||STATE.modelBulkBusy)return;
+  const all=scope==='all';
+  const target=all?'النماذج الأربعين في الوحدات الأربع':'النماذج العشرة في الوحدة الحالية';
+  if(!window.confirm('هل راجعت أسئلة ورسومات وإجابات '+target+' وتؤكد اعتمادها رسميًا لجميع طلاب الشعب السادس / ٤ و السادس / ٥ و السادس / ٦ دفعة واحدة؟\nلن يتأثر توزيع النماذج ولا المحاولات التي بدأت.'))return;
+  STATE.modelBulkBusy=true;
+  STATE.modelNotice='جارٍ فحص اكتمال الأسئلة واعتماد '+target+' لجميع الشعب...';
+  render();
+  try{
+   const r=await back('publish_models_bulk',{scope,section:STATE.section,confirmed:true});
+   STATE.modelNotice='✅ تم اعتماد '+r.published_count+' نموذجًا لجميع الشعب الثلاث '+(all?'في الوحدات الأربع.':'في هذه الوحدة.')+' يمكنك متابعة حالة الاعتماد من الملخص.';
+   try{STATE.catalog=(await back('catalog')).models||[]}catch{}
+   try{STATE.modelSummary=await back('model_bank_summary',{grade:6,section:STATE.section})}catch{}
+   try{await loadSupervisorReminders()}catch{}
+  }catch(err){
+   STATE.modelNotice='تعذر الاعتماد الجماعي: '+(err.message||'خطأ غير معروف')+'. لم يُعتمد أي نموذج جديد في هذه العملية.';
+  }finally{STATE.modelBulkBusy=false;render()}
+ }
+ document.getElementById('approveAllContestModels')?.addEventListener('click',()=>approveContestModelsBulk('all'));
+ document.getElementById('approveCurrentContestModels')?.addEventListener('click',()=>approveContestModelsBulk('unit'));
  document.getElementById('loadModelSummary')?.addEventListener('click',async()=>{
   try{STATE.modelSummary=await back('model_bank_summary',{grade:6,section:STATE.section});STATE.modelNotice='تم تحميل نماذج هذه الوحدة.';render()}
   catch(err){STATE.modelNotice=err.message;render()}
