@@ -413,7 +413,7 @@ function quiz(){const q=getCurrent();if(!q)return '';
  '<p class="contest-audio-status" id="contestAudioStatus" role="status"></p>'+
  '<div id="contestHintText" class="contest-hint-box" '+(STATE.hintFor===q.id?'':'hidden')+'>'+friendly(contestHint(q))+'</div>';
  return '<div class="contest-playing"><div class="contest-headline"><div><span>'+(STATE.mode==='official'?'🏆 المحاولة الرسمية':'🎯 '+trainingTitle())+'</span><h2>'+unitName(STATE.grade,STATE.section)+'</h2><small>'+friendly(STATE.displayName||STATE.user?.username||'الطالب')+'</small></div><div class="contest-score-badge"><strong>٥٠ ← ١٠٠</strong><small>أفضل نتيجة</small></div></div>'+road(q.stage)+raceTrack(q,false)+
- '<div class="contest-game-area"><div class="contest-stage-banner"><div class="contest-character">'+image(stageArt(q.stage),st.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+q.stage+' من ٥ — ١٠ درجات</span><h2>'+st.title+'</h2><p>'+st.desc+'</p></div><div class="contest-timer"><strong id="contestClock">'+tformat(seconds,q.stage)+'</strong><small>'+(q.stage<=3?'وقت السؤال':'وقت المرحلة')+'</small><span class="contest-timerline"><i id="contestTimerBar" style="width:'+frac+'%"></i></span></div></div><div class="contest-question-meta"><span>السؤال '+n+' من '+(q.stage<=3?10:4)+'</span><span>التقدم '+(STATE.index+1)+' / ٣٨</span><span>'+(isMulti?'مسألة متعددة الأجزاء':'اختيار من متعدد')+'</span></div><div class="contest-question"><h3>'+contestReadable(q.prompt)+'</h3>'+figure(q)+helpTools+choices+
+ '<div class="contest-game-area"><div class="contest-stage-banner"><div class="contest-character">'+image(stageArt(q.stage),st.title,'stage-banner-photo')+'</div><div><span class="contest-label">المرحلة '+q.stage+' من ٥ — ١٠ درجات</span><h2>'+st.title+'</h2><p>'+st.desc+'</p></div><div class="contest-timer"><strong id="contestClock">'+tformat(seconds,q.stage)+'</strong><small>'+(q.stage<=3?'وقت السؤال':'وقت المرحلة')+'</small><span class="contest-timerline"><i id="contestTimerBar" style="width:'+frac+'%"></i></span><small class="contest-clock-warning" id="contestTimeWarning" role="status">'+(seconds<=(q.stage<=3?5:90)?'🔔 بقي وقت قليل، استعد لإنهاء الإجابة.':'')+'</small></div></div><div class="contest-question-meta"><span>السؤال '+n+' من '+(q.stage<=3?10:4)+'</span><span>التقدم '+(STATE.index+1)+' / ٣٨</span><span>'+(isMulti?'مسألة متعددة الأجزاء':'اختيار من متعدد')+'</span></div><div class="contest-question"><h3>'+contestReadable(q.prompt)+'</h3>'+figure(q)+helpTools+choices+
  '<div class="contest-help" id="contestHelp">'+friendly(STATE.feedback||('ركز يا '+(STATE.user?.username||'بطل')+'، ثم أجب عن السؤال.'))+'</div></div><div class="contest-controls">'+(isMulti?'<button id="sendComplex" class="primary">✅ إرسال الإجابات والمتابعة</button>':'<p class="auto-answer-hint">اختر الإجابة لعرض التصحيح والتعزيز ثم الانتقال تلقائيًا بعد ٥ ثوانٍ.</p>')+'<button id="finishEarly" class="outline">إنهاء '+(STATE.mode==='official'?'المحاولة':'التدريب')+' الآن</button></div>'+
  (STATE.error?'<div class="notice">'+friendly(STATE.error)+'</div>':'')+'</div></div>';
 }
@@ -784,11 +784,12 @@ async function beginStage(automatic=false){
    STATE.started=Date.now();STATE.stageStarted=Date.now();STATE.readyStage=0;STATE.stageBreakUntil=0;STATE.breakReady=false;
  }
 }catch(err){STATE.error=err.message}finally{STATE.busy=false;render()}}
-function getParts(){const q=getCurrent();return(q?.parts||[]).map((p,i)=>p.type==='choice'?document.querySelector('input[name="part'+i+'"]:checked')?.value??null:document.querySelector('[data-part="'+i+'"]')?.value?.trim()??null)}
+function getParts(){const q=getCurrent();return(q?.parts||[]).map((p,i)=>p.type==='choice'?document.querySelector('input[name="part'+i+'"]:checked')?.value??null:contestToASCII(document.querySelector('[data-part="'+i+'"]')?.value?.trim()??null))}
 async function submitResponse(answer,expired=false){
  if(STATE.busy||STATE.waitingUntil||STATE.readyStage)return;
  const q=getCurrent();if(!q)return;STATE.busy=true;clearInterval(STATE.timer);STATE.error='';
  const previousStage=q.stage;
+ STATE.hintFor=null;STATE.audioNotice='';try{window.speechSynthesis?.cancel()}catch{}
  try{
   let feedback=null;
   if(STATE.mode==='official'){
@@ -893,6 +894,34 @@ function bind(){if(!STATE.user)return;
  document.getElementById('beginStage')?.addEventListener('click',beginStage);
  document.getElementById('exitStage')?.addEventListener('click',()=>{if(STATE.attemptId&&STATE.mode==='official'){if(!window.confirm('ستظل المحاولة الرسمية محفوظة ويمكن استكمالها عند العودة. هل تريد الخروج؟'))return}resetPlay();render()});
  document.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-choice]').forEach(x=>x.disabled=true);btn.classList.add('selected');submitResponse(Number(btn.dataset.choice))}));
+ document.getElementById('contestHintButton')?.addEventListener('click',()=>{
+  const q=getCurrent();if(!q)return;
+  STATE.hintFor=STATE.hintFor===q.id?null:q.id;
+  const box=document.getElementById('contestHintText');
+  const button=document.getElementById('contestHintButton');
+  if(box)box.hidden=STATE.hintFor!==q.id;
+  if(button){button.setAttribute('aria-expanded',String(STATE.hintFor===q.id));
+   button.textContent=STATE.hintFor===q.id?'💡 إخفاء التلميح':'💡 تلميح مساعد';}
+ });
+ document.getElementById('contestListenButton')?.addEventListener('click',()=>{
+  const q=getCurrent();if(q&&contestSpecial(q)==='voice')contestSpeakQuestion(q);
+ });
+ document.getElementById('contestDigitsToggle')?.addEventListener('click',()=>{
+  STATE.digitStyle=STATE.digitStyle==='ar'?'en':'ar';render();
+ });
+ document.getElementById('contestNumericForm')?.addEventListener('submit',event=>{
+  event.preventDefault();
+  const q=getCurrent();if(!q||contestSpecial(q)!=='number')return;
+  const answer=contestToASCII(document.getElementById('contestNumericInput')?.value||'');
+  const optionIndex=(q.options||[]).findIndex(x=>contestToASCII(x)===answer);
+  if(optionIndex<0){
+   const msg=document.getElementById('contestNumericError');
+   if(msg)msg.textContent='اكتب أحد الأعداد الظاهرة بالأرقام العربية ١٢٣ أو الإنجليزية 123.';
+   return;
+  }
+  const submit=event.currentTarget.querySelector('button');if(submit)submit.disabled=true;
+  submitResponse(optionIndex);
+ });
  document.getElementById('sendComplex')?.addEventListener('click',()=>submitResponse(getParts()));
  document.getElementById('finishEarly')?.addEventListener('click',finishEarly);
  document.getElementById('printCertificate')?.addEventListener('click',()=>window.print());
