@@ -126,13 +126,14 @@ function ofBehaviorContent(s){
  const student=ofBehaviorStudent(s);
  if(!student)return '<small class="of-behavior-pending">تعذرت مطابقة الطالب مع سجل الملاحظات. لا يمكن عرض عدد مؤكد.</small>';
  const notes=ofBehaviorNotes(s),hidden=!!b.hidden[key];
+ const hasRemarks=!!String(s.marks?.remarks||'').trim();
  const count='<div class="of-behavior-summary"><strong>عدد الملاحظات: '+ofNumber(notes.length)+'</strong>'+
   '<div class="of-behavior-summary-actions">'+
   '<button type="button" data-of-behavior-hide="'+serial+'" aria-label="'+(hidden?'إظهار':'إخفاء')+' ملاحظات الطالب" '+
-  (notes.length?'':'disabled')+'>'+(hidden?'◉ إظهار':'◉ إخفاء')+'</button>'+
+  (notes.length||hasRemarks?'':'disabled')+'>'+(hidden?'◉ إظهار':'◉ إخفاء')+'</button>'+
   '<button type="button" data-of-behavior-print="'+serial+'" aria-label="طباعة ملاحظات الطالب" title="طباعة جميع الملاحظات السلوكية واليومية لهذا الطالب مباشرة" '+
   (notes.length?'':'disabled')+'>🖨 طباعة</button></div></div>';
- const list=hidden?'<p class="of-behavior-muted">الملاحظات مخفية في هذا الكشف فقط؛ لم تُحذف.</p>':
+ const list=hidden?'<p class="of-behavior-muted">الملاحظات السلوكية واليومية مخفية في هذه الخانة، ولن تظهر الملاحظات في شهادة الطالب. لم تُحذف البيانات.</p>':
   (notes.length?'<ol class="of-behavior-history">'+notes.map(n=>
    '<li><time><span class="of-behavior-type">'+(n.category==='daily'?'يومية':'سلوكية')+'</span> • '+ofSafe(n.note_date||'بدون تاريخ')+'</time><span>'+ofSafe(n.description||'ملاحظة محفوظة')+'</span>'+
    (n.action_taken?'<small>الإجراء: '+ofSafe(n.action_taken)+'</small>':'')+'</li>').join('')+'</ol>':
@@ -628,8 +629,9 @@ function ofCertificateAction(mode){
   window.alert('احفظ جميع التعديلات أولًا؛ الشهادة تعكس الدرجات المحفوظة فقط.');return;
  }
  const b=ofState.behavior;
- if(ofEdit()&&(!b.loaded||b.token!==auth.token)){
-  window.alert('لم يكتمل تحميل الملاحظات. اضغط «تحديث الملاحظات السلوكية» قبل إصدار الشهادة.');return;
+ const hasHiddenNotes=!!b.hidden?.[ofState.className+'|'+Number(student.serial_no)];
+ if(ofEdit()&&!hasHiddenNotes&&(!b.loaded||b.token!==auth.token)){
+  window.alert('لم يكتمل تحميل الملاحظات. اضغط «تحديث الملاحظات السلوكية» قبل إصدار الشهادة أو اختر إخفاء الملاحظات لعدم إرفاقها.');return;
  }
  const html=ofCertificateDocument(student);
  if(mode==='download'){
