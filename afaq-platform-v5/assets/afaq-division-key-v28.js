@@ -35,7 +35,7 @@ function dk28Build(n,d,limit=8){
    'أنزل الرقم '+dk28Num(incoming)+' من منزلة '+place+' إلى يمين الباقي '+dk28Num(before)+'؛ فيصبح العدد '+dk28Num(part)+'.'));
   integerFrames.push(makeFrame(i,'divide','١ • أقسم','أقسم '+dk28Num(part)+' على '+dk28Num(d)+'؛ العدد الصحيح هو '+dk28Num(q)+'.'+(i===0&&q===0&&digits.length>1?' لا أكتب الصفر في بداية خارج القسمة، لكنني أحفظ منزلته.':'')));
   wholeDigits+=String(q);
-  integerFrames.push(makeFrame(i,'write','٢ • أكتب','أكتب '+dk28Num(q)+' في خارج القسمة، فوق منزلة '+place+'.'));
+  integerFrames.push(makeFrame(i,'write','٢ • أكتب',(i===0&&q===0&&digits.length>1?'أضع الصفر مؤقتًا فوق منزلة '+place+' لفهم القسمة، ولا أكتبه في بداية خارج القسمة.':'أكتب '+dk28Num(q)+' في خارج القسمة، فوق منزلة '+place+'.')));
   integerFrames.push(makeFrame(i,'multiply','٣ • أضرب','أضرب '+dk28Num(q)+' × '+dk28Num(d)+' = '+dk28Num(product)+'.'));
   rem=after;
   integerFrames.push(makeFrame(i,'subtract','٤ • أطرح','أطرح '+dk28Num(part)+' − '+dk28Num(product)+' = '+dk28Num(after)+'.'+(i<digits.length-1?' الآن أستعد لإنزال المنزلة التالية.':' انتهت منازل المقسوم.')));
@@ -195,7 +195,7 @@ function dk28Page(){
  (dk28.started?'<section class="dk28-workspace"><div class="dk28-live">'+
  '<div class="dk28-section-heading"><span>١</span><div><h2>لوحة القسمة المطوّلة</h2><p>شاهد خارج القسمة يتكون رقمًا بعد رقم.</p></div></div>'+
  '<div class="dk28-bracket-panel"><div class="dk28-quotient-label">خارج القسمة حتى الآن</div>'+
- '<div class="dk28-top-answer" dir="ltr">'+dk28Esc(quo)+'</div>'+
+ '<div class="dk28-top-answer" dir="ltr">'+dk28Esc(quo)+'</div>'+ (ctx.frame?.keyShown?'<div class="dk28-key-open" role="status">🔑 فُتح مفتاح الفاصلة العشرية</div>':'')+
  '<div class="dk28-bracket" dir="ltr"><b>'+dk28Num(model.d)+'</b><div>'+digits+'</div></div>'+
  '<div class="dk28-bracket-legend">المقسوم عليه <span>✦</span> المقسوم حسب المنازل</div>'+
  '<div class="dk28-live-remainder">الباقي عند هذه الخطوة <strong>'+dk28Num(ctx.frame?.remainder??0)+'</strong></div></div>'+
