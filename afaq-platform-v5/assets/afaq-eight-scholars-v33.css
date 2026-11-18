@@ -1,0 +1,77 @@
+/* Afaq Math • mathematical history timeline for eight competition scholars */
+.afaq-scholars-encyclopedia{max-width:1320px;margin:12px auto 26px;font-family:Tahoma,Arial,sans-serif;color:#20435b}
+.afaq-scholars-header{
+ padding:26px 29px;border:1px solid #c5deeb;border-radius:22px;
+ background:linear-gradient(135deg,#e9f6fc,#fffdf4 50%,#f0f8ed);
+ box-shadow:0 11px 29px rgba(31,80,112,.07)
+}
+.afaq-scholars-eyebrow{display:inline-block;color:#267b87;background:#d6f0ec;padding:5px 12px;font-size:12px;
+ font-weight:950;letter-spacing:.2px;border-radius:999px}
+.afaq-scholars-header h2{font-size:clamp(23px,3vw,36px);color:#1c5376;line-height:1.5;margin:12px 0 8px}
+.afaq-scholars-header p{color:#45687a;line-height:2;font-size:15px;max-width:1050px;margin:8px 0}
+.afaq-scholars-header .afaq-scholars-time-note{font-size:12px;color:#6b726a;
+ padding:9px 13px;border-right:4px solid #dbb967;background:#fffaf0;border-radius:9px}
+.afaq-scholars-quicklinks{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0 20px;justify-content:flex-start}
+.afaq-scholars-quicklinks a{background:#f5f9ff;text-decoration:none;color:#275b83;
+ border:1px solid #b9d7ed;padding:9px 13px;border-radius:100px;font-size:12px;font-weight:950;
+ transition:background .2s ease,transform .2s ease}
+.afaq-scholars-quicklinks a:hover{background:#e3f2fa;transform:translateY(-2px)}
+.afaq-scholars-quicklinks a:focus-visible{outline:3px solid #3b9d82}
+.afaq-scholars-timeline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;align-items:stretch}
+.afaq-scholar-card{
+ min-width:0;overflow:hidden;display:flex;flex-direction:column;
+ border:1.5px solid #bbd2e1;border-radius:20px;background:white;
+ box-shadow:0 9px 28px rgba(31,80,112,.08);scroll-margin-top:110px
+}
+.afaq-scholar-card:nth-child(4n+1){border-top:7px solid #347d9e}
+.afaq-scholar-card:nth-child(4n+2){border-top:7px solid #d1a255}
+.afaq-scholar-card:nth-child(4n+3){border-top:7px solid #4d9d7a}
+.afaq-scholar-card:nth-child(4n+4){border-top:7px solid #b67e69}
+.afaq-scholar-top{display:grid;grid-template-columns:60px minmax(0,1fr);gap:12px;align-items:start;
+ padding:17px 18px 12px;direction:rtl}
+.afaq-scholar-order{display:grid;place-items:center;width:52px;height:52px;border:1.5px solid #a4cddd;
+ border-radius:16px;background:linear-gradient(145deg,#e7f8fc,#f4fbf5);
+ color:#206888;font-family:Arial,sans-serif;font-size:25px;font-weight:900}
+.afaq-scholar-era{font-size:12px;font-weight:950;color:#477d82}
+.afaq-scholar-top h3{font-size:clamp(20px,2.3vw,27px);line-height:1.55;margin:2px 0;color:#1b5c78}
+.afaq-scholar-dates{font-size:12px;color:#7b6341;margin:1px 0 11px;font-weight:900}
+.afaq-scholar-intro{color:#496b78;line-height:1.85;font-size:13px;margin:0}
+.afaq-scholar-details{padding:0 18px 15px;flex:1}
+.afaq-scholar-details>summary{display:flex;align-items:center;justify-content:space-between;
+ cursor:pointer;padding:12px 13px;background:#eaf5f9;border:1px solid #bed9e4;border-radius:11px;
+ list-style:none;color:#20567b;font-weight:950;font-size:12px;line-height:1.6}
+.afaq-scholar-details>summary::after{content:"＋";font-size:18px}
+.afaq-scholar-details[open]>summary::after{content:"−"}
+.afaq-scholar-details>summary::-webkit-details-marker{display:none}
+.afaq-scholar-detail-body{padding:5px 5px 0}
+.afaq-scholar-detail-body>p{font-size:13px;color:#445f70;line-height:2}
+.afaq-scholar-detail-body h4{font-size:15px;color:#28657d;margin:17px 0 7px}
+.afaq-scholar-detail-body ul{padding:0 22px 0 4px;margin:8px 0;display:grid;gap:10px;line-height:1.85;font-size:12.5px}
+.afaq-scholar-detail-body li{padding-inline-start:5px}
+.afaq-scholar-works li::marker{color:#398cab}
+.afaq-scholar-learning li::marker{color:#4da280}
+.afaq-scholar-challenge{font-size:12.5px;line-height:1.9;padding:12px 14px;margin:15px 0;
+ border-radius:12px;background:#fff7de;border-right:4px solid #d7b253}
+.afaq-scholar-source a{display:inline-block;text-decoration:underline;font-size:12px;font-weight:850;
+ line-height:1.8;color:#206993}
+.afaq-scholar-round{padding:11px 17px;margin-top:auto;background:#eff8f5;color:#37765e;
+ font-size:12px;font-weight:900;border-top:1px solid #d2e5db}
+.afaq-scholars-further{padding:16px;margin:16px 0;background:#eef7fc;border-radius:12px;
+ line-height:1.8;font-size:12px;color:#3a687d}
+.afaq-scholars-further a{color:#24688b;font-weight:850}
+.afaq-other-scholars{margin-top:17px;border:1px solid #cfdeea;border-radius:15px;padding:16px;background:#fafdfb}
+.afaq-other-scholars>summary{font-size:17px;cursor:pointer;font-weight:900;color:#2a6685}
+.afaq-other-scholars>p{font-size:12px;color:#55717f;line-height:1.8}
+@media(max-width:920px){
+ .afaq-scholars-timeline{grid-template-columns:minmax(0,1fr)}
+ .afaq-scholars-header{padding:20px}
+}
+@media(max-width:580px){
+ .afaq-scholars-header{padding:14px}
+ .afaq-scholars-header p{font-size:13px}
+ .afaq-scholar-top{grid-template-columns:42px minmax(0,1fr);padding:13px;gap:8px}
+ .afaq-scholar-order{width:40px;height:40px;font-size:19px;border-radius:10px}
+ .afaq-scholar-top h3{font-size:20px}
+ .afaq-scholar-details{padding:0 12px 12px}
+ .afaq-scholars-quicklinks a{font-size:11px;padding:7px}
+}
