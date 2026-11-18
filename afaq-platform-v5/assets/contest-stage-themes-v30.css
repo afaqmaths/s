@@ -226,8 +226,8 @@
 }
 .stage-theme-saeed.stage-ready-page::after,
 .stage-theme-saeed.contest-game-area::after{
- left:0;bottom:0;transform:rotate(180deg);
- clip-path:polygon(0 0,100% 0,100% 100%);
+ left:0;bottom:0;transform:none;
+ clip-path:polygon(0 0,100% 100%,0 100%);
 }
 .stage-theme-saeed.stage-ready-page,
 .stage-theme-saeed.contest-game-area{
