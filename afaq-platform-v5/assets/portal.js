@@ -18,7 +18,7 @@ const getRole=()=>auth.user?.role||'guest';
 function loginUi(){
  const r=document.getElementById('loginRole').value;
  // Two-field student form; grade and class are inferred securely from unique username.
- document.getElementById('loginGradeWrap').hidden=true;
+ document.getElementById('loginGradeWrap').hidden=r!=='demo';
  document.getElementById('loginClassWrap').hidden=true;
  const input=document.getElementById('loginUser');
  const lbl=document.getElementById('loginUserLabel');
@@ -43,7 +43,8 @@ function loginUi(){
 }
 function selectEntryGate(gate){
  const groups={
-  student:{roles:['student'],start:'student',title:'دخول الطالب — اسم المستخدم والرقم السري فقط'},
+  student:{roles:['student'],start:'student',title:'دخول طلاب صف 6 — اسم المستخدم والرقم السري'},
+  other_students:{roles:['demo'],start:'demo',title:'دخول طلاب الصفوف الأخرى (5، 7، 8)'},
   supervision:{roles:['supervisor','supervisor_assistant','it_viewer'],start:'supervisor',title:'دخول المشرفين — المشرف الرئيسي والمساعد وتقنية المعلومات'},
   management:{roles:['director','deputy'],start:'director',title:'الإدارة المدرسية — المدير ومساعد المدير'}
  };
@@ -58,8 +59,8 @@ function selectEntryGate(gate){
  if(!roleSelect)return;
  Array.from(roleSelect.options).forEach(o=>{o.hidden=!options.roles.includes(o.value)});
  roleSelect.value=options.start;
- roleSelect.hidden=gate==='student';
- document.getElementById('loginGroupCaption').hidden=gate==='student';
+ roleSelect.hidden=['student','other_students'].includes(gate);
+ document.getElementById('loginGroupCaption').hidden=['student','other_students'].includes(gate);
  document.getElementById('loginGroupCaption').textContent=options.title;
  document.querySelectorAll('[data-login-gate]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.loginGate===gate?'true':'false'));
  loginUi();document.getElementById('loginStatus').textContent='';
