@@ -85,7 +85,7 @@ const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',su
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,access:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,modelNotice:'',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
+ waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,allModelBanks:null,allBanksSection:0,modelNotice:'',editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const supervisor=()=>STATE.user?.role==='supervisor';
@@ -325,6 +325,39 @@ function manager(){
   '<button class="primary" id="tryContestModel" '+(STATE.grade===6&&numberedModels.includes(STATE.editModel)?'':'disabled')+'>🎮 تجربة النموذج بواجهة الطالب</button></div>'+
   (STATE.bank?bankView():'')+'</section>';
 }
+
+/* The ten-model review is supervisor-only, read-only, and does not publish.
+   Load in batches of two to avoid ten concurrent heavy SVG responses. */
+function contestAllBanksView(){
+ if(!supervisor()||isTester()||!STATE.allModelBanks||STATE.allBanksSection!==STATE.section)return '';
+ const bags=STATE.allModelBanks;
+ return '<section class="contest-all-banks" aria-label="استعراض النماذج العشرة">'+
+ '<h4>📚 أسئلة النماذج العشرة — معاينة للمشرف فقط</h4>'+
+ '<p>افتح النموذج المطلوب، ثم افتح السؤال لمراجعة الرسم والخيارات والإجابة الصحيحة. المحتوى هنا للقراءة فقط؛ التحرير والاعتماد من محرر النموذج المعتمد.</p>'+
+ numberedModels.map(model=>{
+  const record=bags[model];
+  if(!record)return '<div class="contest-all-bank-wait"><strong>النموذج '+model+'</strong> — لم يُحمّل بعد</div>';
+  if(record.error)return '<div class="contest-all-bank-error">النموذج '+model+': '+friendly(record.error)+'</div>';
+  const questions=record.questions||[];
+  return '<details class="contest-all-bank" data-bank="'+model+'">'+
+   '<summary><strong>النموذج '+model+'</strong><span>'+questions.length+' / ٣٨ سؤال'+
+   (Number(model)<=5?' • المحاولة الأولى':' • المحاولة الثانية')+'</span></summary>'+
+   '<div class="contest-all-bank-questions">'+questions.map(q=>
+    '<details class="contest-bank-question"><summary>السؤال '+q.ordinal+' — '+friendly(q.objective||'')+
+    ' | '+friendly(q.prompt||'').slice(0,120)+'</summary>'+
+    '<div class="contest-bank-question-content"><p><b>'+friendly(q.prompt||'')+'</b></p>'+
+    (q.visual_svg?'<div class="contest-bank-figure">'+figure(q)+'</div>':'')+
+    (q.question_kind==='complex'?'<div class="contest-bank-parts">'+
+      (q.parts||[]).map((part,i)=>'<div><b>الجزء '+(i+1)+': </b>'+friendly(part.text||'')+
+       (part.choices?.length?'<p>'+part.choices.map(friendly).join(' • ')+'</p>':'')+
+       '</div>').join('')+'</div>':
+      '<ol class="contest-bank-choices">'+(q.options||[]).map((choice,i)=>
+       '<li class="'+(i===q.answer_index?'correct':'')+'">'+friendly(choice)+
+       (i===q.answer_index?' <strong>✓ الإجابة الصحيحة</strong>':'')+'</li>').join('')+'</ol>')+
+    (q.explanation?'<p class="contest-bank-explanation">تفسير الحل: '+friendly(q.explanation)+'</p>':'')+
+    '</div></details>').join('')+'</div></details>';
+ }).join('')+'</section>';
+}
 function contestModelTools(){
  const summaries=STATE.modelSummary?.models||[];
  const assignment=STATE.modelAssignments?.assignments||[];
@@ -338,7 +371,9 @@ function contestModelTools(){
  return '<section class="panel contest-admin contest-supervisor-models"><h3>🎯 النماذج ١–١٠ وتوزيعها على الطلاب</h3>'+
  '<p>خمسة نماذج للمحاولة الأولى، وخمسة للمحاولة الثانية؛ موزعة بالتساوي تقريبًا (٦–٧ طلاب للنموذج الواحد في الشعبة). لا يُسمح بتبديل نموذج محاولة بدأت بالفعل.</p>'+
  '<div class="contest-model-actions"><button id="loadModelSummary" class="primary">مراجعة العشرة نماذج</button>'+
+ '<button id="loadAllContestBanks" class="outline">📚 عرض أسئلة جميع النماذج العشرة وصورها</button>'+
  '<button id="loadModelAssignments" class="outline">كشف توزيع نماذج الطلاب</button></div>'+
+ contestAllBanksView()+
  (summaries.length?'<div class="contest-model-summary">'+summaries.map(m=>
  '<div><strong>النموذج '+friendly(m.model)+'</strong><span>'+m.questions+'/٣٨ سؤال • '+m.images+' رسم • '+m.objectives+' هدف</span>'+
  '<small>'+(m.published?'✅ معتمد':'🔒 مسودة تحتاج الاعتماد')+'</small></div>').join('')+'</div>':'')+
@@ -992,7 +1027,7 @@ function bind(){if(!STATE.user)return;
   render();
  });
  document.getElementById('logoutContest')?.addEventListener('click',async()=>{try{await api('logout')}catch{}sessionStorage.removeItem(tokenKey);STATE.token='';STATE.user=null;resetPlay();render()});
- document.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{STATE.grade=Number(btn.dataset.grade);STATE.section=1;STATE.previewModel=null;STATE.modelSummary=null;STATE.modelAssignments=null;STATE.editModel=STATE.grade===6?'01':'C';resetPlay();render()}));
+ document.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{STATE.grade=Number(btn.dataset.grade);STATE.section=1;STATE.previewModel=null;STATE.allModelBanks=null;STATE.allBanksSection=0;STATE.modelSummary=null;STATE.modelAssignments=null;STATE.editModel=STATE.grade===6?'01':'C';resetPlay();render()}));
  document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{STATE.section=Number(btn.dataset.unit);STATE.modelSummary=null;STATE.modelAssignments=null;resetPlay();render()}));
  document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{STATE.mode=btn.dataset.mode;resetPlay();render()}));
  document.getElementById('prepare')?.addEventListener('click',prepare);
@@ -1087,6 +1122,28 @@ function bind(){if(!STATE.user)return;
  document.getElementById('loadModelSummary')?.addEventListener('click',async()=>{
   try{STATE.modelSummary=await back('model_bank_summary',{grade:6,section:STATE.section});STATE.modelNotice='تم تحميل نماذج هذه الوحدة.';render()}
   catch(err){STATE.modelNotice=err.message;render()}
+ });
+
+ document.getElementById('loadAllContestBanks')?.addEventListener('click',async()=>{
+  if(!supervisor()||isTester()||STATE.grade!==6)return;
+  const section=STATE.section;
+  STATE.allBanksSection=section;
+  STATE.allModelBanks={};
+  STATE.modelNotice='جارٍ تجهيز أسئلة النماذج العشرة وصورها للمعاينة...';
+  render();
+  for(let i=0;i<numberedModels.length;i+=2){
+   const chunk=numberedModels.slice(i,i+2);
+   const values=await Promise.all(chunk.map(async model=>{
+    try{
+     const result=await back('question_list',{grade:6,section,model});
+     return [model,{questions:result.questions||[]}];
+    }catch(err){return [model,{error:err.message}]}
+   }));
+   if(STATE.section!==section||!supervisor()||isTester())return;
+   for(const [model,val]of values)STATE.allModelBanks[model]=val;
+   STATE.modelNotice='اكتمل تحميل '+(i+values.length)+' من ١٠ نماذج. افتح النموذج ثم السؤال لمراجعة الرسم والإجابة.';
+   render();
+  }
  });
  document.getElementById('loadModelAssignments')?.addEventListener('click',async()=>{
   try{STATE.modelAssignments=await back('model_assignment_list',{section:STATE.section});STATE.modelNotice='تم عرض توزيع طلاب الشعب الثلاث.';render()}
