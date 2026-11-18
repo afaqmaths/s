@@ -103,6 +103,19 @@ function hubHomeEntryGuide(){
  '</ol><button type="button" id="showLogin" class="afaq-final-entry-button">🔐 فتح نافذة الدخول للمنصة</button>'+
  '<p class="afaq-entry-guest-note">المكتبة والموارد العامة متاحة للزائر دون تسجيل.</p></div>';
 }
+
+function hubEntryInstructions(){
+ return '<section class="afaq-entry-instructions" dir="rtl" aria-label="تعليمات الدخول">'+
+ '<h3>🔑 تعليمات الدخول</h3>'+
+ '<div class="afaq-entry-instructions-grid">'+
+ '<p><strong>👨‍🎓 طلاب صف 6:</strong> اختر «طلاب صف 6»، ثم أدخل اسم المستخدم والرقم السري الخاصين بك. تُعرَف شعبتك من حسابك تلقائيًا، ويمكنك الدخول للتعلم. وعند استخدام الرقم السري الأولي، غيّره بنفسك من «حسابي» لتفعيل دخول مسابقة نجوم آفاق.</p>'+
+ '<p><strong>📘 طلاب الصفوف الأخرى (5، 7، 8):</strong> اختر «طلاب الصفوف الأخرى»، ثم حدّد صفك الدراسي، وأدخل اسم المستخدم والرقم السري المخصصين لحسابك التدريبي. لا يُحتسب التدريب ضمن محاولات مسابقة الصف السادس الرسمية.</p>'+
+ '<p><strong>👨‍👩‍👧 ولي الأمر:</strong> افتح «دخول ولي الأمر»، وحدّد شعبة ابنك في الصف السادس، ثم اكتب رقمه التسلسلي في الشعبة ورمز ولي الأمر الخاص المكوّن من 6 أرقام، الذي تتسلّمه من مشرف المنصة. يمكنك متابعة البيانات المتاحة لابنك والتواصل مع المشرف.</p>'+
+ '<p><strong>👨‍🏫 المشرفون والإدارة المدرسية:</strong> اختر «دخول المشرفين» للمشرف الرئيسي أو المساعد أو مشرف تقنية المعلومات (عرض فقط)، أو «الإدارة المدرسية» للمدير ومساعده. أدخل بيانات الحساب المعتمدة، وستظهر لك الوظائف وفق صلاحيتك.</p>'+
+ '<p class="afaq-entry-instructions-guest"><strong>🌐 الزائر:</strong> اختر «التصفح كضيف» للاطلاع على المحتوى العام والمكتبة والأنشطة المتاحة دون تسجيل دخول.</p>'+
+ '</div></section>';
+}
+
 function hubHome(){
  const paths='<svg class="afaq-hero-lines" viewBox="0 0 1200 350" preserveAspectRatio="none" aria-hidden="true">'+
  '<path d="M-50 245 C180 135 245 335 452 205 S830 100 1250 205"/>'+
@@ -124,12 +137,13 @@ function hubHome(){
  hubAbout()+
  '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
  '<div class="hub-gate-grid hub-gate-grid-4">'+
- hubGate('دخول الطالب','book-open','حساب الطالب والدروس والنتائج','data-hub-login="student"','green')+
+ hubGate('طلاب صف 6','book-open','الدروس والنتائج والحساب الشخصي للصف السادس','data-hub-login="student"','green')+
+ hubGate('طلاب الصفوف الأخرى','graduation-cap','الصفوف 5 و7 و8 — حسابات التعلم والتدريب','data-hub-login="demo"','blue')+
  hubGate('دخول ولي الأمر','heart-handshake','متابعة نتائج الأبناء والتواصل مع المشرف','data-route="parent"','rose')+
  hubGate('الإدارة المدرسية','school','مدير المدرسة ومساعده','data-hub-login="director"','purple')+
  hubGate('التصفح كضيف','globe','استكشف المحتوى العام دون حساب','data-route="visitor"','cyan')+
  hubGate('دخول المشرفين','graduation-cap','المشرف الرئيسي والمساعد وتقنية المعلومات','data-hub-login="supervisor"','gold')+
- '</div></section>'+
+ '</div>'+hubEntryInstructions()+'</section>'+
  '<section class="hub-main afaq-home-sections"><div class="hub-heading"><span>أبواب المعرفة</span><h2>استكشف أقسام آفاق ماث</h2></div>'+
  '<div class="hub-gate-grid">'+
  hubSectionCard('التعليم والتعلّم','graduation-cap','الدروس والمشاغل والتدريبات','learning','green')+
@@ -801,7 +815,7 @@ function hubSetLogin(role){
  if(!select)return;
  if(typeof selectEntryGate==='function'){
   const group=['supervisor','supervisor_assistant','it_viewer'].includes(role)?'supervision':
-   ['director','deputy'].includes(role)?'management':'student';
+   ['director','deputy'].includes(role)?'management':role==='demo'?'other_students':'student';
   selectEntryGate(group);
  }else document.getElementById('authDialog')?.showModal();
  select.value=role;
