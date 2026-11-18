@@ -1,0 +1,172 @@
+/* Afaq Math — mental arithmetic innovation labs v29 */
+.mm29-page{
+ --mm-ink:#1b405e;--mm-blue:#175d86;--mm-accent:#16a293;--mm-gold:#d4a048;
+ max-width:1280px;margin:20px auto 45px;padding:0 12px 15px;
+ direction:rtl;color:var(--mm-ink);font:14px/1.8 Tahoma,Arial,sans-serif;
+}
+.mm29-page *{box-sizing:border-box}
+.mm29-page button,.mm29-page input{font-family:inherit}
+.mm29-page button:not(:disabled){cursor:pointer}
+.mm29-page button:focus-visible,.mm29-page input:focus-visible{outline:3px solid #24a59e;outline-offset:3px}
+.mm29-page button:disabled{opacity:.46;cursor:not-allowed}
+.mm29-page h2{font-size:22px!important;color:#205a7d;margin:0}
+.mm29-page h3{font-size:17px!important;color:#24607c;margin:0}
+.mm29-hero{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;
+ align-items:center;padding:29px 31px;border:2px solid #c5dfa8;
+ border-radius:24px;background:radial-gradient(circle at 10% 5%,#ffdfb14f,transparent 39%),
+ linear-gradient(105deg,#142d5c,#1b698b 60%,#119889);color:#fff;
+ box-shadow:0 15px 31px #173e6c38;position:relative;overflow:hidden}
+.mm29-hero:after{content:"";position:absolute;inset:0;opacity:.12;pointer-events:none;
+ background:repeating-linear-gradient(35deg,transparent 0 15px,#fff 16px,transparent 17px 31px)}
+.mm29-hero>div{position:relative;z-index:1}
+.mm29-hero-icon{width:84px;height:84px;display:grid;place-items:center;border-radius:23px;
+ background:#ffffff27;border:1px solid #fff8;box-shadow:inset 0 0 0 2px #fffc;
+ font-size:47px;color:#fff}
+.mm29-hero span{font-size:12px;color:#ffebae;font-weight:950}
+.mm29-hero h1{font-size:clamp(26px,3.8vw,42px)!important;color:#fff!important;margin:7px 0}
+.mm29-hero p{font-size:14px;color:#edfbff!important;margin:0;line-height:1.9}
+.mm29-hero-dots{font-size:35px;color:#f6d185;white-space:nowrap;letter-spacing:7px}
+.mm29-mul{--mm-accent:#7665d5}
+.mm29-sub{--mm-accent:#c38a3b}
+.mm29-tabs{display:flex;gap:10px;flex-wrap:wrap;padding:12px 0}
+.mm29-tabs button{flex:1 1 190px;border:1px solid #bdd7e3;border-radius:13px;
+ background:#f3faff;color:#245f7c;padding:13px 16px;min-height:50px;
+ font-size:14px;font-weight:950}
+.mm29-tabs button.active{background:linear-gradient(105deg,#1a688a,#1b9490);color:#fff;
+ border-color:#189487;box-shadow:0 5px 16px #17857b2d}
+.mm29-prep,.mm29-guess,.mm29-workspace,.mm29-verify{
+ padding:23px 26px;margin:15px 0;border:1px solid #ccdeea;
+ border-radius:20px;background:#fff;box-shadow:0 8px 21px #12436a14}
+.mm29-prep{background:linear-gradient(145deg,#fafdff,#fffdf6)}
+.mm29-guess{background:linear-gradient(125deg,#fff9e9,#fffefb);border-color:#efd5a2}
+.mm29-section-title{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.mm29-section-title>span,.mm29-verify header>span{display:grid;place-items:center;
+ flex:0 0 43px;width:43px;height:43px;border-radius:13px;background:#e1f7f2;
+ color:#157e76;font-size:24px;font-weight:950}
+.mm29-section-title p,.mm29-verify header p{font-size:12px;color:#5b7d91;line-height:1.85;margin:2px 0 0}
+.mm29-presets{display:flex;flex-wrap:wrap;gap:9px;margin:17px 0}
+.mm29-presets button{border:1px solid #c1d8e5;border-radius:10px;padding:9px 13px;
+ background:#edf7fd;color:#205e82;font-weight:900;font-size:13px}
+.mm29-presets button.active{background:#e3f7ed;border-color:#4cac8d;color:#19745b}
+.mm29-presets button:hover{background:#d7f0f0}
+#mm29Form{display:grid;grid-template-columns:1fr 1fr auto;align-items:end;gap:12px}
+#mm29Form label,#mm29GuessForm label{display:grid;gap:7px;font-size:13px;color:#245e80;font-weight:950}
+#mm29Form input,#mm29GuessForm input{border:1.5px solid #bbd2df;
+ border-radius:11px;padding:12px 13px;min-height:46px;font-size:17px;
+ font-weight:850;color:#22527c;background:#fff;width:100%}
+#mm29Form button,#mm29GuessForm button{border:0;border-radius:11px;padding:12px 18px;
+ min-height:46px;background:linear-gradient(110deg,#197589,#1d5689);
+ color:#fff;font-size:13px;font-weight:950}
+.mm29-strategy-heading{display:flex;justify-content:space-between;align-items:center;
+ flex-wrap:wrap;gap:8px;margin:23px 0 11px}
+.mm29-strategy-heading h3{color:#245d7b}
+.mm29-strategy-heading span{font-size:12px;color:#68859a}
+.mm29-methods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.mm29-methods button{display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+ text-align:right;min-height:102px;padding:15px 13px;border:1.5px solid #c9dfe7;
+ border-radius:13px;background:#f4fafc;color:#235875}
+.mm29-methods button strong{font-size:14px;color:#225e83;line-height:1.5}
+.mm29-methods button small{font-size:11.5px;color:#637f92;line-height:1.8}
+.mm29-methods button.active{background:linear-gradient(135deg,#e2f7f1,#f8fcff);
+ border:2px solid var(--mm-accent);box-shadow:0 0 0 2px #d1f1e56e}
+.mm29-methods button:disabled{opacity:.43}
+.mm29-question{text-align:center;padding:18px;background:#fff;
+ border:1px solid #f1d5a0;border-radius:15px;margin:15px 0}
+.mm29-question>b{font-size:clamp(29px,4.5vw,49px);color:#15476d;font-weight:950;
+ direction:ltr;unicode-bidi:isolate}
+.mm29-question p{color:#8b672e;margin:8px 0 0;font-size:13px;font-weight:900}
+#mm29GuessForm{display:flex;gap:11px;align-items:end;justify-content:center;flex-wrap:wrap}
+#mm29GuessForm label{flex:1 1 180px;max-width:380px}
+#mm29GuessForm button{flex:0 0 auto}
+.mm29-guess-feedback{margin:13px 0 0;padding:10px 13px;border-radius:10px;
+ font-size:13px;font-weight:900}
+.mm29-guess-feedback.correct{background:#e6f8e8;color:#237450;border-right:4px solid #33a57b}
+.mm29-guess-feedback.try{background:#fff1dc;color:#8a6229;border-right:4px solid #d7a658}
+#mm29Begin{margin-top:12px;border:0;border-radius:11px;padding:13px 22px;
+ background:linear-gradient(100deg,#168b88,#176d96);color:#fff;font-size:14px;font-weight:950}
+.mm29-progress{height:9px;background:#e8eef5;border-radius:20px;overflow:hidden;margin:10px 0 7px}
+.mm29-progress span{display:block;height:100%;border-radius:20px;
+ background:linear-gradient(90deg,#26aca5,#f7ba62);transition:width .25s}
+.mm29-progress-caption{color:#61849a;font-weight:900;font-size:12px;margin:6px 0 13px}
+.mm29-step-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+ gap:13px;align-items:start}
+.mm29-active-step{min-height:260px;padding:26px 20px;border:1.5px solid #c8deed;
+ border-radius:17px;background:radial-gradient(circle at 95% 5%,#ffe6b34d,transparent 46%),
+ linear-gradient(135deg,#f2f9ff,#fff);text-align:center}
+.mm29-active-step>span{font-size:12px;color:#be8b3a;font-weight:950}
+.mm29-active-step h3{font-size:23px!important;color:#235a83!important;margin:9px 0 15px}
+.mm29-step-math{border:1px solid #d7e3ea;border-radius:15px;padding:16px 10px;
+ font-size:clamp(17px,2.4vw,26px);font-weight:950;
+ direction:ltr;unicode-bidi:isolate;color:#124c7a;background:#fff;
+ overflow-wrap:anywhere}
+.mm29-active-step p{line-height:2;color:#54778b;font-size:14px;margin:13px 0 0}
+.mm29-step-map{display:grid;gap:8px;max-height:395px;overflow:auto;align-content:start}
+.mm29-step-mini{display:flex;align-items:start;gap:10px;border:1px solid #d5e2ec;
+ border-radius:11px;background:#f4f8fb;padding:10px 11px}
+.mm29-step-mini>span{display:grid;place-items:center;width:29px;height:29px;flex:0 0 29px;
+ border-radius:50%;background:#d9e7ef;color:#47718b;font-weight:950;font-size:12px}
+.mm29-step-mini div{display:grid;gap:3px;min-width:0}
+.mm29-step-mini strong{font-size:12px;color:#416982}
+.mm29-step-mini small{font-size:11px;color:#7c929f;overflow-wrap:anywhere}
+.mm29-step-mini.locked{opacity:.55}
+.mm29-step-mini.visible{background:#effbf6;border-color:#c4e3d1}
+.mm29-step-mini.current{background:#fff2d8;border-color:#ddba76}
+.mm29-step-mini.current>span{background:#c58e38;color:#fff}
+.mm29-step-buttons{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.mm29-step-buttons button{flex:1 1 135px;padding:12px;border-radius:11px;
+ font-size:13px;font-weight:950;border:1px solid #b5d2e1;background:#e8f5fc;color:#285b82}
+.mm29-step-buttons #mm29Next{background:#197f88;border-color:#197f88;color:#fff}
+.mm29-step-buttons #mm29All{background:#fff8e7;color:#966727;border-color:#e6c892}
+.mm29-result{display:flex;flex-direction:column;align-items:center;gap:10px;margin:17px 0 0;
+ border:1.5px solid #a2d8b8;border-radius:14px;background:#e9f9ec;padding:17px}
+.mm29-result span{font-size:12px;color:#28704f;font-weight:950}
+.mm29-result strong{color:#16634d;font-size:clamp(19px,2.6vw,32px);font-weight:950;text-align:center}
+.mm29-verify{background:linear-gradient(135deg,#f3fff9,#fff);border-color:#b9ddcc}
+.mm29-verify header{display:flex;gap:12px;align-items:center;margin-bottom:15px}
+.mm29-check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mm29-check-card{background:#fff;border:1px solid #c6e4d6;padding:18px;border-radius:13px}
+.mm29-check-card h3{color:#15745d!important;font-size:17px!important;margin:0 0 12px}
+.mm29-check-card button{border:0;border-radius:10px;background:#197f76;
+ color:#fff;font-weight:950;padding:11px 15px}
+.mm29-math-proof{display:block;background:#153b53;color:#f7faf7;border:1px solid #35717d;
+ border-radius:10px;padding:14px 11px;direction:ltr;unicode-bidi:isolate;
+ font-size:clamp(15px,2vw,24px);font-weight:950;overflow-wrap:anywhere;margin:13px 0}
+.mm29-check-card small{font-size:12px;color:#5f806e;line-height:1.75}
+.mm29-footer{text-align:center;padding:18px;border-radius:15px;margin:21px 0 0;
+ background:#eaf6fa;border:1px solid #c8e2ed}
+.mm29-footer strong{color:#28618a}
+.mm29-footer p{font-size:12px;color:#607a8e;margin:6px 0 0;line-height:1.8}
+.mm29-error{border:1px solid #e9abad;background:#fff0f0;color:#9b4b45;
+ padding:12px;border-radius:11px}
+@media(max-width:1020px){
+ .mm29-methods{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .mm29-step-layout{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+ .mm29-hero{grid-template-columns:auto minmax(0,1fr);padding:18px}
+ .mm29-hero-icon{width:58px;height:58px;font-size:32px}
+ .mm29-hero-dots{display:none}
+ .mm29-hero h1{font-size:25px!important}
+ .mm29-page{padding:0 7px 15px}
+ .mm29-prep,.mm29-guess,.mm29-workspace,.mm29-verify{padding:15px}
+ #mm29Form{grid-template-columns:1fr 1fr}
+ #mm29Form button{grid-column:1 / -1}
+ .mm29-check-grid{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+ .mm29-methods{grid-template-columns:1fr}
+ #mm29Form{grid-template-columns:1fr}
+ #mm29Form button{grid-column:1}
+ .mm29-hero{grid-template-columns:1fr}
+ .mm29-hero-icon{width:58px}
+ .mm29-section-title h2{font-size:19px!important}
+ .mm29-step-map{max-height:320px}
+}
+@media(prefers-reduced-motion:reduce){.mm29-page *{transition:none!important}}
+@media print{
+ .mm29-tabs,.mm29-presets,#mm29Form,.mm29-methods,
+ .mm29-step-buttons,.mm29-check-card button,#mm29GuessForm{display:none!important}
+ .mm29-workspace,.mm29-check-card,.mm29-active-step{break-inside:avoid}
+ .mm29-page{max-width:100%;padding:0}
+ .mm29-hero,.mm29-page section{box-shadow:none}
+}
