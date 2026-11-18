@@ -85,7 +85,7 @@ const roleModels={student:'C',demo:'C',director:'D',deputy:'D',supervisor:'E',su
 const gradeNames={5:'الخامس',6:'السادس',7:'السابع',8:'الثامن'};
 const STATE={displayName:'',token:sessionStorage.getItem(tokenKey)||'',user:null,grade:6,section:1,mode:'training',testerProfile:0,testerStatuses:[],catalog:[],report:null,summary:null,staffReport:null,access:null,
  questions:[],question:null,answers:{},index:0,readyStage:0,attemptId:null,attemptNo:0,started:0,stageStarted:0,
- waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,allModelBanks:null,allBanksSection:0,modelNotice:'',reminders:[],pendingApprovals:0,reminderError:'',reminderShowAll:false,reminderBusy:false,reminderNewCount:0,editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
+ waitingUntil:0,waitingMessage:'',stageBreakUntil:0,breakReady:false,breakAutoBusy:false,breakRetryAt:0,hintFor:null,digitStyle:'ar',audioNotice:'',lastFeedback:null,feedbackQuestion:null,feedbackAnswer:null,stageScores:{},completedStages:[],feedbackStage:1,holdHandle:null,timer:null,submitted:false,busy:false,result:null,error:'',feedback:'',bank:null,editModel:'01',previewModel:null,modelSummary:null,modelAssignments:null,allModelBanks:null,allBanksSection:0,modelNotice:'',reminders:[],pendingApprovals:0,reminderError:'',reminderShowAll:false,reminderBusy:false,reminderNewCount:0,loginRole:'student',loginMessage:'',loginBusy:false,editing:false,profile:null,certificates:[],certificateView:null,certificateError:''};
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const friendly=v=>escapeHtml(v);
 const supervisor=()=>STATE.user?.role==='supervisor';
@@ -971,7 +971,52 @@ function studentGateLock(){
  '<button class="primary" id="afaqContestGateRefresh" type="button">التحقق من تصريح الدخول مجددًا</button> '+
  '<a class="outline" href="index.html#dashboard">العودة إلى حسابي</a></div>';
 }
-function guest(){return '<div class="contest-lock"><div class="contest-icon">🔐</div><h2>بوابة نجوم آفاق الرياضيات</h2><p>تسجيل الدخول إلى المنصة شرط الدخول إلى المسابقة؛ لا توجد صفحة دخول ثانية.</p><div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'صورة الطالب المعتمدة','approved-guest-avatar')+image(window.AFAQ_ENTRY_ART?.staff,'صورة المشرف المعتمدة','approved-guest-avatar')+'</div><div class="contest-guest-links"><a href="index.html#competition" class="primary">🔐 الدخول بالحساب المعتمد</a> <a href="index.html#home" class="outline">📚 التصفح كضيف دون تسجيل دخول</a></div></div>'}
+const contestLoginRoles=[
+ ['student','👨‍🎓 الطالب'],['supervisor','👨‍🏫 المشرف الرئيسي'],
+ ['supervisor_assistant','🧑‍🏫 المشرف المساعد'],['it_viewer','💻 مشرف تقنية المعلومات'],
+ ['director','🏫 مدير المدرسة'],['deputy','📋 مساعد المدير'],
+ ['demo','🎯 الحساب التدريبي (٥ و٧ و٨)']
+];
+function guest(){
+ const role=contestLoginRoles.some(([k])=>k===STATE.loginRole)?STATE.loginRole:'student';
+ const needsUsername=!['supervisor','supervisor_assistant','director','deputy'].includes(role);
+ const userTitle=role==='student'?'اسم المستخدم للطالب':role==='it_viewer'?'اسم مستخدم تقنية المعلومات':'اسم المستخدم';
+ return '<section class="contest-lock contest-multi-login" dir="rtl"><div class="contest-icon">🔐</div>'+
+ '<h2>بوابة نجوم آفاق الرياضيات</h2><p>كل حسابات المنصة المعتمدة متاحة هنا، وفق الصلاحيات المسجلة لكل مستخدم.</p>'+
+ '<div class="guest-avatar-row">'+image(window.AFAQ_ENTRY_ART?.student,'الصورة المعتمدة للطالب','approved-guest-avatar')+
+ image(window.AFAQ_ENTRY_ART?.staff,'الصورة المعتمدة للمعلم','approved-guest-avatar')+'</div>'+
+ '<div class="contest-role-grid">'+contestLoginRoles.map(([k,label])=>
+ '<button type="button" data-contest-login-role="'+k+'" class="contest-role-choice '+(role===k?'selected':'')+
+ '" aria-pressed="'+(role===k)+'">'+label+'</button>').join('')+'</div>'+
+ '<form id="contestRoleLoginForm" class="contest-role-login-form">'+
+ '<h3>تسجيل دخول '+friendly(contestLoginRoles.find(x=>x[0]===role)?.[1]||'المنصة')+'</h3>'+
+ (needsUsername?'<label>'+userTitle+'<input name="username" type="text" autocomplete="username" required maxlength="80" placeholder="'+
+ (role==='it_viewer'?'IT01':'اسم المستخدم')+'"></label>':'')+
+ (role==='demo'?'<label>الصف الدراسي<select name="grade"><option value="5">الخامس</option><option value="7">السابع</option><option value="8">الثامن</option></select></label>':'')+
+ '<label>الرقم السري<input name="pin" type="password" autocomplete="current-password" required minlength="4" maxlength="80" placeholder="الرقم السري للحساب"></label>'+
+ '<button class="primary" type="submit" '+(STATE.loginBusy?'disabled':'')+'>🔐 دخول الحساب</button>'+
+ (STATE.loginMessage?'<p class="contest-login-feedback" role="alert">'+friendly(STATE.loginMessage)+'</p>':'')+'</form>'+
+ '<div class="contest-guest-links"><a class="outline" href="index.html#home">🏠 الصفحة الرئيسية</a>'+
+ '<a class="outline" href="index.html#visitor">🌐 التصفح كضيف</a></div></section>';
+}
+async function contestDirectLogin(form){
+ if(STATE.loginBusy)return;
+ const role=STATE.loginRole,values=new FormData(form);
+ const username=role==='supervisor'?'':['supervisor_assistant','director','deputy'].includes(role)?role:String(values.get('username')||'').trim();
+ const pin=String(values.get('pin')||'');
+ const grade=role==='demo'?Number(values.get('grade')||5):6;
+ STATE.loginBusy=true;STATE.loginMessage='جارٍ التحقق من الحساب...';
+ try{
+  const r=await api('login',{role,username,pin,grade});
+  if(!r.token||!r.user)throw Error('بيانات الحساب غير معتمدة');
+  STATE.token=r.token;sessionStorage.setItem(tokenKey,r.token);
+  STATE.user=null;STATE.loginMessage='';
+  await authenticate();
+  if(!STATE.user)throw Error('تعذر إكمال الدخول. افتح الحساب من الصفحة الرئيسية.');
+  STATE.loginBusy=false;
+ }catch(err){STATE.loginBusy=false;STATE.loginMessage=err.message||'تعذر تسجيل الدخول'}
+ render();
+}
 function resetPlay(){clearInterval(STATE.timer);clearTimeout(STATE.holdHandle);afaqCueHistory.clear();STATE.timer=null;STATE.holdHandle=null;STATE.readyStage=0;STATE.waitingUntil=0;STATE.stageBreakUntil=0;STATE.breakReady=false;STATE.breakAutoBusy=false;STATE.breakRetryAt=0;STATE.hintFor=null;STATE.audioNotice='';STATE.lastFeedback=null;STATE.feedbackQuestion=null;STATE.feedbackAnswer=null;STATE.stageScores={};STATE.completedStages=[];STATE.feedbackStage=1;STATE.index=0;STATE.question=null;STATE.questions=[];STATE.answers={};STATE.result=null;STATE.attemptId=null;STATE.attemptNo=0;STATE.feedback='';STATE.error='';STATE.lastFeedback=null;STATE.bank=null;STATE.busy=false;STATE.certificateView=null}
 function render(){clearInterval(STATE.timer);const showQ=getCurrent();
  root.innerHTML=!STATE.user?guest():student()&&!STATE.user.pin_changed?passwordChangeLock():student()&&STATE.access?.allowed===false?studentGateLock():STATE.certificateView?certificatePage():STATE.waitingUntil>Date.now()?transition():STATE.result?result():STATE.readyStage?readyPage():showQ?quiz():home();
