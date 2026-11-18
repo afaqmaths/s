@@ -1,0 +1,299 @@
+/*
+ * نجوم آفاق الرياضيات — الهويات البصرية الخمس | v30
+ * Stage names and artwork are supplied by contest-v6.js.
+ * Existing scoring, stage timers, audio and answer forms remain unchanged.
+ * The Oman-flag motifs deliberately follow white / red / green horizontally,
+ * with a red hoist band. Other stages keep gentle, readable backgrounds.
+ */
+.stage-theme-khwarizmi{
+ --contest-stage-surface:#eef7ff;
+ --contest-stage-highlight:#f9fcff;
+ --contest-stage-glow:#d4ebff;
+ --contest-stage-border:#a8d0ed;
+ --contest-stage-ink:#215a87;
+ --contest-stage-accent:#2b7bae;
+ --contest-stage-chip:#d9efff;
+}
+.stage-theme-amer{
+ --contest-stage-surface:#fff7e6;
+ --contest-stage-highlight:#fffdf6;
+ --contest-stage-glow:#ffebbd;
+ --contest-stage-border:#eed3a0;
+ --contest-stage-ink:#82581f;
+ --contest-stage-accent:#b2802a;
+ --contest-stage-chip:#fff0c7;
+}
+.stage-theme-jabir{
+ --contest-stage-surface:#ecf9f2;
+ --contest-stage-highlight:#fafffc;
+ --contest-stage-glow:#d0efde;
+ --contest-stage-border:#a6d9c0;
+ --contest-stage-ink:#246b4d;
+ --contest-stage-accent:#23855f;
+ --contest-stage-chip:#ddf3e7;
+}
+.stage-theme-mrbean{
+ --contest-stage-surface:#f6f0ff;
+ --contest-stage-highlight:#fefbff;
+ --contest-stage-glow:#ecddff;
+ --contest-stage-border:#d8c3ea;
+ --contest-stage-ink:#654887;
+ --contest-stage-accent:#8a64aa;
+ --contest-stage-chip:#ede3fa;
+}
+.stage-theme-saeed{
+ --contest-stage-surface:#fffcf7;
+ --contest-stage-highlight:#f9fdfa;
+ --contest-stage-glow:#eaf5ea;
+ --contest-stage-border:#bad4be;
+ --contest-stage-ink:#276349;
+ --contest-stage-accent:#bb2635;
+ --contest-stage-chip:#edf5e9;
+}
+
+/* The stage color accompanies the learner during warm-up, answer and review. */
+.stage-ready-page[class*="stage-theme-"],
+.contest-game-area[class*="stage-theme-"]{
+ background:
+  radial-gradient(ellipse at 95% 0%,var(--contest-stage-glow) 0%,transparent 38%),
+  radial-gradient(ellipse at 2% 98%,var(--contest-stage-glow) 0%,transparent 36%),
+  linear-gradient(135deg,var(--contest-stage-surface),var(--contest-stage-highlight) 65%,var(--contest-stage-surface));
+ border-color:var(--contest-stage-border);
+ box-shadow:0 14px 36px rgba(29,70,100,.12);
+ position:relative;
+ isolation:isolate;
+}
+.stage-ready-page[class*="stage-theme-"]> *,
+.contest-game-area[class*="stage-theme-"]> *{
+ position:relative;z-index:2;
+}
+.stage-ready-page[class*="stage-theme-"] .ready-kicker{
+ background:var(--contest-stage-chip);color:var(--contest-stage-ink);
+ border:1px solid var(--contest-stage-border);font-weight:950;
+}
+.stage-ready-page[class*="stage-theme-"] h2{
+ color:var(--contest-stage-ink)!important;
+}
+.stage-ready-page[class*="stage-theme-"] h3{
+ color:var(--contest-stage-accent)!important;
+}
+.stage-ready-page[class*="stage-theme-"] .ready-rules{
+ border-color:var(--contest-stage-border);
+ background:rgba(255,255,255,.88);
+ color:var(--contest-stage-ink);
+}
+.contest-game-area[class*="stage-theme-"] .contest-stage-banner{
+ background:linear-gradient(115deg,var(--contest-stage-ink),var(--contest-stage-accent));
+ border:2px solid rgba(255,255,255,.45);
+ box-shadow:0 9px 20px rgba(21,53,80,.15);
+}
+.contest-game-area[class*="stage-theme-"] .contest-stage-banner h2,
+.contest-game-area[class*="stage-theme-"] .contest-stage-banner p,
+.contest-game-area[class*="stage-theme-"] .contest-stage-banner .contest-label{
+ color:#fff!important;
+}
+.contest-game-area[class*="stage-theme-"] .contest-question{
+ background:rgba(255,255,255,.97);
+ border-color:var(--contest-stage-border)!important;
+}
+.contest-game-area[class*="stage-theme-"] .contest-question-meta>span{
+ background:var(--contest-stage-chip);color:var(--contest-stage-ink);
+}
+.contest-playing[class*="stage-theme-"] .contest-race{
+ background:linear-gradient(105deg,var(--contest-stage-surface),var(--contest-stage-highlight));
+ border-color:var(--contest-stage-border);
+}
+
+/* Keep stage photos visually prominent, especially the illustrated scholars. */
+.stage-ready-page .ready-art{
+ margin:5px auto 14px;
+ gap:7px;max-width:100%;
+}
+.stage-ready-page .stage-ready-photo{
+ width:clamp(250px,30vw,380px);
+ height:clamp(245px,27vw,356px);
+ max-width:88vw;display:block;
+ border-radius:28px;
+ border:5px solid #fff;
+ background:#fff;
+ box-shadow:0 14px 30px rgba(26,63,93,.24),0 0 0 2px var(--contest-stage-border,#d0dfe7);
+ object-fit:cover;
+ object-position:center 35%;
+ transition:transform .2s ease;
+}
+.stage-ready-page .stage-ready-photo:hover{
+ transform:translateY(-2px);
+}
+/* A portrait illustration should remain completely visible, not crop its head. */
+.stage-theme-khwarizmi .stage-ready-photo,
+.stage-theme-jabir .stage-ready-photo,
+.stage-theme-khwarizmi .stage-banner-photo,
+.stage-theme-jabir .stage-banner-photo,
+.stage-theme-khwarizmi .stage-pic,
+.stage-theme-jabir .stage-pic{
+ object-fit:contain;
+ object-position:center center;
+ background:#fefcf6;
+}
+.stage-ready-page.contest-stage-rest .stage-ready-photo{
+ width:clamp(220px,25vw,312px);
+ height:clamp(215px,24vw,285px);
+}
+.stage-ready-page.contest-stage-rest{
+ /* Override the old generic rest background with the chosen stage color. */
+ background:
+  radial-gradient(ellipse at 94% 0%,var(--contest-stage-glow) 0%,transparent 37%),
+  linear-gradient(138deg,var(--contest-stage-surface),var(--contest-stage-highlight) 68%,var(--contest-stage-surface));
+ border-color:var(--contest-stage-border);
+}
+.contest-game-area .contest-character{
+ width:205px;min-width:205px;height:195px;display:grid;place-items:center;
+ background:rgba(255,255,255,.12);border-radius:27px;
+}
+.contest-game-area .stage-banner-photo{
+ width:194px;height:184px;max-width:none;
+ border:5px solid #fff;border-radius:24px;
+ object-fit:cover;object-position:center 32%;
+ box-shadow:0 9px 24px rgba(7,28,53,.28);
+ background:#fff;
+}
+.stage-node[class*="stage-theme-"]{
+ background:linear-gradient(145deg,var(--contest-stage-highlight),var(--contest-stage-surface))!important;
+ border:2px solid var(--contest-stage-border)!important;
+ border-radius:17px;
+ color:var(--contest-stage-ink)!important;
+ box-shadow:0 5px 15px rgba(22,60,80,.09);
+}
+.stage-node[class*="stage-theme-"].active{
+ border-color:var(--contest-stage-accent)!important;
+ box-shadow:0 0 0 3px var(--contest-stage-chip),0 9px 19px rgba(30,67,91,.15);
+}
+.stage-node[class*="stage-theme-"] strong{
+ color:var(--contest-stage-ink)!important;
+}
+.stage-node[class*="stage-theme-"] .stage-pic{
+ width:96px;height:96px;max-width:100%;
+ object-fit:cover;
+ border:3px solid white;border-radius:21px;
+ box-shadow:0 6px 15px rgba(26,62,90,.16);
+}
+.contest-stage-result-item[class*="stage-theme-"]{
+ background:linear-gradient(140deg,var(--contest-stage-highlight),var(--contest-stage-surface));
+ border:2px solid var(--contest-stage-border);
+}
+.contest-stage-result-item[class*="stage-theme-"] strong,
+.contest-stage-result-item[class*="stage-theme-"] span{
+ color:var(--contest-stage-ink)!important;
+}
+/* Retain a readable credit for authentic historical illustrations. */
+.contest-art-credit{
+ max-width:98%;font:700 10px/1.5 Tahoma,Arial,sans-serif;
+ color:#647d92;text-align:center;padding:3px 9px;
+ background:rgba(255,255,255,.77);border-radius:9px;
+}
+.contest-art-credit a{color:#4f718b;text-decoration:underline;text-underline-offset:2px}
+.contest-art-credit a:focus-visible{outline:3px solid #17868b;outline-offset:3px}
+
+/* OMAN FLAG. Top white, MIDDLE red, bottom green; red vertical hoist. */
+.stage-theme-saeed.stage-ready-page::before,
+.stage-theme-saeed.stage-ready-page::after,
+.stage-theme-saeed.contest-game-area::before,
+.stage-theme-saeed.contest-game-area::after{
+ content:"";position:absolute;display:block;pointer-events:none;
+ width:clamp(130px,18vw,228px);height:clamp(110px,15vw,184px);
+ z-index:1;opacity:.38;
+ background:
+   linear-gradient(to right,#c62532 0 21%,transparent 21% 100%),
+   linear-gradient(to bottom,
+    #fff 0 33.333%,#c62532 33.333% 66.667%,#0d8347 66.667% 100%);
+ border:2px solid rgba(136,68,44,.18);
+ box-shadow:0 4px 19px rgba(29,64,39,.12);
+}
+.stage-theme-saeed.stage-ready-page::before,
+.stage-theme-saeed.contest-game-area::before{
+ right:0;top:0;clip-path:polygon(0 0,100% 0,100% 100%);
+}
+.stage-theme-saeed.stage-ready-page::after,
+.stage-theme-saeed.contest-game-area::after{
+ left:0;bottom:0;transform:rotate(180deg);
+ clip-path:polygon(0 0,100% 0,100% 100%);
+}
+.stage-theme-saeed.stage-ready-page,
+.stage-theme-saeed.contest-game-area{
+ border:3px solid #d1b5a2;
+ box-shadow:0 0 0 3px #ecf4ec,0 14px 36px rgba(21,68,43,.14);
+}
+.stage-theme-saeed .ready-kicker{
+ color:#a8232a!important;
+ border-color:#d6b1b3!important;background:#fff4f1!important;
+}
+.stage-theme-saeed .contest-stage-banner{
+ background:linear-gradient(110deg,#b82430 0 35%,#9e2533 35% 48%,#176f44 100%)!important;
+}
+.stage-theme-saeed .contest-stage-banner h2{color:#fff!important}
+
+/* Responsiveness: keep characters visible, without stealing the answer area. */
+@media(max-width:1000px){
+ .contest-game-area .contest-character{
+  width:172px;min-width:172px;height:162px;
+ }
+ .contest-game-area .stage-banner-photo{
+  width:160px;height:150px;
+ }
+ .stage-ready-page .stage-ready-photo{
+  width:min(340px,76vw);height:min(330px,70vw);
+ }
+ .stage-ready-page.contest-stage-rest .stage-ready-photo{
+  width:min(280px,72vw);height:min(260px,66vw);
+ }
+ .stage-node[class*="stage-theme-"] .stage-pic{width:81px;height:81px}
+}
+@media(max-width:650px){
+ .contest-game-area .contest-stage-banner{
+  display:grid;grid-template-columns:auto 1fr;align-items:center;
+  gap:10px;padding:12px;
+ }
+ .contest-game-area .contest-stage-banner>.contest-timer{
+  grid-column:1/-1;justify-self:stretch;
+ }
+ .contest-game-area .contest-character{
+  width:132px;min-width:132px;height:130px;
+ }
+ .contest-game-area .stage-banner-photo{
+  width:124px;height:123px;border-radius:18px;border-width:3px;
+ }
+ .stage-ready-page .stage-ready-photo{
+  width:min(295px,79vw);height:min(285px,70vw);
+ }
+ .stage-ready-page.contest-stage-rest .stage-ready-photo{
+  width:min(230px,70vw);height:min(220px,65vw);
+ }
+ .stage-node[class*="stage-theme-"] .stage-pic{width:72px;height:72px}
+ .stage-theme-saeed.stage-ready-page::before,
+ .stage-theme-saeed.stage-ready-page::after,
+ .stage-theme-saeed.contest-game-area::before,
+ .stage-theme-saeed.contest-game-area::after{
+  width:125px;height:100px;opacity:.28;
+ }
+ .contest-art-credit{font-size:9px}
+}
+@media(max-width:410px){
+ .contest-game-area .contest-character{
+  width:107px;min-width:107px;height:113px;
+ }
+ .contest-game-area .stage-banner-photo{
+  width:104px;height:110px;
+ }
+ .stage-node[class*="stage-theme-"] .stage-pic{width:63px;height:63px}
+}
+@media(prefers-reduced-motion:reduce){
+ .stage-ready-page .stage-ready-photo{transition:none!important}
+ .stage-ready-page .stage-ready-photo:hover{transform:none!important}
+}
+@media print{
+ .stage-ready-page[class*="stage-theme-"],
+ .contest-game-area[class*="stage-theme-"],
+ .stage-node[class*="stage-theme-"]{
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;
+ }
+}
