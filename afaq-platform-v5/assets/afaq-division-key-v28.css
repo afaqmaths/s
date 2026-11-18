@@ -103,6 +103,11 @@
  font-weight:950;color:#123e70;background:#fff;border:1px solid #d7e5f0;
  border-radius:14px;padding:1px 16px;box-shadow:0 5px 18px #18365b17;
  letter-spacing:1px}
+.dk28-key-open{display:inline-flex;align-items:center;justify-content:center;
+ margin:10px auto 0;padding:7px 12px;border:1px solid #d7a958;border-radius:11px;
+ background:#fff1d1;color:#8a5e25;font-size:12px;font-weight:950;
+ animation:dk28KeyGlow 1.6s ease-in-out 2}
+@keyframes dk28KeyGlow{50%{box-shadow:0 0 0 5px #f8d27c46}}
 .dk28-bracket{display:flex;align-items:center;justify-content:center;gap:0;
  direction:ltr;max-width:100%;margin:27px 0 11px;
  color:#173b65;font-size:clamp(27px,3vw,42px);font-weight:950}
@@ -230,4 +235,4 @@
  .dk28-stages,.dk28-verify,.dk28-part,.dk28-workspace>div{break-inside:avoid}
  .dk28-parts-grid{grid-template-columns:repeat(3,1fr)}
 }
-@media(prefers-reduced-motion:reduce){.dk28-page *{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.dk28-page *{transition:none!important;animation:none!important}}
