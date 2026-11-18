@@ -92,6 +92,100 @@ function ofColorLegend(){
  '<span class="of-key of-key-blue">أزرق فاتح: متابعة عادية</span>'+
  '<small>المؤشر هنا تقييم تحصيلي مميز مستحق للإثراء (٨٥٪ فأكثر)، ولا يُحسب التسجيل المكرر مرتين. يتحدث لون الطالب بعد الحفظ.</small></div>';
 }
+
+/* The protected student-records service is the sole source of behavioral notes.
+   No copies, hidden grade fields, or newly invented grades are stored here. */
+ofState.behavior={token:'',loaded:false,loading:false,error:'',roster:[],notes:[],hidden:{}};
+function ofBehaviorNorm(value){
+ return String(value??'').replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
+  .replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+  .replace(/\s+/g,'').trim();
+}
+function ofBehaviorStudent(s){
+ const roster=ofState.behavior.roster||[];
+ if(s?.student_id){
+  const matched=roster.find(x=>String(x.student_id)===String(s.student_id));
+  if(matched)return matched;
+ }
+ const cls=ofBehaviorNorm(s?.class_name||ofState.className),serial=Number(ofBehaviorNorm(s?.serial_no));
+ return roster.find(x=>ofBehaviorNorm(x.class_name)===cls&&Number(ofBehaviorNorm(x.serial_no))===serial)||null;
+}
+function ofBehaviorNotes(s){
+ const student=ofBehaviorStudent(s);
+ if(!student)return [];
+ return (ofState.behavior.notes||[]).filter(n=>String(n.student_id)===String(student.student_id)&&n.category==='behavior')
+  .sort((a,b)=>String(b.note_date||'').localeCompare(String(a.note_date||''))||
+   String(b.created_at||'').localeCompare(String(a.created_at||'')));
+}
+function ofBehaviorContent(s){
+ const b=ofState.behavior,serial=Number(s.serial_no),key=ofState.className+'|'+serial;
+ if(!ofEdit())return '<small class="of-behavior-private">البيانات السلوكية خاصة بالمشرف والمساعد</small>';
+ if(b.token!==auth.token||!b.loaded){
+  return '<div class="of-behavior-pending">'+ofSafe(b.error||'جارٍ جلب الملاحظات السابقة من سجل الطالب…')+'</div>';
+ }
+ const student=ofBehaviorStudent(s);
+ if(!student)return '<small class="of-behavior-pending">تعذرت مطابقة الطالب مع سجل الملاحظات. لا يمكن عرض عدد مؤكد.</small>';
+ const notes=ofBehaviorNotes(s),hidden=!!b.hidden[key];
+ const count='<div class="of-behavior-summary"><strong>عدد الملاحظات: '+ofNumber(notes.length)+'</strong>'+
+  '<button type="button" data-of-behavior-hide="'+serial+'" aria-label="'+(hidden?'إظهار':'إخفاء')+' ملاحظات الطالب" '+
+  (notes.length?'':'disabled')+'>'+(hidden?'◉ إظهار':'◉ إخفاء')+'</button></div>';
+ const list=hidden?'<p class="of-behavior-muted">الملاحظات مخفية في هذا الكشف فقط؛ لم تُحذف.</p>':
+  (notes.length?'<ol class="of-behavior-history">'+notes.map(n=>
+   '<li><time>'+ofSafe(n.note_date||'بدون تاريخ')+'</time><span>'+ofSafe(n.description||'ملاحظة محفوظة')+'</span>'+
+   (n.action_taken?'<small>الإجراء: '+ofSafe(n.action_taken)+'</small>':'')+'</li>').join('')+'</ol>':
+   '<p class="of-behavior-muted">لا توجد ملاحظات سلوكية محفوظة في السجل النشط.</p>');
+ const controls='<div class="of-behavior-controls">'+
+  '<button type="button" data-of-behavior-open="add" data-of-behavior-serial="'+serial+'" title="إضافة ملاحظة في سجل الطالب الأصلي" aria-label="إضافة ملاحظة سلوكية">＋</button>'+
+  '<button type="button" data-of-behavior-open="remove" data-of-behavior-serial="'+serial+'" title="فتح ملاحظات الطالب لحذف ملاحظة بعد تأكيد" aria-label="فتح سجل حذف الملاحظات" '+(notes.length?'':'disabled')+'>−</button>'+
+  '</div>';
+ return count+list+controls;
+}
+async function ofLoadBehavior(force=false){
+ if(!ofEdit()||typeof arCall!=='function')return;
+ const b=ofState.behavior,token=auth.token;
+ if(b.loading||(!force&&b.loaded&&b.token===token))return;
+ b.loading=true;b.loaded=false;b.error='';b.token=token;
+ try{
+  const [roster,notes]=await Promise.all([arCall('staff_roster'),arCall('notes_list')]);
+  if(token!==auth.token)return;
+  b.roster=roster.students||[];b.notes=notes.notes||[];b.loaded=true;
+ }catch(err){
+  if(token===auth.token)b.error='تعذر تحميل الملاحظات السلوكية: '+String(err?.message||err);
+ }finally{
+  b.loading=false;
+  if(token===auth.token&&state.page==='dashboard'&&auth.section==='official_register')render();
+ }
+}
+async function ofOpenBehavior(serial,mode){
+ if(!ofEdit())return;
+ if(ofState.savingAll||ofChangedStudents().length){
+  window.alert('احفظ جميع تعديلات الدرجات أولًا قبل الانتقال إلى سجل الملاحظات.');return;
+ }
+ const student=ofBehaviorStudent(ofFindStudent(serial));
+ if(!student?.student_id){
+  window.alert('تعذرت مطابقة الطالب مع سجل الطلاب المحمي. حدث الكشف والملاحظات ثم أعد المحاولة.');return;
+ }
+ if(typeof arReset!=='function'||typeof arLoadAdmin!=='function'){
+  window.alert('قسم سجل الطلاب غير متاح حاليًا.');return;
+ }
+ arReset();
+ AR.selected=student.student_id;AR.current=null;AR.editing=null;
+ AR.behaviorOnly=true;AR.noteDefaultCategory='behavior';
+ AR.message=mode==='remove'?'اختر الملاحظة المطلوبة من سجل الطالب ثم اضغط «حذف من السجل النشط» بعد مراجعتها.':'أضف الملاحظة السلوكية في السجل الأصلي للطالب.';
+ ofState.behavior.loaded=false;
+ auth.section='afaq_student_records';
+ render();
+ try{
+  if(!AR.loaded&&!AR.loading)await arLoadAdmin();
+  else if(AR.loaded)await arPreview(student.student_id);
+  const target=document.getElementById(mode==='remove'?'arNotesList':'arNoteForm');
+  target?.scrollIntoView({behavior:'smooth',block:'start'});
+  if(mode==='add')document.querySelector('#arNoteForm textarea[name="description"]')?.focus({preventScroll:true});
+ }catch(err){
+  AR.message=String(err?.message||err);render();
+ }
+}
+
 function ofRow(s){
  const marks={...s.marks,...(ofState.drafts[ofRowKey(s.serial_no)]||{})};
  const result=ofCourse(marks),locked=marks.status==='approved',category=ofCategory(s);
@@ -123,13 +217,14 @@ function ofRow(s){
  '<td class="of-a-indicator" title="مؤشر A موجب وسالب: صافي الرصيد الحالي المحدد بسقف ٤٠ ثم القسمة على اثنين. لا يدخل في المجموع.">'+
  '<b data-of-indicator="'+s.serial_no+'">'+(indicator===null?'—':ofNumber(indicator))+' / ٢٠</b>'+
  '<div class="of-a-inputs">'+aInput('a_plus_points','A+')+aInput('a_minus_points','A−')+'</div></td>'+
+ '<td class="of-behavior" data-of-behavior-cell="'+s.serial_no+'">'+ofBehaviorContent(s)+'</td>'+ 
  '<td class="of-remarks"><textarea data-of-field="remarks" rows="1" maxlength="500" aria-label="ملاحظات الطالب" '+
  (!ofEdit()||locked?'disabled':'')+'>'+ofSafe(marks.remarks||'')+'</textarea></td>'+
  '<td class="of-actions"><small data-of-status="'+s.serial_no+'">'+status+'</small>'+controls+'</td></tr>';
 }
 function ofTable(report){
  const students=report?.students||[];
- const cols=['serial','name','diagnostic',...Array(9).fill('mark'),'subtotal','final','total','level','indicator','remarks','actions'];
+ const cols=['serial','name','diagnostic',...Array(9).fill('mark'),'subtotal','final','total','level','indicator','behavior','remarks','actions'];
  return '<div class="of-table-scroll"><table class="of-table" dir="rtl">'+
  '<colgroup>'+cols.map(c=>'<col class="of-col-'+c+'">').join('')+'</colgroup>'+
  '<thead><tr class="of-group-row">'+
@@ -139,7 +234,7 @@ function ofTable(report){
  '<th rowspan="2">المشروع<br>١٠</th><th rowspan="2" class="of-summary-head">مجموع<br>٦٠</th>'+
  '<th rowspan="2">النهائي<br>٤٠</th><th rowspan="2" class="of-summary-head">المجموع<br>١٠٠</th>'+
  '<th rowspan="2">المستوى</th><th rowspan="2" class="of-indicator-head">A+ و A−<br>مؤشر /٢٠<br><small>خارج المجموع</small></th>'+
- '<th rowspan="2">الملاحظات</th><th rowspan="2">إجراء</th></tr>'+
+ '<th rowspan="2" class="of-behavior-head">ملاحظات سلوكية<br><small>العدد والسجل السابق</small></th><th rowspan="2">الملاحظات</th><th rowspan="2">إجراء</th></tr>'+
  '<tr class="of-subhead">'+
  '<th>١ /٥</th><th>٢ /٥</th><th>١ /٥</th><th>٢ /٥</th>'+
  '<th>١ /٥</th><th>٢ /٥</th><th>١ /١٠</th><th>٢ /١٠</th></tr></thead>'+
@@ -154,6 +249,8 @@ function ofStats(report){
 }
 function ofPage(){
  const r=ofState.report;
+ if(r&&ofEdit()&&!ofState.behavior.loading&&!ofState.behavior.error&&
+  (!ofState.behavior.loaded||ofState.behavior.token!==auth.token))Promise.resolve().then(()=>ofLoadBehavior());
  const classes=OF_CLASSES.map(c=>'<option'+(ofState.className===c?' selected':'')+'>'+c+'</option>').join('');
  return '<div class="container of-page" dir="rtl">'+
  '<header class="of-hero"><span>وزارة التربية والتعليم • المدرسة: الحسين بن علي للتعليم الأساسي</span>'+
@@ -168,14 +265,15 @@ function ofPage(){
  '<option value="'+x[0]+'"'+(ofState.paper===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+
  '</select></label>'+
  '<div class="of-toolbar">'+
- '<button id="ofRefresh" type="button" class="of-soft">تحديث الكشف</button>'+
+ '<button id="ofRefresh" type="button" class="of-soft">تحديث الكشف</button>'+ (ofEdit()?'<button id="ofBehaviorRefresh" type="button" class="of-soft">↻ تحديث الملاحظات السلوكية</button>':'')+
  '<button type="button" data-of-print="class" class="of-primary" '+(!r?'disabled':'')+'>🖨️ طباعة الشعبة الحالية / PDF</button>'+
  '<button type="button" data-of-print="all" class="of-soft">طباعة الشعب الثلاث</button>'+
  '<button type="button" data-of-print="both" class="of-soft">طباعة الفصلين للشعبة</button></div>'+
  '<div class="of-info"><b>تنبيه:</b> التشخيص مستقل عن المجموع، ومؤشر A+ وA− بعد المجموع من ١٠٠، ولا يحتسب ضمن الدرجة.<br>'+
  'المؤشر = صافي النقاط التراكمية الموجبة والسالبة (بحد أقصى ٤٠) ÷ ٢؛ يستخدمه المعلم للاستئناس عند رصد شفوي ٥ + ٥.<br>'+
  'يظهر التقدير (أ، ب، ج، د، هـ) تلقائيًا فور اكتمال الدرجات التسع للأعمال الفصلية والاختبار النهائي من ٤٠، حتى قبل الحفظ. وتُحفظ درجات جميع الطلاب التي تغيّرت بضغطة واحدة على زر «حفظ جميع التعديلات» أسفل الكشف.<br>'+
-  'تظهر أنشطة العلاج عند ≤٥٠٪ من أي بند، والإثراء عند ≥٨٥٪. (*) يعني مجموعًا جزئيًا غير مكتمل.</div></section>'+
+  'تظهر أنشطة العلاج عند ≤٥٠٪ من أي بند، والإثراء عند ≥٨٥٪. (*) يعني مجموعًا جزئيًا غير مكتمل.<br>'+
+  'الملاحظات السلوكية تُقرأ مباشرة من سجل «ملفات الطلاب والسلوك»؛ عددها لا يتأثر بإخفاء النص، وزر (+) للإضافة و(−) لفتح السجل وحذف ملاحظة بعد التأكيد.</div></section>'+
  (ofState.error?'<p class="of-error">'+ofSafe(ofState.error)+'</p>':'')+
  (ofState.message?'<p class="of-message">'+ofSafe(ofState.message)+'</p>':'')+
  (ofState.loading?'<p class="of-loading">جارٍ جلب أسماء الطلبة ودرجاتهم المسجلة…</p>':'')+
@@ -469,6 +567,7 @@ function ofBind(){
   ofState.className=e.target.value;ofState.report=null;ofState.reportKey='';ofState.error='';render();ofLoad();
  });
  document.getElementById('ofPrintSize')?.addEventListener('change',e=>{ofState.paper=e.target.value});
+ document.getElementById('ofBehaviorRefresh')?.addEventListener('click',()=>ofLoadBehavior(true));
  document.getElementById('ofRefresh')?.addEventListener('click',()=>{
   if(ofState.savingAll)return;
   if(ofChangedStudents().length){window.alert('احفظ جميع التعديلات قبل تحديث الكشف.');return}
@@ -478,12 +577,26 @@ function ofBind(){
  document.querySelectorAll('[data-of-serial]').forEach(tr=>{
   tr.querySelectorAll('[data-of-field]').forEach(input=>input.addEventListener('input',()=>ofUpdateTotals(tr)));
  });
+ document.querySelector('.of-table')?.addEventListener('click',event=>{
+  const hide=event.target.closest('[data-of-behavior-hide]');
+  if(hide){
+   const serial=Number(hide.dataset.ofBehaviorHide),s=ofFindStudent(serial);
+   if(!s)return;
+   const key=ofState.className+'|'+serial;
+   ofState.behavior.hidden[key]=!ofState.behavior.hidden[key];
+   const cell=hide.closest('.of-behavior');if(cell)cell.innerHTML=ofBehaviorContent(s);
+   return;
+  }
+  const open=event.target.closest('[data-of-behavior-open]');
+  if(open)void ofOpenBehavior(Number(open.dataset.ofBehaviorSerial),open.dataset.ofBehaviorOpen);
+ });
  document.getElementById('ofSaveAll')?.addEventListener('click',ofSaveAll);
  document.querySelectorAll('[data-of-approve]').forEach(b=>b.addEventListener('click',()=>ofApproval(Number(b.dataset.ofApprove),false)));
  document.querySelectorAll('[data-of-reopen]').forEach(b=>b.addEventListener('click',()=>ofApproval(Number(b.dataset.ofReopen),true)));
  ofUpdateSaveIndicator();
  document.getElementById('portalLogout')?.addEventListener('click',()=>{
   ofState.report=null;ofState.reportKey='';ofState.attemptedKey='';ofState.drafts={};ofState.error='';
+   ofState.behavior={token:'',loaded:false,loading:false,error:'',roster:[],notes:[],hidden:{}};
  });
 }
 const ofOldStaffPanel=staffPanel;
