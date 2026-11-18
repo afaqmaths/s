@@ -200,10 +200,18 @@
 .of-behavior-head small{font-size:10px;line-height:1.5}
 .of-behavior-summary{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap}
 .of-behavior-summary strong{font-size:12px;color:#70461b;line-height:1.6}
+.of-behavior-summary-actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .of-behavior-summary button{
  font:800 10px Tahoma,Arial,sans-serif;cursor:pointer;
  border:1px solid #d7bc87;border-radius:7px;
  padding:4px 6px;background:#fff;color:#785320;
+}
+.of-behavior-summary button[data-of-behavior-print]{
+ background:#e9f5ff;color:#154c78;border-color:#8fb9da;
+ white-space:nowrap;
+}
+.of-behavior-summary button[data-of-behavior-print]:hover{
+ background:#d2e9fc;border-color:#518ebe;
 }
 .of-behavior-history{
  list-style:decimal;margin:7px 0;padding:0 20px 0 2px;max-height:155px;
