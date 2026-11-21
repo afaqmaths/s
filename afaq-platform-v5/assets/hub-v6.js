@@ -132,7 +132,7 @@ function hubHome(){
  '<div class="afaq-hero-content"><span class="afaq-hero-eyebrow">منصة تعليم الرياضيات التفاعلية • سلطنة عُمان</span>'+
  '<h1><span>منصة آفاق ماث</span><small lang="en" dir="ltr">Afaq Math</small></h1>'+
  '<p>نتعلّم • نكتشف • نبدع — رياضيات كامبردج من المفهوم إلى التطبيق والاستدلال</p>'+
- '<button type="button" class="hub-primary" data-route="learning">ابدأ رحلتك في الرياضيات</button></div>'+
+ '<button type="button" class="hub-primary" data-route="afaq_directory">ابدأ رحلتك في الرياضيات</button></div>'+
  '</section>'+
  hubAbout()+
  '<section class="hub-main afaq-home-access"><div class="hub-heading"><span>بوابات الدخول</span><h2>اختر طريقة الدخول</h2></div>'+
