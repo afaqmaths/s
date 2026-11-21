@@ -32,7 +32,7 @@ function headingMarkup(){
  '<h2 class="afaq-gilded-ar">'+esc(titleAr)+'</h2>'+
  '<span class="afaq-gilded-english" lang="en" dir="ltr">'+esc(titleEn)+'</span>'+
  '</div>'+
- '<div class="afaq-gilded-bottom-label" aria-hidden="true">✦ AFAQ MATH ✦</div>'+
+ '<div class="afaq-gilded-bottom-label" aria-hidden="true">✦ '+esc(titleAr)+' • '+esc(titleEn)+' ✦</div>'+
  '</div>'+
  (isSupervisor()?'<button type="button" class="afaq-gilded-edit-shortcut" data-afaq-platform-title-manage>⚙️ تعديل العنوان من حساب المشرف</button>':'')+
  '</section>';
