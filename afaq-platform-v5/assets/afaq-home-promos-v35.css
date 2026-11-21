@@ -1,0 +1,58 @@
+/* Afaq Math • homepage promotional grid (RTL, 2 images + 4 links per side). */
+.hub-home .afaq-promo-area{direction:rtl;box-sizing:border-box;max-width:100%;margin:12px 0 25px;padding:18px 19px 22px;border:1px solid #d3dfec;border-radius:23px;background:linear-gradient(135deg,#f9fcff,#eef6ff 52%,#fffaf0);box-shadow:0 8px 25px #174a781c;color:#164a76}
+.hub-home .afaq-promo-title{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:17px;flex-wrap:wrap}
+.hub-home .afaq-promo-title span{display:block;color:#b3873d;font-size:13px;font-weight:900;line-height:1.8}
+.hub-home .afaq-promo-title h2{font-size:clamp(21px,2.2vw,30px)!important;font-weight:950!important;margin:0 0 5px!important;color:#144b7b!important}
+.hub-home .afaq-promo-title p{margin:0;color:#56738d;font-size:14px;line-height:1.8}
+.hub-home .afaq-promo-manage{font:850 13px Tahoma,Arial,sans-serif;background:#fff3d3;border:1px solid #d2ac63;border-radius:11px;padding:12px 14px;color:#765216;cursor:pointer}
+.hub-home .afaq-promo-two-sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.hub-home .afaq-promo-side{box-sizing:border-box;min-width:0;padding:14px;border:1px solid #c9d8e6;border-top:4px solid #c9a15b;border-radius:18px;background:#fff}
+.hub-home .afaq-promo-side--right{border-top-color:#16888f}
+.hub-home .afaq-promo-side-head{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin-bottom:13px}
+.hub-home .afaq-promo-side-head strong{font-size:16px;color:#1b517a;font-weight:950}
+.hub-home .afaq-promo-side-head span{font-size:11px;color:#806f59;font-weight:800}
+.hub-home .afaq-promo-images{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+.hub-home .afaq-promo-image-card{margin:0;min-width:0;border:1px solid #d4e2eb;border-radius:14px;overflow:hidden;background:#f8fbff;box-shadow:0 4px 13px #14426b13}
+.hub-home .afaq-promo-clickable{display:flex;flex-direction:column;width:100%;height:100%;color:#1c4b79;text-decoration:none!important}
+.hub-home .afaq-promo-clickable img{display:block;width:100%;aspect-ratio:4/3;min-height:148px;max-height:225px;object-fit:contain;background:#f1f5fb}
+.hub-home .afaq-promo-clickable strong{font-size:14px;line-height:1.6;min-height:47px;display:flex;align-items:center;justify-content:center;text-align:center;padding:7px 8px;overflow-wrap:anywhere;color:#1e557e}
+.hub-home .afaq-promo-clickable:hover{background:#fff8e8}
+.hub-home .afaq-promo-clickable:focus-visible,.hub-home .afaq-promo-text-link:focus-visible{outline:3px solid #b68a37;outline-offset:2px}
+.hub-home .afaq-promo-vacant{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px;padding:20px 9px;min-height:200px;background:repeating-linear-gradient(45deg,#f9fcff,#f9fcff 10px,#f0f5fa 10px,#f0f5fa 20px);color:#637e95}
+.hub-home .afaq-promo-vacant>span{font-size:44px;color:#bbcfda;line-height:1}
+.hub-home .afaq-promo-vacant strong{color:#456b8a;font-size:14px;line-height:1.5}
+.hub-home .afaq-promo-vacant small{font-size:11px;color:#7c8d9e;line-height:1.6}
+.hub-home .afaq-promo-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px}
+.hub-home .afaq-promo-text-link,.hub-home .afaq-promo-link-empty{display:flex;align-items:center;justify-content:flex-start;gap:8px;min-width:0;min-height:48px;box-sizing:border-box;border-radius:11px;padding:10px 12px;line-height:1.6;font:800 13px/1.6 Tahoma,Arial,sans-serif;overflow-wrap:anywhere}
+.hub-home .afaq-promo-text-link{background:linear-gradient(145deg,#e8f5fe,#fff);border:1px solid #bcd9e9;color:#22577e;text-decoration:none!important}
+.hub-home .afaq-promo-text-link span:first-child{font-size:19px;color:#b68c42}
+.hub-home .afaq-promo-text-link:hover{background:#fff2d8;border-color:#d7b16c}
+.hub-home .afaq-promo-link-empty{border:1px dashed #d6dfe9;background:#f9fbfe;color:#8a9bab}
+.hub-home .afaq-promo-link-empty span{font-size:17px;color:#b9c8d4}
+/* Supervisor editor. */
+.afaq-promo-admin{direction:rtl;padding:18px 6px 30px;max-width:1320px;margin:0 auto;color:#19496c;box-sizing:border-box}
+.afaq-promo-admin-header{padding:20px;border:2px solid #d3ad63;border-radius:17px;background:linear-gradient(120deg,#fffaf0,#f2f9ff);margin:14px 0 22px}
+.afaq-promo-admin-header h2{font-size:24px;color:#174d7d;margin:0 0 10px}
+.afaq-promo-admin-header p{line-height:1.85;color:#58718b}
+.afaq-promo-admin-header>button{font:900 14px Tahoma,Arial,sans-serif;border:1px solid #b9cddc;background:white;border-radius:10px;padding:11px 15px;color:#1b5b82;cursor:pointer}
+.afaq-promo-feedback{color:#0f7057!important;font-weight:850}.afaq-promo-error{color:#a4322a!important;font-weight:850}
+.afaq-promo-admin-sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.afaq-promo-admin-side{background:#f9fcff;border:1px solid #cee0ec;border-radius:17px;padding:15px;min-width:0}
+.afaq-promo-admin-side h3{color:#144d78;font-size:21px;margin:0 0 7px}
+.afaq-promo-admin-side>p{font-size:13px;color:#687e90;line-height:1.7}
+.afaq-promo-admin-images,.afaq-promo-admin-links{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0}
+.afaq-promo-admin-form{background:#fff;border:1px solid #d6e1eb;border-radius:12px;padding:13px;display:flex;flex-direction:column;gap:11px;min-width:0;box-sizing:border-box}
+.afaq-promo-admin-form>header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.afaq-promo-admin-form>header strong{color:#184c79;font-size:16px}.afaq-promo-admin-form>header small{color:#8d6931}
+.afaq-promo-admin-form label{display:flex;flex-direction:column;gap:5px;font:750 13px/1.8 Tahoma,Arial,sans-serif;color:#365f80}
+.afaq-promo-admin-form input:not([type=checkbox]){max-width:100%;min-width:0;box-sizing:border-box;padding:10px 11px;border-radius:8px;border:1px solid #b6cbdc;font:14px Tahoma,Arial,sans-serif;background:#fff;color:#183e64}
+.afaq-promo-admin-form input[type=file]{background:#f4faff}
+.afaq-promo-admin-form .afaq-promo-enabled{display:flex;flex-direction:row;align-items:center;gap:10px;font-weight:850}
+.afaq-promo-enabled input{width:18px;height:18px;flex:none}
+.afaq-promo-admin-thumb{display:block;height:155px;width:100%;object-fit:contain;border:1px solid #d9e4ed;border-radius:9px;background:#f8fbff}
+.afaq-promo-form-actions{display:flex;gap:9px;flex-wrap:wrap}
+.afaq-promo-form-actions button{border:0;border-radius:9px;background:#126a81;color:white;padding:10px 13px;font:900 13px Tahoma,Arial,sans-serif;cursor:pointer}
+.afaq-promo-form-actions .afaq-promo-remove{background:#fff2ef;color:#ad3535;border:1px solid #ecc7bc}
+.afaq-promo-form-actions button:disabled{opacity:.5;cursor:wait}
+@media(max-width:900px){.hub-home .afaq-promo-two-sides,.afaq-promo-admin-sides{grid-template-columns:1fr}}
+@media(max-width:540px){.hub-home .afaq-promo-area{padding:13px 11px}.hub-home .afaq-promo-side{padding:9px}.hub-home .afaq-promo-images{gap:7px}.hub-home .afaq-promo-vacant{min-height:140px;padding:10px 6px}.hub-home .afaq-promo-vacant strong{font-size:12px}.hub-home .afaq-promo-clickable img{min-height:125px}.hub-home .afaq-promo-links{grid-template-columns:1fr 1fr;gap:7px}.hub-home .afaq-promo-text-link,.hub-home .afaq-promo-link-empty{font-size:11px;padding:8px 7px}.afaq-promo-admin-side{padding:10px}}
