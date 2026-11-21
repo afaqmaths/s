@@ -316,3 +316,14 @@
   transform:translateY(-50%) scale(1)!important;opacity:1!important;filter:none!important;
  }
 }
+
+/* Always-readable dynamic bilingual line while the two large titles re-enter. */
+.hub-home .afaq-gilded-collision .afaq-gilded-bottom-label{
+ display:block!important;width:max-content;max-width:calc(100% - 55px)!important;
+ white-space:normal!important;text-align:center!important;font-size:11px!important;
+ line-height:1.3!important;letter-spacing:.4px!important;color:#fae3ad!important;
+ opacity:.94!important;text-shadow:0 0 10px #f3d58f88!important;
+}
+@media(max-width:480px){.hub-home .afaq-gilded-collision .afaq-gilded-bottom-label{
+ font-size:10px!important;max-width:calc(100% - 38px)!important;
+}}
