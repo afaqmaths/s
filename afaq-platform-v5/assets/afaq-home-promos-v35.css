@@ -56,3 +56,26 @@
 .afaq-promo-form-actions button:disabled{opacity:.5;cursor:wait}
 @media(max-width:900px){.hub-home .afaq-promo-two-sides,.afaq-promo-admin-sides{grid-template-columns:1fr}}
 @media(max-width:540px){.hub-home .afaq-promo-area{padding:13px 11px}.hub-home .afaq-promo-side{padding:9px}.hub-home .afaq-promo-images{gap:7px}.hub-home .afaq-promo-vacant{min-height:140px;padding:10px 6px}.hub-home .afaq-promo-vacant strong{font-size:12px}.hub-home .afaq-promo-clickable img{min-height:125px}.hub-home .afaq-promo-links{grid-template-columns:1fr 1fr;gap:7px}.hub-home .afaq-promo-text-link,.hub-home .afaq-promo-link-empty{font-size:11px;padding:8px 7px}.afaq-promo-admin-side{padding:10px}}
+
+/* Individually editable section title and subtitle in the supervisor dashboard. */
+.afaq-promo-admin .afaq-promo-heading-form{
+ display:flex;flex-direction:column;gap:11px;margin:14px 0 20px;
+ padding:16px;border:2px solid #dbb76a;border-radius:13px;
+ background:linear-gradient(145deg,#fff8e8,#fffefa);
+ box-shadow:0 5px 14px rgba(133,99,45,.08);
+}
+.afaq-promo-admin .afaq-promo-heading-form label{
+ display:flex;flex-direction:column;gap:6px;
+ color:#715322;font:850 14px/1.7 Tahoma,Arial,sans-serif;
+}
+.afaq-promo-admin .afaq-promo-heading-form input{
+ display:block;width:100%;box-sizing:border-box;min-width:0;
+ padding:11px 12px;border:1px solid #d1b879;border-radius:8px;
+ background:#fff;color:#154469;font:15px Tahoma,Arial,sans-serif;
+}
+.afaq-promo-admin .afaq-promo-heading-form button{
+ align-self:flex-start;border:0;border-radius:10px;cursor:pointer;
+ padding:11px 15px;background:#906722;color:#fff;
+ font:900 14px Tahoma,Arial,sans-serif;
+}
+.afaq-promo-admin .afaq-promo-heading-form button:disabled{opacity:.5;cursor:wait}
