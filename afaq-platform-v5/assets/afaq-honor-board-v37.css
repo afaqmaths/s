@@ -1,0 +1,104 @@
+/* Afaq Math honor roll • 3 category columns by 2 rows, expandable student slots. */
+.hub-home .afaq-honor-board{
+ direction:rtl;box-sizing:border-box;width:100%;margin:24px 0 26px;padding:24px 20px 27px;
+ border:2px solid #cba560;border-radius:24px;
+ background:radial-gradient(circle at 50% 0%,#fff2c9 0%,transparent 52%),linear-gradient(145deg,#f5faff 5%,#fffaf0 90%);
+ box-shadow:0 12px 30px rgba(106,80,28,.17);
+}
+.hub-home .honor-head{display:flex;align-items:center;justify-content:center;gap:15px;text-align:right;
+ background:linear-gradient(125deg,#133c71,#1e6895);border:2px solid #cba75e;
+ border-radius:18px;padding:20px 24px;margin-bottom:21px;color:#fff;min-width:0}
+.hub-home .honor-head-image{flex:0 0 92px;width:92px;height:92px;border-radius:18px;
+ display:grid;place-items:center;background:#ffffff15;border:1px solid #f1d4976b;overflow:hidden}
+.hub-home .honor-head-image img{width:100%;height:100%;object-fit:contain}
+.hub-home .honor-head-image span{font-size:56px}
+.hub-home .honor-head>div:nth-child(2){flex:1;min-width:0}
+.hub-home .honor-head>div:nth-child(2)>span{font-size:13px;color:#ffe2a4;font-weight:950}
+.hub-home .honor-head h2{font-size:clamp(24px,2.8vw,38px)!important;color:#fffdf5!important;
+ font-weight:950!important;margin:5px 0 6px!important;line-height:1.45!important}
+.hub-home .honor-head p{font-size:15px;line-height:1.7;margin:0;color:#e3f4ff}
+.hub-home .honor-head button{flex:0 0 auto;border:1px solid #e4c67d;color:#194b6e;
+ background:#ffe6a8;border-radius:12px;padding:12px 14px;font:900 13px Tahoma,Arial,sans-serif;cursor:pointer}
+.hub-home .honor-six{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;align-items:start}
+.hub-home .honor-category{border:2px solid #d5c49a;border-radius:18px;
+ background:#fff;min-width:0;box-shadow:0 6px 18px #204d7510;overflow:hidden}
+.hub-home .honor-category:nth-child(2),.hub-home .honor-category:nth-child(5){border-color:#afcbdc}
+.hub-home .honor-category>header{min-height:92px;padding:13px 14px;display:flex;align-items:center;gap:11px;
+ background:linear-gradient(115deg,#fff7df,#f3f9ff);border-bottom:2px solid #e6dac0}
+.hub-home .honor-category>header>span{flex:0 0 49px;display:grid;place-items:center;height:49px;
+ border-radius:13px;background:#f5e6b9;font-size:30px}
+.hub-home .honor-category header h3{margin:0 0 3px!important;color:#164b75!important;
+ line-height:1.45!important;font-size:clamp(16px,1.25vw,20px)!important;font-weight:950!important}
+.hub-home .honor-category header p{margin:0!important;color:#61778a!important;font-size:12px!important;line-height:1.6!important}
+.hub-home .honor-people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px}
+.hub-home .honor-person{display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0;
+ box-sizing:border-box;padding:12px 9px;border:1px solid #d9e3ed;background:#fbfdff;border-radius:14px;text-align:center}
+.hub-home .honor-person:nth-child(even){background:#fffdf8}
+.hub-home .honor-person .honor-portrait{display:grid;place-items:center;width:100%;max-width:118px;
+ margin:0 auto;border-radius:13px;aspect-ratio:4/4.5;overflow:hidden;background:#edf5ff;border:2px solid #e2c78d}
+.hub-home .honor-portrait img{display:block;width:100%;height:100%;object-fit:cover}
+.hub-home .honor-portrait span{font-size:49px;opacity:.68}
+.hub-home .honor-person>strong{font-size:14px;font-weight:950;color:#1e4e79;line-height:1.65;overflow-wrap:anywhere}
+.hub-home .honor-person>p{font-size:12px!important;line-height:1.75!important;color:#536e82!important;margin:0!important;overflow-wrap:anywhere}
+.hub-home .honor-quote{display:flex;flex-direction:column;gap:4px;text-align:right;padding:9px 8px;
+ background:#f5faff;border:1px solid #dae5ed;border-radius:9px;min-height:51px}
+.hub-home .honor-quote b{font-size:11px;color:#976c2b;font-weight:950}
+.hub-home .honor-quote span{font-size:11px;line-height:1.7;color:#456379;overflow-wrap:anywhere}
+.hub-home .honor-empty{border-style:dashed;opacity:.84;background:repeating-linear-gradient(130deg,#fafcff,#fafcff 13px,#f3f7fc 13px,#f3f7fc 26px)}
+.hub-home .honor-category>small{display:block;padding:4px 13px 13px;color:#587e8e;font-size:12px;font-weight:800}
+.hub-home .honor-consent-public{font-size:12px!important;line-height:1.85!important;color:#6c765d!important;
+ text-align:center;margin:20px 0 0!important}
+/* Supervisor editing environment. */
+.afaq-honor-admin{direction:rtl;max-width:1350px;margin:0 auto;padding-bottom:30px;box-sizing:border-box;color:#1d4d74}
+.afaq-honor-admin .honor-admin-intro{margin:15px 0 20px;padding:20px;border:2px solid #d2ac67;
+ background:linear-gradient(140deg,#fff8e4,#f0f8ff);border-radius:18px}
+.afaq-honor-admin .honor-admin-intro h2{margin:0 0 9px;font-size:25px;color:#20537e}
+.afaq-honor-admin .honor-admin-intro p{line-height:1.85;color:#5d7182}
+.afaq-honor-admin .honor-admin-intro button{background:white;border:1px solid #b4c9db;border-radius:10px;
+ padding:10px 13px;cursor:pointer;color:#255a83;font:850 13px Tahoma,Arial,sans-serif}
+.afaq-honor-admin .honor-feedback{color:#16785d!important;font-weight:900}
+.afaq-honor-admin .honor-error{color:#b02b2b!important;font-weight:900}
+.afaq-honor-admin .honor-admin-forms{display:grid;grid-template-columns:1fr 1.35fr;gap:16px;align-items:start;margin:18px 0}
+.afaq-honor-admin .honor-form,.afaq-honor-admin .honor-admin-category{min-width:0;background:#fff;
+ border:1px solid #cedee9;border-radius:17px;padding:16px;box-sizing:border-box;box-shadow:0 5px 14px #0f47700f}
+.afaq-honor-admin .honor-form{display:flex;flex-direction:column;gap:12px}
+.afaq-honor-admin .honor-form h3,.afaq-honor-admin .honor-admin-category h3{font-size:19px;margin:1px 0;color:#1c527b}
+.afaq-honor-admin .honor-form>label,.afaq-honor-admin .honor-image-fields>label,.afaq-honor-admin .honor-cat-form>label{
+ display:flex;flex-direction:column;gap:6px;color:#315f80;font:850 14px/1.8 Tahoma,Arial,sans-serif}
+.afaq-honor-admin input:not([type=checkbox]),.afaq-honor-admin select,.afaq-honor-admin textarea{
+ display:block;width:100%;min-width:0;box-sizing:border-box;padding:11px 10px;background:#fff;
+ border:1px solid #b4cadb;border-radius:9px;font:15px Tahoma,Arial,sans-serif;color:#1a4368}
+.afaq-honor-admin textarea{min-height:65px;resize:vertical;line-height:1.8}
+.afaq-honor-admin .honor-image-fields{display:flex;flex-direction:column;gap:10px;border:1px dashed #d2bb86;
+ padding:13px;border-radius:12px;background:#fffdf6}
+.afaq-honor-admin .honor-image-fields .honor-preview{display:block;max-width:160px;max-height:135px;
+ object-fit:contain;margin:0 auto;border:1px solid #d8e6ec;background:#fff}
+.afaq-honor-admin .honor-check{display:flex!important;flex-direction:row!important;align-items:flex-start!important;
+ gap:10px!important;font:800 13px/1.8 Tahoma,Arial,sans-serif!important;color:#385d79}
+.afaq-honor-admin .honor-check input{flex:0 0 18px;width:18px;height:18px;min-width:18px;margin-top:3px}
+.afaq-honor-admin .honor-consent{background:#fff7e4;border:1px solid #dfc386;border-radius:11px;
+ padding:13px;display:flex;flex-direction:column;gap:11px}
+.afaq-honor-admin .honor-consent small{color:#8b611e;line-height:1.75;font-size:12px}
+.afaq-honor-admin .honor-save,.afaq-honor-admin .honor-cat-form button{
+ background:linear-gradient(115deg,#18688e,#177780);color:#fff;border:0;border-radius:10px;padding:11px 14px;
+ cursor:pointer;font:900 13px Tahoma,Arial,sans-serif}
+.afaq-honor-admin .honor-form-buttons{display:flex;gap:12px;flex-wrap:wrap}
+.afaq-honor-admin .honor-form-buttons button:not(.honor-save){border:1px solid #c6d8e4;background:#f5faff;
+ border-radius:9px;padding:10px;color:#1e5175;cursor:pointer}
+.afaq-honor-admin button:disabled{cursor:wait;opacity:.5}
+.afaq-honor-admin .honor-admin-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;align-items:start;margin-top:18px}
+.afaq-honor-admin .honor-cat-form{display:flex;flex-direction:column;gap:11px;
+ padding:12px;border:1px solid #e6d8b5;background:#fffbf3;border-radius:11px;margin-bottom:12px}
+.afaq-honor-admin .honor-admin-category>button{border:1px solid #b8d3d5;background:#e7f7f4;color:#12675a;
+ border-radius:11px;font:900 13px Tahoma,Arial,sans-serif;padding:10px 13px;cursor:pointer}
+.afaq-honor-admin .honor-admin-students{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.afaq-honor-admin .honor-admin-students>div{display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+ padding:10px;border:1px solid #d7e4eb;border-radius:10px;background:#f9fcff}
+.afaq-honor-admin .honor-admin-students>div>span{flex:1;min-width:115px;color:#19476d;font-weight:850}
+.afaq-honor-admin .honor-admin-students small{color:#99712a;display:block;font-size:11px}
+.afaq-honor-admin .honor-admin-students button{border:1px solid #bbd5e5;border-radius:8px;background:#fff;
+ padding:8px 10px;color:#1a6189;font:850 12px Tahoma,Arial,sans-serif;cursor:pointer}
+.afaq-honor-admin .honor-admin-students button[data-honor-delete]{border-color:#ebc2c2;color:#ab3939;background:#fff2f2}
+@media(max-width:1100px){.hub-home .honor-six,.afaq-honor-admin .honor-admin-categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){.afaq-honor-admin .honor-admin-forms{grid-template-columns:1fr}.hub-home .honor-head{padding:15px}.hub-home .honor-head-image{flex-basis:70px;width:70px;height:70px}.hub-home .honor-head button{padding:9px;font-size:12px}}
+@media(max-width:620px){.hub-home .afaq-honor-board{padding:13px 10px}.hub-home .honor-six,.afaq-honor-admin .honor-admin-categories{grid-template-columns:1fr}.hub-home .honor-head{flex-wrap:wrap}.hub-home .honor-head p{font-size:13px}.hub-home .honor-people{gap:8px;padding:9px}.hub-home .honor-person{padding:9px 6px}.hub-home .honor-person>strong{font-size:13px}.hub-home .honor-quote{padding:7px 5px}.hub-home .honor-quote span{font-size:10px}}
