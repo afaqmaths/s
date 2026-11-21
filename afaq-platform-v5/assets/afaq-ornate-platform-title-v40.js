@@ -9,40 +9,81 @@ const arabicChars=x=>String(x??'').trim().length;
 function headingMarkup(){
  const titleAr=ST.title.arabic_title||'منصة آفاق ماث';
  const titleEn=ST.title.english_title||'Afaq Math';
- return '<section class="afaq-gilded-platform-title" dir="rtl" aria-label="عنوان منصة آفاق ماث بالعربية والإنجليزية">'+
+ return '<section class="afaq-gilded-platform-title afaq-gilded-collision" dir="rtl" aria-label="عنوان منصة آفاق ماث بالعربية والإنجليزية">'+
  '<div class="afaq-gilded-frame">'+
  '<span class="afaq-gilded-ornament afaq-gilded-ornament--tr" aria-hidden="true">❧</span>'+
  '<span class="afaq-gilded-ornament afaq-gilded-ornament--tl" aria-hidden="true">❧</span>'+
  '<span class="afaq-gilded-ornament afaq-gilded-ornament--br" aria-hidden="true">❧</span>'+
  '<span class="afaq-gilded-ornament afaq-gilded-ornament--bl" aria-hidden="true">❧</span>'+
- '<div class="afaq-gilded-line" aria-hidden="true"><span>✦</span><span>❖</span><span>✦</span></div>'+
- '<h2 class="afaq-gilded-ar">'+esc(titleAr)+'</h2>'+
- '<div class="afaq-gilded-english" lang="en" dir="ltr">'+esc(titleEn)+'</div>'+
- '<div class="afaq-gilded-line afaq-gilded-line--bottom" aria-hidden="true"><span>✦</span><span>❖</span><span>✦</span></div>'+
+ '<div class="afaq-gilded-celestial" aria-hidden="true">'+
+ '<svg viewBox="0 0 1200 230" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">'+
+ '<path d="M0 55 C270 12 408 152 600 115 S955 12 1200 55"/>'+
+ '<path d="M0 184 C270 220 415 73 600 115 S948 220 1200 184"/>'+
+ '<ellipse cx="600" cy="115" rx="250" ry="66"/>'+
+ '<ellipse cx="600" cy="115" rx="120" ry="38"/>'+
+ '</svg><span class="afaq-gilded-star star-one">✦</span>'+
+ '<span class="afaq-gilded-star star-two">❖</span>'+
+ '<span class="afaq-gilded-star star-three">✧</span>'+
+ '<span class="afaq-gilded-star star-four">✦</span>'+
  '</div>'+
- (isSupervisor()?'<button type="button" class="afaq-gilded-edit-shortcut" data-afaq-platform-title-manage>'+
- '⚙️ تعديل عنوان المنصة</button>':'')+
+ '<div class="afaq-gilded-blackhole" aria-hidden="true"><span></span></div>'+
+ '<div class="afaq-gilded-impact" aria-hidden="true"></div>'+
+ '<div class="afaq-gilded-motion" aria-label="'+esc(titleAr)+' — '+esc(titleEn)+'">'+
+ '<h2 class="afaq-gilded-ar">'+esc(titleAr)+'</h2>'+
+ '<span class="afaq-gilded-english" lang="en" dir="ltr">'+esc(titleEn)+'</span>'+
+ '</div>'+
+ '<div class="afaq-gilded-bottom-label" aria-hidden="true">✦ AFAQ MATH ✦</div>'+
+ '</div>'+
+ (isSupervisor()?'<button type="button" class="afaq-gilded-edit-shortcut" data-afaq-platform-title-manage>⚙️ تعديل العنوان من حساب المشرف</button>':'')+
  '</section>';
 }
 const earlierHome=hubHome;
 hubHome=function(...args){
  const html=earlierHome.apply(this,args);
- if(typeof html!=='string'||html.includes('afaq-gilded-platform-title'))return html;
+ if(typeof html!=='string')return html;
  const temp=document.createElement('div');temp.innerHTML=html;
  const home=temp.querySelector('.hub-home');if(!home)return html;
- // The original national flag is rendered immediately above the functional login gates.
- // Insert immediately BEFORE the login section, so flag and every original login button survive.
- const access=home.querySelector('.afaq-home-access.afaq-entry-between-flag-hero');
+ // Explicitly place the bilingual collision panel between the EXISTING Oman flag and
+ // the functioning login gates. Do not replace or duplicate either of those.
  const flag=home.querySelector('.v9-oman-horizon[data-national-ribbon="true"]');
- if(access)access.insertAdjacentHTML('beforebegin',headingMarkup());
- else if(flag)flag.insertAdjacentHTML('afterend',headingMarkup());
+ const access=home.querySelector('.afaq-home-access.afaq-entry-between-flag-hero')||
+              home.querySelector('.afaq-home-access');
+ let title=home.querySelector('.afaq-gilded-platform-title');
+ if(!title){
+  const fragment=document.createElement('div');
+  fragment.innerHTML=headingMarkup();title=fragment.firstElementChild;
+ }
+ if(flag)flag.insertAdjacentElement('afterend',title);
+ else if(access)access.insertAdjacentElement('beforebegin',title);
  else {
-  const banner=home.querySelector('.hub-banner.afaq-animated-hero');
-  if(banner)banner.insertAdjacentHTML('beforebegin',headingMarkup());
-  else return html;
+  const first=home.querySelector('.hub-banner.afaq-animated-hero');
+  if(first)first.insertAdjacentElement('beforebegin',title);
+  else home.prepend(title);
  }
  return temp.innerHTML;
 };
+function ensureTitleVisible(){
+ const home=document.querySelector('#app .hub-home');
+ if(!home)return;
+ const flag=home.querySelector('.v9-oman-horizon[data-national-ribbon="true"]');
+ const access=home.querySelector('.afaq-home-access.afaq-entry-between-flag-hero')||
+              home.querySelector('.afaq-home-access');
+ let title=home.querySelector('.afaq-gilded-platform-title');
+ if(!title){
+  const wrap=document.createElement('div');wrap.innerHTML=headingMarkup();title=wrap.firstElementChild;
+ }
+ // Extra post-render safeguard: if other homepage wrappers reorder the DOM,
+ // restore the title's required location after the flag on the LIVE page.
+ if(flag&&flag.nextElementSibling!==title)flag.insertAdjacentElement('afterend',title);
+ else if(!flag&&access&&access.previousElementSibling!==title)
+  access.insertAdjacentElement('beforebegin',title);
+ else if(!flag&&!access&&title.parentElement!==home)home.prepend(title);
+ const edit=title.querySelector('[data-afaq-platform-title-manage]');
+ if(edit&&!edit.dataset.afaqBound){
+  edit.dataset.afaqBound='1';
+  edit.addEventListener('click',openAdmin);
+ }
+}
 function adminPage(){
  if(!isSupervisor())return '<div class="notice">تعديل اسم المنصة متاح للمشرف الرئيسي فقط.</div>';
  const ar=ST.title.arabic_title||'منصة آفاق ماث',en=ST.title.english_title||'Afaq Math';
@@ -122,7 +163,7 @@ function bind(){
  document.querySelectorAll('[data-afaq-platform-title-home]').forEach(n=>n.addEventListener('click',()=>route('home')));
 }
 const earlierAttach=attach;
-attach=function(...args){earlierAttach.apply(this,args);bind()};
+attach=function(...args){earlierAttach.apply(this,args);ensureTitleVisible();bind()};
 const earlierLoad=hubLoadForTab;
 hubLoadForTab=function(id,...args){
  if(id==='platform_title'){if(isSupervisor()&&!ST.adminLoaded)fetchAdmin();return}
