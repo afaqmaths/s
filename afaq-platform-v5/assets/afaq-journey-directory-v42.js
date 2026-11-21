@@ -185,8 +185,20 @@ function directoryMarkup(){
  const count=groups.reduce((a,g)=>a+g.items.length,0);
  return '<div class="container afaq-directory-page" dir="rtl">'+
  '<section class="afaq-directory-hero"><div class="afaq-directory-glow" aria-hidden="true"></div>'+
+ '<svg class="afaq-directory-geometric-illustration" viewBox="0 0 320 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'+
+ '<defs><linearGradient id="afaqDirGeoGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5cd"/><stop offset="1" stop-color="#dba451"/></linearGradient></defs>'+
+ '<g stroke="#b2dff5" stroke-opacity=".31" stroke-width="1"><path d="M18 34H306M18 74H306M18 114H306M18 154H306M18 194H306M18 234H306M38 15V242M78 15V242M118 15V242M158 15V242M198 15V242M238 15V242M278 15V242"/></g>'+
+ '<path d="M40 203L125 53L211 202Z" fill="#efd99a" fill-opacity=".08" stroke="url(#afaqDirGeoGold)" stroke-width="3"/>'+
+ '<circle cx="214" cy="87" r="53" fill="none" stroke="#e9c570" stroke-width="3"/>'+
+ '<circle cx="214" cy="87" r="35" fill="none" stroke="#8bd9ec" stroke-width="2"/>'+
+ '<path d="M40 215H286M86 230V15" stroke="#e8dfad" stroke-width="3"/>'+
+ '<path d="M80 173Q135 40 192 148T292 59" fill="none" stroke="#88d7ed" stroke-width="3" stroke-linecap="round"/>'+
+ '<g fill="#f5d78d" font-family="Georgia,serif" font-weight="bold"><text x="232" y="205" font-size="28">π</text><text x="132" y="136" font-size="31">√</text><text x="266" y="45" font-size="25">∑</text><text x="24" y="56" font-size="24">∞</text></g></svg>'+
+ '<span class="afaq-directory-math-mark math-one" aria-hidden="true">∑</span>'+
+ '<span class="afaq-directory-math-mark math-two" aria-hidden="true">x²</span>'+
+ '<span class="afaq-directory-math-mark math-three" aria-hidden="true">△</span>'+
  '<span class="afaq-directory-eyebrow">✦ خريطة منصة آفاق ماث ✦</span>'+
- '<h1>ابدأ رحلتك في الرياضيات</h1>'+
+ '<h1>اختر رحلتك الشاملة في عالم الرياضيات</h1>'+
  '<p>جميع الأبواب في مكان واحد: تعلم، استكشف، جرّب، نافس، تواصل، وانتقل إلى أقسام الصفحة الرئيسية أو أدوات حسابك.</p>'+
  '<div class="afaq-directory-hero-actions">'+
  '<button type="button" data-directory-action="route" data-directory-target="home">🏠 الصفحة الرئيسية</button>'+
@@ -270,8 +282,8 @@ hubHome=function(...args){
  const html=previousHome.apply(this,args);
  if(typeof html!=='string')return html;
  // Update the actual, visible hero button even if earlier templates reintroduce it.
- return html.replace(/(<button\b[^>]*class="hub-primary"[^>]*data-route=")learning("[^>]*>\s*ابدأ رحلتك في الرياضيات\s*<\/button>)/,
- '$1'+PAGE+'$2');
+ return html.replace(/<button\b[^>]*class="hub-primary"[^>]*data-route="(?:learning|afaq_directory)"[^>]*>\s*(?:ابدأ رحلتك في الرياضيات|اختر رحلتك الشاملة في عالم الرياضيات)\s*<\/button>/g,
+ '<button type="button" class="hub-primary" data-route="'+PAGE+'">اختر رحلتك الشاملة في عالم الرياضيات</button>');
 };
 const previousRender=render;
 render=function(...args){
