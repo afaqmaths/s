@@ -46,6 +46,7 @@ hubHome=function(...args){
  // Explicitly place the bilingual collision panel between the EXISTING Oman flag and
  // the functioning login gates. Do not replace or duplicate either of those.
  const flag=home.querySelector('.v9-oman-horizon[data-national-ribbon="true"]');
+ const nationalRow=home.querySelector('.afaq-national-top-row');
  const access=home.querySelector('.afaq-home-access.afaq-entry-between-flag-hero')||
               home.querySelector('.afaq-home-access');
  let title=home.querySelector('.afaq-gilded-platform-title');
@@ -53,7 +54,9 @@ hubHome=function(...args){
   const fragment=document.createElement('div');
   fragment.innerHTML=headingMarkup();title=fragment.firstElementChild;
  }
- if(flag)flag.insertAdjacentElement('afterend',title);
+ // Place the title after BOTH national pictures, not inside the flag grid column.
+ if(nationalRow)nationalRow.insertAdjacentElement('afterend',title);
+ else if(flag)flag.insertAdjacentElement('afterend',title);
  else if(access)access.insertAdjacentElement('beforebegin',title);
  else {
   const first=home.querySelector('.hub-banner.afaq-animated-hero');
@@ -66,18 +69,23 @@ function ensureTitleVisible(){
  const home=document.querySelector('#app .hub-home');
  if(!home)return;
  const flag=home.querySelector('.v9-oman-horizon[data-national-ribbon="true"]');
+ const nationalRow=home.querySelector('.afaq-national-top-row');
  const access=home.querySelector('.afaq-home-access.afaq-entry-between-flag-hero')||
               home.querySelector('.afaq-home-access');
  let title=home.querySelector('.afaq-gilded-platform-title');
  if(!title){
   const wrap=document.createElement('div');wrap.innerHTML=headingMarkup();title=wrap.firstElementChild;
  }
- // Extra post-render safeguard: if other homepage wrappers reorder the DOM,
- // restore the title's required location after the flag on the LIVE page.
- if(flag&&flag.nextElementSibling!==title)flag.insertAdjacentElement('afterend',title);
- else if(!flag&&access&&access.previousElementSibling!==title)
+ // Extra post-render safeguard: ensure the title spans BELOW BOTH national pictures,
+ // instead of becoming a third cell of the shared two-image row.
+ if(nationalRow&&nationalRow.nextElementSibling!==title)
+  nationalRow.insertAdjacentElement('afterend',title);
+ else if(!nationalRow&&flag&&flag.nextElementSibling!==title)
+  flag.insertAdjacentElement('afterend',title);
+ else if(!nationalRow&&!flag&&access&&access.previousElementSibling!==title)
   access.insertAdjacentElement('beforebegin',title);
- else if(!flag&&!access&&title.parentElement!==home)home.prepend(title);
+ else if(!nationalRow&&!flag&&!access&&title.parentElement!==home)
+  home.prepend(title);
  const edit=title.querySelector('[data-afaq-platform-title-manage]');
  if(edit&&!edit.dataset.afaqBound){
   edit.dataset.afaqBound='1';
