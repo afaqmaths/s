@@ -47,9 +47,9 @@ function scientificBlock(){
     'afaq-scientific-card');
  }).join('');
  return '<section id="afaq-scientific" class="afaq-initiatives-science" aria-label="المبادرات العلمية">'+
- '<header class="afaq-initiative-heading"><span>✦ بصمة تعليمية مبتكرة ✦</span>'+
- '<h2>المبادرات العلمية</h2><h3>'+esc(initState.settings.title)+'</h3>'+
- '<p>'+esc(initState.settings.scientific_intro)+'</p></header>'+
+ '<header class="afaq-initiative-heading">'+
+ '<h3>المبادرات العلمية</h3>'+
+ '<p>'+esc(String(initState.settings.scientific_intro||'').replace(/^بصمة تعليمية مبتكرة\s*[•—:–-]?\s*/,'') )+'</p></header>'+
  '<div class="afaq-scientific-grid">'+(items||'<p>يمكن للمشرف إضافة المبادرات العلمية هنا.</p>')+'</div>'+
  '<div class="afaq-initiative-bottom"><button type="button" class="afaq-initiative-more" data-route="teaching_initiatives">✨ استكشف المزيد من المبادرات العلمية</button>'+
  (supervisor()?'<button type="button" class="afaq-initiative-manage" data-init-admin="scientific">إدارة المبادرات العلمية</button>':'')+
@@ -69,7 +69,7 @@ function galleryCard(item){
 function communityBlock(){
  const items=currentItems('community');
  return '<section id="afaq-community" class="afaq-community-initiatives" aria-label="المبادرات المجتمعية">'+
- '<header class="afaq-initiative-subtitle"><span>🤝 العطاء والمشاركة</span><h2>المبادرات المجتمعية</h2>'+
+ '<header class="afaq-initiative-subtitle"><span>🤝 العطاء والمشاركة</span><h3>المبادرات المجتمعية</h3>'+
  '<p>'+esc(initState.settings.community_intro)+'</p></header>'+
  (items.length?'<div class="afaq-community-gallery">'+items.map(galleryCard).join('')+'</div>':
  '<div class="afaq-community-placeholder"><span>🖼️</span><strong>معرض الصور والمشاركات المجتمعية</strong>'+
@@ -93,7 +93,7 @@ function youtubeBlock(){
  const videos=currentItems('youtube_video');
  return '<section id="afaq-youtube" class="afaq-youtube-initiatives" aria-label="قناة الأستاذ سعيد على يوتيوب">'+
  '<header class="afaq-initiative-subtitle"><span>▶️ تعليم ومعرفة على يوتيوب</span>'+
- '<h2>تصفح قناة يوتيوب الخاصة بالأستاذ سعيد البريكي</h2>'+
+ '<h3>تصفح قناة يوتيوب الخاصة بالأستاذ سعيد البريكي</h3>'+
  '<p>فيديوهات وشروحات ومشاركات يمكن للمشرف إضافتها وربطها بالقناة الأصلية.</p></header>'+
  '<div class="afaq-youtube-bar"><div class="afaq-youtube-mark" aria-hidden="true">▶</div><div><strong>'+esc(settings.youtube_channel_title)+'</strong>'+
  '<small>'+(channel?'رابط القناة معتمد من مشرف المنصة':'سيظهر رابط القناة فور إضافته من حساب المشرف')+'</small></div>'+
@@ -113,7 +113,7 @@ function youtubeBlock(){
 function otherBlock(){
  const groups=[['health','🩺','المبادرات الصحية'],['environment','🌿','المبادرات البيئية'],['other','✨','مبادرات في مجالات أخرى']];
  return '<section id="afaq-other-initiatives" class="afaq-other-initiatives" aria-label="مبادرات أخرى">'+
- '<header class="afaq-initiative-subtitle"><span>✦ آفاق متجددة ✦</span><h2>مبادرات أخرى</h2>'+
+ '<header class="afaq-initiative-subtitle"><span>✦ آفاق متجددة ✦</span><h3>مبادرات أخرى</h3>'+
  '<p>'+esc(initState.settings.other_intro)+'</p></header>'+
  '<div class="afaq-other-grid">'+groups.map(([code,icon,title])=>{
   const items=currentItems(code);
@@ -124,7 +124,13 @@ function otherBlock(){
  }).join('')+'</div></section>';
 }
 function fullMarkup(){
- return '<div class="afaq-teacher-initiatives" dir="rtl">'+scientificBlock()+communityBlock()+youtubeBlock()+otherBlock()+'</div>';
+ return '<div class="afaq-teacher-initiatives" dir="rtl">'+
+ '<header class="afaq-initiatives-main-heading">'+
+ '<span>✦ بصمة تعليمية مبتكرة ✦</span>'+
+ '<h2>'+esc(initState.settings.title)+'</h2>'+
+ '<p>أفكار وتجارب ومشاركات في الرياضيات والمجتمع والتعلم، تمتد إلى مجالات جديدة.</p>'+
+ '</header>'+
+ scientificBlock()+communityBlock()+youtubeBlock()+otherBlock()+'</div>';
 }
 const oldHome=hubHome;
 hubHome=function(...args){
