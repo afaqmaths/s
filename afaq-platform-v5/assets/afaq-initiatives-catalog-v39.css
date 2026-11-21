@@ -1,0 +1,222 @@
+/* AFAQMATHS • full-width initiatives: 8 scientific tiles, 2 equal tiles on each row. */
+.hub-home .afaq-sections-full{
+ display:block!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+ margin:16px 0 20px!important;min-width:0!important;
+}
+.hub-home .afaq-sections-full .hub-gate-grid{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ align-items:stretch!important;gap:12px!important;margin:10px 0!important;overflow:visible!important;
+}
+.hub-home .afaq-sections-full .hub-gate{min-width:0!important}
+.hub-home .afaq-teacher-initiatives{
+ width:100%;max-width:none;min-width:0;box-sizing:border-box;margin:19px 0 28px;
+ direction:rtl;display:flex;flex-direction:column;gap:22px;color:#194971;
+}
+.hub-home .afaq-teacher-initiatives>section{
+ box-sizing:border-box;min-width:0;border-radius:24px;
+ padding:22px 22px 25px;border:2px solid #d5b478;
+ background:linear-gradient(145deg,#fffdf6,#f2f8ff 56%,#fffbf0);
+ box-shadow:0 12px 28px #20486e15;
+}
+.hub-home .afaq-initiatives-science{
+ border-top:6px solid #b6934a!important;
+ background:radial-gradient(circle at 50% 0%,#fff3c8,transparent 54%),linear-gradient(140deg,#fffdf8,#edf7ff)!important;
+}
+.hub-home .afaq-initiative-heading{
+ padding:16px 12px 21px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;
+ border-bottom:2px solid #dbc18a;margin-bottom:20px;
+}
+.hub-home .afaq-initiative-heading>span{font:950 13px Tahoma,Arial,sans-serif;color:#976a20;line-height:1.7}
+.hub-home .afaq-initiative-heading h2{
+ color:#124e83!important;font-size:clamp(26px,3vw,38px)!important;font-weight:950!important;
+ margin:4px 0!important;line-height:1.5!important;
+}
+.hub-home .afaq-initiative-heading h3{color:#8a5f26!important;font-size:clamp(20px,2vw,27px)!important;
+ font-weight:950!important;margin:0!important;line-height:1.5!important}
+.hub-home .afaq-initiative-heading p{font-size:clamp(14px,1.3vw,17px)!important;
+ line-height:2!important;color:#5b7085!important;margin:5px 0!important;max-width:840px}
+.hub-home .afaq-scientific-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;
+ gap:16px;width:100%;min-width:0;align-items:stretch;
+}
+.hub-home .afaq-scientific-card{
+ width:100%;min-width:0;min-height:165px;display:flex!important;flex-direction:row;
+ justify-content:flex-start;align-items:center;gap:18px;box-sizing:border-box;
+ background:linear-gradient(138deg,#ffffff,#eff8ff);border:2px solid #c5dceb;
+ border-radius:18px;padding:22px 19px;color:#17547e;text-align:right;
+ cursor:pointer;text-decoration:none!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+ box-shadow:0 5px 15px #0c497a12;font-family:Tahoma,Arial,sans-serif;
+}
+.hub-home .afaq-scientific-card:hover{transform:translateY(-3px);
+ border-color:#c59e54;background:linear-gradient(135deg,#fff8e9,#edf7ff);
+ box-shadow:0 10px 19px #0f5b8920}
+.hub-home .afaq-scientific-card:focus-visible{outline:3px solid #c4a15e;outline-offset:3px}
+.hub-home .afaq-initiative-emoji,.hub-home .afaq-initiative-picture{
+ flex:0 0 91px;width:91px;height:91px;display:grid;place-items:center;box-sizing:border-box;
+ border:2px solid #ead2a1;border-radius:19px;
+ background:linear-gradient(130deg,#fff4ce,#e6f4ff);font-size:47px;
+}
+.hub-home .afaq-initiative-picture{overflow:hidden}
+.hub-home .afaq-initiative-picture img{width:100%;height:100%;object-fit:contain}
+.hub-home .afaq-initiative-card-body{display:flex;flex:1;min-width:0;
+ flex-direction:column;align-items:stretch;gap:10px}
+.hub-home .afaq-initiative-card-body strong{font-size:clamp(17px,1.6vw,22px);
+ font-weight:950;color:#164e80;line-height:1.65;overflow-wrap:anywhere}
+.hub-home .afaq-initiative-card-body small{font-size:clamp(13px,1vw,16px);
+ font-weight:650;color:#5c7489;line-height:1.9}
+.hub-home .afaq-initiative-explore{display:block;font-size:13px;font-weight:900;
+ color:#a0732c;line-height:1.6}
+.hub-home .afaq-initiative-bottom{display:flex;align-items:center;
+ justify-content:center;flex-wrap:wrap;gap:13px;margin:23px 0 7px}
+.hub-home .afaq-initiative-more{
+ padding:15px 24px;border:1px solid #c7a366;border-radius:13px;
+ background:linear-gradient(115deg,#194f87,#2779a5);color:#fff;
+ font:950 16px/1.6 Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 5px 13px #1e568524;
+}
+.hub-home .afaq-initiative-manage{
+ border:1px solid #d4b36b;background:#fff4d7;color:#8a5e1a;
+ border-radius:12px;padding:12px 15px;font:900 13px/1.7 Tahoma,Arial,sans-serif;cursor:pointer;
+}
+.hub-home .afaq-initiative-more:hover,.hub-home .afaq-initiative-manage:hover{filter:brightness(1.08)}
+.hub-home .afaq-initiative-privacy{font-size:12px;color:#687c87;
+ text-align:center;line-height:1.85;margin:9px 0 0!important}
+.hub-home .afaq-initiative-subtitle{padding-bottom:15px;margin-bottom:18px;
+ border-bottom:1px solid #d9d5c2;display:flex;flex-direction:column;gap:7px}
+.hub-home .afaq-initiative-subtitle>span{color:#a1742f;font-size:13px;font-weight:950}
+.hub-home .afaq-initiative-subtitle h2{
+ color:#154e80!important;font-size:clamp(23px,2.5vw,33px)!important;
+ font-weight:950!important;margin:0!important;line-height:1.55!important}
+.hub-home .afaq-initiative-subtitle p{color:#60788b;font-size:15px;line-height:1.95;margin:0}
+.hub-home .afaq-community-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.hub-home .afaq-community-card{min-width:0;background:#fff;border:1px solid #c6dbea;
+ border-radius:17px;overflow:hidden;box-shadow:0 5px 15px #1e517c13}
+.hub-home .afaq-community-card figure{width:100%;margin:0;height:230px;
+ background:#edf6ff;display:grid;place-items:center}
+.hub-home .afaq-community-card figure img{width:100%;height:100%;object-fit:contain}
+.hub-home .afaq-community-empty-image{height:180px;display:grid;place-items:center;
+ background:linear-gradient(140deg,#eaf5ff,#fff3dc);font-size:61px}
+.hub-home .afaq-community-copy{padding:16px}
+.hub-home .afaq-community-copy h3{font-size:19px;color:#1a5683;font-weight:950;margin:0 0 11px}
+.hub-home .afaq-community-copy p{font-size:14px;color:#55778b;line-height:1.85;margin:0 0 8px}
+.hub-home .afaq-community-copy blockquote{margin:10px 0 0;padding:11px 14px;
+ background:#fff8e9;border-right:4px solid #d1ae6c;
+ border-radius:9px;font-size:14px;color:#695b41;line-height:1.95;white-space:pre-wrap}
+.hub-home .afaq-community-copy a{display:inline-block;margin-top:12px;font-weight:900;color:#1b6d95}
+.hub-home .afaq-community-placeholder{min-height:160px;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;text-align:center;gap:11px;
+ background:linear-gradient(125deg,#edf7ff,#fff9e9);border:2px dashed #c3d6e3;
+ border-radius:17px;padding:18px;color:#32638a}
+.hub-home .afaq-community-placeholder span{font-size:50px}
+.hub-home .afaq-community-placeholder strong{font-size:20px;color:#174d7d}
+.hub-home .afaq-community-placeholder p{font-size:14px;line-height:1.85;margin:0}
+.hub-home .afaq-youtube-bar{display:flex;align-items:center;gap:17px;flex-wrap:wrap;
+ border:2px solid #efb4ad;background:#fff9f7;border-radius:15px;padding:17px}
+.hub-home .afaq-youtube-mark{flex:0 0 68px;height:55px;border-radius:15px;
+ display:grid;place-items:center;background:#ed262e;color:white;font-size:34px}
+.hub-home .afaq-youtube-bar>div:nth-child(2){flex:1;min-width:190px;
+ display:flex;flex-direction:column;gap:6px}
+.hub-home .afaq-youtube-bar strong{font-size:19px;color:#204e79}
+.hub-home .afaq-youtube-bar small{font-size:12px;color:#688194}
+.hub-home .afaq-youtube-bar>a,.hub-home .afaq-youtube-bar>button{
+ padding:12px 15px;background:#e92f36;color:#fff;border-radius:10px;border:0;
+ cursor:pointer;text-decoration:none!important;font:850 14px Tahoma,Arial,sans-serif}
+.hub-home .afaq-youtube-videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:15px;margin-top:16px}
+.hub-home .afaq-youtube-video{border:1px solid #e0d6cd;border-radius:15px;overflow:hidden;
+ background:#fff;min-width:0}
+.hub-home .afaq-youtube-thumbnail{height:185px;background:#f3f6fc}
+.hub-home .afaq-youtube-thumbnail img{width:100%;height:100%;object-fit:contain}
+.hub-home .afaq-youtube-glyph{height:110px;display:grid;place-items:center;
+ color:#df3030;font-size:55px;background:#fff6f2}
+.hub-home .afaq-youtube-video-copy{padding:16px}
+.hub-home .afaq-youtube-video h3{font-size:18px;color:#1e547b;margin:0 0 8px}
+.hub-home .afaq-youtube-video p{font-size:14px;color:#567484;line-height:1.8}
+.hub-home .afaq-youtube-actions{display:flex;flex-wrap:wrap;gap:9px}
+.hub-home .afaq-youtube-actions>*{border:1px solid #c8d8e5;background:#eff7ff;
+ color:#17618a;border-radius:9px;text-decoration:none!important;padding:9px 11px;
+ font:850 13px Tahoma,Arial,sans-serif;cursor:pointer}
+.hub-home .afaq-youtube-inline iframe{width:100%;height:270px;max-width:100%;margin-top:12px;
+ display:block;border:0;border-radius:11px;background:#000}
+.hub-home .afaq-other-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.hub-home .afaq-other-category{min-width:0;padding:16px;border:1px solid #cddfeb;
+ border-radius:16px;background:#fff}
+.hub-home .afaq-other-category h3{color:#16567c;font-size:19px;margin:0 0 10px}
+.hub-home .afaq-other-category>p{color:#7890a0;font-size:14px;line-height:1.8;margin:0}
+.hub-home .afaq-other-category .afaq-community-card{margin-bottom:12px}
+.hub-home .afaq-other-category>button{border:1px solid #d2b46f;border-radius:9px;
+ background:#fff4db;color:#926922;padding:10px 13px;cursor:pointer}
+.afaq-initiatives-admin{direction:rtl;padding-bottom:35px;color:#224e72;max-width:1320px;margin:0 auto}
+.afaq-initiatives-admin .afaq-init-admin-head{background:linear-gradient(130deg,#fff9e5,#eef8ff);
+ border:2px solid #dab66e;border-radius:17px;padding:20px;margin:20px 0}
+.afaq-initiatives-admin .afaq-init-admin-head h2{color:#195481;font-size:26px;margin:0 0 10px}
+.afaq-initiatives-admin .afaq-init-admin-head>p{line-height:1.85;color:#527287}
+.afaq-initiatives-admin .afaq-init-admin-head>button{border:1px solid #b8cee0;
+ border-radius:10px;background:#fff;padding:10px 15px;color:#20557e;cursor:pointer}
+.afaq-initiatives-admin .afaq-init-success{color:#217357!important;font-weight:950}
+.afaq-initiatives-admin .afaq-init-error{color:#bb3333!important;font-weight:950}
+.afaq-initiatives-admin .afaq-init-admin-forms{display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:17px;align-items:start}
+.afaq-initiatives-admin .afaq-init-admin-form{display:flex;flex-direction:column;gap:12px;
+ min-width:0;border:1px solid #cadce9;background:#fff;border-radius:17px;
+ box-shadow:0 5px 17px #1b5c8111;padding:17px}
+.afaq-initiatives-admin .afaq-init-admin-form h3{font-size:20px;color:#1a5682;margin:0 0 5px}
+.afaq-initiatives-admin .afaq-init-admin-form label{display:flex;flex-direction:column;
+ gap:6px;color:#315e79;font:850 14px/1.7 Tahoma,Arial,sans-serif}
+.afaq-initiatives-admin .afaq-init-admin-form input:not([type=checkbox]),
+.afaq-initiatives-admin .afaq-init-admin-form select,
+.afaq-initiatives-admin .afaq-init-admin-form textarea{display:block;width:100%;min-width:0;
+ box-sizing:border-box;border:1px solid #afcbdc;border-radius:9px;
+ padding:11px;background:white;color:#214c6c;font:14px/1.5 Tahoma,Arial,sans-serif}
+.afaq-initiatives-admin .afaq-init-admin-form textarea{min-height:75px;resize:vertical}
+.afaq-initiatives-admin .afaq-init-inline-check{display:flex!important;flex-direction:row!important;
+ align-items:flex-start!important;gap:9px!important;line-height:1.8!important}
+.afaq-initiatives-admin .afaq-init-inline-check input[type=checkbox]{width:18px;height:18px;flex:none;margin-top:3px}
+.afaq-initiatives-admin .afaq-init-admin-image{display:flex;flex-direction:column;
+ padding:12px;border:1px dashed #d3be82;border-radius:12px;background:#fffdf6;gap:11px}
+.afaq-initiatives-admin .afaq-init-admin-image img{display:block;height:160px;
+ max-width:100%;object-fit:contain;background:#fff;border-radius:9px}
+.afaq-initiatives-admin .afaq-init-admin-note{font-size:12px;color:#765e36;line-height:1.85}
+.afaq-initiatives-admin .afaq-init-admin-save{border:0;border-radius:10px;padding:13px 16px;
+ background:linear-gradient(115deg,#166a8e,#15777b);color:#fff;font:950 14px Tahoma,Arial,sans-serif;cursor:pointer}
+.afaq-initiatives-admin .afaq-init-actions{display:flex;flex-wrap:wrap;gap:12px}
+.afaq-initiatives-admin .afaq-init-actions button:not(.afaq-init-admin-save){border-radius:9px;
+ border:1px solid #b8cbd9;background:#fff;color:#295b7b;padding:11px;cursor:pointer}
+.afaq-initiatives-admin button:disabled{opacity:.6;cursor:wait}
+.afaq-initiatives-admin .afaq-init-admin-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:16px;margin-top:20px}
+.afaq-initiatives-admin .afaq-init-admin-category{border:1px solid #c9dbe8;background:#f9fcff;
+ border-radius:16px;padding:14px;min-width:0}
+.afaq-initiatives-admin .afaq-init-admin-category>h3{color:#18537a;font-size:20px;margin:0 0 11px}
+.afaq-initiatives-admin .afaq-init-admin-category>button{background:#fff4da;color:#805f2d;
+ border:1px solid #d5b977;border-radius:9px;padding:11px;cursor:pointer}
+.afaq-initiatives-admin .afaq-init-admin-items{display:flex;flex-direction:column;gap:9px;margin-top:13px}
+.afaq-initiatives-admin .afaq-init-admin-items>article{display:flex;align-items:center;
+ flex-wrap:wrap;gap:9px;padding:9px;border:1px solid #d4e0e9;background:#fff;border-radius:11px}
+.afaq-initiatives-admin .afaq-init-admin-items>article img{flex:0 0 55px;width:55px;height:55px;object-fit:cover;border-radius:8px}
+.afaq-initiatives-admin .afaq-init-admin-ico{flex:0 0 52px;text-align:center;font-size:28px}
+.afaq-initiatives-admin .afaq-init-admin-items>article>div{display:flex;flex-direction:column;
+ gap:3px;flex:1;min-width:150px;overflow-wrap:anywhere}
+.afaq-initiatives-admin .afaq-init-admin-items strong{color:#195681;font-weight:900}
+.afaq-initiatives-admin .afaq-init-admin-items small{color:#728697}
+.afaq-initiatives-admin .afaq-init-admin-items button{border:1px solid #b3d3de;
+ border-radius:8px;padding:9px;color:#176d80;background:#eef9fd;cursor:pointer}
+.afaq-initiatives-admin .afaq-init-admin-items .afaq-init-danger{background:#fff1f1;
+ color:#b04747;border-color:#eac6c6}
+@media(max-width:980px){
+ .hub-home .afaq-sections-full .hub-gate-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .hub-home .afaq-community-gallery,.hub-home .afaq-other-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .afaq-initiatives-admin .afaq-init-admin-forms{grid-template-columns:1fr}
+}
+@media(max-width:690px){
+ .hub-home .afaq-scientific-grid,.hub-home .afaq-community-gallery,.hub-home .afaq-other-grid,.hub-home .afaq-youtube-videos{grid-template-columns:1fr}
+ .hub-home .afaq-teacher-initiatives>section{padding:16px 12px}
+ .hub-home .afaq-scientific-card{padding:16px 11px;min-height:135px}
+ .hub-home .afaq-initiative-emoji,.hub-home .afaq-initiative-picture{width:70px;height:70px;flex-basis:70px;font-size:38px}
+ .afaq-initiatives-admin .afaq-init-admin-list{grid-template-columns:1fr}
+}
+@media(max-width:460px){
+ .hub-home .afaq-sections-full .hub-gate-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .hub-home .afaq-scientific-card{gap:11px}
+ .hub-home .afaq-initiative-card-body strong{font-size:16px}
+ .hub-home .afaq-youtube-inline iframe{height:210px}
+}
