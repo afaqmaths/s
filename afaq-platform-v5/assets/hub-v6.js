@@ -104,16 +104,78 @@ function hubHomeEntryGuide(){
  '<p class="afaq-entry-guest-note">المكتبة والموارد العامة متاحة للزائر دون تسجيل.</p></div>';
 }
 
+/* Entry help is intentionally a one-line ribbon; detailed instructions appear only
+   for the category selected by the visitor, never as permanently tall cards. */
+const HUB_ENTRY_HELP_CATEGORIES=[
+ {id:'management',icon:'🏫',title:'الإدارة المدرسية',details:'اختر «الإدارة المدرسية» إذا كنت مدير المدرسة أو مساعد المدير، ثم أدخل بيانات حسابك المعتمدة. تظهر لك وظائف الإدارة المدرسية بحسب الصلاحيات المخصصة لحسابك.'},
+ {id:'supervision',icon:'👨‍🏫',title:'الإشراف',details:'اختر «دخول المشرفين» إذا كنت المشرف الرئيسي أو المشرف المساعد أو مشرف تقنية المعلومات (عرض فقط). أدخل بيانات الحساب المعتمدة، وستظهر لك أدوات الإشراف وفق صلاحيتك.'},
+ {id:'parent',icon:'👨‍👩‍👧',title:'ولي الأمر',details:'افتح «دخول ولي الأمر»، وحدّد شعبة ابنك في الصف السادس، ثم اكتب رقمه التسلسلي في الشعبة ورمز ولي الأمر الخاص المكوّن من 6 أرقام، الذي تتسلّمه من مشرف المنصة. يمكنك متابعة البيانات المتاحة لابنك والتواصل مع المشرف.'},
+ {id:'grade6',icon:'🎒',title:'طلاب الصف السادس',details:'اختر «طلاب صف 6»، ثم أدخل اسم المستخدم والرقم السري الخاصين بك. تُعرَف شعبتك من حسابك تلقائيًا، ويمكنك الدخول للتعلّم. وعند استخدام الرقم السري الأولي، غيّره بنفسك من «حسابي» لتفعيل دخول مسابقة نجوم آفاق.'},
+ {id:'other_students',icon:'📘',title:'طلاب الصفوف ٥ و٧ و٨',details:'اختر «طلاب الصفوف الأخرى»، ثم حدّد صفك الدراسي، وأدخل اسم المستخدم والرقم السري المخصصين لحسابك التدريبي. لا يُحتسب التدريب ضمن محاولات مسابقة الصف السادس الرسمية.'},
+ {id:'visitor',icon:'🌐',title:'الزائر',details:'اختر «التصفح كضيف» للاطلاع على المحتوى العام والمكتبة والأنشطة المتاحة دون تسجيل دخول.'}
+];
 function hubEntryInstructions(){
- return '<section class="afaq-entry-instructions" dir="rtl" aria-label="تعليمات الدخول">'+
- '<h3>🔑 تعليمات الدخول</h3>'+
- '<div class="afaq-entry-instructions-grid">'+
- '<p><strong>👨‍🎓 طلاب صف 6:</strong> اختر «طلاب صف 6»، ثم أدخل اسم المستخدم والرقم السري الخاصين بك. تُعرَف شعبتك من حسابك تلقائيًا، ويمكنك الدخول للتعلم. وعند استخدام الرقم السري الأولي، غيّره بنفسك من «حسابي» لتفعيل دخول مسابقة نجوم آفاق.</p>'+
- '<p><strong>📘 طلاب الصفوف الأخرى (5، 7، 8):</strong> اختر «طلاب الصفوف الأخرى»، ثم حدّد صفك الدراسي، وأدخل اسم المستخدم والرقم السري المخصصين لحسابك التدريبي. لا يُحتسب التدريب ضمن محاولات مسابقة الصف السادس الرسمية.</p>'+
- '<p><strong>👨‍👩‍👧 ولي الأمر:</strong> افتح «دخول ولي الأمر»، وحدّد شعبة ابنك في الصف السادس، ثم اكتب رقمه التسلسلي في الشعبة ورمز ولي الأمر الخاص المكوّن من 6 أرقام، الذي تتسلّمه من مشرف المنصة. يمكنك متابعة البيانات المتاحة لابنك والتواصل مع المشرف.</p>'+
- '<p><strong>👨‍🏫 المشرفون والإدارة المدرسية:</strong> اختر «دخول المشرفين» للمشرف الرئيسي أو المساعد أو مشرف تقنية المعلومات (عرض فقط)، أو «الإدارة المدرسية» للمدير ومساعده. أدخل بيانات الحساب المعتمدة، وستظهر لك الوظائف وفق صلاحيتك.</p>'+
- '<p class="afaq-entry-instructions-guest"><strong>🌐 الزائر:</strong> اختر «التصفح كضيف» للاطلاع على المحتوى العام والمكتبة والأنشطة المتاحة دون تسجيل دخول.</p>'+
- '</div></section>';
+ return '<section class="afaq-entry-instructions afaq-entry-instructions--ribbon" dir="rtl" aria-label="تعليمات الدخول حسب الفئة">'+
+ '<div class="afaq-entry-help-strip">'+
+ '<h3 class="afaq-entry-help-heading">🔑 تعليمات الدخول</h3>'+
+ '<div class="afaq-entry-help-options" role="group" aria-label="اختر الفئة لعرض تعليماتها">'+
+ HUB_ENTRY_HELP_CATEGORIES.map(item=>
+  '<button type="button" class="afaq-entry-help-option" data-afaq-entry-help="'+item.id+'"'+
+  ' aria-expanded="false" aria-controls="afaqEntryHelpPopover">'+
+  '<span class="afaq-entry-help-icon" aria-hidden="true">'+item.icon+'</span>'+
+  '<strong>'+item.title+'</strong><span class="afaq-entry-help-chevron" aria-hidden="true">⌄</span></button>'
+ ).join('')+
+ '</div></div>'+
+ '<div id="afaqEntryHelpPopover" class="afaq-entry-help-popover" role="region" aria-label="التعليمات الخاصة بالفئة المختارة" hidden>'+
+ '<div class="afaq-entry-help-popover-head"><strong id="afaqEntryHelpTitle"></strong>'+
+ '<button type="button" class="afaq-entry-help-close" data-afaq-entry-help-close aria-label="إغلاق تعليمات الدخول">×</button></div>'+
+ '<p id="afaqEntryHelpBody"></p></div>'+
+ '</section>';
+}
+function hubEntryHelpClose(ribbon,restoreFocus){
+ const pane=ribbon?.querySelector('#afaqEntryHelpPopover');
+ if(!pane)return;
+ const active=ribbon.querySelector('.afaq-entry-help-option[aria-expanded="true"]');
+ pane.hidden=true;
+ ribbon.querySelectorAll('.afaq-entry-help-option').forEach(b=>{
+  b.setAttribute('aria-expanded','false');b.classList.remove('is-selected');
+ });
+ if(restoreFocus&&active)active.focus();
+}
+function hubEntryHelpAttach(){
+ const ribbon=document.querySelector('#app .afaq-entry-instructions--ribbon');
+ if(!ribbon||ribbon.dataset.entryHelpBound==='1')return;
+ ribbon.dataset.entryHelpBound='1';
+ const pane=ribbon.querySelector('#afaqEntryHelpPopover');
+ ribbon.querySelectorAll('[data-afaq-entry-help]').forEach(button=>button.addEventListener('click',()=>{
+  const entry=HUB_ENTRY_HELP_CATEGORIES.find(x=>x.id===button.dataset.afaqEntryHelp);
+  if(!entry||!pane)return;
+  if(!pane.hidden&&button.getAttribute('aria-expanded')==='true'){
+   hubEntryHelpClose(ribbon,false);return;
+  }
+  ribbon.querySelectorAll('[data-afaq-entry-help]').forEach(b=>{
+   const on=b===button;b.setAttribute('aria-expanded',String(on));b.classList.toggle('is-selected',on);
+  });
+  ribbon.querySelector('#afaqEntryHelpTitle').textContent=entry.icon+' '+entry.title;
+  ribbon.querySelector('#afaqEntryHelpBody').textContent=entry.details;
+  pane.hidden=false;
+ }));
+ ribbon.querySelector('[data-afaq-entry-help-close]')?.addEventListener('click',()=>hubEntryHelpClose(ribbon,true));
+ if(!hub.entryHelpGlobalBound){
+  hub.entryHelpGlobalBound=true;
+  document.addEventListener('click',event=>{
+   const current=document.querySelector('#app .afaq-entry-instructions--ribbon');
+   if(current&&!current.contains(event.target))hubEntryHelpClose(current,false);
+  });
+  document.addEventListener('keydown',event=>{
+   if(event.key==='Escape'){
+    const current=document.querySelector('#app .afaq-entry-instructions--ribbon');
+    if(current&&!current.querySelector('#afaqEntryHelpPopover')?.hidden){
+     hubEntryHelpClose(current,true);
+    }
+   }
+  });
+ }
 }
 
 function hubHome(){
@@ -1025,6 +1087,7 @@ async function hubRefreshPrintData(){
  render();
 }
 function hubAttach(){
+ hubEntryHelpAttach();
  document.getElementById('portalLogout')?.addEventListener('click',()=>{
   hub.parentIssued=null;hub.adminItems=[];hub.inbox=[];hub.legacyInbox=[];
   hub.stats=null;hub.adminLoaded=false;hub.inboxLoaded=false;hub.statsLoaded=false;
