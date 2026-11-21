@@ -237,3 +237,477 @@
  .hub-home .afaq-entry-instructions-grid{grid-template-columns:1fr}
  .hub-home .afaq-entry-instructions-grid p{padding:12px 13px;font-size:15px!important}
 }
+
+
+/* 2026-11-21 — illustrated comprehensive AFAQMATHS introduction.
+   Preserve all existing homepage sections and keep public links permission-aware. */
+.hub-home .afaq-final-introduction.afaq-about-2026{
+ position:relative!important;isolation:isolate;overflow:hidden;
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ display:flex!important;flex-direction:column!important;gap:18px!important;
+ margin:19px 0 15px!important;padding:22px!important;
+ border:2px solid #d5b478!important;border-radius:24px!important;
+ background:
+ radial-gradient(circle at 96% 3%,#ffe9ac73,transparent 23%),
+ radial-gradient(circle at 6% 73%,#bceaff60,transparent 28%),
+ linear-gradient(145deg,#fffefb,#f2f9ff 51%,#fff9e9)!important;
+ box-shadow:0 11px 32px #184a7521,inset 0 0 0 2px #ffffffb8!important;
+}
+.hub-home .afaq-about-2026:before{
+ content:"π  ∑  √  ∞  △  x²";position:absolute;left:-28px;top:-30px;
+ color:#d1b27724;pointer-events:none;z-index:-1;
+ font:900 52px/1.4 Georgia,serif;transform:rotate(-13deg);
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-main{
+ display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(315px,.95fr)!important;
+ gap:24px!important;align-items:stretch!important;
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-copy{
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+ gap:10px;min-width:0!important;
+}
+.hub-home .afaq-about-2026 .afaq-final-eyebrow{
+ display:inline-flex;align-items:center;gap:8px;
+ width:fit-content;max-width:100%;min-height:34px;
+ border:1px solid #dabb78;border-radius:100px;
+ padding:6px 14px;background:linear-gradient(125deg,#fff4d4,#fffdf6);
+ color:#8e6122!important;
+ font:950 clamp(13px,1.1vw,16px)/1.6 Tahoma,Arial,sans-serif!important;
+ box-shadow:0 3px 9px #be97411c;
+}
+.hub-home .afaq-about-2026 .afaq-final-eyebrow span{color:#c99e42}
+.hub-home .afaq-about-2026 .afaq-final-intro-copy h2{
+ color:#154d80!important;
+ font-size:clamp(27px,3.15vw,43px)!important;
+ font-weight:950!important;line-height:1.55!important;
+ margin:2px 0 1px!important;
+ text-wrap:balance;
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-copy h2 [lang=en]{
+ display:inline-block;white-space:nowrap;
+ font:900 .66em/1.4 Georgia,serif!important;letter-spacing:1.5px!important;
+ color:#b17b2b!important;text-shadow:0 1px 0 #fff;
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-copy>p{
+ color:#365c77!important;
+ font-size:clamp(14px,1.13vw,16px)!important;
+ line-height:2!important;font-weight:650!important;
+ text-align:right!important;margin:0!important;
+ max-width:900px!important;
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-copy>p strong{
+ color:#164d84!important;font-weight:950!important;
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-copy>.afaq-about-lead{
+ color:#264d72!important;
+ font-size:clamp(15px,1.3vw,18px)!important;
+ font-weight:750!important;line-height:2!important;
+ padding:10px 13px!important;
+ border-right:4px solid #d3a249!important;border-radius:9px;
+ background:linear-gradient(100deg,#fff8e6cc,#e8f6ff91);
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-highlights{
+ display:flex!important;flex-wrap:wrap!important;gap:7px!important;
+ margin:4px 0 3px!important;
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-highlights span{
+ color:#1e5d83!important;
+ font-size:clamp(11px,.9vw,13px)!important;
+ font-weight:900!important;line-height:1.55!important;
+ border:1px solid #bfd5e4!important;
+ border-radius:10px!important;padding:8px 10px!important;
+ background:linear-gradient(135deg,#fff,#f2fbff)!important;
+ box-shadow:0 3px 9px #2055770d!important;
+}
+.hub-home .afaq-about-2026 .afaq-final-intro-highlights span:nth-child(even){
+ color:#946a27!important;background:linear-gradient(135deg,#fffef5,#fff0cd)!important;
+ border-color:#dcc590!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-primary-actions{
+ display:flex;gap:9px;align-items:center;flex-wrap:wrap;
+ margin-top:4px;
+}
+.hub-home .afaq-about-2026 .afaq-about-primary-actions button{
+ min-height:46px;min-width:0;cursor:pointer;
+ border:1px solid #d6af64;border-radius:11px;
+ padding:11px 16px;background:linear-gradient(125deg,#174c7f,#21718e);
+ box-shadow:0 5px 11px #1552792b;
+ color:#fff!important;font:950 13px/1.6 Tahoma,Arial,sans-serif;
+}
+.hub-home .afaq-about-2026 .afaq-about-primary-actions button:nth-child(2){
+ background:linear-gradient(125deg,#fff6df,#f6e4b5);
+ color:#815b1e!important;box-shadow:0 3px 9px #d4b66727;
+}
+.hub-home .afaq-about-2026 button:focus-visible{
+ outline:3px solid #d9ad4f;outline-offset:3px;
+}
+.hub-home .afaq-about-2026 .afaq-about-math-gallery{
+ display:flex!important;flex-direction:column!important;
+ justify-content:center!important;align-items:center!important;gap:12px!important;
+ width:100%!important;min-width:0!important;max-width:none!important;
+ margin:0!important;padding:18px 15px!important;box-sizing:border-box!important;
+ border-radius:21px!important;border:2px solid #e1bd72!important;
+ background:
+ radial-gradient(circle at 55% 28%,#4562a366,transparent 49%),
+ linear-gradient(145deg,#0e3c68,#142b55 65%,#0f4164)!important;
+ box-shadow:inset 0 0 0 2px #f9e0a220,0 11px 26px #12365e36!important;
+ position:relative!important;overflow:hidden!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-math-gallery:before{
+ content:"";position:absolute;inset:0;
+ background-image:linear-gradient(#e4f0ff0b 1px,transparent 1px),
+ linear-gradient(90deg,#e4f0ff0b 1px,transparent 1px);
+ background-size:30px 30px;pointer-events:none;
+ mask-image:linear-gradient(to bottom,transparent,#000 30%,#000 70%,transparent);
+}
+.hub-home .afaq-about-2026 .afaq-about-art-eyebrow{
+ position:relative;z-index:2;text-align:center;
+ color:#f8d994;font:950 clamp(12px,1.05vw,15px)/1.6 Tahoma,Arial,sans-serif;
+ letter-spacing:.3px;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-grid{
+ position:relative;z-index:2;
+ display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+ grid-template-rows:repeat(2,minmax(0,1fr));
+ gap:10px;width:100%;min-width:0;max-width:460px;height:320px;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-grid>div{
+ min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;
+ overflow:hidden;border-radius:17px;
+ border:1px solid #d4cc91a3;
+ background:linear-gradient(145deg,#135584,#173766);
+ box-shadow:inset 0 2px 16px #dbe9ff24,0 6px 14px #07152e44;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-grid>.afaq-about-art-main{
+ grid-column:1;grid-row:1/3;
+ background:radial-gradient(circle at 50% 50%,#2e87bc33,#112d58);
+}
+.hub-home .afaq-about-2026 .afaq-about-art-grid>.afaq-about-art-secondary{
+ grid-column:2;grid-row:1;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-grid>.afaq-about-art-mixer{
+ grid-column:2;grid-row:2;background:linear-gradient(145deg,#faf5e9,#e0ebff);
+}
+.hub-home .afaq-about-2026 .afaq-about-art-grid img{
+ display:block!important;object-fit:contain!important;
+ width:100%!important;height:100%!important;max-height:none!important;
+ max-width:none!important;
+ filter:drop-shadow(0 5px 9px #071a4444)!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-mixer img{
+ width:95%!important;height:99%!important;
+ filter:drop-shadow(0 4px 6px #1c2a6860)!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-formulas{
+ position:relative;z-index:2;
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+ gap:10px;width:100%;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-formulas span{
+ display:grid;place-items:center;width:34px;height:34px;
+ border:1px solid #ffe6a680;border-radius:10px;
+ background:#e5f7ff18;color:#f9dca0;
+ font:900 23px/1 Georgia,serif;
+ text-shadow:0 0 8px #ffe2a35e;
+ animation:afaqAboutMathPulse 4s ease-in-out infinite alternate;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-formulas span:nth-child(2n){
+ animation-delay:1.2s;border-color:#b6e5f38e;
+}
+@keyframes afaqAboutMathPulse{
+ from{opacity:.68;transform:translateY(2px)}
+ to{opacity:1;transform:translateY(-3px)}
+}
+.hub-home .afaq-about-2026 .afaq-about-art-caption{
+ position:relative;z-index:2;
+ display:flex;align-items:center;flex-direction:column;gap:5px;
+ text-align:center!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-caption strong{
+ color:#ffe6ad!important;font-size:clamp(13px,1.2vw,17px)!important;
+ line-height:1.6!important;font-weight:950!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-art-caption small{
+ color:#e8f6ff!important;font-size:12px!important;
+ line-height:1.6!important;font-weight:750!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-learning-path{
+ display:flex;flex-direction:row;align-items:center;justify-content:center;
+ gap:15px;flex-wrap:wrap;
+ width:100%;padding:12px 18px;border-radius:16px;
+ border:1px solid #d8bb84;background:linear-gradient(100deg,#fff7e5,#fffef9,#eaf7ff);
+ box-sizing:border-box;
+}
+.hub-home .afaq-about-2026 .afaq-about-path-label{
+ color:#9b6e28;font:950 14px/1.6 Tahoma,Arial,sans-serif;
+ white-space:nowrap;
+}
+.hub-home .afaq-about-2026 .afaq-about-path-steps{
+ display:flex;align-items:center;justify-content:space-evenly;
+ flex:1 1 500px;gap:8px;flex-wrap:wrap;
+}
+.hub-home .afaq-about-2026 .afaq-about-path-steps span{
+ padding:8px 12px;border:1px solid #cfdeeb;border-radius:12px;
+ background:#fff;color:#236388;font:900 12px/1.5 Tahoma,Arial,sans-serif;
+ box-shadow:0 2px 8px #174c7020;
+}
+.hub-home .afaq-about-2026 .afaq-about-path-steps span:last-child{
+ background:#fff1cb;border-color:#d6b068;color:#916521;
+}
+.hub-home .afaq-about-2026 .afaq-about-block-heading{
+ display:flex;flex-direction:row;align-items:flex-end;
+ justify-content:space-between;gap:10px;
+ border-bottom:1px solid #d6c49d;padding:4px 3px 12px;
+}
+.hub-home .afaq-about-2026 .afaq-about-block-heading>div>span{
+ display:block;margin-bottom:4px;
+ color:#a17428;font-size:12px;font-weight:950;
+}
+.hub-home .afaq-about-2026 .afaq-about-block-heading h3{
+ margin:0!important;color:#174d80!important;
+ font-size:clamp(21px,2.2vw,29px)!important;
+ font-weight:950!important;line-height:1.6!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-block-heading>p{
+ margin:0!important;color:#627e92!important;
+ font-size:12px!important;font-weight:750!important;
+ line-height:1.7!important;max-width:370px!important;
+}
+.hub-home .afaq-about-2026 .afaq-final-about-cards.afaq-about-rich-cards{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:11px!important;align-items:stretch!important;
+ grid-auto-flow:row!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-rich-cards>.afaq-about-rich-card{
+ display:flex!important;flex-direction:column!important;
+ justify-content:flex-start!important;align-items:stretch!important;
+ position:relative!important;min-height:365px!important;
+ min-width:0!important;gap:8px!important;
+ box-sizing:border-box!important;
+ padding:12px!important;margin:0!important;
+ border:1px solid #d5e0e9!important;
+ border-top:4px solid #dbb66e!important;
+ border-radius:17px!important;
+ background:linear-gradient(145deg,#fff,#f8fcff)!important;
+ box-shadow:0 5px 16px #163f6e12!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-rich-cards>.afaq-about-rich-card:hover{
+ transform:translateY(-2px);
+ border-color:#c9ac6e!important;
+ box-shadow:0 9px 22px #175b8a20!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-rich-card--blue{--afaq-about-accent:#2e84af}
+.hub-home .afaq-about-2026 .afaq-about-rich-card--cyan{--afaq-about-accent:#2b9db6}
+.hub-home .afaq-about-2026 .afaq-about-rich-card--rose{--afaq-about-accent:#9f74b5}
+.hub-home .afaq-about-2026 .afaq-about-rich-card--gold{--afaq-about-accent:#bc8c30}
+.hub-home .afaq-about-2026 .afaq-about-rich-card--purple{--afaq-about-accent:#7c7cc2}
+.hub-home .afaq-about-2026 .afaq-about-rich-card--amber{--afaq-about-accent:#cf8745}
+.hub-home .afaq-about-2026 .afaq-about-rich-card--teal{--afaq-about-accent:#2c9a9b}
+.hub-home .afaq-about-2026 .afaq-about-rich-card--green{--afaq-about-accent:#4e9978}
+.hub-home .afaq-about-2026 .afaq-about-card-top{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.hub-home .afaq-about-2026 .afaq-about-card-index{
+ flex:0 0 26px;display:grid;place-items:center;width:26px;height:26px;
+ border-radius:9px;background:var(--afaq-about-accent,#b28b44);
+ color:#fff;font:900 15px/1.3 Tahoma,Arial,sans-serif;
+}
+.hub-home .afaq-about-2026 .afaq-about-card-category{
+ padding:6px 9px;border:1px solid #e0cfab;border-radius:100px;
+ background:#fff8e9;color:#8c6a32;
+ font:900 10px/1.4 Tahoma,Arial,sans-serif;
+ text-align:center;
+}
+.hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art{
+ display:flex!important;align-items:center;justify-content:center;
+ flex:0 0 auto!important;
+ width:100%!important;height:123px!important;
+ min-height:123px!important;max-height:123px!important;
+ margin:0!important;padding:6px!important;
+ box-sizing:border-box!important;
+ border:1px solid #dfedf4;border-radius:12px!important;
+ background:
+ radial-gradient(circle at 53% 30%,#fff8df,#eff8ff 75%)!important;
+ overflow:hidden!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art svg,
+.hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art img{
+ display:block!important;width:min(100%,158px)!important;
+ max-width:100%!important;height:110px!important;max-height:110px!important;
+ object-fit:contain!important;filter:drop-shadow(0 2px 6px #14517a18);
+}
+.hub-home .afaq-about-2026 .afaq-about-card-body{flex:1 1 auto;min-width:0}
+.hub-home .afaq-about-2026 .afaq-about-card-body h3{
+ margin:3px 0 6px!important;color:#1c537d!important;
+ font-size:clamp(15px,1.28vw,18px)!important;line-height:1.55!important;
+ font-weight:950!important;text-align:right!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-card-body p{
+ color:#59758b!important;font-size:clamp(11.5px,.93vw,13px)!important;
+ line-height:1.85!important;font-weight:650!important;margin:0!important;
+ text-align:right!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-card-link{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;min-height:38px!important;
+ margin-top:auto!important;padding:8px 10px!important;
+ border:1px solid #ccaf72!important;border-radius:10px!important;
+ background:linear-gradient(115deg,#fff9e8,#eef6fd)!important;
+ color:#1a557e!important;font:950 12px/1.5 Tahoma,Arial,sans-serif!important;
+ cursor:pointer!important;gap:8px!important;flex:0 0 auto!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-card-link:hover{
+ background:#ffecb4!important;border-color:#b58b3d!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-sound-art{
+ display:flex;align-items:center;justify-content:center;gap:8px;
+ width:100%;height:100%;border-radius:13px;
+ background:radial-gradient(circle at 50% 50%,#e8faff,#d7f0ff 72%);
+}
+.hub-home .afaq-about-2026 .afaq-about-sound-art>span{
+ color:#cd923a;font-size:33px;font-weight:900;
+}
+.hub-home .afaq-about-2026 .afaq-about-sound-art i{
+ display:block;flex:0 0 7px;width:7px;height:21px;
+ border-radius:10px;background:linear-gradient(#c9993a,#1a92a9);
+}
+.hub-home .afaq-about-2026 .afaq-about-sound-art i:nth-of-type(2){height:45px}
+.hub-home .afaq-about-2026 .afaq-about-sound-art i:nth-of-type(3){height:68px}
+.hub-home .afaq-about-2026 .afaq-about-sound-art i:nth-of-type(4){height:37px}
+.hub-home .afaq-about-2026 .afaq-about-sound-art i:nth-of-type(5){height:16px}
+.hub-home .afaq-about-2026 .afaq-about-sound-art b{
+ color:#1b7295;font-size:26px;font-weight:950;
+}
+.hub-home .afaq-about-2026 .afaq-about-audiences{
+ display:flex;align-items:center;justify-content:space-between;gap:16px;
+ box-sizing:border-box;padding:16px 19px;
+ border:1px solid #ddc68b;border-radius:16px;
+ background:linear-gradient(115deg,#fff8e7,#f3fbff);
+ box-shadow:inset 0 2px 5px #fff;
+}
+.hub-home .afaq-about-2026 .afaq-about-audiences-symbol{
+ flex:0 0 55px;width:55px;height:55px;display:grid;place-items:center;
+ border-radius:15px;border:1px solid #c79d4c;background:#e9d6ab;
+ color:#95662a;font-size:38px;
+}
+.hub-home .afaq-about-2026 .afaq-about-audiences>div:nth-child(2){
+ flex:1;min-width:0;
+}
+.hub-home .afaq-about-2026 .afaq-about-audiences strong{
+ display:block;margin-bottom:5px;color:#1a5480;
+ font-size:clamp(16px,1.3vw,20px);font-weight:950;
+}
+.hub-home .afaq-about-2026 .afaq-about-audiences p{
+ margin:0!important;color:#5d7685!important;
+ font-size:clamp(12px,1vw,14px)!important;line-height:1.9!important;
+}
+.hub-home .afaq-about-2026 .afaq-about-audiences>button{
+ flex:0 0 auto;min-height:44px;border-radius:11px;
+ padding:10px 13px;border:1px solid #caab6e;
+ background:#174e80;color:#fff;
+ font:950 12px/1.5 Tahoma,Arial,sans-serif;cursor:pointer;
+}
+@media(max-width:1200px){
+ .hub-home .afaq-about-2026 .afaq-final-about-cards.afaq-about-rich-cards{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-final-intro-main{
+  grid-template-columns:minmax(0,1.2fr) minmax(310px,.9fr)!important;
+ }
+}
+@media(max-width:970px){
+ .hub-home .afaq-about-2026 .afaq-final-intro-main{
+  grid-template-columns:1fr!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-math-gallery{
+  max-width:650px!important;justify-self:center!important;
+  margin:0 auto!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-final-about-cards.afaq-about-rich-cards{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-audiences{
+  flex-wrap:wrap;justify-content:center;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-audiences>button{flex:1 1 210px}
+}
+@media(max-width:670px){
+ .hub-home .afaq-final-introduction.afaq-about-2026{
+  padding:14px!important;gap:14px!important;margin:13px 0!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-final-intro-copy h2{
+  font-size:clamp(22px,5.8vw,30px)!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-primary-actions button{
+  flex:1 1 180px;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-art-grid{
+  height:270px;gap:7px;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-block-heading{
+  align-items:flex-start;flex-direction:column;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-path-steps{flex-basis:100%}
+ .hub-home .afaq-about-2026 .afaq-about-learning-path{
+  padding:11px;gap:9px;
+ }
+ .hub-home .afaq-about-2026 .afaq-final-about-cards.afaq-about-rich-cards{
+  grid-template-columns:1fr!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-rich-cards>.afaq-about-rich-card{
+  display:grid!important;grid-template-columns:102px minmax(0,1fr)!important;
+  grid-template-rows:auto 1fr auto!important;
+  gap:7px 10px!important;min-height:0!important;padding:11px!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-about-card-top{
+  grid-column:1/-1;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art{
+  grid-column:1;grid-row:2;min-height:108px!important;
+  height:108px!important;max-height:108px!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art svg,
+ .hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art img{
+  height:96px!important;max-height:96px!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-card-body{
+  grid-column:2;grid-row:2;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-card-link{
+  grid-column:1/-1;grid-row:3;
+ }
+}
+@media(max-width:420px){
+ .hub-home .afaq-about-2026 .afaq-about-art-grid{height:225px}
+ .hub-home .afaq-about-2026 .afaq-about-art-formulas{gap:5px}
+ .hub-home .afaq-about-2026 .afaq-about-art-formulas span{
+  width:29px;height:29px;font-size:18px;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art{
+  min-height:92px!important;height:92px!important;max-height:92px!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art svg,
+ .hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-final-card-art img{
+  height:86px!important;max-height:86px!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-rich-cards>.afaq-about-rich-card{
+  grid-template-columns:90px minmax(0,1fr)!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-card-body h3{
+  font-size:14px!important;margin-top:0!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-card-body p{
+  font-size:11.5px!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-audiences{
+  padding:12px;gap:10px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .afaq-about-2026 .afaq-about-art-formulas span{
+  animation:none!important;
+ }
+ .hub-home .afaq-about-2026 .afaq-about-rich-card{
+  transition:none!important;
+ }
+}
