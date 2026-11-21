@@ -132,3 +132,187 @@
 .afaq-gilded-admin-success{color:#157558;font-weight:900;font-size:14px}
 .afaq-gilded-admin-error{color:#bd3333;font-weight:900;font-size:14px}
 .afaq-gilded-admin-loading{padding:16px;text-align:center;color:#547086;font-size:15px}
+
+
+/* v41: Make the panel impossible to miss and animate two independent titles as
+   opposing golden streams converging into a luminous black-hole vortex. */
+.hub-home .afaq-gilded-platform-title.afaq-gilded-collision{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ position:relative!important;z-index:5!important;isolation:isolate;
+ width:min(99%,1330px)!important;min-height:195px!important;
+ margin:10px auto 12px!important;
+}
+.hub-home .afaq-gilded-collision .afaq-gilded-frame{
+ display:block!important;position:relative!important;overflow:hidden!important;
+ width:100%!important;height:192px!important;min-height:192px!important;
+ padding:0!important;margin:0!important;box-sizing:border-box!important;
+ border:3px solid #e2bd69!important;border-radius:22px!important;
+ clip-path:polygon(19px 0,calc(100% - 19px) 0,100% 19px,
+ 100% calc(100% - 19px),calc(100% - 19px) 100%,19px 100%,0 calc(100% - 19px),0 19px)!important;
+ background:
+  radial-gradient(ellipse at 50% 53%,#294b66 0%,#132b4d 18%,#07172e 39%,#112b4b 66%,#214065 100%)!important;
+ box-shadow:inset 0 0 0 3px #93671f,inset 0 0 22px #ebc66f44,
+  0 10px 23px #133b5940,0 0 17px #eec87842!important;
+}
+.hub-home .afaq-gilded-collision .afaq-gilded-frame:before{
+ inset:8px!important;border:1px solid #e8c88766!important;z-index:5!important;
+ pointer-events:none;
+}
+.hub-home .afaq-gilded-collision .afaq-gilded-frame:after{
+ display:none!important;animation:none!important;
+}
+.hub-home .afaq-gilded-collision .afaq-gilded-ornament{
+ z-index:6!important;font-size:34px!important;color:#f4d38d!important;
+}
+.hub-home .afaq-gilded-celestial{
+ position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;
+}
+.hub-home .afaq-gilded-celestial svg{position:absolute;inset:0;width:100%;height:100%}
+.hub-home .afaq-gilded-celestial svg path,
+.hub-home .afaq-gilded-celestial svg ellipse{
+ fill:none;stroke:#facb6d;stroke-width:1.7;stroke-dasharray:8 16;
+ opacity:.54;filter:drop-shadow(0 0 4px #ffe69a);
+ animation:afaqCollideOrbit 4.8s linear infinite;
+}
+.hub-home .afaq-gilded-celestial svg ellipse{
+ stroke:#71dfff;stroke-width:1.3;opacity:.36;
+ animation-duration:8s;animation-direction:reverse;
+}
+@keyframes afaqCollideOrbit{to{stroke-dashoffset:-192}}
+.hub-home .afaq-gilded-star{
+ position:absolute;color:#ffe8a4;font-size:22px;text-shadow:0 0 11px #fff0b5;
+ animation:afaqCollideStar 5.4s ease-in-out infinite;
+}
+.hub-home .afaq-gilded-star.star-one{top:19%;right:19%}
+.hub-home .afaq-gilded-star.star-two{bottom:17%;left:21%;animation-delay:.8s}
+.hub-home .afaq-gilded-star.star-three{top:15%;left:29%;animation-delay:1.7s}
+.hub-home .afaq-gilded-star.star-four{bottom:16%;right:27%;animation-delay:2.4s}
+@keyframes afaqCollideStar{
+ 0%,100%{opacity:.15;transform:scale(.65) rotate(-16deg)}
+ 48%{opacity:.92;transform:scale(1.18) rotate(22deg)}
+}
+.hub-home .afaq-gilded-blackhole{
+ position:absolute;z-index:2;left:50%;top:48%;height:80px;width:80px;
+ border-radius:50%;transform:translate(-50%,-50%) scale(.75);
+ background:
+  radial-gradient(circle at center,#000 0 27%,#080719 33%,#4d256a 43%,
+  #7f44b8 50%,#48c1e5 55%,#f1ca66 62%,transparent 72%);
+ box-shadow:0 0 20px #50388d88,0 0 33px #45d6ff66,0 0 55px #e4c17533;
+ animation:afaqVortex 6.2s ease-in-out infinite;
+}
+.hub-home .afaq-gilded-blackhole span{
+ display:block;position:absolute;inset:-16px;border-radius:50%;
+ background:conic-gradient(from 15deg,transparent,#f9d678aa,transparent,
+  #a85afdbb,transparent,#47deff99,transparent);
+ filter:blur(7px);
+ animation:afaqVortexSpin 3.4s linear infinite;
+}
+@keyframes afaqVortexSpin{to{transform:rotate(360deg)}}
+@keyframes afaqVortex{
+ 0%,30%,100%{transform:translate(-50%,-50%) scale(.55);opacity:.48}
+ 51%{transform:translate(-50%,-50%) scale(.9);opacity:.95}
+ 65%{transform:translate(-50%,-50%) scale(1.9);opacity:1}
+ 76%{transform:translate(-50%,-50%) scale(.6);opacity:.5}
+}
+.hub-home .afaq-gilded-impact{
+ position:absolute;top:48%;left:50%;z-index:2;
+ height:30px;width:30px;border-radius:50%;
+ border:3px solid #faeabc99;pointer-events:none;
+ box-shadow:0 0 24px #ffe8a5,0 0 35px #93e5ff;
+ transform:translate(-50%,-50%) scale(.1);opacity:0;
+ animation:afaqCollisionShock 6.2s ease-in-out infinite;
+}
+@keyframes afaqCollisionShock{
+ 0%,53%,100%{transform:translate(-50%,-50%) scale(.2);opacity:0}
+ 62%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 71%{opacity:0;transform:translate(-50%,-50%) scale(12)}
+}
+.hub-home .afaq-gilded-motion{position:absolute;inset:15px 55px 20px;z-index:4;pointer-events:none}
+.hub-home .afaq-gilded-collision .afaq-gilded-ar,
+.hub-home .afaq-gilded-collision .afaq-gilded-english{
+ position:absolute!important;top:46%!important;bottom:auto!important;
+ left:auto;right:auto;display:flex!important;align-items:center;justify-content:center;
+ box-sizing:border-box;max-width:48%;width:calc(50% - 39px);
+ margin:0!important;padding:5px!important;
+ white-space:normal!important;overflow-wrap:anywhere;text-align:center!important;
+ line-height:1.34!important;z-index:4!important;
+ transform:translateY(-50%);transform-origin:center;
+ pointer-events:none;opacity:1;
+}
+.hub-home .afaq-gilded-collision .afaq-gilded-ar{
+ right:calc(50% + 37px)!important;left:auto!important;
+ font-family:"Amiri","Noto Naskh Arabic",Tahoma,Arial,sans-serif!important;
+ font-size:clamp(27px,3.4vw,48px)!important;letter-spacing:0!important;
+ animation:afaqArabicMeet 6.2s cubic-bezier(.52,.12,.4,.96) infinite!important;
+}
+.hub-home .afaq-gilded-collision .afaq-gilded-english{
+ left:calc(50% + 37px)!important;right:auto!important;
+ font:900 clamp(22px,2.9vw,42px)/1.35 Georgia,"Times New Roman",serif!important;
+ color:#ffe4a4!important;letter-spacing:1px!important;
+ animation:afaqEnglishMeet 6.2s cubic-bezier(.52,.12,.4,.96) infinite!important;
+}
+@keyframes afaqArabicMeet{
+ 0%{transform:translate(124%,-50%) scale(.86);opacity:0;filter:blur(3px)}
+ 12%{transform:translate(68%,-50%) scale(.93);opacity:1;filter:blur(0)}
+ 35%,53%{transform:translate(0,-50%) scale(1);opacity:1;filter:blur(0)}
+ 64%{transform:translate(-94%,-50%) scale(.06);opacity:0;filter:blur(9px)}
+ 67%,100%{transform:translate(124%,-50%) scale(.86);opacity:0;filter:blur(3px)}
+}
+@keyframes afaqEnglishMeet{
+ 0%{transform:translate(-124%,-50%) scale(.86);opacity:0;filter:blur(3px)}
+ 12%{transform:translate(-68%,-50%) scale(.93);opacity:1;filter:blur(0)}
+ 35%,53%{transform:translate(0,-50%) scale(1);opacity:1;filter:blur(0)}
+ 64%{transform:translate(94%,-50%) scale(.06);opacity:0;filter:blur(9px)}
+ 67%,100%{transform:translate(-124%,-50%) scale(.86);opacity:0;filter:blur(3px)}
+}
+.hub-home .afaq-gilded-bottom-label{
+ position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+ z-index:6;color:#f5dcaa;font-size:11px;letter-spacing:2px;font-weight:900;
+ text-shadow:0 0 7px #ffd87e88;white-space:nowrap;opacity:.75;
+}
+.hub-home .afaq-gilded-collision .afaq-gilded-edit-shortcut{
+ display:block!important;visibility:visible!important;
+}
+@media(max-width:800px){
+ .hub-home .afaq-gilded-collision .afaq-gilded-frame{height:156px!important;min-height:156px!important}
+ .hub-home .afaq-gilded-collision .afaq-gilded-motion{inset:8px 18px 15px!important}
+ .hub-home .afaq-gilded-collision .afaq-gilded-ar{
+  font-size:clamp(21px,4.3vw,31px)!important;
+  right:calc(50% + 22px)!important;
+ }
+ .hub-home .afaq-gilded-collision .afaq-gilded-english{
+  font-size:clamp(18px,3.5vw,26px)!important;
+  left:calc(50% + 22px)!important;
+ }
+ .hub-home .afaq-gilded-collision .afaq-gilded-ornament{font-size:24px!important}
+ .hub-home .afaq-gilded-blackhole{height:61px;width:61px}
+ .hub-home .afaq-gilded-bottom-label{bottom:7px;font-size:10px}
+}
+@media(max-width:480px){
+ .hub-home .afaq-gilded-collision .afaq-gilded-frame{height:135px!important;min-height:135px!important}
+ .hub-home .afaq-gilded-collision .afaq-gilded-motion{inset:6px 8px 13px!important}
+ .hub-home .afaq-gilded-collision .afaq-gilded-ar{
+  font-size:clamp(17px,5vw,24px)!important;right:calc(50% + 15px)!important;
+ }
+ .hub-home .afaq-gilded-collision .afaq-gilded-english{
+  font-size:clamp(15px,4.2vw,21px)!important;left:calc(50% + 15px)!important;
+ }
+ .hub-home .afaq-gilded-blackhole{width:44px;height:44px}
+ .hub-home .afaq-gilded-collision .afaq-gilded-ornament{font-size:20px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .afaq-gilded-celestial svg path,
+ .hub-home .afaq-gilded-celestial svg ellipse,
+ .hub-home .afaq-gilded-star,
+ .hub-home .afaq-gilded-blackhole,
+ .hub-home .afaq-gilded-blackhole span,
+ .hub-home .afaq-gilded-impact,
+ .hub-home .afaq-gilded-collision .afaq-gilded-ar,
+ .hub-home .afaq-gilded-collision .afaq-gilded-english{
+  animation:none!important;
+ }
+ .hub-home .afaq-gilded-collision .afaq-gilded-ar,
+ .hub-home .afaq-gilded-collision .afaq-gilded-english{
+  transform:translateY(-50%) scale(1)!important;opacity:1!important;filter:none!important;
+ }
+}
