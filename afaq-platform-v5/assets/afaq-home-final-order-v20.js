@@ -4,29 +4,62 @@
 'use strict';
 
 function afaqFinalAboutMarkup(){
- return '<section class="afaq-final-introduction" aria-label="تعرف على منصة آفاق ماث" dir="rtl">'+
+ const cards=[
+  {title:'الصفوف والدروس التفاعلية',desc:'مسارات الرياضيات للصفوف الخامس والسادس والسابع والثامن، مع دروس الأعداد والعمليات والقياس والهندسة والبيانات، ومحتوى يُضاف ويُعتمد تدريجيًا.',route:'learning',tag:'تعلّم واكتشاف',visual:'<svg viewBox="0 0 160 132" role="img" aria-label="رسم توضيحي للدروس"><use href="assets/afaq-section-art.svg?v=20261112-brand3#art-learning"></use></svg>',color:'blue'},
+  {title:'التدريب والاختبارات',desc:'أسئلة وتدريبات تشخيصية وقصيرة، ومهام تقويم متنوعة؛ تتدرج من الفهم والمعرفة إلى التطبيق والاستدلال مع تغذية راجعة تساعد على التحسن.',route:'question_bank',tag:'افهم • طبّق • استدل',visual:'<img src="assets/afaq-hero-coordinate-v10.svg" loading="lazy" decoding="async" alt="مستوى إحداثي وشكل هندسي ومفهوم الانسحاب" width="160" height="132">',color:'cyan'},
+  {title:'العلاج والإثراء ومتابعة التقدم',desc:'أنشطة داعمة لمن يحتاج إلى تأسيس المهارة، وتحديات إثرائية للمتفوقين، مع متابعة الأداء والنتائج في الحسابات المصرح لها.',route:'adaptive',tag:'تعلّم يناسب الجميع',visual:'<svg viewBox="0 0 160 132" role="img" aria-label="رسم تطور التعلم"><use href="assets/afaq-section-art.svg?v=20261112-brand3#art-initiatives"></use></svg>',color:'rose'},
+  {title:'المبادرات العلمية المبتكرة',desc:'جرّب خلاط الرياضيات، وغربال الأعداد الأولية، والمضاعفات، ومفتاح القسمة، والإحداثيات، واستراتيجيات الحساب الذهني، والتقويم المتكيف.',route:'teaching_initiatives',tag:'جرّب بنفسك',visual:'<img src="assets/afaq-mixer.svg" loading="lazy" decoding="async" alt="خلاط الرياضيات المصور والمدخلات والعمليات" width="160" height="132">',color:'gold'},
+  {title:'المكتبة الرياضية والمعرفة',desc:'رحلة عبر تاريخ الأرقام والحضارات وعلماء الرياضيات وكتبها وفروعها، لفهم كيف أسهمت الرياضيات في تطور العلوم والحياة.',route:'library',tag:'اقرأ واستكشف',visual:'<svg viewBox="0 0 160 132" role="img" aria-label="رسم الكتب والمصادر"><use href="assets/afaq-section-art.svg?v=20261112-brand3#art-library"></use></svg>',color:'purple'},
+  {title:'الألعاب والمسابقات ونجوم آفاق',desc:'مسابقات متعددة المراحل، وتحديات وألعاب وألغاز رياضية، تشجع التفكير والمنافسة الإيجابية وتقدير التميز والمثابرة.',route:'contests',tag:'تحدَّ نفسك',visual:'<svg viewBox="0 0 160 132" role="img" aria-label="رسم الألعاب والمسابقات"><use href="assets/afaq-section-art.svg?v=20261112-brand3#art-competition"></use></svg>',color:'amber'},
+  {title:'مكتبة الاستماع والوسائط',desc:'مواد للاستماع إلى القرآن الكريم والأحاديث والحِكَم والأناشيد، مع موارد مرئية وفيديوهات تعليمية تزيد تنوع تجربة الطالب.',route:'audio',tag:'شاهد واستمع',visual:'<div class="afaq-about-sound-art" role="img" aria-label="رسم موجات صوتية ونغمات"><span>♫</span><i></i><i></i><i></i><i></i><i></i><b>▶</b></div>',color:'teal'},
+  {title:'الرياضيات في الحياة والمشروعات',desc:'أوراق عمل ومهام ومشروعات تطبيقية تربط الرياضيات بالقياس والتخطيط والبيئة والعلوم والشراء والمواقف اليومية.',route:'work',tag:'من الفكرة إلى الواقع',visual:'<img src="assets/afaq-v9-shapes.svg?v=20261113-v9" loading="lazy" decoding="async" alt="مجسمات هندسية متنوّعة للقياس وتطبيقات الحياة" width="160" height="132">',color:'green'}
+ ];
+ return '<section class="afaq-final-introduction afaq-about-2026" aria-label="تعرف على منصة آفاق ماث وخدماتها المتنوعة" dir="rtl">'+
  '<div class="afaq-final-intro-main">'+
  '<div class="afaq-final-intro-copy">'+
- '<span class="afaq-final-eyebrow">التعليم والابتكار • سلطنة عُمان</span>'+
+ '<span class="afaq-final-eyebrow"><span aria-hidden="true">✦</span> التعليم والابتكار • سلطنة عُمان <span aria-hidden="true">✦</span></span>'+
  '<h2>ما هي منصة آفاق ماث؟ <span lang="en" dir="ltr">AFAQMATHS</span></h2>'+
- '<p><strong>آفاق ماث</strong> بيئة تعليمية تفاعلية لمادة الرياضيات، تجمع بين شرح المفاهيم والأنشطة العملية والتدريبات والتقويم والمسابقات، وتخدم طلاب الصفوف <strong>الخامس والسادس والسابع والثامن</strong>، مع اهتمام خاص بمهارات الصف السادس وفق تدرج الفهم والتطبيق والاستدلال.</p>'+
- '<p>تهدف المنصة إلى جعل الطالب مشاركًا في التعلم؛ يكتشف الفكرة الرياضية، ويتدرّب عليها، ويتلقى تغذية راجعة، ثم ينتقل إلى تطبيقات أقرب إلى الحياة اليومية. وتتيح كذلك مصادر للمعلم ومواد للقراءة والاستماع والبحث في تاريخ الرياضيات.</p>'+
- '<div class="afaq-final-intro-highlights"><span>📘 تعليم تفاعلي</span><span>🎯 تدريب وتقويم</span><span>🏆 مسابقات تحفيزية</span><span>📚 مكتبة رياضية</span></div>'+
+ '<p class="afaq-about-lead"><strong>آفاق ماث</strong> عالم تعليمي عُماني تفاعلي يجعل الرياضيات أكثر فهمًا وتشويقًا؛ يجمع بين <strong>الشرح والاستكشاف والتطبيق والاستدلال</strong> في مكان واحد، ويفتح للطلاب أبواب المعرفة والابتكار والتحدي.</p>'+
+ '<p>تخدم المنصة مسارات الصفوف <strong>الخامس والسادس والسابع والثامن</strong>، مع اهتمام موسع بمحتوى الصف السادس، وتتدرج في بناء المهارات من المفاهيم الأساسية إلى الأنشطة العملية والاختبارات والمشروعات المرتبطة بالحياة اليومية، مع تطوير المواد واعتمادها تباعًا.</p>'+
+ '<p>ولا تقتصر آفاق ماث على الدروس؛ فهي تضم <strong>مبادرات رياضية مصوّرة وتفاعلية</strong>، ومكتبة علمية وتاريخية، ومكتبة للاستماع والوسائط، وألعابًا ومسابقات تحفيزية، ومساحات للتواصل والشراكة بين الطالب وولي الأمر والمدرسة.</p>'+
+ '<div class="afaq-final-intro-highlights">'+
+ '<span>📘 الصفوف ٥–٨</span><span>🧠 فهم وتطبيق واستدلال</span>'+
+ '<span>💡 مبادرات رياضية</span><span>🏆 نجوم آفاق</span>'+
+ '<span>📚 قراءة واستماع</span><span>🤝 أسرة ومدرسة</span></div>'+
+ '<div class="afaq-about-primary-actions">'+
+ '<button type="button" data-route="afaq_directory">🧭 استكشف خريطة المنصة الشاملة</button>'+
+ '<button type="button" data-route="learning">📘 ابدأ التعلّم</button></div>'+
  '</div>'+
- '<div class="afaq-final-intro-illustration" aria-label="رسومات توضح المجسمات الهندسية من دروس الصف السادس">'+
- '<img src="assets/afaq-v9-shapes.svg?v=20261113-v9" alt="مجسمات الصف السادس: مكعب ومتوازي مستطيلات وهرم وأسطوانة ومخروط" width="350" height="370" loading="lazy">'+
- '<div><strong>رياضيات نفهمها ونطبقها</strong><small>الأعداد • القياس • الهندسة • البيانات</small></div></div>'+
+ '<div class="afaq-final-intro-illustration afaq-about-math-gallery" aria-label="معرض مصغر لصور المجسمات والإحداثيات وخلاط الرياضيات">'+
+ '<span class="afaq-about-art-eyebrow">الرياضيات من زوايا مختلفة ✦</span>'+
+ '<div class="afaq-about-art-grid">'+
+ '<div class="afaq-about-art-main"><img src="assets/afaq-hero-3d-v10.svg" loading="lazy" decoding="async" width="320" height="320" alt="مجسمات هندسية مضيئة ومكعب ثلاثي الأبعاد"></div>'+
+ '<div class="afaq-about-art-secondary"><img src="assets/afaq-hero-coordinate-v10.svg" loading="lazy" decoding="async" width="210" height="210" alt="مستوى إحداثي يوضح الانسحاب والحركة الهندسية"></div>'+
+ '<div class="afaq-about-art-secondary afaq-about-art-mixer"><img src="assets/afaq-mixer.svg" loading="lazy" decoding="async" width="210" height="210" alt="مبادرة خلاط الرياضيات ومدخلات العمليات الحسابية"></div>'+
  '</div>'+
- '<div class="afaq-final-about-cards">'+
- '<article><span class="afaq-final-card-art"><svg viewBox="0 0 160 132" role="img" aria-label="رسم الدروس التفاعلية"><use href="assets/afaq-section-art.svg?v=20261112-brand3#art-learning"></use></svg></span>'+
- '<div><h3>الدروس والتعلم</h3><p>موضوعات الأعداد والعمليات والمضاعفات والعوامل والمتتاليات والقياس والهندسة والتمثيلات الرياضية، مع أمثلة وأسئلة مصنفة بحسب مستوى التعلم.</p></div></article>'+
- '<article><span class="afaq-final-card-art"><svg viewBox="0 0 160 132" role="img" aria-label="رسم المكتبة الرياضية"><use href="assets/afaq-section-art.svg?v=20261112-brand3#art-library"></use></svg></span>'+
- '<div><h3>المكتبة والوسائط</h3><p>مراجع عن تاريخ الرياضيات وعلمائها والكتب والمعرفة العلمية، إلى جانب الفيديوهات التعليمية ومكتبة الاستماع والتحفيز.</p></div></article>'+
- '<article><span class="afaq-final-card-art"><svg viewBox="0 0 160 132" role="img" aria-label="رسم الألعاب والمسابقات"><use href="assets/afaq-section-art.svg?v=20261112-brand3#art-competition"></use></svg></span>'+
- '<div><h3>الألعاب والمسابقات</h3><p>أنشطة وألغاز وتحديات رياضية، من بينها مسابقة <strong>نجوم آفاق الرياضيات</strong> بمراحلها ومحاولاتها المعتمدة، لتعزيز المثابرة والتنافس الإيجابي.</p></div></article>'+
- '<article><span class="afaq-final-card-art"><svg viewBox="0 0 160 132" role="img" aria-label="رسم البرامج التعليمية"><use href="assets/afaq-section-art.svg?v=20261112-brand3#art-initiatives"></use></svg></span>'+
- '<div><h3>الإثراء والعلاج ومتابعة التقدم</h3><p>أوراق عمل وبنك أسئلة وتقويمات وأنشطة علاجية وإثرائية، وتظهر البيانات الشخصية ونتائج الطالب في حسابه المعتمد فقط.</p></div></article>'+
- '</div></section>';
+ '<div class="afaq-about-art-formulas" aria-hidden="true"><span>π</span><span>√</span><span>∑</span><span>△</span><span>x²</span><span>∞</span></div>'+
+ '<div class="afaq-about-art-caption"><strong>نفكر بالأعداد، ونرسم بالأشكال، ونبدع بالتجربة</strong>'+
+ '<small>الأعداد • الهندسة • القياس • الأنماط • التفكير الرياضي</small></div></div>'+
+ '</div>'+
+ '<div class="afaq-about-learning-path" aria-label="رحلة الطالب في آفاق ماث">'+
+ '<span class="afaq-about-path-label">رحلتك مع الرياضيات</span>'+
+ '<div class="afaq-about-path-steps"><span>🔎 أستكشف</span><span>💡 أفهم</span><span>🧩 أطبّق</span><span>🧠 أستدل</span><span>🌟 أتقدّم</span></div></div>'+
+ '<div class="afaq-about-block-heading"><div><span>✦ أبواب تتكامل لتصنع تجربة متكاملة ✦</span>'+
+ '<h3>ماذا تجد داخل آفاق ماث؟</h3></div><p>ثمانية مجالات تعليمية ومعرفية وترفيهية متصلة بصفحاتها وخدماتها.</p></div>'+
+ '<div class="afaq-final-about-cards afaq-about-rich-cards">'+
+ cards.map((item,index)=>'<article class="afaq-about-rich-card afaq-about-rich-card--'+item.color+'">'+
+ '<div class="afaq-about-card-top"><span class="afaq-about-card-index">'+String(index+1).replace(/[0-9]/g,d=>"٠١٢٣٤٥٦٧٨٩"[Number(d)])+'</span>'+
+ '<span class="afaq-about-card-category">'+item.tag+'</span></div>'+
+ '<span class="afaq-final-card-art">'+item.visual+'</span>'+
+ '<div class="afaq-about-card-body"><h3>'+item.title+'</h3><p>'+item.desc+'</p></div>'+
+ '<button type="button" class="afaq-about-card-link" data-route="'+item.route+'">استكشف القسم <span aria-hidden="true">↗</span></button>'+
+ '</article>').join('')+
+ '</div>'+
+ '<div class="afaq-about-audiences"><div class="afaq-about-audiences-symbol" aria-hidden="true">✧</div>'+
+ '<div><strong>تعلّم يربط الطالب بأسرته ومدرسته</strong>'+
+ '<p>يستكشف الزائر الموارد العامة دون حساب، بينما يطّلع الطالب وولي الأمر والإدارة والمشرف على خدماتهم وبياناتهم المصرّح بها فقط. وتتطور أقسام المنصة ومحتوياتها وفق الإضافة والاعتماد.</p></div>'+
+ '<button type="button" data-route="afaq_directory">تعرّف على جميع الأبواب <span aria-hidden="true">↗</span></button></div>'+
+ '</section>';
 }
 function afaqFinalEntryMarkup(){
  return '<div class="afaq-final-entry-guide" dir="rtl">'+
