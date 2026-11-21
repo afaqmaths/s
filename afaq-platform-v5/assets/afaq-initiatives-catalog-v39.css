@@ -27,12 +27,11 @@
  border-bottom:2px solid #dbc18a;margin-bottom:20px;
 }
 .hub-home .afaq-initiative-heading>span{font:950 13px Tahoma,Arial,sans-serif;color:#976a20;line-height:1.7}
-.hub-home .afaq-initiative-heading h2{
+.hub-home .afaq-initiative-heading h3{
  color:#124e83!important;font-size:clamp(26px,3vw,38px)!important;font-weight:950!important;
  margin:4px 0!important;line-height:1.5!important;
 }
-.hub-home .afaq-initiative-heading h3{color:#8a5f26!important;font-size:clamp(20px,2vw,27px)!important;
- font-weight:950!important;margin:0!important;line-height:1.5!important}
+/* The teacher's name is the master heading; scientific is a subsection. */
 .hub-home .afaq-initiative-heading p{font-size:clamp(14px,1.3vw,17px)!important;
  line-height:2!important;color:#5b7085!important;margin:5px 0!important;max-width:840px}
 .hub-home .afaq-scientific-grid{
@@ -83,7 +82,7 @@
 .hub-home .afaq-initiative-subtitle{padding-bottom:15px;margin-bottom:18px;
  border-bottom:1px solid #d9d5c2;display:flex;flex-direction:column;gap:7px}
 .hub-home .afaq-initiative-subtitle>span{color:#a1742f;font-size:13px;font-weight:950}
-.hub-home .afaq-initiative-subtitle h2{
+.hub-home .afaq-initiative-subtitle h3{
  color:#154e80!important;font-size:clamp(23px,2.5vw,33px)!important;
  font-weight:950!important;margin:0!important;line-height:1.55!important}
 .hub-home .afaq-initiative-subtitle p{color:#60788b;font-size:15px;line-height:1.95;margin:0}
@@ -219,4 +218,31 @@
  .hub-home .afaq-scientific-card{gap:11px}
  .hub-home .afaq-initiative-card-body strong{font-size:16px}
  .hub-home .afaq-youtube-inline iframe{height:210px}
+}
+
+
+/* Parent heading above the scientific, community, YouTube and future initiative sections. */
+.hub-home .afaq-initiatives-main-heading{
+ display:flex;flex-direction:column;align-items:center;text-align:center;
+ gap:9px;box-sizing:border-box;width:100%;margin:0 0 3px;
+ padding:27px 20px 29px;border:3px solid #cfaa5b;border-radius:23px;
+ background:radial-gradient(circle at 50% -20%,rgba(255,225,149,.28),transparent 66%),
+ linear-gradient(120deg,#133e77,#1a6590 60%,#18416e);
+ box-shadow:0 13px 28px rgba(23,69,109,.22);
+ color:#fff;
+}
+.hub-home .afaq-initiatives-main-heading>span{
+ color:#ffe3a4;font:950 14px/1.7 Tahoma,Arial,sans-serif;
+}
+.hub-home .afaq-initiatives-main-heading h2{
+ color:#fff!important;font-size:clamp(28px,3.4vw,43px)!important;
+ font-weight:950!important;line-height:1.5!important;margin:0!important;
+}
+.hub-home .afaq-initiatives-main-heading p{
+ max-width:900px;margin:0!important;color:#e8f4ff!important;
+ font-size:clamp(14px,1.3vw,17px)!important;line-height:1.85!important;
+}
+.hub-home .afaq-initiative-heading h3{
+ font-size:clamp(23px,2.5vw,32px)!important;
+ color:#154e83!important;
 }
