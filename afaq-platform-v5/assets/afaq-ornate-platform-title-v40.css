@@ -327,3 +327,21 @@
 @media(max-width:480px){.hub-home .afaq-gilded-collision .afaq-gilded-bottom-label{
  font-size:10px!important;max-width:calc(100% - 38px)!important;
 }}
+
+/* v42: the national banner and the Oman-values image are siblings in one row;
+   the animated bilingual title now spans the TOTAL width below the entire pair. */
+.hub-home .afaq-national-top-row + .afaq-gilded-platform-title.afaq-gilded-collision{
+ display:block!important;grid-column:1/-1!important;clear:both!important;
+ align-self:stretch!important;justify-self:stretch!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ margin:7px 0 12px!important;padding:0!important;
+}
+.hub-home .afaq-national-top-row + .afaq-gilded-platform-title.afaq-gilded-collision .afaq-gilded-frame{
+ display:block!important;width:100%!important;max-width:none!important;
+ box-sizing:border-box!important;
+}
+@media(max-width:700px){
+ .hub-home .afaq-national-top-row + .afaq-gilded-platform-title.afaq-gilded-collision{
+  margin:6px 0 9px!important;
+ }
+}
