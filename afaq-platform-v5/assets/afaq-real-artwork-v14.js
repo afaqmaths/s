@@ -91,9 +91,9 @@ hubHome=function(){
  html=html.replace('<div class="afaq-hero-content">',insert+'<div class="afaq-hero-content">'+afaqElectricBlueLines()+'<div class="afaq-center-inner">');
  html=html.replace('نتعلّم • نكتشف • نبدع — رياضيات كامبردج من المفهوم إلى التطبيق والاستدلال',
    'نتعلّم • نكتشف • نبدع — رياضيات كامبردج من الفهم إلى التطبيق والاستدلال');
- html=html.replace('<button type="button" class="hub-primary" data-route="learning">ابدأ رحلتك في الرياضيات</button></div>',
+ html=html.replace('<button type="button" class="hub-primary" data-route="afaq_directory">اختر رحلتك الشاملة في عالم الرياضيات</button></div>',
    '<p class="afaq-blue-explainer">للصفوف الخامس والسادس والسابع والثامن • دروس وأنشطة واختبارات ومسابقات تفاعلية</p>'+
-   '<button type="button" class="hub-primary" data-route="learning">ابدأ رحلتك في الرياضيات</button></div>'+signature+'</div>');
+   '<button type="button" class="hub-primary" data-route="afaq_directory">اختر رحلتك الشاملة في عالم الرياضيات</button></div>'+signature+'</div>');
  return html;
 };
 /* One image-backed stadium banner; no split image next to a blue information box. */
