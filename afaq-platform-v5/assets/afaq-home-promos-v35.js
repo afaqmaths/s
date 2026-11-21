@@ -3,7 +3,7 @@
 (function(){
  'use strict';
  if(typeof hubHome!=='function'||typeof staffPanel!=='function'||typeof hubCall!=='function')return;
- const statePromos={public:[],admin:[],adminLoaded:false,adminLoading:false,publicError:'',adminError:'',notice:'',busy:0};
+ const statePromos={public:[],admin:[],headings:[],adminLoaded:false,adminLoading:false,publicError:'',adminError:'',notice:'',busy:0};
  const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const adminReady=()=>auth.user?.role==='supervisor'&&!!auth.token;
  const idsForSide=(side,kind)=>kind==='image'?(side==='right'?[1,2]:[3,4]):(side==='right'?[5,6,7,8]:[9,10,11,12]);
@@ -12,6 +12,10 @@
   return rows.find(s=>Number(s.slot_id)===id)||{slot_id:id,title:'',target_url:'',image_url:'',external_image_url:'',image_path:'',enabled:false};
  };
  const isHttps=x=>{try{const u=new URL(String(x||''));return u.protocol==='https:'&&!!u.hostname&&!u.username&&!u.password}catch{return false}};
+ function sideHeading(side){
+  const found=statePromos.headings.find(item=>item.side===side);
+  return found||{side,title:side==='right'?'الصور والروابط — الجانب الأيمن':'الصور والروابط — الجانب الأيسر',subtitle:'صورتان • أربعة روابط'};
+ }
  function imageCard(id){
   const s=slotData(id),valid=s.enabled&&s.title&&isHttps(s.target_url)&&isHttps(s.image_url);
   return '<article class="afaq-promo-image-card">'+(valid?
@@ -31,9 +35,10 @@
   }).join('');
  }
  function sideMarkup(side){
+  const header=sideHeading(side);
   return '<div class="afaq-promo-side afaq-promo-side--'+side+'">'+
-   '<div class="afaq-promo-side-head"><strong>'+(side==='right'?'الصور والروابط — الجانب الأيمن':'الصور والروابط — الجانب الأيسر')+
-   '</strong><span>صورتان • أربعة روابط</span></div>'+
+   '<div class="afaq-promo-side-head"><strong>'+safe(header.title)+
+   '</strong><span>'+safe(header.subtitle)+'</span></div>'+
    '<div class="afaq-promo-images">'+idsForSide(side,'image').map(imageCard).join('')+'</div>'+
    '<div class="afaq-promo-links">'+linksForSide(side)+'</div></div>';
  }
@@ -50,9 +55,12 @@
   const html=previousHome.apply(this,args);
   if(typeof html!=='string'||html.includes('afaq-promo-area'))return html;
   const temp=document.createElement('div');temp.innerHTML=html;
+  // Preserve the original "ما هي منصة آفاق ماث؟" introduction above the new advertisements.
+  const introduction=temp.querySelector('.afaq-final-introduction');
   const hero=temp.querySelector('.hub-banner.afaq-animated-hero');
-  if(!hero)return html;
-  hero.insertAdjacentHTML('afterend',homeMarkup());
+  const anchor=introduction||hero;
+  if(!anchor)return html;
+  anchor.insertAdjacentHTML('afterend',homeMarkup());
   return temp.innerHTML;
  };
  function adminSlotForm(id){
@@ -75,10 +83,17 @@
  function adminPanel(){
   if(!adminReady())return '<p class="notice">إدارة الصور الإعلانية وروابط المواقع متاحة للمشرف الرئيسي فقط.</p>';
   const nav=typeof hubStaffNav==='function'?hubStaffNav():'';
-  const side=(where)=>'<section class="afaq-promo-admin-side"><h3>الجانب '+(where==='right'?'الأيمن':'الأيسر')+'</h3>'+
-    '<p>صورتان إعلانيتان وفي أسفلهما أربعة روابط بعناوين مستقلة.</p>'+
+  const side=(where)=>{
+   const header=sideHeading(where);
+   return '<section class="afaq-promo-admin-side"><h3>الجانب '+(where==='right'?'الأيمن':'الأيسر')+'</h3>'+
+    '<p>يمكنك تغيير العنوان الرئيسي والوصف المختصر اللذين يظهران فوق صور هذا الجانب.</p>'+
+    '<form class="afaq-promo-heading-form" data-afaq-promo-heading="'+where+'">'+
+    '<label>عنوان الجانب الظاهر في الصفحة الرئيسية<input name="title" type="text" maxlength="120" required value="'+safe(header.title)+'" placeholder="اكتب عنوان الجانب"></label>'+
+    '<label>الوصف المختصر بجانب العنوان<input name="subtitle" type="text" maxlength="100" value="'+safe(header.subtitle)+'" placeholder="مثال: صور ومواقع تعليمية"></label>'+
+    '<button type="submit"'+(statePromos.busy?' disabled':'')+'>حفظ عنوان هذا الجانب ووصفه</button></form>'+
     '<div class="afaq-promo-admin-images">'+idsForSide(where,'image').map(adminSlotForm).join('')+'</div>'+
     '<div class="afaq-promo-admin-links">'+idsForSide(where,'link').map(adminSlotForm).join('')+'</div></section>';
+  };
   return '<div class="container afaq-promo-admin" dir="rtl">'+nav+
    '<div class="afaq-promo-admin-header"><h2>🖼️ إدارة إعلانات وروابط الصفحة الرئيسية</h2>'+
    '<p>الأماكن ثابتة: صورتان يمين صورة آفاق وصورتان يسارها، وأربعة روابط أسفل كل زوج. ارفع الصورة من جهازك أو أدخل رابطها المباشر، ثم اكتب عنوانها ورابط الانتقال. يمكنك إخفاء أو حذف أي خانة دون التأثير على بقية الصفحة.</p>'+
@@ -95,7 +110,8 @@
  };
  async function fetchPublic(){
   try{
-   const r=await hubCall('home_promos_public');statePromos.public=r.slots||[];statePromos.publicError='';
+   const r=await hubCall('home_promos_public');statePromos.public=r.slots||[];
+   statePromos.headings=r.headings||statePromos.headings;statePromos.publicError='';
    if(state.page==='home')render();
   }catch(e){statePromos.publicError=e.message||'تعذر تحميل الإعلانات'}
  }
@@ -104,6 +120,7 @@
   statePromos.adminLoading=true;
   try{
    const r=await hubCall('home_promos_admin',{},auth.token);statePromos.admin=r.slots||[];
+   statePromos.headings=r.headings||statePromos.headings;
    statePromos.adminLoaded=true;statePromos.adminError='';
   }catch(e){statePromos.adminError=e.message||'تعذر تحميل سجل الإعلان'}finally{
    statePromos.adminLoading=false;
@@ -149,6 +166,28 @@
   }catch(e){statePromos.adminError='تعذر حفظ الخانة '+id+': '+(e.message||'خطأ غير معروف')}
   finally{statePromos.busy=0;if(state.page==='dashboard'&&auth.section==='home_promos')render()}
  }
+ async function saveHeading(form){
+  if(!adminReady()||statePromos.busy)return;
+  const side=form.dataset.afaqPromoHeading;
+  const data=new FormData(form);
+  const title=String(data.get('title')||'').trim(),subtitle=String(data.get('subtitle')||'').trim();
+  if(!['right','left'].includes(side)||title.length<2||title.length>120||subtitle.length>100){
+   window.alert('العنوان يجب أن يكون بين حرفين و120 حرفًا، والوصف حتى 100 حرف.');return;
+  }
+  statePromos.busy=side;
+  statePromos.adminError='';
+  try{
+   const result=await hubCall('home_promos_heading_save',{side,title,subtitle},auth.token);
+   statePromos.headings=statePromos.headings.filter(item=>item.side!==side).concat(result.heading);
+   statePromos.notice='✓ تم حفظ عنوان الجانب '+(side==='right'?'الأيمن':'الأيسر')+' ووصفه.';
+   await fetchPublic();
+  }catch(e){
+   statePromos.adminError='تعذر تعديل العنوان: '+(e.message||'حدث خطأ');
+  }finally{
+   statePromos.busy=0;
+   if(state.page==='dashboard'&&auth.section==='home_promos')render();
+  }
+ }
  async function deleteSlot(id){
   if(!adminReady()||statePromos.busy)return;
   if(!window.confirm('هل تريد حذف الصورة أو الرابط في الخانة رقم '+id+'؟ ستصبح الخانة فارغة في الصفحة الرئيسية.'))return;
@@ -165,6 +204,9 @@
    if(!adminReady())return;
    auth.section='home_promos';route('dashboard');
    if(!statePromos.adminLoaded)fetchAdmin();
+  }));
+  document.querySelectorAll('[data-afaq-promo-heading]').forEach(form=>form.addEventListener('submit',event=>{
+   event.preventDefault();saveHeading(form);
   }));
   document.querySelectorAll('[data-afaq-promo-form]').forEach(form=>form.addEventListener('submit',event=>{
    event.preventDefault();saveForm(form);
