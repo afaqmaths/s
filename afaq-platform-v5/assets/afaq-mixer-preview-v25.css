@@ -218,3 +218,97 @@
  }
  .amx25-run{transition:none!important}
 }
+
+
+/* 2026-11-21 — five-second audio-synced Maths Mixer, larger bilingual heading. */
+.hub-home .amx25-showcase .amx25-head h3{
+ display:flex!important;align-items:center;justify-content:center;
+ flex-wrap:wrap!important;gap:6px 13px!important;
+ margin:6px 0 4px!important;
+ line-height:1.5!important;
+}
+.hub-home .amx25-showcase .amx25-head h3 small.amx25-title-english,
+.hub-home .afaq-scientific-card--mixer .amx25-head h3 small.amx25-title-english{
+ display:inline-block!important;
+ font-family:Georgia,"Times New Roman",serif!important;
+ font-weight:950!important;
+ font-size:clamp(23px,2.4vw,34px)!important;
+ letter-spacing:1.2px!important;
+ line-height:1.3!important;
+ text-align:center!important;
+ white-space:normal!important;
+ color:#be8c38!important;
+ background:linear-gradient(170deg,#fff6d8 0%,#d6a448 35%,#8b521e 58%,#e2b862 80%,#fff2c9 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ filter:drop-shadow(0 1px 0 #6b45185a) drop-shadow(0 0 4px #cf9b3140);
+ text-shadow:none!important;
+ vertical-align:middle!important;
+}
+.hub-home .amx25-showcase .amx25-controls{
+ gap:7px!important;align-items:center!important;
+}
+.hub-home .amx25-showcase .amx25-sound-toggle{
+ flex:0 0 auto!important;min-width:130px!important;min-height:46px!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ padding:9px 11px!important;
+ border:1px solid #d1b276!important;border-radius:11px!important;
+ background:linear-gradient(135deg,#fff9e7,#f6e5bc)!important;
+ color:#77551f!important;
+ font:950 12px/1.5 Tahoma,Arial,sans-serif!important;
+ box-shadow:0 3px 9px #9b722d23!important;
+ cursor:pointer!important;
+}
+.hub-home .amx25-showcase .amx25-sound-toggle[aria-pressed="false"]{
+ background:#f2f6fa!important;color:#5a7487!important;border-color:#c2d1dd!important;
+}
+.hub-home .amx25-showcase .amx25-sound-toggle:focus-visible{
+ outline:3px solid #c89b45!important;outline-offset:2px!important;
+}
+.hub-home .amx25-showcase .amx25-run-status{
+ flex:1 1 100%!important;
+ font-size:13px!important;color:#476880!important;
+ margin:0!important;line-height:1.65!important;
+}
+.hub-home .amx25-running .amx25-run-status{
+ color:#9b671f!important;font-weight:950!important;
+}
+.hub-home .amx25-showcase .amx25-mix-progress{
+ height:8px;width:100%;overflow:hidden;box-sizing:border-box;
+ border:1px solid #d2dfdf;border-radius:50px;
+ background:linear-gradient(90deg,#e8f3f8,#fff4d7);
+ box-shadow:inset 0 1px 3px #25688916;
+}
+.hub-home .amx25-showcase .amx25-mix-progress i{
+ display:block;height:100%;width:100%;
+ border-radius:50px;
+ background:linear-gradient(90deg,#1b8dba,#8addeb,#e8bb60,#d99a36);
+ transform-origin:right center;
+ transform:scaleX(0);
+}
+.hub-home .amx25-running .amx25-mix-progress i{
+ animation:amx25-mixing-progress 5s linear forwards;
+}
+.hub-home .amx25-finished .amx25-mix-progress i{
+ transform:scaleX(1);
+}
+@keyframes amx25-mixing-progress{
+ from{transform:scaleX(0)}
+ to{transform:scaleX(1)}
+}
+@media(max-width:650px){
+ .hub-home .amx25-showcase .amx25-head h3 small.amx25-title-english{
+  font-size:clamp(23px,5.3vw,29px)!important;
+ }
+ .hub-home .amx25-showcase .amx25-controls{
+  flex-wrap:wrap!important;
+ }
+ .hub-home .amx25-showcase .amx25-sound-toggle{
+  flex:1 1 125px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .amx25-running .amx25-mix-progress i{
+  animation:none!important;transform:scaleX(.6)!important;
+ }
+}
