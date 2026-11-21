@@ -282,8 +282,17 @@ render=function(...args){
  attach();
  if(typeof attachPortal==='function')attachPortal();
 };
+function ensureDirectoryMenu(){
+ // The hero is the primary entry, with an additional compact shortcut on desktop/mobile.
+ document.querySelectorAll('.desktopnav,#mobileNav').forEach(nav=>{
+  if(nav.querySelector('[data-route="afaq_directory"]'))return;
+  const btn=document.createElement('button');
+  btn.type='button';btn.dataset.route=PAGE;btn.textContent='خريطة المنصة';
+  nav.appendChild(btn);
+ });
+}
 const previousAttach=attach;
-attach=function(...args){previousAttach.apply(this,args);bindDirectory()};
+attach=function(...args){ensureDirectoryMenu();previousAttach.apply(this,args);bindDirectory()};
 if(window.location.hash.replace('#','')===PAGE){
  state.page=PAGE;render();
 }
