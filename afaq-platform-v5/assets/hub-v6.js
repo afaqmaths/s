@@ -537,6 +537,7 @@ const HUB_STAFF_BLOCKS=[
  ]],
  ['الموارد والمحتوى',[
   ['إدارة المكتبة العامة','book-open','إضافة وحذف ونشر مواد المكتبة','data-tab="hub_catalog"','purple'],
+  ['الإعلانات وروابط المواقع','palette','إدارة ٤ صور إعلانية و٨ روابط في الصفحة الرئيسية','data-tab="home_promos"','gold'],
   ['موسوعة علماء الرياضيات','landmark','إضافة وتحرير وحذف تراجم العلماء','data-tab="hub_catalog_scholars"','gold'],
   ['إدارة الألعاب والمسابقات','trophy','إضافة أو إخفاء مسابقات المنصة','data-tab="hub_catalog_contests"','gold'],
   ['بنك الأسئلة والاختبارات','file-text','نماذج سابقة وتدريبية','hub-staff="exams"','blue'],
@@ -554,7 +555,7 @@ function hubStaffNav(){
  const routes=[
   ['overview','الرئيسية'],['staff_hub','التحضير'],['students','تقويم الطلبة'],
   ['hub_apps','التطبيقات والبرامج'],['class_results','كشوف الشعب'],
-  ['hub_catalog','إدارة المحتوى'],['hub_catalog_scholars','إدارة العلماء'],['staff_contacts','التواصل المؤسسي'],
+  ['hub_catalog','إدارة المحتوى'],['hub_catalog_scholars','إدارة العلماء'],['home_promos','إعلانات وروابط'],['staff_contacts','التواصل المؤسسي'],
   ['hub_inbox','الرسائل والدعم'],['hub_parent_codes','أولياء الأمور'],
   ['hub_print','مركز الطباعة']
  ];
@@ -563,7 +564,7 @@ function hubStaffNav(){
 function hubStaffDashboard(){
  const role=auth.user?.role;const admin=role==='supervisor';
  const blocks=HUB_STAFF_BLOCKS.map(([title,items])=>{
-  const entries=items.filter(([label,icon,desc,attribute])=>admin||!['data-tab="hub_catalog"','data-tab="hub_catalog_contests"','data-tab="hub_parent_codes"'].includes(attribute));
+  const entries=items.filter(([label,icon,desc,attribute])=>admin||!['data-tab="hub_catalog"','data-tab="hub_catalog_contests"','data-tab="hub_parent_codes"','data-tab="home_promos"'].includes(attribute));
   return '<section class="hub-staff-group"><div class="hub-heading"><h2>'+title+'</h2></div>'+
   '<div class="hub-gate-grid">'+entries.map(([name,icon,desc,attr,color])=>hubGate(name,icon,desc,attr.startsWith('data-')?attr:'data-'+attr,color)).join('')+'</div></section>';
  }).join('');
