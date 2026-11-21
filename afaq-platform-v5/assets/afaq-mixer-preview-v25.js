@@ -8,7 +8,85 @@ const MX25_EXAMPLES=[
  {input:'٣٦',operator:'÷ ٦',output:'٦',formula:'٣٦ ÷ ٦ = ٦',
   info:'أدخلنا العدد ٣٦، وحددنا القسمة على ٦؛ فكان الناتج ٦. القسمة تعكس الضرب، ويساعد الخلاط على اختبار صحة الإجابة.'}
 ];
-const MX25={index:0,busy:false,done:false,timer:null};
+const MX25={index:0,busy:false,done:false,timer:null,soundOn:true};
+const MX25_RUN_MS=5000;
+const MX25_MOTOR={context:null,master:null,nodes:[]};
+/* Locally generated blender sound, started only by a deliberate user click. */
+function mx25StopMotorSound(){
+ const motor=MX25_MOTOR;
+ if(!motor.context||!motor.master)return;
+ const t=motor.context.currentTime;
+ try{
+  motor.master.gain.cancelScheduledValues(t);
+  motor.master.gain.setTargetAtTime(.0001,t,.035);
+ }catch(e){}
+ motor.nodes.forEach(node=>{try{node.stop(t+.2)}catch(e){}});
+ motor.master=null;motor.nodes=[];
+}
+function mx25MotorSound(){
+ if(!MX25.soundOn)return;
+ const Ctor=window.AudioContext||window.webkitAudioContext;
+ if(!Ctor)return;
+ try{
+  mx25StopMotorSound();
+  const ctx=MX25_MOTOR.context&&MX25_MOTOR.context.state!=='closed'?
+   MX25_MOTOR.context:new Ctor();
+  MX25_MOTOR.context=ctx;
+  if(ctx.state==='suspended')ctx.resume().catch(()=>{});
+  const t=ctx.currentTime+.015, end=t+MX25_RUN_MS/1000;
+  const master=ctx.createGain();
+  master.gain.setValueAtTime(.0001,t);
+  master.gain.exponentialRampToValueAtTime(.32,t+.18);
+  master.gain.setValueAtTime(.32,end-.38);
+  master.gain.exponentialRampToValueAtTime(.0001,end);
+  master.connect(ctx.destination);MX25_MOTOR.master=master;
+  const nodes=[];
+  // Motor revolutions: low rotating buzz with a rising pitch.
+  const motor=ctx.createOscillator();motor.type='sawtooth';
+  motor.frequency.setValueAtTime(84,t);
+  motor.frequency.exponentialRampToValueAtTime(130,t+.85);
+  motor.frequency.setValueAtTime(125,end-.65);
+  motor.frequency.exponentialRampToValueAtTime(88,end);
+  const motorGain=ctx.createGain();motorGain.gain.value=.29;
+  motor.connect(motorGain);motorGain.connect(master);
+  motor.start(t);motor.stop(end+.035);nodes.push(motor);
+  const harmonic=ctx.createOscillator();harmonic.type='triangle';
+  harmonic.frequency.setValueAtTime(168,t);
+  harmonic.frequency.exponentialRampToValueAtTime(259,t+1);
+  harmonic.frequency.setValueAtTime(253,end-.5);
+  harmonic.frequency.exponentialRampToValueAtTime(175,end);
+  const harmonicGain=ctx.createGain();harmonicGain.gain.value=.16;
+  harmonic.connect(harmonicGain);harmonicGain.connect(master);
+  harmonic.start(t);harmonic.stop(end+.035);nodes.push(harmonic);
+  // Whirring blade / air turbulence, shaped to sound like a real blender.
+  const noise=ctx.createBufferSource(), len=Math.ceil(ctx.sampleRate*.8);
+  const buffer=ctx.createBuffer(1,len,ctx.sampleRate);
+  const samples=buffer.getChannelData(0);
+  for(let i=0;i<len;i++)samples[i]=Math.random()*2-1;
+  noise.buffer=buffer;noise.loop=true;
+  const band=ctx.createBiquadFilter();band.type='bandpass';
+  band.frequency.value=520;band.Q.value=.6;
+  const scratch=ctx.createGain();scratch.gain.value=.42;
+  const pulse=ctx.createGain();pulse.gain.value=.83;
+  noise.connect(band);band.connect(scratch);scratch.connect(pulse);pulse.connect(master);
+  noise.start(t);noise.stop(end+.035);nodes.push(noise);
+  const flutter=ctx.createOscillator();flutter.type='sine';flutter.frequency.value=11;
+  const depth=ctx.createGain();depth.gain.value=.075;
+  flutter.connect(depth);depth.connect(pulse.gain);
+  flutter.start(t);flutter.stop(end+.035);nodes.push(flutter);
+  MX25_MOTOR.nodes=nodes;
+ }catch(err){
+  console.warn('Mixer sound unavailable:',err?.message||err);
+  mx25StopMotorSound();
+ }
+}
+function mx25ToggleSound(){
+ MX25.soundOn=!MX25.soundOn;
+ if(!MX25.soundOn)mx25StopMotorSound();
+ else if(MX25.busy)mx25MotorSound();
+ document.querySelectorAll('.amx25-showcase').forEach(mx25Paint);
+}
+
 function mx25MachineSvg(){
  return '<svg class="amx25-machine-art" viewBox="0 0 360 238" xmlns="http://www.w3.org/2000/svg" role="img" '+
  'aria-labelledby="amx25MachineTitle amx25MachineDesc">'+
@@ -59,7 +137,7 @@ function mx25Html(){
  const sample=MX25_EXAMPLES[MX25.index];
  return '<section class="amx25-showcase" aria-labelledby="amx25Heading" dir="rtl">'+
  '<header class="amx25-head"><span class="amx25-kicker">✨ ابتكار الأستاذ سعيد • نموذج مصغّر تفاعلي</span>'+
- '<h3 id="amx25Heading">خلاط الرياضيات <small lang="en" dir="ltr">MATH MIXER</small></h3>'+
+ '<h3 id="amx25Heading">خلاط الرياضيات <small class="amx25-title-english" lang="en" dir="ltr">MATHS MIXER</small></h3>'+
  '<p>نضع العدد في المدخل، ونختار العملية، فيخلطها الجهاز ليُظهر الناتج والتفسير.</p></header>'+
  '<div class="amx25-scene">'+mx25MachineSvg()+
  '<div class="amx25-sparkles" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span></div></div>'+
@@ -79,12 +157,15 @@ function mx25Html(){
  '<div class="amx25-controls">'+
  '<button type="button" class="amx25-run" data-amx25-run'+(MX25.busy?' disabled':'')+'>'+
  (MX25.busy?'⚙️ جارٍ خلط الأعداد ...':MX25.done?'↻ إعادة التشغيل':'▶ تشغيل الخلاط')+'</button>'+
+ '<button type="button" class="amx25-sound-toggle" data-amx25-sound aria-pressed="'+MX25.soundOn+'" aria-label="'+(MX25.soundOn?'إيقاف صوت الخلاط':'تشغيل صوت الخلاط')+'">'+
+ (MX25.soundOn?'🔊 الصوت يعمل':'🔇 تشغيل الصوت')+'</button>'+
  '<span class="amx25-run-status" data-amx25-status aria-live="polite">'+
  (MX25.busy?'يجري تطبيق العملية ...':MX25.done?'✓ اكتملت العملية':'جاهز للتشغيل')+'</span></div>'+
  '<div class="amx25-example-feedback" role="status" aria-live="polite" data-amx25-feedback>'+
  (MX25.done?'<strong>'+sample.formula+'</strong> '+sample.info:
  '<strong>الفكرة:</strong> نبدأ بالمدخل، ونُجري العملية المحددة، ثم نقرأ المخرج. اضغط «تشغيل الخلاط» لمشاهدة النتيجة.')+
  '</div>'+
+ '<div class="amx25-mix-progress" aria-hidden="true"><i></i></div>'+
  '<div class="amx25-summary"><strong>💡 ماذا نتعلّم؟</strong>'+
  '<p>خلاط الرياضيات نموذج للقاعدة الرياضية: <b>مدخلات ← عملية ← مخرجات</b>؛ يساعد على اكتشاف الأنماط، والتحقق من النتائج، وتعميم القواعد على دروس مختلفة.</p></div>'+
  '<p class="amx25-cta-note">قم بالدخول لتشغيل خلاط الرياضيات و تطبيقه على جميع الدروس</p>'+
@@ -129,7 +210,13 @@ function mx25Paint(box){
  put('[data-amx25-input]',x.input);
  put('[data-amx25-operation]',x.operator);
  put('[data-amx25-output]',MX25.done?x.output:'؟');
- put('[data-amx25-status]',MX25.busy?'يجري تطبيق العملية ...':MX25.done?'✓ اكتملت العملية':'جاهز للتشغيل');
+ put('[data-amx25-status]',MX25.busy?'⚙️ تدور شفرات الخلاط لمدة ٥ ثوانٍ ...':MX25.done?'✓ اكتملت العملية':'جاهز للتشغيل');
+ const soundButton=box.querySelector('[data-amx25-sound]');
+ if(soundButton){
+  soundButton.setAttribute('aria-pressed',String(MX25.soundOn));
+  soundButton.setAttribute('aria-label',MX25.soundOn?'إيقاف صوت الخلاط':'تشغيل صوت الخلاط');
+  soundButton.textContent=MX25.soundOn?'🔊 الصوت يعمل':'🔇 تشغيل الصوت';
+ }
  const feedback=box.querySelector('[data-amx25-feedback]');
  if(feedback){
   feedback.textContent='';
@@ -149,12 +236,15 @@ function mx25Paint(box){
 function mx25Start(){
  if(MX25.busy)return;
  MX25.busy=true;MX25.done=false;
+ // Both initial play and ↻ replay trigger the motor directly on a user gesture.
+ mx25MotorSound();
  document.querySelectorAll('.amx25-showcase').forEach(mx25Paint);
  if(MX25.timer!==null)window.clearTimeout(MX25.timer);
  MX25.timer=window.setTimeout(()=>{
   MX25.busy=false;MX25.done=true;MX25.timer=null;
+  mx25StopMotorSound();
   document.querySelectorAll('.amx25-showcase').forEach(mx25Paint);
- },1500);
+ },MX25_RUN_MS);
 }
 const mx25OldAttach=attach;
 attach=function(){
@@ -165,4 +255,13 @@ attach=function(){
  document.querySelectorAll('[data-amx25-run]').forEach(button=>{
   button.addEventListener('click',mx25Start);
  });
+ document.querySelectorAll('[data-amx25-sound]').forEach(button=>{
+  button.addEventListener('click',mx25ToggleSound);
+ });
 };
+
+/* Stop sound on navigation away / background tabs. */
+window.addEventListener('pagehide',mx25StopMotorSound);
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden)mx25StopMotorSound();
+});
