@@ -36,16 +36,129 @@ function clickableCard(item,body,css){
  if(external(item.target_url))return '<a class="'+css+'" href="'+esc(item.target_url)+'" target="_blank" rel="noopener noreferrer">'+body+'</a>';
  return '<article class="'+css+'">'+body+'</article>';
 }
+
+/* Illustrated pre-entry previews. Reuse the original full mixer demonstration rather
+   than replacing the user's machine/animation with a small icon. */
+const scientificStories={
+ afaq_multiples:{
+  caption:'كيف تتولد المضاعفات من الصفر؟',
+  details:'يبدأ الطالب من الصفر، ثم ينتقل بخطوات ثابتة ليلاحظ التكرار وقاعدة المضاعفات.',
+  math:'٠ ← ٦ ← ١٢ ← ١٨ ← ٢٤',
+  benefit:'الربط بين الجمع المتكرر والضرب واكتشاف أنماط الأعداد.'
+ },
+ afaq_prime_sieve:{
+  caption:'كيف نميّز العدد الأولي من غيره؟',
+  details:'نستبعد مضاعفات الأعداد تدريجيًا؛ فيبقى كل عدد أولي ظاهرًا بلونه المميز.',
+  math:'٢ ، ٣ ، ٥ ، ٧ ، ١١ ، ١٣',
+  benefit:'الفهم البصري للأعداد الأولية والمركّبة والعوامل.'
+ },
+ division_key:{
+  caption:'متى يظهر مفتاح الفاصلة العشرية؟',
+  details:'نتدرج في القسمة وفق المنازل: أقسم، أكتب، أضرب، أطرح، ثم أنزل. وعند بقاء جزء ننتقل إلى الخانات العشرية.',
+  math:'٣٢٥ ÷ ٤ = ٨١٫٢٥',
+  benefit:'ترتيب خطوات القسمة وفهم الباقي والانتقال للأجزاء العشرية.'
+ },
+ coordinate_ya:{
+  caption:'كيف نتذكر حركة الشكل على المستوى؟',
+  details:'ي / أ مفتاح تذكّر: يَمين ويسار للحركة الأفقية، وأعلى وأسفل للحركة الرأسية؛ تتحرك جميع رؤوس الشكل معًا.',
+  math:'(١ ، ٢) ← يمين ٣ وأعلى ٢ ← (٤ ، ٤)',
+  benefit:'فهم الانسحاب والإحداثيات مع الحفاظ على شكل المضلع وأبعاده.'
+ },
+ mental_multiply:{
+  caption:'هل يوجد أكثر من طريق للوصول إلى الناتج؟',
+  details:'نحلّل العدد إلى أجزاء سهلة، ثم نجمع النواتج لنجري عملية الضرب ذهنيًا بمرونة.',
+  math:'٢٤ × ٦ = (٢٠ × ٦) + (٤ × ٦) = ١٤٤',
+  benefit:'المرونة العددية والتقدير والتحقق من الإجابة دون اعتماد دائم على الخوارزمية.'
+ },
+ mental_add_sub:{
+  caption:'قرّب العدد ثم عوّض الفرق!',
+  details:'نختار عددًا قريبًا يسهل التعامل معه، ثم نُصحح الفرق بدقة في الجمع أو الطرح.',
+  math:'٣٩٨ + ٤٧ = ٤٠٠ + ٤٥ = ٤٤٥',
+  benefit:'توظيف التعويض والتقريب لبناء سرعة الحساب الذهني مع الدقة.'
+ },
+ adaptive:{
+  caption:'تعلّم ثم طبّق وتحقق من إجابتك',
+  details:'تُعرض أسئلة بمستويات متدرجة، ويستفيد الطالب من التغذية الراجعة قبل الانتقال إلى تحدٍّ آخر.',
+  math:'٧ × ٨ = ؟     الإجابة: ٥٦',
+  benefit:'الانتقال من الفهم إلى التطبيق والاستدلال مع مراعاة الفروق الفردية.'
+ }
+};
+function scientificArtwork(item){
+ const src=item.image_url;
+ if(external(src))return '<div class="afaq-scene-upload"><img src="'+esc(src)+'" loading="lazy" decoding="async" alt="صورة توضيحية لمبادرة '+esc(item.title)+'"></div>';
+ const route=item.route;
+ if(route==='afaq_multiples')
+  return '<div class="afaq-scene-multiples" role="img" aria-label="مضاعفات العدد ستة من الصفر إلى أربعة وعشرين">'+
+   '<div class="afaq-scene-step-label">نضيف ٦ في كل خطوة</div>'+
+   '<div class="afaq-multiple-numbers">'+['٠','٦','١٢','١٨','٢٤'].map((n,i)=>
+    '<span class="afaq-multiple-number">'+n+'<small>'+(i===0?'البداية':'+'+'٦')+'</small></span>').join('<span class="afaq-step-arrow">←</span>')+
+   '</div><div class="afaq-scene-caption">المضاعفات تتبع قاعدة ثابتة</div></div>';
+ if(route==='afaq_prime_sieve'){
+  const prime=new Set([2,3,5,7,11,13,17,19,23,29]);
+  return '<div class="afaq-scene-primes" role="img" aria-label="غربال الأعداد من واحد إلى ثلاثين مع تمييز الأعداد الأولية">'+
+   '<div class="afaq-scene-step-label">لوّن الأعداد الأولية واستبعد مضاعفاتها</div>'+
+   '<div class="afaq-prime-grid">'+Array.from({length:30},(_,i)=>{
+    const n=i+1;return '<span class="'+(prime.has(n)?'is-prime':n===1?'is-one':'is-composite')+'">'+
+     String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[Number(d)])+'</span>';
+   }).join('')+'</div><div class="afaq-scene-legend"><span>● عدد أولي</span><span>○ عدد مركب</span><span>١ ليس أوليًا</span></div></div>';
+ }
+ if(route==='division_key')
+  return '<div class="afaq-scene-division" role="img" aria-label="رسم يوضح عملية قسمة ٣٢٥ على ٤ مع مفتاح الفاصلة العشرية">'+
+   '<div class="afaq-longdivision"><span class="afaq-division-divisor">٤</span><span class="afaq-division-arc">⟌</span>'+
+   '<span class="afaq-division-dividend">٣٢٥٫٠٠</span><strong>٨١٫٢٥</strong></div>'+
+   '<div class="afaq-division-unlock"><span>🔑</span><span>مفتاح الفاصلة</span><strong>من الباقي إلى الأجزاء العشرية</strong></div></div>';
+ if(route==='coordinate_ya'){
+  const art=typeof initArt==='function'?initArt({route:'coordinate_ya',icon:'coordinates'}):'📐';
+  return '<div class="afaq-scene-coordinate" role="img" aria-label="شبكة إحداثيات توضّح التحرك يمينًا وأعلى">'+
+   '<div class="afaq-coordinate-graphic">'+art+'</div><div class="afaq-coordinate-key"><span>ي ← يمين / يسار</span><span>أ ← أعلى / أسفل</span></div></div>';
+ }
+ if(route==='mental_multiply')
+  return '<div class="afaq-scene-mental" role="img" aria-label="تقسيم ٢٤ إلى ٢٠ و٤ لحساب الضرب في ٦">'+
+   '<div class="afaq-mental-title">٢٤ × ٦</div><div class="afaq-mental-pieces"><span>٢٠ × ٦ <b>١٢٠</b></span>'+
+   '<span class="afaq-mental-plus">＋</span><span>٤ × ٦ <b>٢٤</b></span></div>'+
+   '<div class="afaq-mental-result">١٢٠ + ٢٤ = <strong>١٤٤</strong></div></div>';
+ if(route==='mental_add_sub')
+  return '<div class="afaq-scene-compensation" role="img" aria-label="توضيح التعويض في الجمع بتقريب ٣٩٨ إلى ٤٠٠">'+
+   '<div class="afaq-comp-start"><strong>٣٩٨ + ٤٧</strong><span>قرّب العدد</span></div>'+
+   '<div class="afaq-comp-arrow">⇣</div>'+
+   '<div class="afaq-comp-middle">٤٠٠ + ٤٥</div><div class="afaq-comp-result">الناتج <strong>٤٤٥</strong></div></div>';
+ if(route==='adaptive')
+  return '<div class="afaq-scene-adaptive" role="img" aria-label="بطاقة تدريب بمستويات الفهم والتطبيق والاستدلال">'+
+   '<div class="afaq-adaptive-levels"><span>الفهم</span><span>التطبيق</span><span>الاستدلال</span></div>'+
+   '<div class="afaq-adaptive-question">٧ × ٨ = ؟</div><div class="afaq-adaptive-choices">'+
+   '<span>٤٨</span><span class="correct">٥٦ ✓</span><span>٦٤</span></div>'+
+   '<div class="afaq-adaptive-feedback">تغذية راجعة فورية تعزز التعلم</div></div>';
+ return '<div class="afaq-scene-other"><span aria-hidden="true">'+esc(item.icon||'🧮')+'</span>'+
+  '<strong>نموذج بصري للمبادرة</strong></div>';
+}
+function scientificEntryAction(item){
+ if(item.route&&supportedRoutes.includes(item.route))
+  return '<button type="button" class="afaq-scientific-open" data-route="'+esc(item.route)+'">🔐 الدخول الكامل للمبادرة <span aria-hidden="true">↗</span></button>';
+ if(external(item.target_url))
+  return '<a class="afaq-scientific-open" href="'+esc(item.target_url)+'" target="_blank" rel="noopener noreferrer">🌐 فتح المبادرة الكاملة <span aria-hidden="true">↗</span></a>';
+ return '<span class="afaq-scientific-pending">يمكن للمشرف إضافة رابط تشغيل المبادرة لاحقًا.</span>';
+}
+function scientificCard(item){
+ const details=scientificStories[item.route];
+ if(item.route==='mixer'&&typeof mx25Html==='function'){
+  return '<article class="afaq-scientific-card afaq-scientific-card--mixer">'+
+   '<div class="afaq-scientific-card-tag">🎛️ عرض تفاعلي قبل الدخول الكامل</div>'+
+   mx25Html()+'</article>';
+ }
+ return '<article class="afaq-scientific-card">'+
+  '<div class="afaq-scientific-card-head"><span class="afaq-scientific-card-symbol">'+esc(item.icon||'✦')+'</span>'+
+  '<div><h4>'+esc(item.title)+'</h4><p>'+esc(item.description||details?.caption||'تجربة تعليمية مبتكرة')+'</p></div></div>'+
+  '<div class="afaq-scientific-artboard">'+scientificArtwork(item)+'</div>'+
+  '<div class="afaq-scientific-card-brief"><b>💡 فكرة المبادرة</b><p>'+esc(details?.details||item.comment||item.description||'اكتشف مفهومًا رياضيًا مع أمثلة وتطبيقات.')+'</p></div>'+
+  (details?'<div class="afaq-scientific-mini-example"><span>🧪 مثال تطبيقي مصغّر</span>'+
+   '<strong dir="rtl">'+esc(details.math)+'</strong></div>'+
+   '<div class="afaq-scientific-skill"><b>🎯 ماذا نتعلّم؟</b><p>'+esc(details.benefit)+'</p></div>':'')+
+  '<div class="afaq-scientific-card-footer">'+scientificEntryAction(item)+'</div></article>';
+}
+
 function scientificBlock(){
  const data=initState.publicLoaded?currentItems('scientific'):placeholders;
- const items=data.map(item=>{
-  const photo=imageMarkup(item.image_url,item.title);
-  const art=photo?'<span class="afaq-initiative-picture">'+photo+'</span>':'<span class="afaq-initiative-emoji" aria-hidden="true">'+esc(item.icon||'🧮')+'</span>';
-  return clickableCard(item,art+'<span class="afaq-initiative-card-body"><strong>'+esc(item.title)+'</strong>'+
-    '<small>'+esc(item.description||'مبادرة رياضية تعليمية')+'</small>'+
-    '<span class="afaq-initiative-explore">'+(item.route?'استكشف المبادرة بإذن المشرف':'استعرض المبادرة')+' ↗</span></span>',
-    'afaq-scientific-card');
- }).join('');
+ const items=data.map(scientificCard).join('');
  return '<section id="afaq-scientific" class="afaq-initiatives-science" aria-label="المبادرات العلمية">'+
  '<header class="afaq-initiative-heading">'+
  '<h3>المبادرات العلمية</h3>'+
