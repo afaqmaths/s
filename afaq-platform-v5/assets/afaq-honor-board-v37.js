@@ -4,7 +4,7 @@
 if(typeof hubHome!=='function'||typeof staffPanel!=='function'||typeof hubCall!=='function')return;
 const C=['academic','a_plus','rising','afaq','noor','math_club'];
 const icons=['🏅','🌟','🚀','🏆','💻','🔢'];
-const labels=['المتفوقون دراسيًا','المتفوقون في A+','النجوم الصاعدون','المتفوقون في منصة آفاق','المتفوقون في منصة نور','نجوم جماعة الرياضيات'];
+const labels=['المتفوقون دراسيًا','المتفوقون في A+','النجوم الصاعدون','المتفوقون في منصة آفاق','المتفوقون في منصة نور','النجوم البارزون في جماعة الرياضيات'];
 const descriptions=['تفوق دراسي وتحصيل متميز','المشاركة والتفاعل الإيجابي','الإصرار والتقدم المستمر','إنجازات وتحديات آفاق ماث','الواجبات والتعلم في منصة نور','المبادرات والابتكار الرياضي'];
 const stateHonor={settings:{title:'لوحة الشرف — نجوم آفاق الرياضيات',subtitle:'نحتفي بالتميز والعطاء',image_url:''},categories:[],entries:[],admin:[],loaded:false,loading:false,working:false,error:'',message:'',selected:'academic',editing:null};
 const e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
