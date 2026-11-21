@@ -144,13 +144,15 @@ function hubHome(){
  hubGate('التصفح كضيف','globe','استكشف المحتوى العام دون حساب','data-route="visitor"','cyan')+
  hubGate('دخول المشرفين','graduation-cap','المشرف الرئيسي والمساعد وتقنية المعلومات','data-hub-login="supervisor"','gold')+
  '</div>'+hubEntryInstructions()+'</section>'+
- '<section class="hub-main afaq-home-sections"><div class="hub-heading"><span>أبواب المعرفة</span><h2>استكشف أقسام آفاق ماث</h2></div>'+
+ '<section class="hub-main afaq-home-sections"><div class="hub-heading"><span class="afaq-knowledge-kicker">أبواب المعرفة</span><h2>استكشف أقسام آفاق ماث</h2>'+
+ '<p class="afaq-knowledge-description">نافذتك إلى المعرفة والتعلّم والاكتشاف؛ اختر القسم الذي يناسب اهتماماتك.</p></div>'+
  '<div class="hub-gate-grid">'+
  hubSectionCard('التعليم والتعلّم','graduation-cap','الدروس والمشاغل والتدريبات','learning','green')+
  hubSectionCard('المكتبة العامة','book-open','تاريخ الرياضيات والمعرفة','library','blue')+
  hubSectionCard('المرح والتسلية','smile','ألغاز وتحديات رياضية','fun','rose')+
  hubSectionCard('الألعاب والمسابقات','trophy','نجوم آفاق والمنافسات','contests','gold')+
  hubSectionCard('الدعم والتواصل','smartphone','الاقتراحات والرسائل','support','cyan')+
+ hubSectionCard('المبادرات العلمية','lightbulb','تجارب وأفكار رياضية مبتكرة','teaching_initiatives','gold')+
  '</div></section>'+
  (typeof afaqHomeUpdates==="function"?afaqHomeUpdates():"")+
  (typeof afaqHomeShowcase==="function"?afaqHomeShowcase():"")+
