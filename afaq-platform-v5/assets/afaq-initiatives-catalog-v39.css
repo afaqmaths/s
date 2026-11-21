@@ -287,3 +287,194 @@
   min-height:130px!important;
  }
 }
+
+
+/* 2026-11-21 restored illustrated initiative previews — two generous equal-width cards per row. */
+.hub-home .afaq-initiatives-science .afaq-scientific-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-flow:row!important;grid-auto-rows:auto!important;gap:21px!important;align-items:stretch!important;
+}
+.hub-home .afaq-initiatives-science .afaq-scientific-grid>.afaq-scientific-card{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
+ width:100%!important;height:100%!important;min-height:645px!important;min-width:0!important;
+ box-sizing:border-box!important;border:2px solid #cbdce8!important;border-top:5px solid #ca9c4c!important;
+ border-radius:21px!important;padding:15px!important;margin:0!important;
+ background:linear-gradient(155deg,#fffdf8,#f1f8ff 63%,#fffaf0)!important;
+ color:#144b76!important;text-align:right!important;cursor:default!important;
+ gap:13px!important;overflow:hidden;box-shadow:0 9px 24px #114a7317!important;
+}
+.hub-home .afaq-initiatives-science .afaq-scientific-card:hover{transform:none!important}
+.hub-home .afaq-scientific-card-head{
+ display:flex;flex-direction:row;align-items:center;gap:13px;min-height:91px;
+ padding:6px 3px 11px;border-bottom:1px solid #d5e4ef;
+}
+.hub-home .afaq-scientific-card-symbol{
+ flex:0 0 63px;width:63px;height:63px;border:2px solid #e1c084;border-radius:16px;
+ display:grid;place-items:center;background:linear-gradient(145deg,#fff4d7,#e5f4ff);font-size:34px;
+}
+.hub-home .afaq-scientific-card-head>div{min-width:0;flex:1}
+.hub-home .afaq-scientific-card-head h4{
+ margin:0 0 6px!important;color:#154d7e!important;font-size:clamp(20px,1.7vw,25px)!important;
+ font-weight:950!important;line-height:1.55!important
+}
+.hub-home .afaq-scientific-card-head p{
+ margin:0!important;font-size:clamp(13px,1.08vw,15px)!important;line-height:1.8!important;color:#52728b!important;
+}
+.hub-home .afaq-scientific-artboard{
+ width:100%;min-height:225px;max-height:none;box-sizing:border-box;
+ display:flex;align-items:center;justify-content:center;overflow:hidden;
+ border:1px solid #c9dce9;border-radius:16px;
+ background:radial-gradient(circle at 50% 25%,#fff6d9,transparent 65%),
+ linear-gradient(145deg,#edf8ff,#fff);
+ box-shadow:inset 0 4px 12px #16456e0d;
+ padding:13px;
+}
+.hub-home .afaq-scientific-artboard>div{width:100%;box-sizing:border-box}
+.hub-home .afaq-scene-upload{
+ height:235px;display:flex;align-items:center;justify-content:center;
+}
+.hub-home .afaq-scene-upload img{display:block;width:100%;height:100%;object-fit:contain;border-radius:11px}
+.hub-home .afaq-scene-step-label{text-align:center;margin:0 auto 15px!important;color:#846026;
+ font-size:14px;font-weight:900;line-height:1.75}
+.hub-home .afaq-multiple-numbers{
+ display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap;gap:5px;
+ direction:rtl;margin:18px auto 0;
+}
+.hub-home .afaq-multiple-number{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;
+ border:2px solid #77b9cf;border-radius:50%;width:62px;height:62px;
+ color:#144c79;background:linear-gradient(135deg,#f5fcff,#d9effe);font-size:21px;font-weight:950}
+.hub-home .afaq-multiple-number:nth-child(4n+1){border-color:#c69b59;background:#fff0cf}
+.hub-home .afaq-multiple-number small{font-size:9px;color:#678397;font-weight:800}
+.hub-home .afaq-step-arrow{font-size:20px;font-weight:950;color:#b8893b}
+.hub-home .afaq-scene-caption{text-align:center;margin-top:22px;font-size:13px;color:#53768d;font-weight:850}
+.hub-home .afaq-scene-primes{max-width:485px;margin:0 auto}
+.hub-home .afaq-prime-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));
+ gap:6px;margin:9px 0 12px}
+.hub-home .afaq-prime-grid>span{display:grid;place-items:center;aspect-ratio:1;min-width:0;border-radius:8px;
+ border:1px solid #d1dce6;background:#f2f6f9;color:#7891a4;font:850 15px Tahoma,Arial,sans-serif}
+.hub-home .afaq-prime-grid>span.is-prime{
+ background:linear-gradient(135deg,#f5d38b,#fff1c9);border-color:#ca9b46;color:#785019;
+ box-shadow:0 3px 6px #b1823d1d;font-weight:950
+}
+.hub-home .afaq-prime-grid>span.is-one{background:#ebeff3;color:#768592}
+.hub-home .afaq-prime-grid>span.is-composite{text-decoration:line-through;text-decoration-color:#ca8181;text-decoration-thickness:1.6px}
+.hub-home .afaq-scene-legend{display:flex;justify-content:center;gap:13px;flex-wrap:wrap;color:#576b80;font-size:11px}
+.hub-home .afaq-scene-division{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:27px}
+.hub-home .afaq-longdivision{display:flex;align-items:center;justify-content:center;gap:4px;direction:ltr;
+ padding:18px 12px;position:relative}
+.hub-home .afaq-division-divisor{font-size:33px;color:#174e7a;font-weight:950}
+.hub-home .afaq-division-arc{font-size:58px;color:#c18c38;line-height:1}
+.hub-home .afaq-division-dividend{font-size:28px;color:#1e6591;font-weight:950}
+.hub-home .afaq-longdivision>strong{position:absolute;top:-9px;left:87px;direction:ltr;
+ border-bottom:3px solid #c99a4b;color:#135f7c;font-size:21px;padding:0 10px 4px}
+.hub-home .afaq-division-unlock{display:flex;flex-direction:column;gap:6px;
+ align-items:center;text-align:center;max-width:185px;color:#83601c}
+.hub-home .afaq-division-unlock>span:first-child{font-size:56px;filter:drop-shadow(0 4px 4px #ac895966)}
+.hub-home .afaq-division-unlock>span:nth-child(2){font-size:15px;font-weight:900}
+.hub-home .afaq-division-unlock strong{font-size:12px;color:#53738b;line-height:1.65}
+.hub-home .afaq-scene-coordinate{text-align:center;max-width:430px;margin:0 auto}
+.hub-home .afaq-coordinate-graphic{display:flex;align-items:center;justify-content:center;
+ max-height:180px;overflow:hidden;padding:5px}
+.hub-home .afaq-coordinate-graphic svg{width:min(100%,345px)!important;height:190px!important;max-height:190px!important;
+ display:block;filter:drop-shadow(0 4px 4px #1e7ea51b)}
+.hub-home .afaq-coordinate-key{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:5px}
+.hub-home .afaq-coordinate-key>span{padding:9px 11px;border:1px solid #9fc9dd;border-radius:10px;background:#e8f6ff;
+ font-size:13px;font-weight:900;color:#1d628b}
+.hub-home .afaq-scene-mental,.hub-home .afaq-scene-compensation{max-width:435px;margin:0 auto;text-align:center}
+.hub-home .afaq-mental-title,.hub-home .afaq-comp-start strong{font-size:29px;color:#174f80;font-weight:950}
+.hub-home .afaq-mental-pieces{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+ gap:10px;margin:16px 0}
+.hub-home .afaq-mental-pieces>span:not(.afaq-mental-plus){display:flex;flex-direction:column;gap:10px;
+ padding:14px 15px;border:1px solid #bcdae9;border-radius:14px;background:#eff9ff;color:#27577b;
+ font-size:18px;font-weight:900}
+.hub-home .afaq-mental-pieces b{color:#b07c2c;font-size:25px}
+.hub-home .afaq-mental-plus{font-size:27px;color:#bc863c}
+.hub-home .afaq-mental-result,.hub-home .afaq-comp-result{padding:12px;
+ background:#fff5da;border-radius:12px;border:1px solid #e2c487;font-weight:900;color:#81591d;font-size:19px}
+.hub-home .afaq-mental-result strong,.hub-home .afaq-comp-result strong{font-size:27px;color:#157d8a}
+.hub-home .afaq-comp-start{display:flex;flex-direction:column;gap:5px;align-items:center}
+.hub-home .afaq-comp-start span{font-size:12px;color:#7a95a5}
+.hub-home .afaq-comp-arrow{font-size:33px;color:#bb8635;line-height:1.1}
+.hub-home .afaq-comp-middle{padding:10px;border-radius:11px;background:#e9f6ff;
+ font-size:25px;font-weight:950;color:#265c84;margin:7px auto}
+.hub-home .afaq-scene-adaptive{max-width:445px;margin:0 auto;text-align:center}
+.hub-home .afaq-adaptive-levels{display:flex;justify-content:space-evenly;gap:7px;flex-wrap:wrap}
+.hub-home .afaq-adaptive-levels>span{background:#dceefa;border:1px solid #b5d8e8;
+ padding:7px 9px;border-radius:12px;font-size:12px;font-weight:900;color:#1c6083}
+.hub-home .afaq-adaptive-question{font-size:30px;color:#174f7a;font-weight:950;margin:16px auto}
+.hub-home .afaq-adaptive-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.hub-home .afaq-adaptive-choices>span{font-size:23px;font-weight:950;padding:12px;
+ background:#fff;border:1px solid #bdd4e3;color:#1f587d;border-radius:13px}
+.hub-home .afaq-adaptive-choices>span.correct{background:#e4f7e9;border-color:#87cda3;color:#16824b}
+.hub-home .afaq-adaptive-feedback{font-size:13px;font-weight:850;margin-top:15px;color:#846129}
+.hub-home .afaq-scene-other{display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;color:#1d577f}
+.hub-home .afaq-scene-other>span{font-size:72px}
+.hub-home .afaq-scientific-card-brief,
+.hub-home .afaq-scientific-mini-example,
+.hub-home .afaq-scientific-skill{
+ padding:13px 15px;border:1px solid #d7e3eb;border-radius:12px;
+ background:#f7fbff;color:#446a83;
+}
+.hub-home .afaq-scientific-card-brief>b,
+.hub-home .afaq-scientific-skill>b{font-size:14px;font-weight:950;color:#174f80}
+.hub-home .afaq-scientific-card-brief>p,
+.hub-home .afaq-scientific-skill>p{font-size:14px!important;line-height:1.9!important;margin:7px 0 0!important;color:#4e7088!important}
+.hub-home .afaq-scientific-mini-example{display:flex;flex-direction:column;gap:9px;
+ border-color:#e5cfa4;background:linear-gradient(125deg,#fff8e4,#fffefa);align-items:flex-start}
+.hub-home .afaq-scientific-mini-example>span{color:#98702e;font-size:13px;font-weight:900}
+.hub-home .afaq-scientific-mini-example>strong{font-size:clamp(15px,1.4vw,19px);
+ font-weight:950;color:#194d73;line-height:1.75;overflow-wrap:anywhere}
+.hub-home .afaq-scientific-skill{margin-bottom:1px}
+.hub-home .afaq-scientific-card-footer{margin-top:auto;padding-top:12px}
+.hub-home .afaq-scientific-open{
+ display:flex!important;align-items:center;justify-content:center;gap:12px;
+ width:100%!important;min-height:53px!important;box-sizing:border-box;
+ border-radius:12px!important;border:1px solid #b98c46!important;
+ padding:12px!important;
+ color:#fff!important;text-align:center!important;text-decoration:none!important;
+ background:linear-gradient(135deg,#194b82,#246d94)!important;
+ font:950 15px/1.65 Tahoma,Arial,sans-serif!important;
+ cursor:pointer!important;box-shadow:0 5px 12px #15527a22;
+}
+.hub-home .afaq-scientific-open:hover{filter:brightness(1.12)}
+.hub-home .afaq-scientific-open:focus-visible{outline:3px solid #d6a74b;outline-offset:2px}
+.hub-home .afaq-scientific-pending{display:block;text-align:center;
+ padding:13px;border:1px dashed #c5d7e0;background:#f8fbfd;
+ border-radius:12px;color:#7890a2;font-size:13px}
+.hub-home .afaq-scientific-card-tag{display:block;text-align:center;padding:8px 13px;
+ background:#fff2cd;border:1px solid #ddbd7c;border-radius:10px;
+ color:#81591f;font:950 13px Tahoma,Arial,sans-serif}
+.hub-home .afaq-scientific-card--mixer .amx25-showcase{
+ width:100%!important;margin:0!important;flex:1 1 auto;box-shadow:none;
+}
+.hub-home .afaq-scientific-card--mixer .amx25-head h3{
+ font-size:clamp(21px,2vw,27px)!important;
+}
+@media(max-width:1100px){
+ .hub-home .afaq-multiple-number{width:49px;height:49px;font-size:17px}
+ .hub-home .afaq-division-unlock>span:first-child{font-size:47px}
+}
+@media(max-width:860px){
+ .hub-home .afaq-initiatives-science .afaq-scientific-grid{
+  grid-template-columns:1fr!important;gap:15px!important;
+ }
+ .hub-home .afaq-initiatives-science .afaq-scientific-grid>.afaq-scientific-card{
+  min-height:0!important;
+ }
+}
+@media(max-width:470px){
+ .hub-home .afaq-initiatives-science .afaq-scientific-grid>.afaq-scientific-card{
+  padding:10px!important;gap:10px!important;
+ }
+ .hub-home .afaq-scientific-artboard{min-height:195px;padding:8px}
+ .hub-home .afaq-scientific-card-symbol{flex-basis:49px;width:49px;height:49px;font-size:27px}
+ .hub-home .afaq-multiple-number{width:41px;height:41px;font-size:15px}
+ .hub-home .afaq-multiple-numbers{gap:3px}
+ .hub-home .afaq-step-arrow{font-size:14px}
+ .hub-home .afaq-prime-grid{gap:3px}
+ .hub-home .afaq-prime-grid>span{font-size:12px;border-radius:5px}
+ .hub-home .afaq-scientific-card-brief,
+ .hub-home .afaq-scientific-mini-example,
+ .hub-home .afaq-scientific-skill{padding:10px}
+ .hub-home .afaq-scientific-mini-example>strong{font-size:15px}
+}
