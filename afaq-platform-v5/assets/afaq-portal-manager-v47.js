@@ -239,9 +239,19 @@ function insertSection(area,key,fallback,ts,ds){
 function insertPageBar(app){
  if(['home','dashboard',CENTER,'initiative_permissions'].includes(state.page))return;
  if(app.querySelector(':scope > .afaq-portal-page-bar'))return;
- const key='page_'+String(state.page||'page').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,72);
- const heading=app.querySelector('h1,h2');const name=originalText(heading)||'بوابة '+state.page;
- remember(key,name,'');
+ // Same registry entry powers both the portal card and its opened content page.
+ const key='route_'+String(state.page||'page').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,72);
+ const header=app.querySelector('.container > header,.ae-section-hero,.hub-section-hero,.ami-page-head,.afaq-directory-hero');
+ const heading=header?.querySelector('h1,h2')||app.querySelector('h1,h2');
+ const description=header?.querySelector('p')||null;
+ const name=originalText(heading)||'بوابة '+state.page;
+ const summary=originalText(description);
+ remember(key,name,summary);
+ const saved=registry.get(key);
+ if(heading){markText(heading,'title');textOverride(heading,saved?.title_override||'')}
+ if(description){markText(description,'description');textOverride(description,saved?.description_override||'')}
+ // Direct-route content remains protected by its own permissions.
+ // Portal-card visibility is only a navigation/display preference.
  if(!supervisor())return;
  const bar=document.createElement('div');bar.className='afaq-portal-page-bar';
  bar.innerHTML='<strong>⚙️ إدارة هذه البوابة</strong><span>التحكم بعنوانها ووصفها وظهور بطاقة الدخول</span>';
