@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="tt dd"><title id="tt">مباريات اليوم — كرة القدم والنتائج</title><desc id="dd">صورة أصلية لشاشة مواعيد المباريات وسط ملعب أخضر مع كرة ولاعبين تحت الأضواء.</desc><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#052c4d"/><stop offset=".5" stop-color="#0b674b"/><stop offset="1" stop-color="#081b39"/></linearGradient><linearGradient id="field" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#128b6c"/><stop offset="1" stop-color="#052d36"/></linearGradient><linearGradient id="led" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ecbd5c"/><stop offset=".5" stop-color="#fff3c7"/><stop offset="1" stop-color="#ecbd5c"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#000" flood-opacity=".4"/></filter><filter id="glow"><feGaussianBlur stdDeviation="9"/></filter></defs>
+<rect width="960" height="560" rx="22" fill="url(#bg)"/>
+<path d="M0 145Q480 72 960 155V346Q480 230 0 351Z" fill="#06152d" opacity=".7"/>
+<path d="M0 160Q480 90 960 163" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 173Q480 102 960 176" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 186Q480 114 960 189" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 199Q480 126 960 202" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 212Q480 138 960 215" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 225Q480 150 960 228" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 238Q480 162 960 241" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 251Q480 174 960 254" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 264Q480 186 960 267" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 277Q480 198 960 280" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 290Q480 210 960 293" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/><path d="M0 303Q480 222 960 306" fill="none" stroke="#c8e9fd" stroke-width="1.4" opacity=".1"/>
+<g><path d="M80 60L48 310" stroke="#94d9de" stroke-width="3" opacity=".4"/><path d="M40 62H120" stroke="#e9ffff" stroke-width="11" stroke-linecap="round"/><ellipse cx="80" cy="60" rx="80" ry="22" fill="#efffff" opacity=".35" filter="url(#glow)"/></g><g><path d="M260 60L228 310" stroke="#94d9de" stroke-width="3" opacity=".4"/><path d="M220 62H300" stroke="#e9ffff" stroke-width="11" stroke-linecap="round"/><ellipse cx="260" cy="60" rx="80" ry="22" fill="#efffff" opacity=".35" filter="url(#glow)"/></g><g><path d="M700 60L668 310" stroke="#94d9de" stroke-width="3" opacity=".4"/><path d="M660 62H740" stroke="#e9ffff" stroke-width="11" stroke-linecap="round"/><ellipse cx="700" cy="60" rx="80" ry="22" fill="#efffff" opacity=".35" filter="url(#glow)"/></g><g><path d="M888 60L856 310" stroke="#94d9de" stroke-width="3" opacity=".4"/><path d="M848 62H928" stroke="#e9ffff" stroke-width="11" stroke-linecap="round"/><ellipse cx="888" cy="60" rx="80" ry="22" fill="#efffff" opacity=".35" filter="url(#glow)"/></g>
+<path d="M0 448 Q480 305 960 448V560H0Z" fill="url(#field)"/>
+<path d="M0 481 Q480 354 960 480 M480 375V560 M-15 553Q480 456 975 551" fill="none" stroke="#c1ffe0" stroke-width="4" opacity=".5"/>
+<g transform="translate(250 317) scale(0.7 0.7)" filter="url(#shadow)">
+<ellipse cx="0" cy="217" rx="110" ry="18" fill="#010c21" opacity=".6"/>
+<path d="M-22 94 L-50 201 L-12 218 L19 151 L47 201 L82 196 L43 90Z" fill="#0b1836"/>
+<path d="M-17 193 L-25 229 L-82 235 Q-107 245 -89 253 L-8 252 L11 204Z" fill="#e3edff"/>
+<path d="M55 193 L74 231 L128 238 Q145 246 127 254 L48 247 L37 203Z" fill="#e3edff"/>
+<path d="M-45 0 Q0 -28 45 0 L67 104 Q0 123 -61 107Z" fill="#eece57"/>
+<path d="M-44 5 L-105 67 L-81 82 L-16 47 M41 10 L95 64 L72 84 L16 43" stroke="#eece57" stroke-width="25" stroke-linecap="round"/>
+<path d="M-35 1 L-30 100 M-1 -13 L2 110 M28 0 L33 102" stroke="#fff" stroke-width="9" opacity=".66"/>
+<circle cx="0" cy="-44" r="28" fill="#e2a778"/><path d="M-28 -57 Q-5 -84 23 -62 L29 -46 Q0 -62 -27 -46Z" fill="#16213d"/>
+</g>
+<g transform="translate(760 322) scale(-0.72 0.72)" filter="url(#shadow)">
+<ellipse cx="0" cy="217" rx="110" ry="18" fill="#010c21" opacity=".6"/>
+<path d="M-22 94 L-50 201 L-12 218 L19 151 L47 201 L82 196 L43 90Z" fill="#0b1836"/>
+<path d="M-17 193 L-25 229 L-82 235 Q-107 245 -89 253 L-8 252 L11 204Z" fill="#e3edff"/>
+<path d="M55 193 L74 231 L128 238 Q145 246 127 254 L48 247 L37 203Z" fill="#e3edff"/>
+<path d="M-45 0 Q0 -28 45 0 L67 104 Q0 123 -61 107Z" fill="#e35e64"/>
+<path d="M-44 5 L-105 67 L-81 82 L-16 47 M41 10 L95 64 L72 84 L16 43" stroke="#e35e64" stroke-width="25" stroke-linecap="round"/>
+<path d="M-35 1 L-30 100 M-1 -13 L2 110 M28 0 L33 102" stroke="#fff" stroke-width="9" opacity=".66"/>
+<circle cx="0" cy="-44" r="28" fill="#e2a778"/><path d="M-28 -57 Q-5 -84 23 -62 L29 -46 Q0 -62 -27 -46Z" fill="#16213d"/>
+</g>
+<g transform="translate(520 461)" filter="url(#shadow)"><circle r="41" fill="#f5f7fc" stroke="#bfcfe0" stroke-width="3"/><path d="M-9 -13 L8 -23 L24 -10 L19 12 L0 20 L-19 7Z" fill="#162d4a"/><path d="M-9 -13 L-28 -23 M24 -10 L35 -19 M19 12 L29 28 M0 20 L-4 35 M-19 7 L-32 17" stroke="#53677c" stroke-width="4" fill="none"/></g>
+<rect x="178" y="54" width="604" height="270" rx="25" fill="#061b35" stroke="#e7cf87" stroke-width="4" opacity=".98" filter="url(#shadow)"/>
+<rect x="196" y="73" width="568" height="65" rx="12" fill="#d6ab58"/>
+<text x="480" y="119" text-anchor="middle" fill="#082442" font-size="45" font-weight="900" font-family="Tahoma,Arial,sans-serif" direction="rtl">مباريات اليوم</text>
+<text x="480" y="176" text-anchor="middle" fill="#f8f9ff" font-size="29" font-weight="850" direction="rtl" font-family="Tahoma,Arial,sans-serif">مواعيد • نتائج • أخبار</text>
+<rect x="225" y="202" width="510" height="2" fill="#5e9ab5"/>
+<circle cx="290" cy="262" r="20" fill="#e5c268"/><path d="M290 246l10 8-4 13h-12l-4-13Z" fill="#214b6c"/>
+<path d="M365 258H600" stroke="#67dddb" stroke-width="5" stroke-linecap="round" stroke-dasharray="16 16"/>
+<circle cx="665" cy="262" r="20" fill="#f1f8fc"/><path d="M665 246l10 8-4 13h-12l-4-13Z" fill="#214b6c"/>
+<text x="480" y="303" text-anchor="middle" fill="#bbf5e1" font-size="23" font-family="Tahoma,Arial,sans-serif" direction="rtl">تابع مواجهاتك المفضلة</text>
+</svg>

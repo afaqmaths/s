@@ -22,3 +22,12 @@
 .afa2-init-card p,.afa2-leisure-card p{font-size:14px}
 .afa2-admin-hint,.afa2-cert-paper p{font-size:13px}
 .afa2-weather-note a{color:#715229;text-decoration:underline}
+
+/* V2b: original in-repository imagery in the two flanking columns. */
+.afa2-side-visual-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.afa2-side-visual-grid a{display:block;position:relative;overflow:hidden;border:1px solid #d4b677;border-radius:12px;box-shadow:0 5px 12px #111e3e25;background:#21395b;text-decoration:none!important}
+.afa2-side-visual-grid img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .25s ease}
+.afa2-side-visual-grid a:hover img{transform:scale(1.035)}
+.afa2-side-visual-grid strong{display:block;position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,#172b50f0);color:white;text-align:center;font-size:12px;font-weight:900;text-shadow:0 1px 5px #000}
+@media(min-width:1111px) and (max-width:1250px){.afa2-cols{grid-template-columns:minmax(165px,.9fr) minmax(0,2.65fr) minmax(165px,.9fr)}}
+@media(max-width:580px){.afa2-side-visual-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.afa2-side-visual-grid strong{font-size:11px}}
