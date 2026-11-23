@@ -35,7 +35,8 @@ function managerFor(key,label){
   section_about:['home_promos','إدارة عناوين وتعريفات الصفحة'],
   section_entry:['hub_parent_codes','إدارة حسابات الدخول والأسرة'],
   section_honor_board:['honor_board','إدارة لوحة الشرف'],
-  section_title:['platform_title','إدارة عنوان المنصة الذهبي']
+  section_title:['platform_title','إدارة عنوان المنصة الذهبي'],
+  gate_student_club:['afaq_student_club','إدارة جماعة آفاق ماث الطلابية']
  };
  if(fixed[key])return {tab:fixed[key][0],title:fixed[key][1]};
  for(const [re,tab,title] of managerEntries)if(re.test(key+' '+label))return {tab,title};
@@ -73,6 +74,7 @@ function remember(key,title,desc){
  if(!item.title&&title)item.title=String(title).trim();
 }
 function keyFor(el){
+ if(el.hasAttribute('data-afaq-club-open'))return 'gate_student_club';
  const login=el.dataset.hubLogin;
  if(login)return 'login_'+login.toLowerCase().replace(/[^a-z0-9_-]/g,'');
  const r=el.dataset.route;
@@ -87,12 +89,16 @@ function keyFor(el){
  return null;
 }
 function titleNode(card){
+ if(card.classList.contains('afaq-footer-topic'))return card.querySelector('.afaq-footer-topic-text strong');
+ if(card.classList.contains('afaq-mid-initiative-link'))return card.querySelector('.afaq-mid-initiative-copy strong');
  return card.querySelector(':scope > strong')||
   card.querySelector('.afaq-directory-link-text strong')||
   card.querySelector('.afaq-about-card-body h3')||
   card.querySelector('h2,h3,strong');
 }
 function descriptionNode(card){
+ if(card.classList.contains('afaq-footer-topic'))return card.querySelector('.afaq-footer-topic-text small');
+ if(card.classList.contains('afaq-mid-initiative-link'))return card.querySelector('.afaq-mid-initiative-copy small');
  if(card.classList.contains('afaq-directory-link'))
   return card.querySelector('.afaq-directory-link-text small');
  if(card.classList.contains('hub-gate'))
@@ -263,7 +269,7 @@ function decorate(){
  }
  if(state.page==='home'||state.page==='afaq_directory'){
   // All gate buttons are wrapped with a separate management button; never nest buttons.
-  app.querySelectorAll('.hub-home .hub-gate-grid > .hub-gate, .afaq-directory-page .afaq-directory-links > .afaq-directory-link')
+  app.querySelectorAll('.hub-home .hub-gate-grid > .hub-gate, .hub-home .afaq-footer-topic[data-route], .hub-home .afaq-mid-initiative-link[data-route], .afaq-directory-page .afaq-directory-links > .afaq-directory-link')
    .forEach(insertCard);
   if(state.page==='home')app.querySelectorAll('.afaq-about-rich-card').forEach(insertAboutCard);
   if(state.page==='afaq_directory')
@@ -275,6 +281,17 @@ function decorate(){
  }
  if(state.page==='dashboard')appendSupervisorShortcut(app);
  else insertPageBar(app);
+ if(state.page==='learning'||state.page==='home'){
+  app.querySelectorAll('.ae-tool-preview').forEach(card=>{
+   if(card.dataset.afaqCardReady)return;
+   const target=card.querySelector('[data-route]');
+   const key=target&&keyFor(target);if(!keySafe(key))return;
+   card.dataset.afaqCardReady='1';
+   const title=card.querySelector('h2,h3'),desc=card.querySelector('p');
+   markPortal(card,key,originalText(title),originalText(desc),title,desc);
+   if(supervisor())card.append(manageButton(key,originalText(title),true));
+  });
+ }
 }
 function makeToast(msg){
  const el=document.createElement('div');el.className='afaq-portal-toast';el.role='status';el.textContent=msg;
