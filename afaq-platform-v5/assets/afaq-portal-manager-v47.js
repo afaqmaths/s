@@ -145,13 +145,17 @@ function markPortal(el,key,title,desc,tNode,dNode){
  el.dataset.afaqPortalKey=key;
  remember(key,title,desc);
  markText(tNode,'title');markText(dNode,'description');
+ if(tNode)tNode.dataset.afaqPortalPartKey=key;
+ if(dNode)dNode.dataset.afaqPortalPartKey=key;
  const row=registry.get(key);
  if(tNode)textOverride(tNode,row?.title_override||'');
  if(dNode)textOverride(dNode,row?.description_override||'');
  const directoryLink=el.matches?.('.afaq-directory-link')?el:el.querySelector?.('.afaq-directory-link');
- if(directoryLink&&row){
+ if(directoryLink){
+  if(directoryLink.dataset.afaqDefaultDirSearch===undefined)
+   directoryLink.dataset.afaqDefaultDirSearch=directoryLink.dataset.dirSearch||'';
   directoryLink.dataset.dirSearch=[
-   directoryLink.dataset.dirSearch||'',row.title_override||'',row.description_override||''
+   directoryLink.dataset.afaqDefaultDirSearch,row?.title_override||'',row?.description_override||''
   ].join(' ').trim();
  }
  el.classList.toggle('afaq-portal-hidden',row?.is_visible===false&&!supervisor());
@@ -249,8 +253,9 @@ function insertPageBar(app){
  const summary=originalText(description);
  remember(key,name,summary);
  const saved=registry.get(key);
- if(heading){markText(heading,'title');textOverride(heading,saved?.title_override||'')}
- if(description){markText(description,'description');textOverride(description,saved?.description_override||'')}
+ if(heading){markText(heading,'title');heading.dataset.afaqPortalPartKey=key;textOverride(heading,saved?.title_override||'')}
+ if(description){markText(description,'description');description.dataset.afaqPortalPartKey=key;textOverride(description,saved?.description_override||'')}
+ app.dataset.afaqPortalPageKey=key;
  // Direct-route content remains protected by its own permissions.
  // Portal-card visibility is only a navigation/display preference.
  if(!supervisor())return;
@@ -303,7 +308,31 @@ function decorate(){
    if(supervisor())card.append(manageButton(key,originalText(title),true));
   });
  }
+ reapplyExisting();
 }
+
+/* Apply server-saved appearance settings to already-rendered portal cards. */
+function reapplyExisting(){
+ const app=document.getElementById('app');
+ if(!app)return;
+ app.querySelectorAll('[data-afaq-portal-key]').forEach(el=>{
+  const key=el.dataset.afaqPortalKey;
+  if(!keySafe(key))return;
+  const title=el.querySelector('[data-afaq-portal-title][data-afaq-portal-part-key="'+key+'"]');
+  const desc=el.querySelector('[data-afaq-portal-description][data-afaq-portal-part-key="'+key+'"]');
+  const item=portals.get(key)||{};
+  markPortal(el,key,item.title||key,item.description||'',title,desc);
+ });
+ const key=app.dataset.afaqPortalPageKey;
+ if(keySafe(key)){
+  const row=registry.get(key);
+  const title=app.querySelector('[data-afaq-portal-title][data-afaq-portal-part-key="'+key+'"]');
+  const desc=app.querySelector('[data-afaq-portal-description][data-afaq-portal-part-key="'+key+'"]');
+  if(title)textOverride(title,row?.title_override||'');
+  if(desc)textOverride(desc,row?.description_override||'');
+ }
+}
+
 function makeToast(msg){
  const el=document.createElement('div');el.className='afaq-portal-toast';el.role='status';el.textContent=msg;
  document.body.append(el);window.setTimeout(()=>el.remove(),4200);
