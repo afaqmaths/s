@@ -187,7 +187,7 @@ function calculate(){
  var planId=$("#calcPlan")?$("#calcPlan").value:"complete";
  var teacherId=$("#calcTeacher")?$("#calcTeacher").value:"math";
  var count=capNumber($("#calcCount")?$("#calcCount").value:20,1,10000,20);
- var rate=pricing(planId),collected=rate.current*count,fee=collected*state.paymentFee/100,pool=Math.max(0,collected-fee),pct=teacherPct(teacherId),teacher=pool*pct/100,academy=pool-teacher;
+ var rate=pricing(planId),collected=Math.round(rate.current*count*1000)/1000,fee=Math.round(collected*state.paymentFee/100*1000)/1000,pool=Math.round(Math.max(0,collected-fee)*1000)/1000,pct=teacherPct(teacherId),teacher=Math.round(pool*pct/100*1000)/1000,academy=Math.round((pool-teacher)*1000)/1000;
  $("#calcResult").innerHTML='<div class="money-split"><div class="money-box"><small>الإيراد المحصل تجريبيًا</small><strong>'+money(collected)+'</strong><small>ريال عُماني</small></div><div class="money-box"><small>حصة المعلم ('+pct+'٪)</small><strong>'+money(teacher)+'</strong><small>ريال عُماني</small></div><div class="money-box"><small>حصة الأكاديمية ('+(100-pct)+'٪)</small><strong>'+money(academy)+'</strong><small>ريال عُماني</small></div></div><div class="config-legend">العدد '+count+' × السعر النهائي '+money(rate.current)+' = '+money(collected)+' ر.ع. رسوم الدفع الافتراضية: '+money(fee)+' ر.ع. صافي التوزيع: '+money(pool)+' ر.ع. المبالغ قبل المصروفات التشغيلية والضرائب والاستردادات.</div>';
 }
 function detailModal(title,subtitle,items,price){
