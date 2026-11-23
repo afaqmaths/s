@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="tt dd"><title id="tt">Fortnite — المرح والإبداع</title><desc id="dd">مشهد ألعاب كرتوني أصلي لشخصيات خيالية عامة وقلاع وألوان بنفسجية وبرتقالية، دون استخدام الشخصيات المحمية للعبة.</desc><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3b227d"/><stop offset=".48" stop-color="#aa4b9b"/><stop offset="1" stop-color="#eea853"/></linearGradient><linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#78bda5"/><stop offset="1" stop-color="#183c68"/></linearGradient><linearGradient id="tower" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ebc9a9"/><stop offset="1" stop-color="#bf79a6"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#261537" flood-opacity=".4"/></filter></defs>
+<rect width="960" height="560" rx="22" fill="url(#bg)"/>
+<circle cx="760" cy="126" r="97" fill="#ffe9b0" opacity=".73"/>
+<path d="M0 354L125 269L250 343L391 239L525 352L660 288L812 375L960 298V560H0Z" fill="#674b9a" opacity=".75"/>
+<path d="M0 411L140 336L315 431L480 330L720 406L960 328V560H0Z" fill="#2f5d8d"/>
+<path d="M0 466Q210 375 480 434Q690 380 960 455V560H0Z" fill="url(#ground)"/>
+<path d="M100 461Q480 391 867 455" fill="none" stroke="#e6f4c4" stroke-width="5" opacity=".5"/>
+<path d="M118 370l-33 54h22l-20 37h62l-17-36h18Z" fill="#194e6e"/><path d="M118 375v82" stroke="#17384f" stroke-width="7"/><path d="M254 398l-33 54h22l-20 37h62l-17-36h18Z" fill="#194e6e"/><path d="M254 403v82" stroke="#17384f" stroke-width="7"/><path d="M390 370l-33 54h22l-20 37h62l-17-36h18Z" fill="#194e6e"/><path d="M390 375v82" stroke="#17384f" stroke-width="7"/><path d="M526 398l-33 54h22l-20 37h62l-17-36h18Z" fill="#194e6e"/><path d="M526 403v82" stroke="#17384f" stroke-width="7"/><path d="M662 370l-33 54h22l-20 37h62l-17-36h18Z" fill="#194e6e"/><path d="M662 375v82" stroke="#17384f" stroke-width="7"/><path d="M798 398l-33 54h22l-20 37h62l-17-36h18Z" fill="#194e6e"/><path d="M798 403v82" stroke="#17384f" stroke-width="7"/>
+<g filter="url(#sh)"><rect x="409" y="249" width="151" height="182" rx="7" fill="url(#tower)" stroke="#5c437f" stroke-width="7"/><rect x="431" y="183" width="55" height="111" fill="#f0d2ad" stroke="#6a4a78" stroke-width="7"/><rect x="511" y="207" width="61" height="101" fill="#f0d2ad" stroke="#6a4a78" stroke-width="7"/><path d="M418 187L455 138L493 187Z" fill="#663a96"/><path d="M499 211L542 157L580 211Z" fill="#7247ad"/><rect x="464" y="337" width="42" height="92" rx="20" fill="#473d79"/><rect x="432" y="297" width="25" height="34" fill="#fff4c5"/><rect x="519" y="315" width="25" height="34" fill="#fff4c5"/></g>
+<g transform="translate(221 340) scale(1 1)" filter="url(#sh)">
+<ellipse cx="0" cy="156" rx="57" ry="13" fill="#16385d" opacity=".3"/>
+<path d="M-23 50L-34 150L-3 153L10 88L20 150L47 147L31 50Z" fill="#192b5c"/>
+<path d="M-29 -16L26 -19L45 70L-44 65Z" fill="#2b9d9e" stroke="#fff3d1" stroke-width="4"/>
+<path d="M-30 -8L-75 42M28 -7L68 38" stroke="#2b9d9e" stroke-width="21" stroke-linecap="round"/>
+<circle cx="0" cy="-48" r="29" fill="#f0b98b"/>
+<path d="M-27 -62Q-2 -99 29 -59L30 -39H-27Z" fill="#35436c"/>
+<path d="M-25 145L-47 167H-4L7 148M19 146L40 168H75L47 143" stroke="#132347" stroke-width="13" stroke-linecap="round"/>
+</g>
+<g transform="translate(771 351) scale(-1 1)" filter="url(#sh)">
+<ellipse cx="0" cy="156" rx="57" ry="13" fill="#16385d" opacity=".3"/>
+<path d="M-23 50L-34 150L-3 153L10 88L20 150L47 147L31 50Z" fill="#192b5c"/>
+<path d="M-29 -16L26 -19L45 70L-44 65Z" fill="#ebaa54" stroke="#fff3d1" stroke-width="4"/>
+<path d="M-30 -8L-75 42M28 -7L68 38" stroke="#ebaa54" stroke-width="21" stroke-linecap="round"/>
+<circle cx="0" cy="-48" r="29" fill="#f0b98b"/>
+<path d="M-27 -62Q-2 -99 29 -59L30 -39H-27Z" fill="#35436c"/>
+<path d="M-25 145L-47 167H-4L7 148M19 146L40 168H75L47 143" stroke="#132347" stroke-width="13" stroke-linecap="round"/>
+</g>
+<g opacity=".85"><path d="M116 132L121 112L126 132L147 136L127 141L121 160L115 140L94 136Z" fill="#fff8d0"/><path d="M843 232L847 219L851 232L865 236L851 240L848 256L844 240L828 237Z" fill="#ffffde"/></g>
+<rect x="30" y="29" width="372" height="119" rx="20" fill="#252059" opacity=".9" stroke="#ffe1b1" stroke-width="3"/>
+<text x="52" y="91" fill="#fff1d0" font-size="58" font-weight="900" font-family="Arial,Tahoma,sans-serif">FORTNITE</text>
+<text x="56" y="126" fill="#dce9ff" font-size="24" font-weight="750" font-family="Tahoma,Arial,sans-serif">PLAY • EXPLORE • CREATE</text>
+<rect x="606" y="39" width="324" height="57" rx="17" fill="#ffefbe" opacity=".88"/>
+<text x="768" y="78" text-anchor="middle" fill="#43336e" font-size="26" font-weight="900" direction="rtl" font-family="Tahoma,Arial,sans-serif">المرح والمغامرة</text>
+</svg>
