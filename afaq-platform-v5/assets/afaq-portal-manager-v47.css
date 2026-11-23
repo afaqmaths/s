@@ -262,3 +262,24 @@
  .afaq-portal-manage-button{transition:none!important}
  .afaq-portal-manage-button:hover{transform:none!important}
 }
+
+/* Site-map search still collapses wrappers when a link is filtered out. */
+.afaq-directory-page .afaq-directory-group[hidden],
+.afaq-directory-page .afaq-directory-link[hidden],
+.afaq-directory-page .afaq-directory-links>.afaq-portal-gate-wrap:has(>.afaq-directory-link[hidden]){
+ display:none!important;
+}
+/* Keep the original tight six-column login layout despite an extra supervisor action. */
+.hub-home .afaq-entry-between-flag-hero>.hub-gate-grid>.afaq-portal-gate-wrap{
+ min-width:0!important;max-width:100%!important;align-self:stretch!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-gate-grid>.afaq-portal-gate-wrap>.hub-gate{
+ flex:1 1 auto!important;max-width:100%!important;
+}
+.hub-home .afaq-entry-between-flag-hero .afaq-portal-gate-actions{
+ padding-top:3px!important;line-height:1!important;
+}
+.hub-home .afaq-entry-between-flag-hero .afaq-portal-manage-button.is-compact{
+ min-height:25px!important;padding:3px 5px!important;
+ font-size:10px!important;line-height:1.3!important;
+}
