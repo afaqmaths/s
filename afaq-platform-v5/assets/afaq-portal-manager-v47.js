@@ -61,7 +61,8 @@ async function loadRegistry(force=false){
    registry.clear();
    for(const row of data.portals||[])if(keySafe(row.portal_key))registry.set(row.portal_key,row);
    fetched=true;
-   decorate();
+   if(state.page===CENTER)render();
+   else decorate();
   }catch(e){console.warn('Portal options unavailable:',e.message)}
   finally{fetching=null}
  })();
