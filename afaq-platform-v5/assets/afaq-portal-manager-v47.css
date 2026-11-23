@@ -283,3 +283,20 @@
  min-height:25px!important;padding:3px 5px!important;
  font-size:10px!important;line-height:1.3!important;
 }
+
+
+/* Supplemental portal cards: discovery/footer math tiles and per-lesson tools. */
+.hub-home .afaq-portal-gate-wrap>.afaq-footer-topic,
+.hub-home .afaq-portal-gate-wrap>.afaq-mid-initiative-link{
+ display:flex!important;box-sizing:border-box!important;
+ align-self:stretch!important;min-height:105px!important;width:100%!important;
+ min-width:0!important;
+}
+.ae-tool-preview>.afaq-portal-manage-button{
+ min-width:130px;min-height:35px;
+ margin:7px 0 0!important;align-self:center;
+}
+.hub-home .afaq-portal-gate-wrap>.afaq-club-entry{
+ min-width:0!important;min-height:105px!important;
+ padding:7px 4px!important;gap:4px!important;border-radius:12px!important;
+}
