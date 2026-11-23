@@ -350,5 +350,18 @@ iaFetch=async function(action,payload={},admin=false){
   throw e;
  }
 };
+// A visible green confirmation accompanies an approved automatic or manual session.
+const priorApprovedAttach=attach;
+attach=function(){
+ priorApprovedAttach();
+ if(!iaState.pass||!iaPrivatePages.has(state.page)||iaState.page!==state.page||!iaState.html)return;
+ const app=document.getElementById('app');
+ if(!app||app.querySelector('.ia-approved-banner'))return;
+ const note=document.createElement('div');
+ note.className='ia-approved-banner';
+ note.setAttribute('role','status');
+ note.textContent='✅ الضوء الأخضر: تمت الموافقة على دخولك، والمبادرات متاحة لك خلال مدة الجلسة المعتمدة.';
+ app.prepend(note);
+};
 if(pending)startPendingTimers();
 })();
