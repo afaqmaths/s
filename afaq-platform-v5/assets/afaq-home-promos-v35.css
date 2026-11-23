@@ -283,3 +283,8 @@
  .hub-home .afaq-promo-text-link:hover:before{animation:none!important}
  .hub-home .afaq-promo-text-link:hover,.hub-home .afaq-promo-image-card:hover{transform:none!important}
 }
+
+
+/* Make the moving highlight visible above the glossy frame while keeping labels crisp. */
+.hub-home .afaq-promo-text-link:before{z-index:0!important}
+.hub-home .afaq-promo-text-link>span{position:relative!important;z-index:1!important}
