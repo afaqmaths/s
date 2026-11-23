@@ -1,0 +1,26 @@
+
+/* Academic encyclopedia: readable detailed scholar notes, responsive searchable panels. */
+.afa3-search-wrap{margin:18px 0 22px;border:1px solid #ded5c3;border-radius:16px;background:linear-gradient(125deg,#fffdfa,#f5f8ff);padding:20px;box-shadow:0 5px 17px #243b6010}
+.afa3-search-wrap>label{display:block;margin:0 0 9px;font-size:16px;font-weight:900;color:#2b4068}
+.afa3-search-wrap>input{display:block;width:100%;min-height:48px;background:#fff;border:1px solid #cfd9e7;border-radius:11px;padding:10px 14px;font:800 14px Cairo,Tahoma,Arial,sans-serif;color:#24365c}
+.afa3-results{max-height:290px;overflow:auto;margin-top:14px}
+.afa3-results>p{font-size:13px;color:#6d7b94;margin:3px 0}
+.afa3-result{padding:10px 14px;border:1px solid #dee5f0;border-radius:11px;background:white;margin:8px 0}
+.afa3-result strong{display:block;font-size:15px;color:#263c65}
+.afa3-result small{color:#986e37;font-size:12px}
+.afa3-result p{font-size:13px;line-height:1.9;margin:5px 0;color:#697b91}
+.afa3-library-modal{max-height:70vh;overflow-y:auto;direction:rtl;padding:4px 6px 6px}
+.afa3-topic-head{border-bottom:2px solid #d1b47c;margin:0 0 17px;padding-bottom:10px}
+.afa3-topic-head h2{font-size:23px!important;color:#23385f;margin:0 0 9px;font-weight:950}
+.afa3-topic-head p{font-size:14px!important;color:#546980!important;line-height:2!important;margin:0}
+.afa3-scholars{display:flex;flex-direction:column;gap:10px}
+.afa3-person{display:flex;gap:12px;border:1px solid #dde5ef;border-radius:13px;padding:14px;background:#fcfdff;break-inside:avoid}
+.afa3-person-order{font-size:15px;font-weight:950;border-radius:50%;width:35px;height:35px;flex:0 0 35px;display:grid;place-items:center;background:#fff2d5;color:#8b6329}
+.afa3-person h3{color:#223b64;font-size:18px;margin:0!important}
+.afa3-person small{color:#b1843d;font-size:12px;font-weight:850}
+.afa3-person p{margin:7px 0!important;color:#506780!important;font-size:13px!important;line-height:2!important}
+.afa3-use{font-size:12px;color:#315d79;background:#ecf6fc;border-radius:8px;padding:5px 10px;display:inline-block}
+.afa3-print-btn{background:#263c65;color:white;padding:10px 17px;font-size:13px;font-weight:900;border-radius:11px;border:0;margin-top:17px}
+.afa3-print-btn:hover{background:#365784}
+@media(max-width:600px){.afa3-library-modal{max-height:78vh}.afa3-topic-head h2{font-size:19px!important}.afa3-person{padding:11px;gap:7px}.afa3-person h3{font-size:16px}.afa3-search-wrap{padding:12px}}
+@media print{.afa3-person{box-shadow:none;border-color:#bbb}.afa3-scholars{gap:5px}}
