@@ -220,3 +220,12 @@
 #app .hub-home.ia-home-initiatives-restricted .hub-gate[data-route="teaching_initiatives"]{
  display:none!important;
 }
+
+.ia-approved-banner{
+ width:min(96%,1100px);box-sizing:border-box;margin:15px auto;
+ padding:15px 19px;border:2px solid #4ba375;border-radius:14px;
+ background:linear-gradient(120deg,#dcf8e5,#f5fff6);
+ box-shadow:0 7px 20px #27835822;
+ color:#14683e;font:950 clamp(14px,1.35vw,18px)/1.8 Tahoma,Arial,sans-serif;
+ text-align:center;direction:rtl;
+}
