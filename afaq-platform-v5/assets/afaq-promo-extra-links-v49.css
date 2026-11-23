@@ -1,0 +1,159 @@
+/* AFAQMATHS discovery links v49 — framed titles only, unlimited editable links per side. */
+.hub-home .afaq-promo-links>.afaq-promo-text-link.afaq-promo-additional-link{
+ border-width:2px!important;
+ border-color:#bc914f!important;
+ box-shadow:0 5px 18px #ad853d30,inset 0 2px 0 #ffffff!important;
+ background:linear-gradient(120deg,#fff8da,#fffdfc 37%,#f4d892 80%,#fffae9)!important;
+}
+.hub-home .afaq-promo-side--right .afaq-promo-additional-link{
+ border-color:#b7a0dc!important;
+ color:#65428f!important;
+ background:linear-gradient(115deg,#f8f0ff,#ffffff 40%,#d8c2ff 80%,#fbf6ff)!important;
+ box-shadow:0 6px 18px #845cab30,inset 0 2px 0 #fff!important;
+}
+.hub-home .afaq-promo-side--left .afaq-promo-additional-link{
+ border-color:#9fc8d4!important;
+ color:#155f7b!important;
+ background:linear-gradient(115deg,#ebfaff,#fffefa 38%,#cdebe3 80%,#f6ffff)!important;
+}
+.hub-home .afaq-promo-links>.afaq-promo-text-link:nth-child(odd):last-child{
+ grid-column:1/-1!important;
+ min-height:56px!important;
+ text-align:center!important;
+}
+.hub-home .afaq-promo-additional-link span:first-child{
+ background:linear-gradient(140deg,#fff8cf,#ffffff)!important;
+ border-color:#d2ad62!important;color:#9e712c!important;
+}
+.afaq-promo-admin .afaq-promo-extra-manager{
+ margin:16px 0 2px;
+ padding:15px;
+ border:2px solid #d9b775;
+ border-radius:17px;
+ background:radial-gradient(circle at 95% 0%,#d5e9fa65,transparent 42%),
+ linear-gradient(135deg,#fff9e9,#f4faff 58%,#fffdf6);
+ box-shadow:0 7px 19px #33577e18,inset 0 2px 0 #fff;
+ box-sizing:border-box;min-width:0;
+}
+.afaq-promo-admin .afaq-promo-extra-manager>header{
+ display:block;margin-bottom:10px;
+}
+.afaq-promo-admin .afaq-promo-extra-manager h4{
+ font:950 clamp(17px,1.5vw,20px)/1.7 Tahoma,Arial,sans-serif;
+ color:#1a527e;margin:0 0 5px;
+}
+.afaq-promo-admin .afaq-promo-extra-manager>header p{
+ margin:0;color:#607d90;font:750 12px/1.9 Tahoma,Arial,sans-serif;
+}
+.afaq-promo-admin .afaq-promo-extra-rows{
+ display:flex;flex-direction:column;gap:9px;
+ margin:13px 0;
+}
+.afaq-promo-admin .afaq-promo-extra-form{
+ display:flex;flex-direction:column;gap:10px;
+ box-sizing:border-box;width:100%;min-width:0;
+ border:1px solid #d6dfdf;border-radius:13px;
+ padding:12px;background:linear-gradient(130deg,#fff,#fafcff);
+}
+.afaq-promo-admin .afaq-promo-extra-form-title{
+ display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+ gap:9px;font:950 14px/1.6 Tahoma,Arial,sans-serif;color:#24587f;
+}
+.afaq-promo-admin .afaq-promo-extra-form-title small{
+ color:#9c7634;font-size:11px;font-weight:750;
+}
+.afaq-promo-admin .afaq-promo-extra-fields{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;
+ align-items:end;
+}
+.afaq-promo-admin .afaq-promo-extra-fields label{
+ display:flex;flex-direction:column;gap:5px;min-width:0;
+ font:900 12px/1.75 Tahoma,Arial,sans-serif;color:#365f7d;
+}
+.afaq-promo-admin .afaq-promo-extra-fields label:nth-child(3){
+ grid-column:1/-1;max-width:210px;
+}
+.afaq-promo-admin .afaq-promo-extra-fields input{
+ display:block;width:100%;min-width:0;min-height:41px;
+ box-sizing:border-box;
+ padding:9px 10px;border:1px solid #b7cedb;border-radius:9px;
+ color:#1e4f71;background:#fff;
+ font:750 13px/1.55 Tahoma,Arial,sans-serif;
+ direction:rtl;
+}
+.afaq-promo-admin .afaq-promo-extra-fields input[name="target_url"]{
+ direction:ltr;text-align:left;font-size:12px;
+}
+.afaq-promo-admin .afaq-promo-extra-enabled{
+ display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+ color:#7c602d;font:900 12px/1.7 Tahoma,Arial,sans-serif;
+}
+.afaq-promo-admin .afaq-promo-extra-enabled input{
+ width:19px;height:19px;flex:0 0 19px;accent-color:#189878;
+}
+.afaq-promo-admin .afaq-promo-extra-actions{
+ display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+}
+.afaq-promo-admin .afaq-promo-extra-save,
+.afaq-promo-admin .afaq-promo-extra-delete,
+.afaq-promo-admin .afaq-promo-extra-refresh{
+ cursor:pointer;border-radius:10px;
+ padding:10px 13px;min-height:40px;
+ border:1px solid #bc9a53;
+ font:950 12px/1.5 Tahoma,Arial,sans-serif;
+}
+.afaq-promo-admin .afaq-promo-extra-save{
+ flex:1 1 165px;color:#fff;
+ background:linear-gradient(115deg,#19587c,#1c7c8d);
+ box-shadow:0 4px 12px #1d66812a;
+}
+.afaq-promo-admin .afaq-promo-extra-delete{
+ color:#a53d32;background:#fff3ee;border-color:#e4bdb4;
+}
+.afaq-promo-admin .afaq-promo-extra-add{
+ margin:12px 0;border:2px dashed #c99d47;border-radius:13px;
+ padding:0 10px 10px;
+ background:linear-gradient(115deg,#fff8df,#fffcf1);
+}
+.afaq-promo-admin .afaq-promo-extra-add summary{
+ cursor:pointer;display:flex;align-items:center;justify-content:center;
+ min-height:46px;padding:8px 7px;
+ color:#7d561f;text-align:center;
+ font:950 clamp(13px,1.2vw,16px)/1.7 Tahoma,Arial,sans-serif;
+}
+.afaq-promo-admin .afaq-promo-extra-add[open] summary{border-bottom:1px solid #d7bd79}
+.afaq-promo-admin .afaq-promo-extra-add>.afaq-promo-extra-form{margin-top:12px}
+.afaq-promo-admin .afaq-promo-extra-refresh{
+ display:block;margin:10px auto 0;
+ color:#205b7c;background:#f1f9ff;border-color:#accbde;
+}
+.afaq-promo-admin .afaq-promo-extra-error,
+.afaq-promo-admin .afaq-promo-extra-notice{
+ margin:8px 0;padding:9px 12px;
+ border-radius:9px;font:850 12px/1.8 Tahoma,Arial,sans-serif;
+}
+.afaq-promo-admin .afaq-promo-extra-error{
+ background:#fff0eb;color:#a63f2e;border:1px solid #e9bfb0;
+}
+.afaq-promo-admin .afaq-promo-extra-notice{
+ background:#e9f8ef;color:#136c47;border:1px solid #a1d2b8;
+}
+.afaq-promo-admin .afaq-promo-extra-loading{
+ font:800 13px/1.7 Tahoma,Arial,sans-serif;color:#52728c;
+}
+.afaq-promo-admin .afaq-promo-extra-form input:focus-visible,
+.afaq-promo-admin .afaq-promo-extra-manager button:focus-visible,
+.afaq-promo-admin .afaq-promo-extra-add summary:focus-visible{
+ outline:3px solid #b68b3c;outline-offset:2px;
+}
+@media(max-width:600px){
+ .afaq-promo-admin .afaq-promo-extra-manager{padding:10px}
+ .afaq-promo-admin .afaq-promo-extra-fields{grid-template-columns:1fr}
+ .afaq-promo-admin .afaq-promo-extra-fields label:nth-child(3){
+  grid-column:1;max-width:100%;
+ }
+ .afaq-promo-admin .afaq-promo-extra-save{flex-basis:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .afaq-promo-additional-link{transition:none!important}
+}
