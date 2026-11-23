@@ -1,0 +1,204 @@
+/* 2026-11-23 — Initiative access policy, role groups, duration, delegated permissions and countdown. */
+.afaq-initiatives-admin .ia-visibility-in-management.ia-policy-v46{
+ padding:20px!important;
+ border:2px solid #dfc48a!important;border-radius:20px!important;
+ background:linear-gradient(130deg,#082f55,#144d74 55%,#0b4068)!important;
+ color:#f3f9ff!important;margin:0 0 18px!important;box-sizing:border-box!important;
+ box-shadow:0 11px 31px #122b4b34!important;
+}
+.ia-policy-v46 .ia-policy-intro{
+ display:flex;align-items:center;justify-content:space-between;gap:13px;
+ flex-wrap:wrap;margin-bottom:12px;
+}
+.ia-policy-v46 .ia-policy-intro>div{flex:1 1 380px}
+.ia-policy-v46 .ia-policy-intro span{
+ color:#ffdc92;font:950 12px/1.6 Tahoma,Arial,sans-serif;
+}
+.ia-policy-v46 .ia-policy-intro h2{
+ color:#ffe2a5!important;font:950 clamp(21px,2.25vw,29px)/1.55 Tahoma,Arial,sans-serif!important;
+ margin:4px 0!important;
+}
+.ia-policy-v46 .ia-policy-intro p{
+ color:#dceeff!important;font:700 13px/1.9 Tahoma,Arial,sans-serif!important;
+ margin:0!important;
+}
+.ia-policy-v46 .ia-policy-intro>button{
+ flex:0 1 auto;min-height:42px;border-radius:11px;border:1px solid #dcba75;
+ background:linear-gradient(#fff7df,#e7cf9e);
+ padding:10px 13px;color:#79541c;
+ font:950 13px/1.5 Tahoma,Arial,sans-serif;cursor:pointer;
+}
+.ia-policy-v46 .ia-policy-current{
+ border:1px solid #b1cadd7d;border-radius:10px;background:#0527448a;
+ padding:12px 14px;color:#e4f6ff;font:800 14px/1.8 Tahoma,Arial,sans-serif;
+}
+.ia-policy-v46 .ia-policy-current strong{color:#ffe4a0;font-weight:950}
+.ia-policy-v46 .ia-policy-error{color:#ffd5d5;font-weight:900}
+.ia-policy-v46 .ia-policy-notice{color:#aef6d1;font-weight:900}
+.ia-policy-v46 .ia-policy-form{
+ display:flex;flex-direction:column;gap:11px;
+}
+.ia-policy-v46 fieldset{
+ display:block;min-width:0;box-sizing:border-box;
+ border:1px solid #c4d6e294;border-radius:15px;
+ padding:16px;background:#ffffff0b;margin:0;
+}
+.ia-policy-v46 legend{
+ color:#ffe2a0;font:950 clamp(15px,1.4vw,20px)/1.7 Tahoma,Arial,sans-serif;
+ padding:0 11px;
+}
+.ia-policy-v46 fieldset>small,.ia-policy-v46 .ia-delegations small{
+ display:block;margin:10px 0 0;color:#d1eafa;
+ font:700 12px/1.8 Tahoma,Arial,sans-serif;
+}
+.ia-policy-v46 .ia-audience-options{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;
+}
+.ia-policy-v46 .ia-audience-option,.ia-policy-v46 .ia-delegate-item{
+ display:flex;align-items:center;gap:8px;min-width:0;
+ padding:10px;border:1px solid #d5ca9db0;border-radius:11px;
+ background:linear-gradient(140deg,#fffdfa,#f3f8ff);
+ color:#205575;cursor:pointer;box-sizing:border-box;
+}
+.ia-policy-v46 .ia-audience-option input,.ia-policy-v46 .ia-delegate-item input,
+.ia-policy-v46 .ia-policy-approval-grid input{
+ width:20px;height:20px;flex:0 0 20px;accent-color:#a67a32;cursor:pointer;
+}
+.ia-policy-v46 .ia-audience-option span{font-size:21px}
+.ia-policy-v46 .ia-audience-option strong{
+ color:#1a5579;font:900 clamp(11px,1vw,14px)/1.7 Tahoma,Arial,sans-serif;
+}
+.ia-policy-v46 .ia-audience-option:has(input:checked),
+.ia-policy-v46 .ia-delegate-item:has(input:checked){
+ background:#fff2c9;border-color:#db9f3b;box-shadow:0 0 0 1px #dcae6055;
+}
+.ia-policy-v46 .ia-policy-two-col{
+ display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:11px;align-items:end;
+}
+.ia-policy-v46 .ia-control-label{
+ display:flex;flex-direction:column;gap:7px;min-width:0;
+ color:#f7ecce;font:850 13px/1.6 Tahoma,Arial,sans-serif;
+}
+.ia-policy-v46 .ia-control-label select,.ia-policy-v46 .ia-control-label input{
+ display:block;width:100%;min-height:43px;min-width:0;box-sizing:border-box;
+ border:1px solid #d3bb85;border-radius:10px;padding:9px 11px;
+ color:#154b75;background:#fff;
+ font:800 13px/1.5 Tahoma,Arial,sans-serif;
+}
+.ia-policy-v46 .ia-policy-approval-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+}
+.ia-policy-v46 .ia-policy-approval-grid label{
+ display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:12px;row-gap:5px;
+ padding:15px;border:1px solid #f4dcad;border-radius:14px;
+ background:linear-gradient(145deg,#fffdf6,#eff8fe);cursor:pointer;
+ color:#234f74;min-width:0;
+}
+.ia-policy-v46 .ia-policy-approval-grid label:has(input:checked){
+ border:2px solid #d7a243;background:linear-gradient(145deg,#fff5ce,#fffdf8);
+}
+.ia-policy-v46 .ia-policy-approval-grid label strong{
+ font:950 15px/1.65 Tahoma,Arial,sans-serif;color:#215277;
+}
+.ia-policy-v46 .ia-policy-approval-grid label small{
+ grid-column:2;font:700 12px/1.85 Tahoma,Arial,sans-serif;color:#536d80;
+}
+.ia-policy-v46 .ia-policy-footer{
+ display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:11px;
+}
+.ia-policy-v46 .ia-policy-footer button{
+ min-height:46px;padding:12px 17px;border:1px solid #f2d59d;
+ border-radius:11px;background:#f0f6fb;color:#1d5375;
+ font:950 13px/1.5 Tahoma,Arial,sans-serif;cursor:pointer;
+}
+.ia-policy-v46 .ia-policy-footer .ia-policy-save{
+ flex:1 1 260px;background:linear-gradient(125deg,#d3a34e,#f1d087);
+ color:#143b5f;border-color:#f5e3b8;font-size:15px;
+}
+.ia-policy-v46 .ia-delegations{
+ margin:14px 0 0;padding:16px;border:1px solid #d6bd83;
+ border-radius:15px;background:#071d3770;
+}
+.ia-policy-v46 .ia-delegations h3{
+ color:#ffe1a1!important;font:950 clamp(17px,1.7vw,23px)/1.6 Tahoma,Arial,sans-serif;
+ margin:0 0 6px;
+}
+.ia-policy-v46 .ia-delegations p{
+ color:#deeffa;font:700 13px/1.85 Tahoma,Arial,sans-serif;margin:0 0 12px;
+}
+.ia-policy-v46 .ia-delegate-grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;
+}
+.ia-policy-v46 .ia-delegate-item span{
+ font:850 12px/1.8 Tahoma,Arial,sans-serif;color:#305972;
+}
+.ia-policy-v46 .ia-policy-alerts{
+ margin:14px 0 0;border:1px solid #d5c28d;border-radius:10px;
+ padding:12px 14px;background:#f5df9e1c;color:#ffe7a9;
+ font:950 14px/1.7 Tahoma,Arial,sans-serif;
+}
+.ia-policy-v46 button:focus-visible,.ia-policy-v46 input:focus-visible,
+.ia-policy-v46 select:focus-visible{outline:3px solid #ffdf8f;outline-offset:3px}
+.ia-has-pending .ia-forms{display:none!important}
+.ia-pending-panel{
+ margin:14px 0;padding:22px 18px;border:2px solid #d8ab54;border-radius:19px;
+ background:linear-gradient(145deg,#f3fbff,#fff9e8);
+ text-align:center;box-shadow:0 8px 23px #194e7a24;
+}
+.ia-pending-panel h2{
+ margin:6px 0;color:#1b5079!important;
+ font:950 clamp(20px,2.5vw,29px)/1.6 Tahoma,Arial,sans-serif!important;
+}
+.ia-pending-panel p{color:#476986;line-height:1.85;font-weight:750}
+.ia-pending-eyebrow{color:#9e7024;font-weight:950;font-size:14px}
+.ia-pending-clocks{
+ display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;
+ margin:17px 0;
+}
+.ia-pending-clocks>div{
+ min-width:178px;padding:14px;border:1px solid #d2ae6c;border-radius:17px;
+ background:linear-gradient(135deg,#154777,#092b56);
+ box-shadow:0 7px 21px #092d4f29;
+}
+.ia-pending-clocks small{
+ display:block;color:#f0d798;font-size:13px;font-weight:900;
+}
+.ia-pending-clocks strong{
+ display:block;direction:ltr;margin-top:6px;
+ color:#fff4ce;font:950 clamp(42px,6vw,67px)/1.18 monospace;
+ letter-spacing:2px;font-variant-numeric:tabular-nums;
+}
+.ia-pending-label{font-size:14px;color:#32648a!important;font-weight:950!important}
+.ia-pending-buttons{
+ display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.ia-pending-buttons button,.ia-delegate-shortcut{
+ padding:12px 17px;border:1px solid #d3b070;border-radius:11px;
+ background:linear-gradient(120deg,#164b79,#26749b);color:white;
+ font:950 13px/1.6 Tahoma,Arial,sans-serif;cursor:pointer;
+}
+.ia-pending-buttons button:nth-child(2){background:#fff2d4;color:#865c20}
+.ia-delegate-shortcut{
+ display:block;width:min(96%,760px);margin:12px auto;text-align:center;
+ background:linear-gradient(100deg,#175a80,#266d72);
+}
+@media(max-width:1050px){
+ .ia-policy-v46 .ia-audience-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ia-policy-v46 .ia-delegate-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ia-policy-v46 .ia-policy-two-col{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:660px){
+ .afaq-initiatives-admin .ia-visibility-in-management.ia-policy-v46{padding:12px!important}
+ .ia-policy-v46 fieldset{padding:10px!important}
+ .ia-policy-v46 .ia-audience-options,.ia-policy-v46 .ia-delegate-grid,
+ .ia-policy-v46 .ia-policy-two-col,.ia-policy-v46 .ia-policy-approval-grid{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ .ia-policy-v46 .ia-audience-option{min-height:46px}
+ .ia-pending-clocks{gap:8px}
+ .ia-pending-clocks>div{min-width:140px;flex:1 1 140px}
+ .ia-pending-clocks strong{font-size:clamp(35px,10vw,51px)}
+}
+@media(prefers-reduced-motion:reduce){
+ .ia-policy-v46 *{transition:none!important}
+}
