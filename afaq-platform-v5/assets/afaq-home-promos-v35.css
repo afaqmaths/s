@@ -374,3 +374,31 @@
   transform:none!important;
  }
 }
+
+
+/* 2026-11-23 v52: enlarged discovery heading in a luminous gold-and-blue frame. */
+.hub-home .afaq-promo-area .afaq-promo-title h2{
+ display:inline-flex!important;
+ align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;
+ max-width:100%!important;
+ margin:0 0 10px!important;
+ padding:13px 25px!important;
+ border:2px solid #d9ae59!important;
+ border-radius:18px!important;
+ background:linear-gradient(125deg,#fffaf0 0%,#fff 28%,#e9f6ff 62%,#fff6e2 100%)!important;
+ color:#124b7c!important;
+ font-size:clamp(27px,3.15vw,41px)!important;
+ font-weight:950!important;
+ line-height:1.55!important;
+ text-align:center!important;
+ text-shadow:0 1px 0 #fff,0 2px 12px #bf955236!important;
+ box-shadow:0 0 0 3px #fff9e9,0 9px 25px #b8914b4d,inset 0 2px 0 #fff,inset 0 0 16px #eed39965!important;
+}
+@media(max-width:580px){
+ .hub-home .afaq-promo-area .afaq-promo-title h2{
+  width:100%!important;
+  padding:11px 10px!important;
+  font-size:clamp(21px,5.65vw,29px)!important;
+ }
+}
