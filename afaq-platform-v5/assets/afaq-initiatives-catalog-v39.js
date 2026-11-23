@@ -332,10 +332,11 @@ function adminPage(){
  return '<div class="container afaq-initiatives-admin" dir="rtl">'+
  (typeof hubStaffNav==='function'?hubStaffNav():'')+
  '<header class="afaq-init-admin-head"><h2>✦ إدارة المبادرات العلمية والمجتمعية</h2>'+
- '<p>تنظيم ٨ بطاقات علمية بعرض الصفحة، معرض الصور المجتمعية وتعليقاتها، فيديوهات قناة يوتيوب، والمسارات الصحية والبيئية والمستقبلية. أضف أو احذف أو حرر المحتوى متى أردت.</p>'+
+ '<p>تحكّم في إظهار المبادرات أو إخفائها أو إتاحتها بإذن المشرف، ثم أدر ٨ بطاقات علمية ومعرض الصور المجتمعية وتعليقاتها وفيديوهات يوتيوب والمسارات المستقبلية من هذه الصفحة.</p>'+
  '<button type="button" data-init-reload>تحديث المبادرات</button>'+
  (initState.notice?'<p role="status" class="afaq-init-success">'+esc(initState.notice)+'</p>':'')+
  (initState.error?'<p role="alert" class="afaq-init-error">'+esc(initState.error)+'</p>':'')+'</header>'+
+ (typeof iaVisibilityForInitiativesAdmin==='function'?iaVisibilityForInitiativesAdmin():'')+
  (initState.adminLoaded?'<div class="afaq-init-admin-forms">'+settingsForm()+itemForm()+'</div>'+adminList():
  '<p>جارٍ استرجاع بيانات المبادرات المحفوظة...</p>')+'</div>';
 }
