@@ -46,9 +46,9 @@
  }
  function homeMarkup(){
   return '<section class="afaq-promo-area" dir="rtl" aria-label="إعلانات وروابط آفاق ماث">'+
-   '<div class="afaq-promo-title"><div><span>الرياضة • المباريات • الألعاب والمرح</span>'+
+   '<div class="afaq-promo-title"><div>'+
    '<h2>⚽🎮 اكتشف مواقع ومواد مفيدة</h2>'+
-   '<p>ملاعب ونجوم كرة القدم على اليمين، وعالم الألعاب والمرح على اليسار؛ اختر عنوان الموقع داخل الإطار اللامع لفتحه، دون عرض عنوان الرابط الطويل.</p></div>'+
+   '<p>ملاعب ونجوم كرة القدم على اليمين، وعالم الألعاب والمرح على اليسار.</p></div>'+
    (adminReady()?'<button type="button" class="afaq-promo-manage" data-afaq-promos-manage>⚙️ إدارة الصور والروابط</button>':'')+
    '</div><div class="afaq-promo-two-sides">'+sideMarkup('right')+sideMarkup('left')+'</div></section>';
  }
