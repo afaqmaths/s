@@ -10,7 +10,7 @@ const POLICY_AUDIENCES=[
 const DEFAULT_AUDIENCES=POLICY_AUDIENCES.map(a=>a[0]);
 const PREF_KEY='afaq_pending_initiative_request_v46';
 const opts={data:null,delegates:null,loading:false,error:'',notice:'',approverAuthorized:false,
- lastCheckedToken:'',alertCount:0,alertIds:[],notifyBusy:false};
+ lastCheckedToken:'',alertCount:0,alertIds:[],alertsInitialized:false,notifyBusy:false};
 let pending=null;
 try{pending=JSON.parse(sessionStorage.getItem(PREF_KEY)||'null')}catch{}
 let pendingBusy=false,pendingTickTimer=null,notificationTimer=null;
@@ -188,7 +188,8 @@ async function refreshAlerts(){
   const old=opts.alertIds.join(',');
   opts.approverAuthorized=true;opts.alertCount=data.count||0;
   opts.alertIds=(data.requests||[]).map(x=>x.id);
-  if(opts.alertCount&&old&&old!==opts.alertIds.join(','))alertBeep();
+  if(opts.alertCount&&opts.alertsInitialized&&old!==opts.alertIds.join(','))alertBeep();
+  opts.alertsInitialized=true;
   const label=document.querySelector('[data-ia-alerts]');
   if(label)label.textContent='🔔 الطلبات التي تنتظر موافقة منك: '+opts.alertCount;
   if(state.page==='initiative_permissions'&&opts.alertCount&&!iaState.adminBusy)iaLoadAdmin();
@@ -276,9 +277,9 @@ attach=function(){
     requested_at:data.requested_at,ready_at:data.ready_at};
    sessionStorage.setItem(PREF_KEY,JSON.stringify(pending));
    iaState.requestMsg='تم تسجيل الطلب. يمكن متابعة النتيجة من العداد.';
-   startPendingTimers();render();pollPending();
-  }catch(e){iaState.requestMsg=e.message;render()}
-  finally{iaState.loading=false}
+   startPendingTimers();
+  }catch(e){iaState.requestMsg=e.message}
+  finally{iaState.loading=false;render();if(pending)pollPending()}
  },true);
  document.querySelector('[data-ia-poll]')?.addEventListener('click',pollPending);
  document.querySelector('[data-ia-cancel-local]')?.addEventListener('click',()=>{
