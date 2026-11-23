@@ -25,6 +25,19 @@ const managerEntries=[
  [/grade|learning|lesson|books|audio|library|work|question|adaptive|tutorial|horizons|importance|environment|scientific_news|content|المكتبة|التعلم|الدروس/i,'hub_catalog','إدارة المحتوى والمواد']
 ];
 function managerFor(key,label){
+ const fixed={
+  login_student:['students','إدارة بيانات الطلبة وحساباتهم'],
+  login_demo:['hub_catalog','إدارة المواد التدريبية'],
+  login_supervisor:['overview','لوحة المشرف الرئيسي'],
+  login_supervisor_assistant:['overview','لوحة الإشراف'],
+  login_director:['staff_contacts','إدارة التواصل المؤسسي'],
+  route_afaq_directory:['hub_catalog','إدارة المحتوى المرتبط بالدليل'],
+  section_about:['home_promos','إدارة عناوين وتعريفات الصفحة'],
+  section_entry:['hub_parent_codes','إدارة حسابات الدخول والأسرة'],
+  section_honor_board:['honor_board','إدارة لوحة الشرف'],
+  section_title:['platform_title','إدارة عنوان المنصة الذهبي']
+ };
+ if(fixed[key])return {tab:fixed[key][0],title:fixed[key][1]};
  for(const [re,tab,title] of managerEntries)if(re.test(key+' '+label))return {tab,title};
  return {tab:'',title:'تعديل بطاقة البوابة وعرضها'};
 }
@@ -80,8 +93,11 @@ function titleNode(card){
   card.querySelector('h2,h3,strong');
 }
 function descriptionNode(card){
- return card.querySelector(':scope > span:last-of-type:not(.hub-gate-arrow)')||
-  card.querySelector('.afaq-directory-link-text small')||
+ if(card.classList.contains('afaq-directory-link'))
+  return card.querySelector('.afaq-directory-link-text small');
+ if(card.classList.contains('hub-gate'))
+  return card.querySelector(':scope > span:last-of-type:not(.hub-gate-arrow)');
+ return card.querySelector('.afaq-directory-link-text small')||
   card.querySelector('.afaq-about-card-body p')||
   card.querySelector('p');
 }
@@ -260,6 +276,7 @@ function closeDialog(){
 }
 function editDialog(key){
  if(!supervisor())return;
+ if(key==='section_title'){openTab('platform_title');return}
  activeKey=key;
  const info=portals.get(key)||{key,title:key,description:''};
  const row=registry.get(key)||{title_override:'',description_override:'',is_visible:true};
