@@ -116,6 +116,9 @@ function textOverride(node,value){
  if(!node)return;
  const attr=node.hasAttribute('data-afaq-portal-title')?'afaqPortalOriginalTitle':'afaqPortalOriginalDescription';
  const t=String(value||node.dataset[attr]||'');
+ // Leave the original DOM untouched unless the supervisor actually saved an override.
+ // This preserves bilingual titles, icons, locked badges and styled descriptive text.
+ if(!value&&originalText(node)===t)return;
  const lock=node.querySelector('.afaq-directory-locked');
  if(lock){
   const copy=lock.cloneNode(true);node.textContent=t;node.append(copy);return;
@@ -138,6 +141,12 @@ function markPortal(el,key,title,desc,tNode,dNode){
  const row=registry.get(key);
  if(tNode)textOverride(tNode,row?.title_override||'');
  if(dNode)textOverride(dNode,row?.description_override||'');
+ const directoryLink=el.matches?.('.afaq-directory-link')?el:el.querySelector?.('.afaq-directory-link');
+ if(directoryLink&&row){
+  directoryLink.dataset.dirSearch=[
+   directoryLink.dataset.dirSearch||'',row.title_override||'',row.description_override||''
+  ].join(' ').trim();
+ }
  el.classList.toggle('afaq-portal-hidden',row?.is_visible===false&&!supervisor());
  el.classList.toggle('afaq-portal-hidden-preview',row?.is_visible===false&&supervisor());
  const note=el.querySelector('.afaq-portal-private-indicator');
