@@ -18,9 +18,11 @@
  }
  function imageCard(id){
   const s=slotData(id),valid=s.enabled&&s.title&&isHttps(s.target_url)&&isHttps(s.image_url);
-  return '<article class="afaq-promo-image-card">'+(valid?
+  return '<article class="afaq-promo-image-card afaq-promo-image-card--'+id+'">'+(valid?
    '<a class="afaq-promo-clickable" href="'+safe(s.target_url)+'" target="_blank" rel="noopener noreferrer" aria-label="'+safe(s.title)+'">'+
-   '<img src="'+safe(s.image_url)+'" alt="'+safe(s.title)+'" loading="lazy" decoding="async">'+
+   '<img src="'+safe(s.image_url)+'" alt="'+safe(s.title)+'" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-afaq-promo-photo>'+
+   '<span class="afaq-promo-visual-fallback" aria-hidden="true"><b>'+(id<=2?'⚽':'🎮')+'</b>'+
+    '<i>'+safe(id<=2?'عالم الملاعب والرياضة':'عالم الألعاب والمرح')+'</i></span>'+
    '<strong>'+safe(s.title)+'</strong></a>':
    '<div class="afaq-promo-vacant" aria-label="مساحة إعلان فارغة">'+
    '<span aria-hidden="true">▧</span><strong>مساحة صورة إعلانية '+(id>2?id-2:id)+'</strong>'+
@@ -200,6 +202,15 @@
   finally{statePromos.busy=0;if(state.page==='dashboard'&&auth.section==='home_promos')render()}
  }
  function bindEvents(){
+  document.querySelectorAll('[data-afaq-promo-photo]').forEach(img=>{
+   if(img.dataset.afaqPhotoBound)return;
+   img.dataset.afaqPhotoBound='1';
+   const fail=()=>img.closest('.afaq-promo-image-card')?.classList.add('afaq-promo-photo-unavailable');
+   const recovered=()=>img.closest('.afaq-promo-image-card')?.classList.remove('afaq-promo-photo-unavailable');
+   img.addEventListener('error',fail);
+   img.addEventListener('load',recovered);
+   if(img.complete&&img.naturalWidth===0)fail();
+  });
   document.querySelectorAll('[data-afaq-promos-manage]').forEach(node=>node.addEventListener('click',()=>{
    if(!adminReady())return;
    auth.section='home_promos';route('dashboard');
