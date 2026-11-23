@@ -376,25 +376,54 @@ iaGateView=function(page){
   return '<div class="container ia-page" dir="rtl"><section class="ia-gate"><div class="ia-shield">🔒</div><h1>مبادرات الأستاذ سعيد غير متاحة حاليًا</h1><p>اختار المشرف الرئيسي إخفاء هذا القسم. ويمكنه إظهاره للجميع أو إتاحته بإذن في أي وقت.</p></section></div>';
  return iaPermissionGateOriginal(page);
 };
-const iaVisibilityAdminOriginal=iaSupervisorView;
-iaSupervisorView=function(){
- const html=iaVisibilityAdminOriginal();
- if(auth.user?.role!=='supervisor')return html;
+/* Visibility control is now shown IN the scientific/community initiative management page.
+   Permission requests and one-time-code approvals remain in the dedicated approvals view. */
+function iaVisibilityPolicyMarkup(){
+ if(auth.user?.role!=='supervisor')return '';
  const mode=iaState.visibility;
- const expiry=iaState.publicUntil&&mode==='public'?new Date(iaState.publicUntil).toLocaleString('ar-OM',{timeZone:'Asia/Muscat'}):null;
+ const expiry=iaState.publicUntil&&mode==='public'?
+  new Date(iaState.publicUntil).toLocaleString('ar-OM',{timeZone:'Asia/Muscat'}):null;
  const status=mode==='public'?'متاحة للجميع دون رمز'+(expiry?' حتى '+expiry:''):
-   mode==='hidden'?'مخفية عن جميع الزوار':'تتطلب موافقة ورمز دخول';
- const policy='<div class="ia-visibility-box" dir="rtl"><h2>صلاحيات عرض المبادرات</h2>'+
- '<p role="status">الحالة الحالية: <strong>'+iaEscape(status)+'</strong></p>'+
- '<p>ملاحظة: وضع «متاحة اليوم» يعيد العرض إلى «بإذن» تلقائيًا عند منتصف الليل بتوقيت عُمان.</p>'+
- '<div class="ia-visibility-actions">'+
- '<button type="button" data-ia-visibility="public_today">إظهار للجميع حتى نهاية اليوم</button>'+
- '<button type="button" data-ia-visibility="public">إظهار للجميع دون موعد انتهاء</button>'+
- '<button type="button" data-ia-visibility="permission">إظهار بإذن ورمز مؤقت</button>'+
- '<button type="button" data-ia-visibility="hidden">إخفاء المبادرات</button>'+
- '<button type="button" data-ia-visibility-refresh>تحديث الحالة</button></div></div>';
- return html.replace('</section>',policy+'</section>');
-};
+  mode==='hidden'?'مخفية عن الزوار':mode==='permission'?'تتطلب موافقة المشرف ورمز دخول':
+  'جارٍ قراءة إعدادات العرض المحفوظة من الخادم...';
+ const msg=iaState.adminMsg?'<p class="ia-visibility-result" role="status">'+iaEscape(iaState.adminMsg)+'</p>':'';
+ return '<section class="ia-visibility-box ia-visibility-in-management" dir="rtl" aria-label="صلاحيات عرض المبادرات">'+
+ '<header class="ia-visibility-management-head"><div><span>🔐 التحكم في ظهور مبادرات الأستاذ سعيد</span>'+
+ '<h2>صلاحيات عرض المبادرات</h2>'+
+ '<p>اختر كيفية إتاحة المبادرات العلمية المحمية للزائر. يُحفظ الاختيار على الخادم ويطبَّق على صلاحيات الدخول.</p></div>'+
+ '<button type="button" data-route="initiative_permissions">📨 طلبات الإذن وإصدار الرموز</button></header>'+
+ '<p class="ia-visibility-current" role="status">الحالة الحالية: <strong>'+iaEscape(status)+'</strong></p>'+msg+
+ '<div class="ia-visibility-actions" role="group" aria-label="اختر سياسة إظهار المبادرات">'+
+ '<button type="button" data-ia-visibility="public_today"'+(mode==='public'&&!!iaState.publicUntil?' aria-pressed="true"':' aria-pressed="false"')+'>🌅 عرض للجميع حتى نهاية اليوم</button>'+
+ '<button type="button" data-ia-visibility="public"'+(mode==='public'&&!iaState.publicUntil?' aria-pressed="true"':' aria-pressed="false"')+'>🌐 عرض للجميع دون انتهاء</button>'+
+ '<button type="button" data-ia-visibility="permission" aria-pressed="'+(mode==='permission')+'">🔑 العرض بإذن المشرف ورمز مؤقت</button>'+
+ '<button type="button" data-ia-visibility="hidden" aria-pressed="'+(mode==='hidden')+'">🚫 إخفاء المبادرات عن الزوار</button>'+
+ '<button type="button" data-ia-visibility-refresh>↻ تحديث حالة الظهور</button></div>'+
+ '<p class="ia-visibility-footnote">ينتهي وضع «حتى نهاية اليوم» تلقائيًا عند منتصف الليل بتوقيت عُمان، وتعود الحماية إلى العرض بإذن. أما إخفاء المبادرات فيمنع فتح محتواها المحمي؛ ولا يحذف بطاقات التعريف أو الملفات.</p>'+
+ '</section>';
+}
+function iaVisibilityForInitiativesAdmin(){
+ if(auth.user?.role!=='supervisor')return '';
+ if(iaState.visibility==='loading'&&!iaState.policyLoading){
+  iaState.policyLoading=true;
+  Promise.resolve().then(async()=>{
+   try{
+    const info=await iaFetch('visibility_status',{},true);
+    iaState.visibility=info.mode;
+    iaState.publicUntil=info.public_until||null;
+    iaScheduleVisibilityExpiry();
+    iaState.adminMsg='';
+   }catch(err){
+    iaState.adminMsg='تعذر تحميل حالة العرض المحفوظة: '+err.message;
+    iaState.visibility='unavailable';
+   }finally{
+    iaState.policyLoading=false;
+    if(state.page==='dashboard'&&auth.section==='teacher_initiatives_admin')render();
+   }
+  });
+ }
+ return iaVisibilityPolicyMarkup();
+}
 function iaTodayMidnightInOman(){
  const om=new Date(Date.now()+4*60*60*1000);
  return new Date(Date.UTC(om.getUTCFullYear(),om.getUTCMonth(),om.getUTCDate(),20,0,0)).toISOString();
@@ -404,7 +433,8 @@ async function iaRefreshVisibility(showResult=false){
   iaState.publicUntil=info.public_until||null;iaScheduleVisibilityExpiry();
   if(showResult)iaState.adminMsg='تم تحديث حالة عرض المبادرات';
  }catch(e){if(showResult)iaState.adminMsg=e.message}
- if(state.page==='initiative_permissions'&&showResult)render();
+ if(showResult&&(state.page==='initiative_permissions'||
+  state.page==='dashboard'&&auth.section==='teacher_initiatives_admin'))render();
 }
 const iaVisibilityAttachBase=attach;
 attach=function(){
