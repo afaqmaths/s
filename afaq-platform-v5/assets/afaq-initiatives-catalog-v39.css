@@ -478,3 +478,115 @@
  .hub-home .afaq-scientific-skill{padding:10px}
  .hub-home .afaq-scientific-mini-example>strong{font-size:15px}
 }
+
+
+/* Consolidated initiative visibility controls inside supervisor's "إدارة المبادرات". */
+.afaq-initiatives-admin .ia-visibility-in-management{
+ display:block!important;box-sizing:border-box!important;
+ width:100%!important;max-width:none!important;
+ margin:0 0 19px!important;padding:20px 22px!important;
+ direction:rtl!important;
+ border:2px solid #d2ad60!important;border-radius:19px!important;
+ background:
+ radial-gradient(circle at 10% 18%,#537ea340,transparent 24%),
+ linear-gradient(125deg,#103b69,#144f77 56%,#1d5875)!important;
+ box-shadow:0 10px 25px #1c496134,inset 0 0 0 2px #e6d2ab1c!important;
+}
+.afaq-initiatives-admin .ia-visibility-management-head{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ justify-content:space-between!important;gap:15px!important;
+ margin-bottom:14px!important;
+}
+.afaq-initiatives-admin .ia-visibility-management-head>div{
+ flex:1 1 480px!important;min-width:0!important;
+}
+.afaq-initiatives-admin .ia-visibility-management-head span{
+ display:block!important;color:#f7d58d!important;
+ font:950 13px/1.7 Tahoma,Arial,sans-serif!important;
+ margin:0 0 4px!important;
+}
+.afaq-initiatives-admin .ia-visibility-management-head h2{
+ color:#ffeab4!important;
+ font:950 clamp(20px,2.3vw,29px)/1.55 Tahoma,Arial,sans-serif!important;
+ margin:0 0 5px!important;
+}
+.afaq-initiatives-admin .ia-visibility-management-head p{
+ color:#edf7ff!important;font:700 clamp(12px,1.02vw,14px)/1.95 Tahoma,Arial,sans-serif!important;
+ margin:0!important;max-width:750px!important;
+}
+.afaq-initiatives-admin .ia-visibility-management-head>button{
+ flex:0 1 auto!important;min-height:45px!important;
+ padding:10px 15px!important;border-radius:11px!important;
+ border:1px solid #d6b16c!important;
+ background:linear-gradient(125deg,#fff7df,#f1dcaa)!important;
+ color:#785521!important;
+ font:950 13px/1.5 Tahoma,Arial,sans-serif!important;
+ cursor:pointer!important;
+}
+.afaq-initiatives-admin .ia-visibility-current{
+ padding:12px 14px!important;margin:8px 0!important;
+ border:1px solid #e2d1a170!important;border-radius:10px!important;
+ background:#071f3c55!important;color:#eef8ff!important;
+ font-size:14px!important;line-height:1.75!important;
+}
+.afaq-initiatives-admin .ia-visibility-current strong{
+ font-size:clamp(14px,1.2vw,17px)!important;color:#ffe7a9!important;
+}
+.afaq-initiatives-admin .ia-visibility-result{
+ color:#f8dc9a!important;
+ font-weight:850!important;line-height:1.8!important;
+}
+.afaq-initiatives-admin .ia-visibility-actions{
+ display:grid!important;
+ grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:9px!important;align-items:stretch!important;
+ margin:14px 0 11px!important;
+}
+.afaq-initiatives-admin .ia-visibility-actions>button{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ text-align:center!important;
+ min-width:0!important;min-height:65px!important;
+ padding:11px 10px!important;box-sizing:border-box!important;
+ border-radius:12px!important;
+ font:950 clamp(11px,1.05vw,14px)/1.7 Tahoma,Arial,sans-serif!important;
+ white-space:normal!important;
+}
+.afaq-initiatives-admin .ia-visibility-actions>button[aria-pressed="true"]{
+ border:3px solid #ffdd86!important;
+ box-shadow:0 0 0 2px #a76922,0 0 17px #fff0a955!important;
+}
+.afaq-initiatives-admin .ia-visibility-actions [data-ia-visibility-refresh]{
+ grid-column:1/-1!important;
+ justify-self:center!important;min-height:38px!important;
+ width:min(340px,100%)!important;
+ background:#edfbff!important;color:#1c5a7c!important;
+}
+.afaq-initiatives-admin .ia-visibility-footnote{
+ margin:10px 0 0!important;font:700 12px/1.85 Tahoma,Arial,sans-serif!important;
+ color:#dcefff!important;
+}
+@media(max-width:1050px){
+ .afaq-initiatives-admin .ia-visibility-actions{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:650px){
+ .afaq-initiatives-admin .ia-visibility-in-management{
+  padding:13px!important;
+ }
+ .afaq-initiatives-admin .ia-visibility-management-head{
+  flex-direction:column!important;align-items:stretch!important;
+ }
+ .afaq-initiatives-admin .ia-visibility-management-head>div{
+  flex:0 1 auto!important;
+ }
+ .afaq-initiatives-admin .ia-visibility-management-head>button{
+  align-self:stretch!important;
+ }
+ .afaq-initiatives-admin .ia-visibility-actions{
+  grid-template-columns:1fr!important;gap:7px!important;
+ }
+ .afaq-initiatives-admin .ia-visibility-actions>button{
+  min-height:48px!important;
+ }
+}
