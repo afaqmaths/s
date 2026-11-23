@@ -202,3 +202,21 @@
 @media(prefers-reduced-motion:reduce){
  .ia-policy-v46 *{transition:none!important}
 }
+
+
+/* Visible initiatives and their showcase cards are audience-scoped on the home page.
+   Protected lesson access is separately enforced by the Edge Function. */
+#app .hub-home.ia-home-initiatives-restricted #afaq-scientific,
+#app .hub-home.ia-home-initiatives-restricted #afaq-community,
+#app .hub-home.ia-home-initiatives-restricted #afaq-youtube,
+#app .hub-home.ia-home-initiatives-restricted #afaq-other-initiatives,
+#app .hub-home.ia-home-initiatives-restricted .afaq-initiatives-science,
+#app .hub-home.ia-home-initiatives-restricted .afaq-community-initiatives,
+#app .hub-home.ia-home-initiatives-restricted .afaq-youtube-initiatives,
+#app .hub-home.ia-home-initiatives-restricted .afaq-other-initiatives,
+#app .hub-home.ia-home-initiatives-restricted .ia-init-teaser,
+#app .hub-home.ia-home-initiatives-restricted .v10-init-home,
+#app .hub-home.ia-home-initiatives-restricted .afaq-about-rich-card--gold,
+#app .hub-home.ia-home-initiatives-restricted .hub-gate[data-route="teaching_initiatives"]{
+ display:none!important;
+}
