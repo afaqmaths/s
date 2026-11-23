@@ -44,9 +44,9 @@
  }
  function homeMarkup(){
   return '<section class="afaq-promo-area" dir="rtl" aria-label="إعلانات وروابط آفاق ماث">'+
-   '<div class="afaq-promo-title"><div><span>إعلانات وروابط مختارة</span>'+
-   '<h2>🖼️ اكتشف مواقع ومواد مفيدة</h2>'+
-   '<p>مساحات مخصصة للصور الإعلانية وروابط المواقع، قابلة للتحديث من إدارة المنصة.</p></div>'+
+   '<div class="afaq-promo-title"><div><span>الرياضة • المباريات • الألعاب والمرح</span>'+
+   '<h2>⚽🎮 اكتشف مواقع ومواد مفيدة</h2>'+
+   '<p>ملاعب ونجوم كرة القدم على اليمين، وعالم الألعاب والمرح على اليسار؛ اختر عنوان الموقع داخل الإطار اللامع لفتحه، دون عرض عنوان الرابط الطويل.</p></div>'+
    (adminReady()?'<button type="button" class="afaq-promo-manage" data-afaq-promos-manage>⚙️ إدارة الصور والروابط</button>':'')+
    '</div><div class="afaq-promo-two-sides">'+sideMarkup('right')+sideMarkup('left')+'</div></section>';
  }
@@ -74,7 +74,7 @@
    '<label>رابط الموقع عند النقر (https://)<input type="url" name="target_url" maxlength="900" placeholder="https://example.com" value="'+safe(s.target_url||'')+'"></label>'+
    (image?'<label>إضافة صورة من الجهاز (JPG / PNG / WebP، بحد أقصى 3 ميجابايت)'+
     '<input type="file" name="image_file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"></label>'+
-    '<label>أو رابط الصورة المباشر (https://)<input type="url" name="external_image_url" maxlength="900" placeholder="https://example.com/banner.png" value="'+safe(s.external_image_url||'')+'"></label>'+
+    '<label>أو رابط الصورة المباشر (https://)<input type="url" name="external_image_url" maxlength="900" placeholder="https://example.com/banner.png" value="'+safe(s.external_image_url||(!s.image_path&&s.image_url?s.image_url:''))+'"></label>'+
     '<input type="hidden" name="image_path" value="'+safe(s.image_path||'')+'">':'')+
    '<label class="afaq-promo-enabled"><input type="checkbox" name="enabled" '+(s.enabled?'checked':'')+'> إظهار هذا '+(image?'الإعلان':'الرابط')+' للزوار بعد حفظه</label>'+
    '<div class="afaq-promo-form-actions"><button type="submit" '+(statePromos.busy?'disabled':'')+'>حفظ '+(image?'الصورة':'الرابط')+'</button>'+
@@ -95,8 +95,8 @@
     '<div class="afaq-promo-admin-links">'+idsForSide(where,'link').map(adminSlotForm).join('')+'</div></section>';
   };
   return '<div class="container afaq-promo-admin" dir="rtl">'+nav+
-   '<div class="afaq-promo-admin-header"><h2>🖼️ إدارة إعلانات وروابط الصفحة الرئيسية</h2>'+
-   '<p>الأماكن ثابتة: صورتان يمين صورة آفاق وصورتان يسارها، وأربعة روابط أسفل كل زوج. ارفع الصورة من جهازك أو أدخل رابطها المباشر، ثم اكتب عنوانها ورابط الانتقال. يمكنك إخفاء أو حذف أي خانة دون التأثير على بقية الصفحة.</p>'+
+   '<div class="afaq-promo-admin-header"><h2>🖼️ إدارة صور وروابط الرياضة والألعاب</h2>'+
+   '<p>الجانب الأيمن لـ beIN SPORTS والمباريات، والأيسر للألعاب والمرح: صورتان وأربعة روابط في كل جانب. تظهر للزوار أسماء المواقع داخل أطر لامعة، دون إظهار عناوين URL. روابط الصور ومواقع الانتقال قابلة للتعديل والحفظ من هنا. احتفظ بالصورة الحالية أو استبدلها بصورة جديدة.</p>'+
    '<button type="button" data-afaq-promo-refresh>تحديث بيانات الصور والروابط</button>'+
    (statePromos.notice?'<p class="afaq-promo-feedback" role="status">'+safe(statePromos.notice)+'</p>':'')+
    (statePromos.adminError?'<p class="afaq-promo-error" role="alert">'+safe(statePromos.adminError)+'</p>':'')+
