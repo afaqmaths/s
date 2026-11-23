@@ -33,7 +33,7 @@
   if(entry?.enabled!==true||!entry.title||!/^https:\/\//i.test(entry.target_url||''))return '';
   return '<a class="afaq-promo-text-link afaq-promo-additional-link" href="'+
     escapeHtml(entry.target_url)+'" target="_blank" rel="noopener noreferrer" aria-label="'+
-    escapeHtml(entry.title)+'"><span aria-hidden="true">✦</span><span>'+
+    escapeHtml(entry.title)+'"><span class="afaq-link-title-only">'+
     escapeHtml(entry.title)+'</span></a>';
  }
  const homeOriginal=hubHome;
