@@ -79,3 +79,207 @@
  font:900 14px Tahoma,Arial,sans-serif;
 }
 .afaq-promo-admin .afaq-promo-heading-form button:disabled{opacity:.5;cursor:wait}
+
+
+/* 2026-11-23 • v48: curated beIN sports / fun-and-games discovery, titled luminous links.
+   The actual URLs are only held in the underlying href attributes, never printed. */
+.hub-home .afaq-promo-area{
+ position:relative;isolation:isolate;overflow:hidden;
+ margin:15px 0 22px!important;padding:19px 21px 22px!important;
+ border:2px solid #d6bb7d!important;border-radius:23px!important;
+ background:radial-gradient(circle at 86% 4%,#e6cd9c40,transparent 28%),
+ radial-gradient(circle at 15% 85%,#c6e7ff56,transparent 34%),
+ linear-gradient(125deg,#fffefa,#f2f9ff 50%,#fff9eb)!important;
+ box-shadow:0 12px 34px #163d6722,inset 0 1px 0 #fff!important;
+}
+.hub-home .afaq-promo-title{
+ margin-bottom:16px!important;padding:0 2px 12px;
+ border-bottom:1px solid #dfcea3;
+}
+.hub-home .afaq-promo-title>div>span{
+ color:#af7d2b!important;font-weight:950!important;
+ font-size:13px!important;
+}
+.hub-home .afaq-promo-title h2{
+ color:#164e80!important;font-size:clamp(24px,2.3vw,33px)!important;
+ text-shadow:0 1px 0 #fff;
+}
+.hub-home .afaq-promo-title p{
+ color:#4b718b!important;font:750 clamp(12px,1.12vw,15px)/1.8 Tahoma,Arial,sans-serif!important;
+}
+.hub-home .afaq-promo-two-sides{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:16px!important;align-items:stretch!important;
+}
+.hub-home .afaq-promo-side{
+ --promo-accent:#bb8e43;
+ display:flex;flex-direction:column;
+ position:relative;min-width:0;
+ border:2px solid #cdbb9d!important;border-radius:19px!important;
+ padding:16px!important;box-sizing:border-box;
+ background:linear-gradient(135deg,#fbfdff,#fffdfa)!important;
+ box-shadow:0 7px 20px #1b46651c,inset 0 0 0 2px #fff!important;
+}
+.hub-home .afaq-promo-side--right{
+ --promo-accent:#8752c6;
+ border-color:#aeb1dc!important;
+ border-top:5px solid #a276dc!important;
+ background:radial-gradient(circle at 96% 2%,#dac4fa6b,transparent 32%),
+ linear-gradient(142deg,#f8f5ff,#f6faff 55%,#fff9f1)!important;
+}
+.hub-home .afaq-promo-side--left{
+ --promo-accent:#dca044;
+ border-color:#ced7e5!important;
+ border-top:5px solid #daa450!important;
+ background:radial-gradient(circle at 12% 5%,#fce8bc6b,transparent 28%),
+ linear-gradient(142deg,#f3f9ff,#fffcf4 66%,#f6f5ff)!important;
+}
+.hub-home .afaq-promo-side-head{
+ flex-direction:column!important;justify-content:center!important;
+ align-items:stretch!important;gap:4px!important;
+ margin:0 0 13px!important;padding-bottom:12px!important;
+ border-bottom:1px solid #d8d7e3!important;text-align:center!important;
+}
+.hub-home .afaq-promo-side-head strong{
+ display:block!important;text-align:center!important;
+ font:950 clamp(17px,1.6vw,22px)/1.6 Tahoma,Arial,sans-serif!important;
+ color:#1d5681!important;text-shadow:0 1px 0 #fff;
+}
+.hub-home .afaq-promo-side--right .afaq-promo-side-head strong{
+ color:#61408e!important;
+}
+.hub-home .afaq-promo-side-head span{
+ display:block!important;font:750 clamp(11px,.97vw,13px)/1.7 Tahoma,Arial,sans-serif!important;
+ color:#60768c!important;text-align:center!important;
+}
+.hub-home .afaq-promo-images{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:10px!important;align-items:stretch!important;
+}
+.hub-home .afaq-promo-image-card{
+ min-width:0!important;
+ border:2px solid #d8d6de!important;border-radius:15px!important;
+ overflow:hidden!important;
+ background:linear-gradient(150deg,#18365a,#39285e)!important;
+ box-shadow:0 8px 17px #0d284230!important;
+ transition:transform .18s ease,box-shadow .18s ease!important;
+}
+.hub-home .afaq-promo-image-card:hover{
+ transform:translateY(-3px);
+ box-shadow:0 12px 25px #0c284043!important;
+ border-color:#d4ab63!important;
+}
+.hub-home .afaq-promo-clickable{
+ height:100%!important;display:flex!important;
+ flex-direction:column!important;text-decoration:none!important;
+ color:#fff!important;
+}
+.hub-home .afaq-promo-clickable img{
+ display:block!important;width:100%!important;
+ height:auto!important;min-height:0!important;max-height:none!important;
+ aspect-ratio:16/9!important;object-fit:cover!important;
+ background:#19284b!important;
+}
+.hub-home .afaq-promo-clickable strong{
+ display:grid!important;place-items:center!important;
+ text-align:center!important;flex:1 0 auto!important;
+ min-height:53px!important;line-height:1.55!important;
+ font:950 clamp(11px,1.05vw,14px)/1.6 Tahoma,Arial,sans-serif!important;
+ padding:9px 7px!important;
+ color:#fff5df!important;
+ background:linear-gradient(110deg,#132c54,#402960)!important;
+ text-shadow:0 1px 2px #0008!important;
+}
+.hub-home .afaq-promo-side--left .afaq-promo-clickable strong{
+ background:linear-gradient(115deg,#0b4565,#23477f)!important;
+}
+.hub-home .afaq-promo-links{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-rows:minmax(62px,auto);
+ gap:10px!important;margin:14px 0 0!important;align-items:stretch!important;
+}
+.hub-home .afaq-promo-text-link{
+ position:relative!important;isolation:isolate;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:8px!important;text-align:center!important;box-sizing:border-box!important;
+ min-width:0!important;min-height:62px!important;
+ padding:12px 10px!important;border:2px solid #c5a369!important;
+ border-radius:13px!important;
+ background:linear-gradient(115deg,#fff9e8,#fffefc 30%,#f4e2b5 68%,#fffdf4)!important;
+ color:#735016!important;
+ font:950 clamp(11px,1.02vw,14px)/1.6 Tahoma,Arial,sans-serif!important;
+ text-decoration:none!important;box-shadow:0 5px 13px #8b68231f,
+ inset 0 2px 0 #fff!important;
+ text-shadow:0 1px 0 #fff!important;
+ overflow:hidden!important;
+ transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+.hub-home .afaq-promo-side--right .afaq-promo-text-link{
+ background:linear-gradient(115deg,#fcf9ff,#f3edff 35%,#dcd0f5 73%,#fffdfa)!important;
+ color:#4e347b!important;border-color:#bda2df!important;
+ box-shadow:0 5px 13px #5e3d8a20,inset 0 2px 0 #fff!important;
+}
+.hub-home .afaq-promo-side--left .afaq-promo-text-link{
+ background:linear-gradient(115deg,#effbff,#fffdf6 32%,#cdebf5 73%,#fff9e9)!important;
+ color:#145874!important;border-color:#a9d0df!important;
+}
+.hub-home .afaq-promo-text-link:before{
+ content:"";position:absolute!important;inset:-50% auto -50% -38%;
+ width:34%;transform:skewX(-22deg) translateX(0);
+ background:linear-gradient(90deg,transparent,#fffdfc77,transparent);
+ pointer-events:none;z-index:-1;opacity:0;
+}
+.hub-home .afaq-promo-text-link:hover:before,
+.hub-home .afaq-promo-text-link:focus-visible:before{
+ opacity:1;animation:afaqPromoGlint .75s ease-out forwards;
+}
+@keyframes afaqPromoGlint{to{transform:skewX(-22deg) translateX(520%)}}
+.hub-home .afaq-promo-text-link:hover{
+ transform:translateY(-2px)!important;
+ box-shadow:0 9px 23px #76522735,inset 0 2px 0 #fff!important;
+ border-color:#c08c39!important;
+}
+.hub-home .afaq-promo-side--right .afaq-promo-text-link:hover{
+ box-shadow:0 9px 23px #6a45883c,inset 0 2px 0 #fff!important;
+}
+.hub-home .afaq-promo-text-link span:first-child{
+ display:grid!important;place-items:center!important;
+ flex:0 0 26px!important;width:26px!important;height:26px!important;
+ padding:0!important;border:1px solid #d9b77e!important;border-radius:50%!important;
+ background:#ffffffce!important;color:#af7e31!important;
+ font:950 19px/1 Georgia,serif!important;
+}
+.hub-home .afaq-promo-side--right .afaq-promo-text-link span:first-child{
+ border-color:#c1a6df!important;color:#875bbb!important;
+}
+.hub-home .afaq-promo-text-link span:nth-child(2){
+ flex:1 1 auto!important;min-width:0!important;
+ font-weight:950!important;overflow-wrap:break-word!important;
+}
+.hub-home .afaq-promo-text-link:focus-visible,
+.hub-home .afaq-promo-clickable:focus-visible{
+ outline:3px solid #b58738!important;outline-offset:3px!important;
+}
+@media(max-width:1000px){
+ .hub-home .afaq-promo-two-sides{grid-template-columns:1fr!important}
+ .hub-home .afaq-promo-images{gap:11px!important}
+ .hub-home .afaq-promo-clickable img{max-height:250px!important}
+}
+@media(max-width:580px){
+ .hub-home .afaq-promo-area{padding:12px 9px 15px!important}
+ .hub-home .afaq-promo-side{padding:10px!important}
+ .hub-home .afaq-promo-links{gap:7px!important;grid-auto-rows:minmax(62px,auto)}
+ .hub-home .afaq-promo-text-link{min-height:62px!important;padding:8px 6px!important;font-size:11px!important;gap:4px!important}
+ .hub-home .afaq-promo-text-link span:first-child{
+  flex-basis:19px!important;width:19px!important;height:19px!important;font-size:15px!important;
+ }
+ .hub-home .afaq-promo-clickable strong{min-height:48px!important;font-size:11px!important}
+}
+@media(max-width:390px){
+ .hub-home .afaq-promo-links{grid-template-columns:1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .afaq-promo-text-link,.hub-home .afaq-promo-image-card{transition:none!important}
+ .hub-home .afaq-promo-text-link:hover:before{animation:none!important}
+ .hub-home .afaq-promo-text-link:hover,.hub-home .afaq-promo-image-card:hover{transform:none!important}
+}
