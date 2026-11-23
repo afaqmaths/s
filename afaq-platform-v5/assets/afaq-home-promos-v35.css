@@ -288,3 +288,89 @@
 /* Make the moving highlight visible above the glossy frame while keeping labels crisp. */
 .hub-home .afaq-promo-text-link:before{z-index:0!important}
 .hub-home .afaq-promo-text-link>span{position:relative!important;z-index:1!important}
+
+
+/* 2026-11-23 v50: refined photographic sports and gaming visual panels.
+   A missing external picture never displays a broken-picture icon. */
+.hub-home .afaq-promo-area .afaq-promo-image-card{
+ position:relative!important;
+ border:2px solid #ddc69d!important;
+ border-radius:17px!important;overflow:hidden!important;
+ background:linear-gradient(135deg,#132749,#285e8d)!important;
+ box-shadow:0 7px 21px #0a234447,inset 0 0 0 1px #fff5!important;
+}
+.hub-home .afaq-promo-area .afaq-promo-image-card:before{
+ content:"";position:absolute;z-index:2;
+ top:0;left:0;right:0;height:5px;
+ background:linear-gradient(90deg,#edd3a8,#d9a16a,#fff5c4,#d3a46e)!important;
+ pointer-events:none;
+}
+.hub-home .afaq-promo-area .afaq-promo-side--right .afaq-promo-image-card:before{
+ background:linear-gradient(90deg,#9760ce,#e2bfff,#fff,#b184e0)!important;
+}
+.hub-home .afaq-promo-area .afaq-promo-clickable{
+ display:flex!important;flex-direction:column!important;
+ min-height:100%!important;position:relative!important;overflow:hidden!important;
+}
+.hub-home .afaq-promo-area .afaq-promo-clickable>img{
+ display:block!important;
+ width:100%!important;height:auto!important;max-height:none!important;
+ aspect-ratio:16/9!important;
+ object-fit:cover!important;
+ object-position:center center!important;
+ background:radial-gradient(circle at 50% 30%,#2b6591,#152b53)!important;
+ filter:saturate(1.12) contrast(1.07) brightness(1.01)!important;
+ transition:transform .35s ease,filter .25s ease!important;
+}
+.hub-home .afaq-promo-area .afaq-promo-clickable:hover>img{
+ transform:scale(1.045)!important;
+ filter:saturate(1.2) contrast(1.08) brightness(1.06)!important;
+}
+.hub-home .afaq-promo-area .afaq-promo-clickable>strong{
+ min-height:56px!important;
+ padding:10px 8px!important;
+ color:#fff9e9!important;font-weight:950!important;
+ text-align:center!important;
+ border-top:2px solid #e2bb7055!important;
+ letter-spacing:.15px!important;
+}
+.hub-home .afaq-promo-area .afaq-promo-visual-fallback{
+ display:none!important;flex:1 0 auto;flex-direction:column;
+ gap:7px;align-items:center;justify-content:center;
+ width:100%;aspect-ratio:16/9;
+ padding:18px;box-sizing:border-box;
+ background:radial-gradient(ellipse at 55% 17%,#6db4e199,transparent 49%),
+ linear-gradient(135deg,#12335c,#13466d 68%,#163454);
+ color:#fff7e4;font:900 14px/1.5 Tahoma,Arial,sans-serif;
+}
+.hub-home .afaq-promo-area .afaq-promo-side--right .afaq-promo-visual-fallback{
+ background:radial-gradient(ellipse at 45% 25%,#b08bfb80,transparent 48%),
+ linear-gradient(135deg,#2b265e,#583978,#213e6e);
+}
+.hub-home .afaq-promo-area .afaq-promo-visual-fallback b{
+ font-size:clamp(35px,5vw,65px);font-weight:950;
+ text-shadow:0 6px 14px #0006;
+}
+.hub-home .afaq-promo-area .afaq-promo-visual-fallback i{
+ font:900 clamp(12px,1.1vw,16px)/1.65 Tahoma,Arial,sans-serif;
+ font-style:normal!important;color:#ffedbc!important;
+}
+.hub-home .afaq-promo-area .afaq-promo-photo-unavailable .afaq-promo-clickable>img{
+ display:none!important;
+}
+.hub-home .afaq-promo-area .afaq-promo-photo-unavailable .afaq-promo-visual-fallback{
+ display:flex!important;
+}
+@media(max-width:610px){
+ .hub-home .afaq-promo-area .afaq-promo-clickable>strong{
+  min-height:48px!important;font-size:12px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .hub-home .afaq-promo-area .afaq-promo-clickable>img{
+  transition:none!important;
+ }
+ .hub-home .afaq-promo-area .afaq-promo-clickable:hover>img{
+  transform:none!important;
+ }
+}
