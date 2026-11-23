@@ -1,0 +1,264 @@
+/* AFAQ Math — universal supervisor portal-management actions, 2026-11-23.
+   Portal actions are siblings of link/login buttons, never nested within interactive elements. */
+.afaq-portal-gate-wrap{
+ display:flex;flex-direction:column;align-items:stretch;justify-content:stretch;
+ min-width:0;min-height:0;width:100%;position:relative;
+}
+.afaq-portal-gate-wrap>.hub-gate,
+.afaq-portal-gate-wrap>.afaq-directory-link{
+ flex:1 1 auto!important;box-sizing:border-box!important;
+ min-width:0!important;width:100%!important;margin:0!important;
+}
+.hub-home .afaq-entry-between-flag-hero>.hub-gate-grid>.afaq-portal-gate-wrap>.hub-gate{
+ min-width:0!important;min-height:105px!important;
+ padding:7px 4px!important;gap:4px!important;border-radius:12px!important;
+}
+.hub-home .afaq-home-access>.hub-gate-grid>.afaq-portal-gate-wrap>.hub-gate{
+ min-width:0!important;border-radius:12px!important;
+}
+.afaq-portal-gate-actions{
+ display:flex;align-items:center;justify-content:center;gap:5px;
+ padding:5px 1px 1px;flex:0 0 auto;flex-wrap:wrap;
+}
+.afaq-portal-manage-button{
+ appearance:none;position:relative;z-index:3;cursor:pointer;
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:36px;padding:7px 13px;max-width:100%;
+ box-sizing:border-box;
+ border:1px solid #bc8d36;border-radius:10px;
+ background:linear-gradient(125deg,#fff9e7,#ecd29a)!important;
+ box-shadow:0 3px 9px #70491824;
+ color:#81591a!important;
+ font:950 clamp(11px,1.05vw,14px)/1.5 Tahoma,Arial,sans-serif!important;
+ text-align:center;white-space:normal;
+ transition:transform .15s ease,box-shadow .15s ease;
+}
+.afaq-portal-manage-button.is-compact{
+ min-height:29px;padding:5px 9px;font-size:11px!important;
+}
+.afaq-portal-manage-button:hover{
+ background:linear-gradient(120deg,#edcb76,#fff6d7)!important;
+ border-color:#9a6d23;box-shadow:0 5px 14px #98672238;transform:translateY(-1px);
+}
+.afaq-portal-manage-button:focus-visible,
+.afaq-portals-center button:focus-visible,
+.afaq-portal-dialog button:focus-visible,
+.afaq-portal-dialog input:focus-visible,
+.afaq-portal-dialog textarea:focus-visible{
+ outline:3px solid #2686b7!important;outline-offset:2px!important;
+}
+.afaq-portal-private-indicator{
+ display:inline-block;padding:3px 6px;border-radius:7px;
+ background:#fff1d2;color:#8b5c20;font:850 10px/1.4 Tahoma,Arial,sans-serif;
+}
+.afaq-portal-private-indicator[hidden]{display:none!important}
+.afaq-portal-hidden{display:none!important}
+.afaq-portal-hidden-preview{
+ outline:2px dashed #ce8f38!important;outline-offset:2px!important;
+ background-image:linear-gradient(#fff4e511,#fff4e511);
+}
+.afaq-portal-section-tools{
+ display:flex;align-items:center;justify-content:flex-start;
+ gap:8px;flex-wrap:wrap;width:fit-content;
+ max-width:100%;margin:8px 0 1px!important;
+ direction:rtl;
+}
+.afaq-portal-section-tools .afaq-portal-manage-button{
+ min-height:32px;padding:6px 12px;font-size:12px!important;
+}
+.afaq-about-rich-card>.afaq-portal-about-manage{
+ flex:0 0 auto;margin-top:5px!important;width:100%;
+ min-height:32px;
+}
+@media(max-width:670px){
+ .hub-home .afaq-about-2026 .afaq-about-rich-card>.afaq-portal-about-manage{
+  grid-column:1/-1;grid-row:4;min-height:35px!important;
+ }
+}
+.afaq-directory-page .afaq-directory-links>.afaq-portal-gate-wrap{
+ min-height:0;align-self:stretch;
+}
+.afaq-directory-page .afaq-directory-links>.afaq-portal-gate-wrap>.afaq-directory-link{
+ min-height:64px;
+}
+.afaq-directory-page .afaq-portal-gate-actions{padding-top:3px}
+.afaq-directory-page .afaq-portal-manage-button.is-compact{
+ min-height:25px;font-size:10.5px!important;padding:4px 9px;
+}
+.afaq-directory-page .afaq-directory-group>header .afaq-portal-section-tools{
+ grid-column:1/-1;
+ margin:5px 0!important;
+}
+.afaq-portal-page-bar{
+ direction:rtl;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+ box-sizing:border-box;width:min(98%,1350px);margin:12px auto 7px;
+ padding:10px 14px;border:1px solid #d1b376;border-radius:12px;
+ background:linear-gradient(115deg,#fff8e8,#f0faff);
+ color:#26597d;box-shadow:0 4px 12px #1b547c18;
+}
+.afaq-portal-page-bar strong{color:#91631f;font:950 14px/1.5 Tahoma,Arial,sans-serif}
+.afaq-portal-page-bar span{flex:1 1 240px;color:#53718a;font-size:12px}
+.afaq-portal-center-nav{
+ border:1px solid #c69c47!important;
+ background:linear-gradient(120deg,#f7d58b,#fff5db)!important;
+ color:#714e1b!important;font-weight:950!important;
+}
+.afaq-portal-modal-backdrop{
+ position:fixed;inset:0;z-index:999999;
+ display:flex;align-items:center;justify-content:center;
+ padding:14px;box-sizing:border-box;
+ background:rgba(7,26,50,.76);backdrop-filter:blur(4px);
+}
+.afaq-portal-dialog{
+ box-sizing:border-box;width:min(96vw,780px);max-height:94vh;overflow-y:auto;
+ border:2px solid #dbbb78;border-radius:22px;
+ padding:23px;direction:rtl;
+ background:linear-gradient(140deg,#fffdf7,#f5fbff 60%,#fffaed);
+ box-shadow:0 22px 55px #0006;
+ color:#285474;font:700 14px/1.8 Tahoma,Arial,sans-serif;
+}
+.afaq-portal-dialog>header{
+ display:flex;align-items:center;gap:11px;flex-wrap:wrap;
+ margin:0 0 15px;padding-bottom:13px;
+ border-bottom:1px solid #ddc58b;
+}
+.afaq-portal-dialog>header>span{
+ font-size:12px;font-weight:950;color:#a77b30;white-space:nowrap;
+}
+.afaq-portal-dialog>header h2{
+ flex:1 1 200px;color:#185381!important;
+ margin:0!important;font:950 clamp(19px,2.2vw,26px)/1.6 Tahoma,Arial,sans-serif!important;
+}
+.afaq-portal-dialog .afaq-portal-close{
+ width:38px;height:38px;flex:0 0 38px;
+ border-radius:10px;border:1px solid #c9b487;
+ background:#fff5d8;color:#915f1e;
+ font:950 25px/1 Arial,sans-serif;cursor:pointer;
+}
+.afaq-portal-dialog form{display:flex;flex-direction:column;gap:12px}
+.afaq-portal-dialog form>p{
+ color:#597188;margin:0!important;font-size:13px;line-height:1.8;
+}
+.afaq-portal-dialog form>label:not(.afaq-portal-visible){
+ display:flex;flex-direction:column;gap:6px;
+ color:#2d6082;font-weight:900;
+}
+.afaq-portal-dialog input[type=text],
+.afaq-portal-dialog input:not([type]),
+.afaq-portal-dialog textarea{
+ display:block;width:100%;box-sizing:border-box;min-width:0;
+ padding:10px 12px;border:1px solid #adc9d8;border-radius:10px;
+ background:white;color:#1b506f;
+ font:700 14px/1.6 Tahoma,Arial,sans-serif;
+}
+.afaq-portal-dialog textarea{min-height:82px;resize:vertical}
+.afaq-portal-visible{
+ display:flex;align-items:center;gap:10px;padding:11px 13px;
+ border:1px solid #d7c28e;border-radius:10px;background:#fff8e7;
+ color:#7d591a;font-weight:900;
+}
+.afaq-portal-visible input{width:20px;height:20px;accent-color:#168f7b}
+.afaq-portal-help{display:block;color:#926b3f;line-height:1.8;font-size:12px}
+.afaq-portal-form-actions{display:flex;gap:10px;flex-wrap:wrap}
+.afaq-portal-form-actions button,.afaq-portal-special button{
+ flex:1 1 195px;min-height:43px;cursor:pointer;
+ border:1px solid #c0aa78;border-radius:10px;
+ padding:10px 13px;background:linear-gradient(120deg,#1c5785,#206c94);
+ color:#fff;font:950 13px/1.5 Tahoma,Arial,sans-serif;
+}
+.afaq-portal-form-actions button:nth-child(2){
+ background:linear-gradient(120deg,#fff8e6,#f2e0ae);color:#8c6220;
+}
+.afaq-portal-form-status{min-height:20px;color:#97591f;font-weight:900}
+.afaq-portal-special{
+ margin-top:15px;padding:14px;
+ border:1px solid #d3c59a;border-radius:13px;
+ background:linear-gradient(130deg,#fef8e9,#f1f9fd);
+}
+.afaq-portal-special strong{color:#1d507d;font-size:17px;font-weight:950}
+.afaq-portal-special p{color:#58758b;font-size:13px;line-height:1.8}
+.afaq-portal-special button{display:inline-block;min-width:180px;max-width:100%;background:#f7e7bd;color:#714e1e}
+.afaq-portal-toast{
+ position:fixed;bottom:22px;left:22px;z-index:999999;
+ max-width:min(93vw,470px);padding:13px 18px;
+ border:2px solid #72b68a;border-radius:12px;
+ background:#e8fff0;color:#176a42;
+ font:950 14px/1.7 Tahoma,Arial,sans-serif;
+ box-shadow:0 7px 22px #144e3b3b;
+}
+.afaq-portals-center{
+ direction:rtl;max-width:1380px;margin:0 auto;padding:18px 12px 30px;
+}
+.afaq-portals-center-head{
+ padding:23px;border:2px solid #d5b572;border-radius:22px;
+ background:linear-gradient(120deg,#0c3b68,#1d567a);
+ color:#fff;box-shadow:0 9px 24px #15426327;
+}
+.afaq-portals-center-head span{color:#ffe1a0;font-size:13px;font-weight:950}
+.afaq-portals-center-head h1{
+ color:#ffeab8!important;
+ font:950 clamp(24px,3vw,35px)/1.6 Tahoma,Arial,sans-serif!important;
+ margin:5px 0!important;
+}
+.afaq-portals-center-head p{color:#eef7ff;line-height:1.9}
+.afaq-portals-center-head button{
+ padding:10px 16px;border:1px solid #edc879;border-radius:10px;
+ background:linear-gradient(110deg,#fff8e6,#e9ca81);color:#754e14;
+ font:950 13px/1.5 Tahoma,Arial,sans-serif;cursor:pointer;
+}
+.afaq-portals-center-group{
+ margin:15px 0;padding:16px;border:1px solid #d7dfeb;border-radius:17px;
+ background:linear-gradient(125deg,#fffefa,#f4faff);
+ box-shadow:0 4px 14px #345b8113;
+}
+.afaq-portals-center-group h2{
+ color:#19547e!important;font:950 21px/1.7 Tahoma,Arial,sans-serif!important;
+ margin:0 0 12px!important;
+}
+.afaq-portals-center-cards{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;
+}
+.afaq-portals-center-cards article{
+ display:flex;flex-direction:column;align-items:stretch;gap:7px;
+ padding:13px;min-width:0;
+ border:1px solid #d4dfe5;border-top:4px solid #cf9e44;
+ border-radius:13px;background:white;
+}
+.afaq-portals-center-cards article.is-hidden{
+ border-style:dashed;background:#fff9eb;
+}
+.afaq-portals-center-cards article strong{
+ color:#22567a;font:950 14px/1.65 Tahoma,Arial,sans-serif;
+}
+.afaq-portals-center-cards article small{
+ color:#607e8b;font:700 11px/1.5 Tahoma,Arial,sans-serif;
+}
+.afaq-portals-center-cards article>div{
+ display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;
+}
+.afaq-portals-center-cards button{
+ flex:1 1 110px;min-height:33px;cursor:pointer;
+ padding:6px 9px;border:1px solid #c9ad6d;border-radius:8px;
+ background:#fff1ce;color:#78561d;
+ font:900 11px/1.6 Tahoma,Arial,sans-serif;
+}
+.afaq-portals-center-cards button+button{background:#eef5fd;color:#245b7d;border-color:#bcd1dc}
+.afaq-portals-center footer{font-size:12px;color:#667f8e;line-height:1.8}
+@media(max-width:1080px){
+ .afaq-portals-center-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .afaq-portal-gate-actions{gap:3px}
+}
+@media(max-width:750px){
+ .afaq-portals-center-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .afaq-portal-dialog{padding:14px}
+}
+@media(max-width:490px){
+ .afaq-portals-center-cards{grid-template-columns:1fr}
+ .afaq-portal-manage-button.is-compact{font-size:10px!important}
+ .afaq-portal-dialog>header{gap:6px}
+ .afaq-portal-dialog>header h2{flex-basis:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ .afaq-portal-manage-button{transition:none!important}
+ .afaq-portal-manage-button:hover{transform:none!important}
+}
