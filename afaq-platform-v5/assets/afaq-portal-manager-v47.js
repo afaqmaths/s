@@ -383,7 +383,10 @@ const CENTER_DATA=[
  ['خلاط الرياضيات','route_mixer','teacher_initiatives_admin'],['الأنشطة العلاجية والإثرائية','route_adaptive','hub_catalog'],
  ['أولياء الأمور','route_parent','hub_parent_codes'],['إدارة المدرسة','login_director','staff_contacts'],
  ['التواصل والدعم','route_support','hub_inbox'],['الأخبار والتحديثات','section_news','home_promos'],
- ['بوابة دليل المنصة','route_afaq_directory','hub_catalog'],['صفحة مباريات اليوم','route_matches_today','home_promos']
+ ['بوابة دليل المنصة','route_afaq_directory','hub_catalog'],['صفحة مباريات اليوم','route_matches_today','home_promos'],
+ ['طلاب الصف السادس','login_student','students'],['طلاب الصفوف الأخرى','login_demo','hub_catalog'],
+ ['بوابة دخول المشرفين','login_supervisor','overview'],['جماعة آفاق ماث الطلابية','gate_student_club','afaq_student_club'],
+ ['التصفح كزائر','route_visitor','hub_catalog']
 ];
 function centerMarkup(){
  const grouped=[
