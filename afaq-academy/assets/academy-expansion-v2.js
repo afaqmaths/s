@@ -71,7 +71,7 @@ function insert(){
  '<div class="afa2-cols"><aside class="afa2-aside" aria-label="مواقع رياضية وثقافية"><h3>الرياضة والثقافة</h3><p>روابط مختارة داخل إطارات مميزة</p><div id="afa2-right-links"></div></aside>'+
  '<div class="afa2-orbit-panel" id="afa2-orbit-panel" aria-label="لوحة الكواكب التعليمية المتحركة"><div class="afa2-rays"></div><div class="afa2-stars"></div><div class="afa2-panel-top"><h3>كواكب العلوم والآداب</h3><p>حين تتلاقى المعارف ينبثق الإبداع</p></div><div class="afa2-orbit-system">'+
  subjects.map(function(p,i){var ins=[7,12,17,21,25,29],dur=[28,37,47,60,73,83],diam=[67,64,62,58,55,52];
-  return '<div class="afa2-track" style="--ring:'+ins[i]+'%;--duration:'+dur[i]+'s;--direction:'+(i%2?'reverse':'normal')+';--inverse-direction:'+(i%2?'normal':'reverse')+'"><button type="button" data-afa2-subject="'+p.id+'" class="afa2-planet" style="--planet-size:'+diam[i]+'px;--planet-a:'+p.a+';--planet-b:'+p.b+'" title="'+clean(p.name)+'"><strong>'+clean(p.abbr)+'</strong><small>'+clean(p.name)+'</small></button></div>';
+  return '<div class="afa2-track" style="--ring:'+ins[i]+'%;--duration:'+dur[i]+'s;--direction:'+(i%2?'reverse':'normal')+';--inverse-direction:'+(i%2?'reverse':'normal')+'"><button type="button" data-afa2-subject="'+p.id+'" class="afa2-planet" style="--planet-size:'+diam[i]+'px;--planet-a:'+p.a+';--planet-b:'+p.b+'" title="'+clean(p.name)+'"><strong>'+clean(p.abbr)+'</strong><small>'+clean(p.name)+'</small></button></div>';
  }).join("")+
  '<div class="afa2-core"><span>AFAQ</span></div></div><div class="afa2-impact"></div>'+
  '<div class="afa2-panel-footer"><button type="button" class="afa2-control" id="afa2-explosion">✦ إطلاق الإشعاع</button><button type="button" class="afa2-control" id="afa2-sound">🔇 تفعيل الصوت</button><button type="button" class="afa2-control" id="afa2-pause">⏸ إيقاف الحركة</button></div></div>'+
@@ -138,7 +138,7 @@ function tempOptions(){var c=Object.entries(cityMap).map(function(x){return '<op
 function renderDate(){var d=new Date();$("#afa2-date").textContent="🗓 "+new Intl.DateTimeFormat("ar-OM",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"Asia/Muscat"}).format(d)}
 async function weather(){
  /* Open-Meteo free API: demonstration only. Commercial use requires a licensed endpoint. */
- $("#afa2-weather-note").textContent="الطقس: عرض تجريبي • المصدر Open-Meteo";
+ $("#afa2-weather-note").innerHTML='الطقس: عرض تجريبي • <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>';
  await Promise.all(cfg.city.map(async function(city,index){
   var x=cityMap[city];var out=$("#afa2-temp-"+index);if(!x||!out)return;out.textContent="…";
   var url="https://api.open-meteo.com/v1/forecast?latitude="+x.lat+"&longitude="+x.lon+"&current=temperature_2m&timezone=Asia%2FMuscat";
@@ -152,7 +152,7 @@ async function weather(){
  }));
 }
 function getVisits(){
- var n=2000;try{n=Math.max(2000,Math.min(900000,Number(localStorage.getItem(VISIT_KEY))||2000));if(!sessionStorage.getItem(VISIT_KEY)){n++;localStorage.setItem(VISIT_KEY,String(n));sessionStorage.setItem(VISIT_KEY,"1")}}catch(e){}
+ var n=2000;try{var prev=localStorage.getItem(VISIT_KEY);if(prev===null){localStorage.setItem(VISIT_KEY,"2000")}else{n=Math.max(2000,Math.min(900000,Number(prev)||2000));if(!sessionStorage.getItem(VISIT_KEY)){n++;localStorage.setItem(VISIT_KEY,String(n))}}sessionStorage.setItem(VISIT_KEY,"1")}catch(e){}
  $("#afa2-visits").textContent=n.toLocaleString("ar-OM");
 }
 function doExplosion(){
