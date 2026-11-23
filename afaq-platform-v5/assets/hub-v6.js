@@ -604,7 +604,6 @@ const HUB_STAFF_BLOCKS=[
   ['الإعلانات وروابط المواقع','palette','إدارة ٤ صور إعلانية و٨ روابط في الصفحة الرئيسية','data-tab="home_promos"','gold'],
   ['لوحة شرف الطلاب','award','إدارة ٦ فئات للطلاب المتميزين وصورهم وكلماتهم','data-tab="honor_board"','gold'],
   ['المبادرات العلمية والمجتمعية','lightbulb','إدارة المبادرات والصور والتعليقات وقناة يوتيوب','data-tab="teacher_initiatives_admin"','gold'],
-  ['صلاحيات إظهار المبادرات','shield-check','إظهار للجميع أو إخفاء أو إظهار بإذن مشرف ورمز مؤقت','data-route="initiative_permissions"','gold'],
   ['عنوان آفاق ماث الذهبي','type','تعديل اسم المنصة بالعربية والإنجليزية تحت العلم','data-tab="platform_title"','gold'],
   ['موسوعة علماء الرياضيات','landmark','إضافة وتحرير وحذف تراجم العلماء','data-tab="hub_catalog_scholars"','gold'],
   ['إدارة الألعاب والمسابقات','trophy','إضافة أو إخفاء مسابقات المنصة','data-tab="hub_catalog_contests"','gold'],
@@ -627,13 +626,12 @@ function hubStaffNav(){
   ['hub_inbox','الرسائل والدعم'],['hub_parent_codes','أولياء الأمور'],
   ['hub_print','مركز الطباعة']
  ];
- return '<div class="hub-staff-nav">'+routes.map(([id,label])=>'<button class="'+(auth.section===id?'selected':'')+'" data-tab="'+id+'">'+label+'</button>').join('')+
-  (auth.user?.role==='supervisor'?'<button type="button" class="hub-staff-initiative-visibility" data-route="initiative_permissions">🔐 صلاحيات إظهار المبادرات</button>':'')+'</div>';
+ return '<div class="hub-staff-nav">'+routes.map(([id,label])=>'<button class="'+(auth.section===id?'selected':'')+'" data-tab="'+id+'">'+label+'</button>').join('')+'</div>';
 }
 function hubStaffDashboard(){
  const role=auth.user?.role;const admin=role==='supervisor';
  const blocks=HUB_STAFF_BLOCKS.map(([title,items])=>{
-  const entries=items.filter(([label,icon,desc,attribute])=>admin||!['data-tab="hub_catalog"','data-tab="hub_catalog_contests"','data-tab="hub_parent_codes"','data-tab="home_promos"','data-tab="honor_board"','data-tab="teacher_initiatives_admin"','data-route="initiative_permissions"','data-tab="platform_title"'].includes(attribute));
+  const entries=items.filter(([label,icon,desc,attribute])=>admin||!['data-tab="hub_catalog"','data-tab="hub_catalog_contests"','data-tab="hub_parent_codes"','data-tab="home_promos"','data-tab="honor_board"','data-tab="teacher_initiatives_admin"','data-tab="platform_title"'].includes(attribute));
   return '<section class="hub-staff-group"><div class="hub-heading"><h2>'+title+'</h2></div>'+
   '<div class="hub-gate-grid">'+entries.map(([name,icon,desc,attr,color])=>hubGate(name,icon,desc,attr.startsWith('data-')?attr:'data-'+attr,color)).join('')+'</div></section>';
  }).join('');
