@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="tt dd"><title id="tt">beIN SPORTS — استاد كرة قدم مضاء</title><desc id="dd">لوحة رياضية أصلية تعرض لاعبي كرة قدم وملعبًا مضاءً بطابع بنفسجي وذهبي.</desc><defs>
+<linearGradient id="night" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#13082f"/><stop offset=".47" stop-color="#50217f"/><stop offset="1" stop-color="#0b2045"/></linearGradient>
+<linearGradient id="pitch" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#12684d"/><stop offset="1" stop-color="#062d30"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff6c2"/><stop offset=".4" stop-color="#e6c37d"/><stop offset="1" stop-color="#b57b32"/></linearGradient>
+<radialGradient id="halo"><stop stop-color="#a5d9ff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="9"/></filter><filter id="shadow"><feDropShadow dx="0" dy="9" stdDeviation="10" flood-color="#05081c" flood-opacity=".6"/></filter></defs>
+<rect width="960" height="560" rx="22" fill="url(#night)"/>
+<path d="M0 0H960V150 Q480 115 0 160Z" fill="#7d4dc1" opacity=".23"/>
+<circle cx="770" cy="105" r="225" fill="url(#halo)" opacity=".65"/>
+<path d="M0 285 Q480 180 960 275V445H0Z" fill="#030d2a"/>
+<path d="M0 270 Q480 187 960 267" stroke="#dac9ff" stroke-width="1.5" opacity="0.11" fill="none"/><path d="M0 282 Q480 195 960 279" stroke="#dac9ff" stroke-width="1.5" opacity="0.14" fill="none"/><path d="M0 294 Q480 203 960 291" stroke="#dac9ff" stroke-width="1.5" opacity="0.16999999999999998" fill="none"/><path d="M0 306 Q480 211 960 303" stroke="#dac9ff" stroke-width="1.5" opacity="0.11" fill="none"/><path d="M0 318 Q480 219 960 315" stroke="#dac9ff" stroke-width="1.5" opacity="0.14" fill="none"/><path d="M0 330 Q480 227 960 327" stroke="#dac9ff" stroke-width="1.5" opacity="0.16999999999999998" fill="none"/><path d="M0 342 Q480 235 960 339" stroke="#dac9ff" stroke-width="1.5" opacity="0.11" fill="none"/><path d="M0 354 Q480 243 960 351" stroke="#dac9ff" stroke-width="1.5" opacity="0.14" fill="none"/><path d="M0 366 Q480 251 960 363" stroke="#dac9ff" stroke-width="1.5" opacity="0.16999999999999998" fill="none"/><path d="M0 378 Q480 259 960 375" stroke="#dac9ff" stroke-width="1.5" opacity="0.11" fill="none"/><path d="M0 390 Q480 267 960 387" stroke="#dac9ff" stroke-width="1.5" opacity="0.14" fill="none"/>
+<g><path d="M105 45 L70 270" stroke="#a9d9ff" stroke-width="3" opacity=".36"/><ellipse cx="105" cy="63" rx="84" ry="26" fill="#bbdcff" opacity=".27" filter="url(#glow)"/><path d="M50 57 H160" stroke="#f5faff" stroke-width="13" stroke-linecap="round" opacity=".85"/></g><g><path d="M320 45 L285 270" stroke="#a9d9ff" stroke-width="3" opacity=".36"/><ellipse cx="320" cy="63" rx="84" ry="26" fill="#bbdcff" opacity=".27" filter="url(#glow)"/><path d="M265 57 H375" stroke="#f5faff" stroke-width="13" stroke-linecap="round" opacity=".85"/></g><g><path d="M650 45 L615 270" stroke="#a9d9ff" stroke-width="3" opacity=".36"/><ellipse cx="650" cy="63" rx="84" ry="26" fill="#bbdcff" opacity=".27" filter="url(#glow)"/><path d="M595 57 H705" stroke="#f5faff" stroke-width="13" stroke-linecap="round" opacity=".85"/></g><g><path d="M868 45 L833 270" stroke="#a9d9ff" stroke-width="3" opacity=".36"/><ellipse cx="868" cy="63" rx="84" ry="26" fill="#bbdcff" opacity=".27" filter="url(#glow)"/><path d="M813 57 H923" stroke="#f5faff" stroke-width="13" stroke-linecap="round" opacity=".85"/></g>
+<path d="M-40 462 Q480 309 1000 463 V560H0Z" fill="url(#pitch)"/>
+<path d="M0 489 Q480 369 960 483 M480 412V560 M-20 545Q480 445 980 545" fill="none" stroke="#9cdabd" stroke-width="4" opacity=".52"/>
+<ellipse cx="508" cy="471" rx="325" ry="38" fill="#78daff" opacity=".1" filter="url(#glow)"/>
+<g transform="translate(285 263) scale(1.03 1.03)" filter="url(#shadow)">
+<ellipse cx="0" cy="217" rx="110" ry="18" fill="#010c21" opacity=".6"/>
+<path d="M-22 94 L-50 201 L-12 218 L19 151 L47 201 L82 196 L43 90Z" fill="#0b1836"/>
+<path d="M-17 193 L-25 229 L-82 235 Q-107 245 -89 253 L-8 252 L11 204Z" fill="#e3edff"/>
+<path d="M55 193 L74 231 L128 238 Q145 246 127 254 L48 247 L37 203Z" fill="#e3edff"/>
+<path d="M-45 0 Q0 -28 45 0 L67 104 Q0 123 -61 107Z" fill="#d7a644"/>
+<path d="M-44 5 L-105 67 L-81 82 L-16 47 M41 10 L95 64 L72 84 L16 43" stroke="#d7a644" stroke-width="25" stroke-linecap="round"/>
+<path d="M-35 1 L-30 100 M-1 -13 L2 110 M28 0 L33 102" stroke="#fff" stroke-width="9" opacity=".66"/>
+<circle cx="0" cy="-44" r="28" fill="#e2a778"/><path d="M-28 -57 Q-5 -84 23 -62 L29 -46 Q0 -62 -27 -46Z" fill="#16213d"/>
+</g>
+<g transform="translate(686 274) scale(-0.98 0.98)" filter="url(#shadow)">
+<ellipse cx="0" cy="217" rx="110" ry="18" fill="#010c21" opacity=".6"/>
+<path d="M-22 94 L-50 201 L-12 218 L19 151 L47 201 L82 196 L43 90Z" fill="#0b1836"/>
+<path d="M-17 193 L-25 229 L-82 235 Q-107 245 -89 253 L-8 252 L11 204Z" fill="#e3edff"/>
+<path d="M55 193 L74 231 L128 238 Q145 246 127 254 L48 247 L37 203Z" fill="#e3edff"/>
+<path d="M-45 0 Q0 -28 45 0 L67 104 Q0 123 -61 107Z" fill="#3f85db"/>
+<path d="M-44 5 L-105 67 L-81 82 L-16 47 M41 10 L95 64 L72 84 L16 43" stroke="#3f85db" stroke-width="25" stroke-linecap="round"/>
+<path d="M-35 1 L-30 100 M-1 -13 L2 110 M28 0 L33 102" stroke="#fff" stroke-width="9" opacity=".66"/>
+<circle cx="0" cy="-44" r="28" fill="#e2a778"/><path d="M-28 -57 Q-5 -84 23 -62 L29 -46 Q0 -62 -27 -46Z" fill="#16213d"/>
+</g>
+<g transform="translate(501 450)" filter="url(#shadow)"><circle r="43" fill="#f5f7fc" stroke="#bfcfe0" stroke-width="3"/><path d="M-9 -13 L8 -23 L24 -10 L19 12 L0 20 L-19 7Z" fill="#162d4a"/><path d="M-9 -13 L-28 -23 M24 -10 L35 -19 M19 12 L29 28 M0 20 L-4 35 M-19 7 L-32 17" stroke="#53677c" stroke-width="4" fill="none"/></g>
+<rect x="36" y="24" width="378" height="110" rx="20" fill="#0c1236" stroke="#d0a8ff" stroke-width="2" opacity=".92"/>
+<text x="61" y="88" fill="#fff" font-size="54" font-weight="900" font-family="Arial, Tahoma, sans-serif">beIN <tspan fill="#c7a7fa">SPORTS</tspan></text>
+<text x="61" y="121" fill="#e7caff" font-size="22" font-weight="700" font-family="Arial">SPORTS • LIVE • NEWS</text>
+<rect x="527" y="24" width="392" height="56" rx="18" fill="#17123c" stroke="#dcbe78" stroke-width="2"/>
+<text x="721" y="62" text-anchor="middle" fill="url(#gold)" font-size="29" font-weight="900" direction="rtl" font-family="Tahoma,Arial,sans-serif">عالم كرة القدم</text>
+<rect x="0" y="540" width="960" height="20" fill="#d5a961"/>
+</svg>
