@@ -157,3 +157,20 @@
 @media(prefers-reduced-motion:reduce){
  .hub-home .afaq-promo-additional-link{transition:none!important}
 }
+
+
+/* The title is now the only visible content in new site links.
+   Remove any round sparkle/icon holder previously applied to first span. */
+.hub-home .afaq-promo-links .afaq-promo-text-link.afaq-promo-additional-link>.afaq-link-title-only{
+ display:block!important;flex:1 1 auto!important;
+ width:auto!important;height:auto!important;
+ min-width:0!important;min-height:0!important;max-width:none!important;
+ margin:0!important;padding:0!important;border:0!important;
+ border-radius:0!important;box-shadow:none!important;
+ background:transparent!important;color:inherit!important;
+ font:950 clamp(12px,1.08vw,15px)/1.65 Tahoma,Arial,sans-serif!important;
+ text-align:center!important;overflow-wrap:anywhere!important;
+}
+.hub-home .afaq-promo-links .afaq-promo-additional-link{
+ gap:0!important;justify-content:center!important;
+}
