@@ -296,5 +296,58 @@ attach=function(){
   if(notificationTimer===null)notificationTimer=window.setInterval(refreshAlerts,16000);
  }
 };
+/* Hide even the PUBLIC initiative preview on the homepage for disallowed audiences.
+   The Edge Function remains the authoritative gate for the protected content. */
+const homeAudience={key:'',visible:false,loading:false,fetched:0,interval:null};
+function applyHomeAudience(){
+ if(state.page!=='home')return;
+ const home=document.querySelector('#app .hub-home');
+ if(!home)return;
+ const bearer=iaBearer()||'visitor';
+ const ready=homeAudience.key===bearer&&Date.now()-homeAudience.fetched<30000;
+ home.classList.toggle('ia-home-initiatives-restricted',!ready||!homeAudience.visible);
+ if(ready||homeAudience.loading)return;
+ homeAudience.loading=true;
+ Promise.resolve().then(async()=>{
+  try{
+   const d=await iaFetch('audience_status');
+   homeAudience.key=bearer;homeAudience.visible=!!d.visible;
+   homeAudience.fetched=Date.now();
+  }catch(e){
+   homeAudience.key=bearer;homeAudience.visible=false;
+   homeAudience.fetched=Date.now();
+  }finally{
+   homeAudience.loading=false;
+   const active=document.querySelector('#app .hub-home');
+   if(state.page==='home'&&active)
+    active.classList.toggle('ia-home-initiatives-restricted',!homeAudience.visible);
+  }
+ });
+}
+const postPolicyAttach=attach;
+attach=function(){
+ postPolicyAttach();
+ applyHomeAudience();
+ if(homeAudience.interval===null)
+  homeAudience.interval=window.setInterval(()=>{if(state.page==='home')applyHomeAudience()},20000);
+};
+const basicFetch=iaFetch;
+iaFetch=async function(action,payload={},admin=false){
+ try{return await basicFetch(action,payload,admin)}
+ catch(e){
+  const msgs={
+   audience_forbidden:'هذه المبادرات ليست متاحة لفئة حسابك في إعدادات المنصة الحالية.',
+   cooldown_30_minutes:'استُنفدت المحاولتان المسموحتان. يمكن تقديم طلب جديد بعد مرور ٣٠ دقيقة.',
+   permission_not_required:'هذه المبادرات متاحة مباشرة للفئات المسموح لها؛ لا تحتاج إلى تقديم طلب.',
+   invalid_audiences:'يجب اختيار فئة واحدة على الأقل.',
+   invalid_approval_mode:'اختر نمط موافقة صحيحًا.',
+   invalid_expiry:'مدة الإتاحة المدخلة غير صحيحة.',
+   invalid_delegate:'لا يمكن منح الصلاحية لهذا الحساب أو لهذه العضوية.',
+   not_found:'تعذّر العثور على هذا الطلب أو رمز متابعته.'
+  };
+  if(msgs[e.reason])e.message=msgs[e.reason];
+  throw e;
+ }
+};
 if(pending)startPendingTimers();
 })();
